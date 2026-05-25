@@ -1,0 +1,14 @@
+{
+  "name": "@tma/dashboard-scope",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tma/analytics-gallery": "*",
+    "@tma/analytics-museum": "*",
+    "@tma/config": "*"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "takemearound",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @tma/app-gallery && npm run build -w @tma/app-museum && npm run build -w @tma/app-dashboard",
+    "build:gallery": "npm run build -w @tma/app-gallery",
+    "build:museum": "npm run build -w @tma/app-museum",
+    "build:dashboard": "npm run build -w @tma/app-dashboard",
+    "dev:gallery": "npm run dev -w @tma/app-gallery",
+    "dev:museum": "npm run dev -w @tma/app-museum",
+    "dev:dashboard": "npm run dev -w @tma/app-dashboard"
+  }
+}

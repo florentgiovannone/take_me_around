@@ -1,0 +1,13 @@
+[build]
+  command = "cd ../.. && npm ci && npm run build -w @tma/app-dashboard"
+  publish = "dist"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/dashboard packages"
+
+# Custom domain: arkin.takemearound.gallery (primary dashboard host).
+# Legacy dashboards on takemearound.gallery/dashboard and takemearound.museum/dashboard
+# redirect to this site (see gallery/museum Netlify _redirects).
+
+# Build-time env (Site settings → Environment variables → Scopes: Builds only or All):
+#   VITE_API_PROXY_TARGET = https://YOUR-SUBDOMAIN.ngrok-free.app   (recommended)
+# Same URL works as VITE_API_BASE_URL if you prefer direct API calls (needs CORS on the API).
+# After changing either variable, trigger Deploy → Clear cache and deploy site.
