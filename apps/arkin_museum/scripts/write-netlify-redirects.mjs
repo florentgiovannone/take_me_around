@@ -41,12 +41,9 @@ if (target) {
     );
   }
 } else if (netlifyProductionRequiresProxyTarget()) {
-  console.error(
-    "\nNetlify production build failed: set environment variable VITE_API_PROXY_TARGET\n" +
-      "  Example: https://YOUR-SUBDOMAIN.ngrok-free.app\n" +
-      "  (Flask + ngrok must be running when users hit the dashboard.)\n",
+  console.warn(
+    "Netlify production: no VITE_API_PROXY_TARGET — ok for static Rodin pages (/dashboard redirects externally).",
   );
-  process.exit(1);
 } else if (process.env.NETLIFY === "true") {
   console.warn(
     "Netlify preview/branch: no VITE_API_PROXY_TARGET — ok if VITE_API_BASE_URL is set for API calls.",

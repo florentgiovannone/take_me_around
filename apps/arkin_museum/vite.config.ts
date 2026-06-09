@@ -55,11 +55,6 @@ export default defineConfig(({ mode }) => {
           const out = path.resolve(process.cwd(), "dist", "_redirects")
           fs.mkdirSync(path.dirname(out), { recursive: true })
           fs.writeFileSync(out, `${lines.join("\n")}\n`)
-          if (process.env.NETLIFY === "true" && !proxyBase) {
-            throw new Error(
-              "Netlify build: set VITE_API_PROXY_TARGET (ngrok URL, no trailing slash) in site environment variables."
-            )
-          }
         },
       },
     ],
