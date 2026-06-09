@@ -5,6 +5,7 @@ export type PoiseLog = {
   text_name: string | null
   txt_message_type: string | null
   txt_message: string | null
+  visitor_number?: string | null
 }
 
 export type DeviceKind = "mobile" | "desktop" | "tablet"

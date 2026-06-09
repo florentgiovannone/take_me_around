@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import type { SiteScope } from "@tma/config"
 import AnalyticsStatCard from "./AnalyticsStatCard"
 import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import { formatLogTimestamp, formatRelativeTime, messageTypeClass } from "../utils/dashboardFormatters"
@@ -69,20 +70,36 @@ function VisitDetailsSection({ details }: { details: ActivityVisitDetails }) {
   )
 }
 
-function ActivityDetailsPanel({ entry }: { entry: ActivityEntry }) {
+function ActivityDetailsPanel({
+  entry,
+  logs,
+  scope,
+}: {
+  entry: ActivityEntry
+  logs: PoiseLog[]
+  scope: SiteScope
+}) {
   return (
     <div className="tma-dashboard-activity-details-panel">
       {entry.seen.map((seenRow) => (
         <VisitDetailsSection
           key={seenRow.int_id}
-          details={buildActivityVisitDetails(seenRow)}
+          details={buildActivityVisitDetails(seenRow, logs, scope)}
         />
       ))}
     </div>
   )
 }
 
-function ActivityRow({ entry }: { entry: ActivityEntry }) {
+function ActivityRow({
+  entry,
+  logs,
+  scope,
+}: {
+  entry: ActivityEntry
+  logs: PoiseLog[]
+  scope: SiteScope
+}) {
   const [expanded, setExpanded] = useState(false)
   const hasVisitDetails = entry.seen.length > 0
   const messageType = entry.redirect?.txt_message_type ?? entry.seen[0]?.txt_message_type ?? "-"
@@ -130,7 +147,7 @@ function ActivityRow({ entry }: { entry: ActivityEntry }) {
       {expanded && hasVisitDetails && (
         <tr className="tma-dashboard-activity-details-row">
           <td colSpan={5}>
-            <ActivityDetailsPanel entry={entry} />
+            <ActivityDetailsPanel entry={entry} logs={logs} scope={scope} />
           </td>
         </tr>
       )}
@@ -229,7 +246,7 @@ export default function DashboardActivityPanel({ logs }: DashboardActivityPanelP
             </thead>
             <tbody>
               {activityEntries.map((entry) => (
-                <ActivityRow key={entry.key} entry={entry} />
+                <ActivityRow key={entry.key} entry={entry} logs={logs} scope={siteScope} />
               ))}
               {activityEntries.length === 0 && (
                 <tr className="tma-dashboard-table-empty">

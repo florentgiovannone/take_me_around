@@ -372,7 +372,6 @@ export function buildSarTimelinePlot(
   const points = [...g.points, ...m.points].sort(
     (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
   )
-  const visitorBySar = buildVisitorNumberBySar(logs, scope)
   const sars = sortSarsByVisitorNumber(
     [...new Set([...g.sars, ...m.sars])],
     visitorBySar
