@@ -6,9 +6,10 @@ Three public frontends and one shared analytics dashboard, plus the Flask API in
 
 ```
 apps/
-  gallery/     → takemearound.gallery
-  museum/      → takemearound.museum
-  dashboard/   → arkin.takemearound.gallery (combined + per-site analytics)
+  gallery/       → takemearound.gallery
+  museum/        → takemearound.museum
+  arkin_museum/   → clone of museum (separate Netlify site / domain)
+  dashboard/     → arkin.takemearound.gallery (combined + per-site analytics)
 packages/
   config/              Site scope types and labels
   analytics-gallery/   Gallery-specific analytics helpers
@@ -24,8 +25,8 @@ Gallery and museum apps import dashboard UI from `@tma/dashboard-ui` and scope d
 
 ```bash
 npm install
-npm run dev:gallery      # or dev:museum, dev:dashboard
-npm run build            # all three apps
+npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:dashboard
+npm run build            # all apps
 npm run build:gallery    # single app
 ```
 
@@ -37,6 +38,7 @@ Set **Base directory** per site:
 |------|----------------|-------------------|
 | Gallery | `apps/gallery` | `dist` |
 | Museum | `apps/museum` | `dist` |
+| Arkin Museum | `apps/arkin_museum` | `dist` |
 | Arkin dashboard | `apps/dashboard` | `dist` |
 
 Each app’s `netlify.toml` runs `cd ../.. && npm ci && npm run build -w @tma/app-*` so workspace packages are built. Path-based `ignore` skips deploys when unrelated folders change.

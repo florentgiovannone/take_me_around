@@ -395,6 +395,7 @@ export type ActivityVisitDetails = {
   android: "Yes" | "No" | null
   ipAddress: string | null
   sar: string | null
+  visitorNumber: string | null
   userAgent: string | null
 }
 
@@ -437,6 +438,7 @@ export function buildActivityVisitDetails(log: PoiseLog): ActivityVisitDetails {
     android: userAgent ? (isAndroidLog(log) ? "Yes" : "No") : null,
     ipAddress,
     sar,
+    visitorNumber: null,
     userAgent,
   }
 }
@@ -965,6 +967,7 @@ export function listDistinctMuseumSars(logs: PoiseLog[]): string[] {
 
 export type SarTimelineRowMeta = {
   sar: string
+  visitorNumber: string | null
   country: string | null
   language: string | null
 }
@@ -1049,7 +1052,7 @@ export function buildSarTimelineRowMetaMap(logs: PoiseLog[]): Map<string, SarTim
     const acceptLanguage = getAcceptLanguageHeaderFromLog(log)
     const country = parseCountryFromAcceptLanguage(acceptLanguage)
     const language = parseLanguageNameFromAcceptLanguage(acceptLanguage)
-    meta.set(sar, { sar, country, language })
+    meta.set(sar, { sar, visitorNumber: null, country, language })
   }
 
   for (const sar of listDistinctMuseumSars(logs)) {
@@ -1063,12 +1066,13 @@ export function buildSarTimelineRowMetaMap(logs: PoiseLog[]): Map<string, SarTim
       related.find((log) => (log.txt_message_type ?? "").trim().toUpperCase() === "SEEN") ??
       related[0]
     if (!source) {
-      meta.set(sar, { sar, country: null, language: null })
+      meta.set(sar, { sar, visitorNumber: null, country: null, language: null })
       continue
     }
     const acceptLanguage = getAcceptLanguageHeaderFromLog(source)
     meta.set(sar, {
       sar,
+      visitorNumber: null,
       country: parseCountryFromAcceptLanguage(acceptLanguage),
       language: parseLanguageNameFromAcceptLanguage(acceptLanguage),
     })

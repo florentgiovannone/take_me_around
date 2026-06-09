@@ -1,6 +1,12 @@
 import type { SiteScope } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
+import {
+  buildVisitorNumberBySar,
+  lookupVisitorNumber,
+  sortSarsByVisitorNumber,
+  formatVisitorNumber,
+} from "./visitorNumbers"
 
 export type PoiseLog = gallery.PoiseLog
 export type { ActivityVisitDetails } from "@tma/analytics-gallery"
@@ -25,7 +31,26 @@ export const parseLogTimestampGmt = gallery.parseLogTimestampGmt
 export const formatNumber = gallery.formatNumber
 export const formatSignedPercent = gallery.formatSignedPercent
 export const formatAndroidField = gallery.formatAndroidField
-export const buildActivityVisitDetails = gallery.buildActivityVisitDetails
+
+export { formatVisitorNumber, buildVisitorNumberBySar, lookupVisitorNumber }
+
+export function buildActivityVisitDetails(
+  log: PoiseLog,
+  logs: PoiseLog[],
+  scope: SiteScope
+): gallery.ActivityVisitDetails {
+  const details =
+    scope === "museum"
+      ? museum.buildActivityVisitDetails(log)
+      : gallery.buildActivityVisitDetails(log)
+  if (!details.sar) return details
+  const visitorNumber = lookupVisitorNumber(
+    details.sar,
+    buildVisitorNumberBySar(logs, scope)
+  )
+  if (!visitorNumber) return details
+  return { ...details, visitorNumber }
+}
 
 export type ActivityEntry = gallery.GalleryActivityEntry
 
@@ -274,12 +299,69 @@ export function buildSarTimelineEvents(logs: PoiseLog[], sarQuery: string, scope
   })
 }
 
+function applyVisitorNumbersToRowMeta(
+  meta: Map<string, gallery.SarTimelineRowMeta>,
+  visitorBySar: Map<string, string>
+) {
+  for (const entry of meta.values()) {
+    entry.visitorNumber = lookupVisitorNumber(entry.sar, visitorBySar)
+  }
+}
+
+export function buildSarTimelineRowMetaMap(
+  logs: PoiseLog[],
+  scope: SiteScope
+): Map<string, gallery.SarTimelineRowMeta> {
+  const visitorBySar = buildVisitorNumberBySar(logs, scope)
+  let meta: Map<string, gallery.SarTimelineRowMeta>
+  if (scope === "museum") {
+    meta = museum.buildSarTimelineRowMetaMap(logs)
+  } else if (scope === "gallery") {
+    meta = gallery.buildSarTimelineRowMetaMap(logs)
+  } else {
+    meta = new Map(gallery.buildSarTimelineRowMetaMap(logs))
+    for (const [sar, row] of museum.buildSarTimelineRowMetaMap(logs)) {
+      if (!meta.has(sar)) meta.set(sar, row)
+    }
+  }
+  applyVisitorNumbersToRowMeta(meta, visitorBySar)
+  return meta
+}
+
+export function formatSarTimelineRowMetaSubtitle(meta: gallery.SarTimelineRowMeta) {
+  const geo = gallery.formatSarTimelineRowMetaSubtitle(meta)
+  const parts = [truncateSarForSubtitle(meta.sar), geo !== "—" ? geo : null].filter(Boolean)
+  return parts.length > 0 ? parts.join(" · ") : "—"
+}
+
+function truncateSarForSubtitle(sar: string) {
+  if (sar.length <= 16) return sar
+  return `${sar.slice(0, 7)}…${sar.slice(-5)}`
+}
+
+function sortPlotSarsByVisitor(
+  plot: gallery.SarTimelinePlot,
+  visitorBySar: Map<string, string>
+): gallery.SarTimelinePlot {
+  return {
+    ...plot,
+    sars: sortSarsByVisitorNumber(plot.sars, visitorBySar),
+  }
+}
+
 export function buildSarTimelinePlot(
   logs: PoiseLog[],
   scope: SiteScope
 ): gallery.SarTimelinePlot | null {
-  if (scope === "gallery") return gallery.buildSarTimelinePlot(logs)
-  if (scope === "museum") return museum.buildSarTimelinePlot(logs)
+  const visitorBySar = buildVisitorNumberBySar(logs, scope)
+  if (scope === "gallery") {
+    const plot = gallery.buildSarTimelinePlot(logs)
+    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
+  }
+  if (scope === "museum") {
+    const plot = museum.buildSarTimelinePlot(logs)
+    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
+  }
   const g = gallery.buildSarTimelinePlot(logs)
   const m = museum.buildSarTimelinePlot(logs)
   if (!g && !m) return null
@@ -290,7 +372,11 @@ export function buildSarTimelinePlot(
   const points = [...g.points, ...m.points].sort(
     (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
   )
-  const sars = [...new Set([...g.sars, ...m.sars])].sort((a, b) => a.localeCompare(b))
+  const visitorBySar = buildVisitorNumberBySar(logs, scope)
+  const sars = sortSarsByVisitorNumber(
+    [...new Set([...g.sars, ...m.sars])],
+    visitorBySar
+  )
   return {
     sars,
     points,
@@ -302,8 +388,6 @@ export function buildSarTimelinePlot(
   }
 }
 
-export const buildSarTimelineRowMetaMap = gallery.buildSarTimelineRowMetaMap
-export const formatSarTimelineRowMetaSubtitle = gallery.formatSarTimelineRowMetaSubtitle
 export const sarTimelineCanvasWidthPx = gallery.sarTimelineCanvasWidthPx
 export const sarTimelineNowPx = gallery.sarTimelineNowPx
 export const sarTimelinePointPx = gallery.sarTimelinePointPx

@@ -1,0 +1,429 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap");
+
+.arkin-site {
+  --arkin-bg: #f7f4ef;
+  --arkin-bg-dark: #1a1a1a;
+  --arkin-text: #1a1a1a;
+  --arkin-text-muted: #5c5c5c;
+  --arkin-accent: #8b7355;
+  --arkin-border: #ddd6cb;
+  --arkin-max: 1120px;
+  font-family: "Montserrat", system-ui, sans-serif;
+  color: var(--arkin-text);
+  background: var(--arkin-bg);
+  line-height: 1.6;
+}
+
+.arkin-site *,
+.arkin-site *::before,
+.arkin-site *::after {
+  box-sizing: border-box;
+}
+
+.arkin-site h1,
+.arkin-site h2,
+.arkin-site h3,
+.arkin-site h4 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.arkin-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(247, 244, 239, 0.96);
+  border-bottom: 1px solid var(--arkin-border);
+  backdrop-filter: blur(8px);
+}
+
+.arkin-nav-inner {
+  max-width: var(--arkin-max);
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.arkin-brand {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: var(--arkin-text);
+  text-transform: uppercase;
+}
+
+.arkin-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.arkin-nav-links a {
+  color: var(--arkin-text-muted);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.arkin-nav-links a:hover,
+.arkin-nav-links a.is-active {
+  color: var(--arkin-text);
+}
+
+.arkin-hero {
+  max-width: var(--arkin-max);
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 2rem;
+  text-align: center;
+}
+
+.arkin-hero-kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--arkin-accent);
+  margin: 0 0 0.75rem;
+}
+
+.arkin-hero-title {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3.5rem);
+  letter-spacing: 0.02em;
+}
+
+.arkin-hero-lead {
+  margin: 1.25rem auto 0;
+  max-width: 52rem;
+  color: var(--arkin-text-muted);
+  font-size: 1rem;
+}
+
+.arkin-section {
+  max-width: var(--arkin-max);
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem;
+}
+
+.arkin-section-title {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  text-align: center;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.arkin-about-grid {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .arkin-about-grid {
+    grid-template-columns: 1fr 1.2fr;
+  }
+}
+
+.arkin-founder-placeholder {
+  aspect-ratio: 3 / 2;
+  background: linear-gradient(145deg, #d8cfc0 0%, #b8a894 100%);
+  border: 1px solid var(--arkin-border);
+}
+
+.arkin-visit-card {
+  border: 1px solid var(--arkin-border);
+  background: #fff;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.arkin-visit-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.arkin-visit-hours {
+  font-size: 1.5rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  margin: 0.5rem 0 1rem;
+}
+
+.arkin-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+.arkin-artwork-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border: 1px solid var(--arkin-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arkin-artwork-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.arkin-artwork-thumb {
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(160deg, #e8e2d8 0%, #c9b8a0 45%, #9a8468 100%);
+}
+
+.arkin-artwork-caption {
+  padding: 1rem;
+}
+
+.arkin-artwork-artist {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--arkin-text-muted);
+}
+
+.arkin-artwork-title {
+  margin: 0.35rem 0 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.2rem;
+}
+
+.arkin-quote {
+  background: var(--arkin-bg-dark);
+  color: #f2ede6;
+  padding: 4rem 1.25rem;
+  text-align: center;
+}
+
+.arkin-quote p {
+  margin: 0 auto;
+  max-width: 46rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.35rem, 3.5vw, 2rem);
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.arkin-quote cite {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: #c4b8a8;
+}
+
+.arkin-featured-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .arkin-featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.arkin-featured-card {
+  background: #fff;
+  border: 1px solid var(--arkin-border);
+  padding: 1.25rem;
+}
+
+.arkin-featured-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.arkin-featured-card p {
+  margin: 0;
+  color: var(--arkin-text-muted);
+  font-size: 0.92rem;
+}
+
+.arkin-artwork-page {
+  padding-bottom: 3rem;
+}
+
+.arkin-artwork-hero {
+  background: #fff;
+  border-bottom: 1px solid var(--arkin-border);
+  padding: 2.5rem 1.25rem 2rem;
+  text-align: center;
+}
+
+.arkin-artwork-hero h1 {
+  margin: 0.5rem 0 0;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.arkin-artwork-hero .arkin-artwork-artist {
+  font-size: 0.8rem;
+}
+
+.arkin-artwork-hero .arkin-artwork-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--arkin-text-muted);
+  font-size: 1rem;
+}
+
+.arkin-artwork-media {
+  max-width: 720px;
+  margin: 2rem auto 0;
+}
+
+.arkin-artwork-media .arkin-artwork-thumb {
+  aspect-ratio: 3 / 4;
+}
+
+.arkin-artwork-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 0;
+}
+
+.arkin-artwork-body p {
+  color: var(--arkin-text-muted);
+}
+
+.arkin-audio-wrap {
+  margin: 1.5rem 0 2rem;
+}
+
+.arkin-audio-wrap audio {
+  width: 100%;
+}
+
+.arkin-tech-banner {
+  display: block;
+  margin: 2rem auto 0;
+  max-width: var(--arkin-max);
+  padding: 0 1.25rem;
+  text-decoration: none;
+}
+
+.arkin-tech-banner-inner {
+  background: var(--arkin-bg-dark);
+  color: #f2ede6;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid #333;
+}
+
+.arkin-footer {
+  background: var(--arkin-bg-dark);
+  color: #d8d0c4;
+  padding: 3rem 1.25rem 2rem;
+  margin-top: 3rem;
+}
+
+.arkin-footer-inner {
+  max-width: var(--arkin-max);
+  margin: 0 auto;
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .arkin-footer-inner {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+.arkin-footer h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.arkin-footer p,
+.arkin-footer a {
+  margin: 0.25rem 0;
+  font-size: 0.88rem;
+  color: #d8d0c4;
+  text-decoration: none;
+}
+
+.arkin-footer a:hover {
+  color: #fff;
+}
+
+.arkin-footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.arkin-footer-links li {
+  margin: 0.35rem 0;
+}
+
+.arkin-footer-copy {
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #333;
+  font-size: 0.78rem;
+  color: #9a9288;
+}
+
+.arkin-page-shell .tma-header {
+  display: none;
+}
+
+.arkin-page-shell .tma-footer {
+  display: none;
+}
+
+.arkin-contact-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .arkin-contact-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.arkin-contact-card {
+  background: #fff;
+  border: 1px solid var(--arkin-border);
+  padding: 1.5rem;
+}
+
+.arkin-contact-card h2 {
+  margin-top: 0;
+  font-size: 1.4rem;
+}
+
+.arkin-not-found {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
