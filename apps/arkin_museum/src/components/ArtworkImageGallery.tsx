@@ -8,6 +8,7 @@ type ArtworkImageGalleryProps = {
 export default function ArtworkImageGallery({ images, title }: ArtworkImageGalleryProps) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
+  const hasMultiple = images.length > 1
 
   const updateActiveFromScroll = useCallback(() => {
     const track = trackRef.current
@@ -19,36 +20,81 @@ export default function ArtworkImageGallery({ images, title }: ArtworkImageGalle
   const goToSlide = (index: number) => {
     const track = trackRef.current
     if (!track) return
-    track.scrollTo({ left: index * track.clientWidth, behavior: "smooth" })
-    setActiveIndex(index)
+    const clamped = Math.min(Math.max(index, 0), images.length - 1)
+    track.scrollTo({ left: clamped * track.clientWidth, behavior: "smooth" })
+    setActiveIndex(clamped)
   }
 
   return (
     <div className="tma-artwork-gallery-wrap">
-      <div
-        ref={trackRef}
-        className="tma-artwork-gallery"
-        role="region"
-        aria-roledescription="carousel"
-        aria-label={`${title} photographs`}
-        onScroll={updateActiveFromScroll}
-      >
-        {images.map((src, index) => (
-          <figure key={src} className="tma-artwork-gallery-slide">
-            <img
-              src={src}
-              alt={`${title} — view ${index + 1} of ${images.length}`}
-              className="tma-artwork-gallery-image"
-              draggable={false}
-            />
-          </figure>
-        ))}
+      <div className="tma-artwork-gallery-carousel">
+        {hasMultiple ? (
+          <button
+            type="button"
+            className="tma-artwork-gallery-nav tma-artwork-gallery-nav--prev"
+            aria-label="Previous image"
+            disabled={activeIndex === 0}
+            onClick={() => goToSlide(activeIndex - 1)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15 6l-6 6 6 6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ) : null}
+
+        <div
+          ref={trackRef}
+          className="tma-artwork-gallery"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label={`${title} photographs`}
+          onScroll={updateActiveFromScroll}
+        >
+          {images.map((src, index) => (
+            <figure key={src} className="tma-artwork-gallery-slide">
+              <img
+                src={src}
+                alt={`${title} — view ${index + 1} of ${images.length}`}
+                className="tma-artwork-gallery-image"
+                draggable={false}
+              />
+            </figure>
+          ))}
+        </div>
+
+        {hasMultiple ? (
+          <button
+            type="button"
+            className="tma-artwork-gallery-nav tma-artwork-gallery-nav--next"
+            aria-label="Next image"
+            disabled={activeIndex === images.length - 1}
+            onClick={() => goToSlide(activeIndex + 1)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M9 6l6 6-6 6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ) : null}
       </div>
 
-      {images.length > 1 ? (
+      {hasMultiple ? (
         <>
           <p className="tma-artwork-gallery-hint" aria-hidden="true">
-            Swipe to see more views
+            Swipe or use arrows to see more views
           </p>
           <div className="tma-artwork-gallery-dots" role="tablist" aria-label="Image views">
             {images.map((_, index) => (

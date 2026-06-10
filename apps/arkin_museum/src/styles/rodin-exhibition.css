@@ -1,31 +1,32 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap");
 
-/* Site header — Arkın Rodin Collection */
+:root {
+  --arkin-ink: #1c1a17;
+  --arkin-ink-soft: #3a3631;
+  --arkin-muted: #6b645c;
+  --arkin-rule: #d9d2c6;
+  --arkin-paper: #f4efe6;
+  --arkin-paper-2: #ece5d6;
+  --arkin-accent: #7a4a1f;
+  --arkin-frame: #fbf8f1;
+}
+
+/* Site header — non-artwork pages */
 .arkin-site-header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.97);
-  border-bottom: 1px solid #e8e4de;
+  background: rgba(251, 248, 241, 0.97);
+  border-bottom: 1px solid var(--arkin-rule);
   backdrop-filter: blur(10px);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .arkin-site-header-inner {
-  max-width: 900px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 1.1rem 1.5rem;
   text-align: center;
-}
-
-.arkin-site-header--artwork {
-  background: #141414;
-  border-bottom-color: #2a2a2a;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-}
-
-.arkin-site-header--artwork .arkin-site-header-inner {
-  padding: 1.5rem 1.5rem 1.25rem;
 }
 
 .arkin-site-brand-title {
@@ -35,172 +36,286 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--arkin-ink);
 }
 
-.arkin-site-header--artwork .arkin-exhibition-title {
-  margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2rem, 5.5vw, 3rem);
+/* Exhibition artwork page — museum label layout */
+.arkin-exhibition-page--artwork {
+  background:
+    radial-gradient(1200px 600px at 50% -200px, #fbf7ee 0%, transparent 60%),
+    linear-gradient(180deg, var(--arkin-paper) 0%, var(--arkin-paper-2) 100%);
+  color: var(--arkin-ink);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+.arkin-exhibition-page-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 3.5rem 1.75rem 5rem;
+}
+
+.arkin-exhibition-label {
+  text-align: center;
+  border-bottom: 1px solid var(--arkin-rule);
+  padding-bottom: 1.75rem;
+  margin-bottom: 2.25rem;
+}
+
+.arkin-exhibition-eyebrow {
+  font-family: "Inter", sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--arkin-muted);
+  margin-bottom: 0.875rem;
+}
+
+.arkin-exhibition-title {
+  font-family: "Cormorant Garamond", Garamond, "Times New Roman", serif;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.15;
-  color: #f5f2eb;
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  margin: 0 0 0.35rem;
+  color: var(--arkin-ink);
+  letter-spacing: 0.005em;
 }
 
-.arkin-site-header--artwork .arkin-exhibition-caption {
-  margin: 0.5rem 0 0;
-  font-family: "Montserrat", system-ui, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
+.arkin-exhibition-title-main {
   font-style: italic;
-  color: #d4cfc4;
-  letter-spacing: 0.02em;
 }
 
-.arkin-site-header--artwork .arkin-exhibition-artist {
-  margin: 0.5rem 0 0;
-  font-family: "Montserrat", system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  color: #f5f2eb;
+.arkin-exhibition-title-alt {
+  font-style: normal;
+  color: var(--arkin-muted);
+  font-size: 0.55em;
+  vertical-align: 0.25em;
+  margin-left: 0.15em;
 }
 
-/* Arkın Rodin Collection — exhibition artwork pages */
-.arkin-exhibition-page {
-  background: #fff;
-  color: #1a1a1a;
+.arkin-exhibition-byline {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.25rem;
+  color: var(--arkin-ink-soft);
+  margin: 0 0 1.125rem;
+  font-style: italic;
 }
 
-.arkin-exhibition-page--artwork > .tma-header {
-  display: none;
+.arkin-exhibition-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.375rem;
+  font-size: 13.5px;
+  color: var(--arkin-ink-soft);
+}
+
+.arkin-exhibition-facts span {
+  white-space: nowrap;
+}
+
+.arkin-exhibition-facts-sep {
+  color: var(--arkin-rule);
+}
+
+.arkin-exhibition-summary {
+  max-width: 600px;
+  margin: 1.375rem auto 0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.22rem;
+  line-height: 1.5;
+  color: var(--arkin-ink-soft);
+  font-style: italic;
+}
+
+.arkin-exhibition-page--artwork .tma-audio-player {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto 1.75rem;
+}
+
+.arkin-exhibition-plate {
+  margin: 0 0 2.25rem;
+  text-align: center;
+}
+
+.arkin-exhibition-frame {
+  display: inline-block;
+  max-width: 100%;
+  padding: 18px;
+  background: var(--arkin-frame);
+  border: 1px solid var(--arkin-rule);
+  border-radius: 2px;
+  box-shadow:
+    0 1px 0 #fff inset,
+    0 18px 40px -22px rgba(40, 30, 15, 0.35),
+    0 2px 6px rgba(40, 30, 15, 0.08);
+}
+
+.arkin-exhibition-plate-image {
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  height: auto;
+  width: auto;
+  margin: 0 auto;
+  border-radius: 1px;
+}
+
+.arkin-exhibition-plate-placeholder {
+  width: min(380px, 100%);
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(160deg, #ece5d6 0%, #d9d2c6 50%, #c4b5a0 100%);
+}
+
+.arkin-exhibition-plate-caption {
+  font-size: 12.5px;
+  color: var(--arkin-muted);
+  margin-top: 0.875rem;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-wrap {
+  max-width: 380px;
+  margin: 0;
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-slide {
+  background: transparent;
+  aspect-ratio: 3 / 4;
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-image {
+  max-height: 70vh;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-nav {
+  background: rgba(28, 26, 23, 0.72);
+  color: var(--arkin-paper);
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-nav:hover:not(:disabled) {
+  background: var(--arkin-accent);
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-dot.is-active {
+  background: var(--arkin-accent);
+}
+
+.arkin-exhibition-frame .tma-artwork-gallery-hint {
+  color: var(--arkin-muted);
+  font-size: 12px;
+}
+
+.arkin-exhibition-essay {
+  border-top: 1px solid var(--arkin-rule);
+  padding-top: 2rem;
+}
+
+.arkin-exhibition-essay h2 {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin: 0 0 1.125rem;
+  color: var(--arkin-ink);
+}
+
+.arkin-exhibition-essay p {
+  margin: 0 0 1rem;
+  color: var(--arkin-ink-soft);
+}
+
+.arkin-exhibition-essay p:last-child {
+  margin-bottom: 0;
+}
+
+.arkin-exhibition-essay p:first-of-type::first-letter {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 3.2rem;
+  line-height: 0.9;
+  float: left;
+  padding: 6px 10px 0 0;
+  color: var(--arkin-accent);
+  font-weight: 500;
+}
+
+.arkin-exhibition-page--artwork .tma-footer {
+  background: transparent;
+  border-top: 1px solid var(--arkin-rule);
+  padding: 1.25rem 1.75rem 2.5rem;
+  margin-top: 0;
+}
+
+.arkin-exhibition-page--artwork .tma-footer-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.arkin-exhibition-page--artwork .tma-footer-address,
+.arkin-exhibition-page--artwork .tma-footer-copyright {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  color: var(--arkin-muted);
+  text-align: center;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+
+.arkin-exhibition-page--artwork .tma-footer-copyright {
+  margin-top: 0.5rem;
+}
+
+/* Legacy non-exhibition exhibition page shell */
+.arkin-exhibition-page:not(.arkin-exhibition-page--artwork) {
+  background: var(--arkin-paper);
+  color: var(--arkin-ink);
 }
 
 .arkin-exhibition-page:not(.arkin-exhibition-page--artwork) .tma-header {
   height: auto;
   min-height: 0;
   padding: 2rem 1rem;
-  background: #faf9f7;
-  color: #1a1a1a;
-  border-bottom: 1px solid #e8e4de;
+  background: transparent;
+  color: var(--arkin-ink);
+  border-bottom: 1px solid var(--arkin-rule);
 }
 
 .arkin-exhibition-page:not(.arkin-exhibition-page--artwork) .tma-page-title {
-  color: #1a1a1a;
+  color: var(--arkin-ink);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(1.75rem, 4vw, 2.5rem);
 }
 
 .arkin-exhibition-page:not(.arkin-exhibition-page--artwork) .tma-page-subtitle {
-  color: #5c5c5c;
+  color: var(--arkin-muted);
   font-size: 1rem;
 }
 
-.arkin-exhibition-content.tma-content {
-  max-width: 900px;
-  padding: 0 1.5rem 3rem;
-  font-family: "Montserrat", system-ui, sans-serif;
-  font-size: 1rem;
-  line-height: 1.75;
-  color: #333;
-}
-
-.arkin-exhibition-content .tma-audio-player {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-.arkin-exhibition-content .tma-artwork-gallery-wrap {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-.arkin-exhibition-content .tma-artwork-gallery-image {
-  background: #f7f7f7;
-}
-
-.arkin-exhibition-meta {
-  margin: 2.5rem 0;
-  text-align: center;
-}
-
-.arkin-exhibition-meta-block {
-  margin: 0 0 2rem;
-}
-
-.arkin-exhibition-meta-block:last-child {
-  margin-bottom: 0;
-}
-
-.arkin-exhibition-meta-label {
-  margin: 0 0 0.35rem;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: none;
-  color: #1a1a1a;
-}
-
-.arkin-exhibition-meta-value {
-  margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
-  font-weight: 400;
-  line-height: 1.4;
-  color: #1a1a1a;
-}
-
-.arkin-exhibition-meta-value--long {
-  max-width: 36rem;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: clamp(1.1rem, 2.8vw, 1.5rem);
-}
-
-.arkin-exhibition-prose {
-  margin-top: 2.5rem;
-  text-align: left;
-}
-
-.arkin-exhibition-prose p {
-  margin: 0 0 1.25rem;
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #333;
-}
-
-.arkin-exhibition-prose p:last-child {
-  margin-bottom: 0;
-}
-
-.arkin-exhibition-page .tma-footer {
-  background: #1a1a1a;
-  color: #d8d0c4;
-  padding: 3rem 1.5rem 2rem;
-}
-
-.arkin-exhibition-page .tma-footer-address,
-.arkin-exhibition-page .tma-footer-copyright {
-  font-family: "Montserrat", system-ui, sans-serif;
-  font-size: 0.85rem;
-  color: #b8b0a4;
-}
-
-.arkin-exhibition-page .tma-footer-copyright {
-  margin-top: 1.5rem;
-}
-
-@media (max-width: 768px) {
-  .arkin-site-header--artwork .arkin-site-header-inner {
-    padding: 1.25rem 1rem 1rem;
+@media (max-width: 520px) {
+  .arkin-exhibition-page-inner {
+    padding: 2.25rem 1.125rem 3.75rem;
   }
 
-  .arkin-exhibition-content.tma-content {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .arkin-exhibition-frame {
+    padding: 10px;
   }
 
-  .arkin-exhibition-meta {
-    margin: 2rem 0;
+  .arkin-exhibition-summary {
+    font-size: 1.1rem;
+  }
+
+  .arkin-exhibition-frame .tma-artwork-gallery-wrap {
+    max-width: min(300px, 82vw);
   }
 }
