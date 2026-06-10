@@ -4,7 +4,12 @@ import { RODIN_IMAGE_GALLERIES, RODIN_IMAGES } from "../assets/rodin"
 import ArtworkImageGallery from "../components/ArtworkImageGallery"
 import AudioPlayer from "../components/AudioPlayer"
 import Footer from "../components/Footer"
-import { getRodinArtwork, type RodinArtwork, type RodinArtworkMeta } from "../data/rodinArtworks"
+import {
+  getRodinArtwork,
+  type RodinArtwork,
+  type RodinArtworkMeta,
+  type RodinArtworkSource,
+} from "../data/rodinArtworks"
 import NotFoundPage from "./NotFoundPage"
 import "../styles/style.css"
 import "../styles/rodin-exhibition.css"
@@ -49,6 +54,24 @@ function ExhibitionPlateCaption({ artwork }: { artwork: RodinArtwork }) {
   )
 }
 
+function ExhibitionSources({ sources }: { sources: RodinArtworkSource[] }) {
+  if (sources.length === 0) return null
+
+  return (
+    <footer className="arkin-exhibition-sources" aria-label="Sources">
+      <span className="arkin-exhibition-sources-label">Sources:</span>{" "}
+      {sources.map((source, index) => (
+        <Fragment key={source.href}>
+          {index > 0 ? <span className="arkin-exhibition-sources-sep" aria-hidden="true"> · </span> : null}
+          <a href={source.href} target="_blank" rel="noopener noreferrer">
+            {source.label}
+          </a>
+        </Fragment>
+      ))}
+    </footer>
+  )
+}
+
 function ExhibitionEssay({ paragraphs }: { paragraphs: string[] }) {
   if (paragraphs.length === 0) return null
 
@@ -83,17 +106,18 @@ export default function RodinArtworkPage() {
   const aboutParagraphs = artwork.aboutParagraphs ?? []
   const hasCustomAbout = aboutParagraphs.length > 0
   const summary =
-    aboutParagraphs.length > 1 ? aboutParagraphs[0] : null
-  const essayParagraphs =
-    aboutParagraphs.length > 1
-      ? aboutParagraphs.slice(1)
-      : aboutParagraphs.length === 1
-        ? aboutParagraphs
-        : artwork.description
-          ? [artwork.description]
-          : [
-              "This bronze is part of the Arkın Rodin Collection. Listen to the audio guide above to discover more about this piece.",
-            ]
+    artwork.summary ?? (aboutParagraphs.length > 1 ? aboutParagraphs[0] : null)
+  const essayParagraphs = hasCustomAbout
+    ? artwork.summary
+      ? aboutParagraphs
+      : aboutParagraphs.length > 1
+        ? aboutParagraphs.slice(1)
+        : aboutParagraphs
+    : artwork.description
+      ? [artwork.description]
+      : [
+          "This bronze is part of the Arkın Rodin Collection. Listen to the audio guide above to discover more about this piece.",
+        ]
 
   if (exhibition) {
     return (
@@ -132,6 +156,8 @@ export default function RodinArtworkPage() {
           </figure>
 
           <ExhibitionEssay paragraphs={essayParagraphs} />
+
+          {artwork.sources?.length ? <ExhibitionSources sources={artwork.sources} /> : null}
         </div>
 
         <Footer />

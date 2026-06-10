@@ -250,9 +250,35 @@
   font-weight: 500;
 }
 
+.arkin-exhibition-sources {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--arkin-rule);
+  font-size: 12px;
+  color: var(--arkin-muted);
+  text-align: center;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+}
+
+.arkin-exhibition-sources-label {
+  color: var(--arkin-muted);
+}
+
+.arkin-exhibition-sources a {
+  color: var(--arkin-muted);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--arkin-rule);
+}
+
+.arkin-exhibition-sources a:hover {
+  color: var(--arkin-accent);
+  border-bottom-color: var(--arkin-accent);
+}
+
 .arkin-exhibition-page--artwork .tma-footer {
   background: transparent;
-  border-top: 1px solid var(--arkin-rule);
+  border-top: none;
   padding: 1.25rem 1.75rem 2.5rem;
   margin-top: 0;
 }

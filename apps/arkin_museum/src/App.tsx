@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
+import AllPagesPage from "./pages/AllPagesPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import RodinArtworkPage from "./pages/RodinArtworkPage"
@@ -9,6 +10,7 @@ import "./styles/style.css"
 import { useEffect } from "react"
 
 const STATIC_TITLES: Record<string, string> = {
+  "/allpages": "All Pages",
   "/underlying-technology": "Underlying Technology",
   "/privacy-policy": "Privacy Policy",
   "/dashboard": "Dashboard",
@@ -40,6 +42,7 @@ function App() {
     <>
       <PageTitleUpdater />
       <Routes>
+        <Route path="/allpages" element={<AllPagesPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route
