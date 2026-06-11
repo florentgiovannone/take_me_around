@@ -1,4 +1,5 @@
 import { type FormEvent, useEffect, useRef, useState } from "react"
+import RodinSiteHeader from "../components/rodin/RodinSiteHeader"
 import Footer from "../components/Footer"
 import {
   DashboardActivityPanel,
@@ -12,9 +13,17 @@ import { apiBaseUrl, apiNeedsNgrokHeader } from "../apiBaseUrl"
 import { parseApiJson } from "../parseApiJson"
 import type { PoiseLog } from "@tma/dashboard-scope"
 import "../styles/style.css"
+import "../styles/rodin-exhibition.css"
 
-const DASHBOARD_PASSWORD_KEY = "tma-dashboard-password"
+const DASHBOARD_PASSWORD_KEY = "tma-dashboard-password-arkin"
 const POLL_INTERVAL_MS = 5000
+const envDashboardPassword = (import.meta.env.VITE_DASHBOARD_PASSWORD ?? "").trim()
+
+/** Env wins in local dev so .env.local changes apply without clearing session manually. */
+function resolveDashboardPassword(): string | null {
+  if (envDashboardPassword) return envDashboardPassword
+  return sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
+}
 
 type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
 
@@ -27,6 +36,7 @@ async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
   const url = base ? `${base}/api/secure/items` : "/api/secure/items"
   const headers: Record<string, string> = {
     "X-Dashboard-Password": password,
+    "X-Dashboard-App": "arkin",
   }
   if (apiNeedsNgrokHeader()) {
     headers["ngrok-skip-browser-warning"] = "true"
@@ -73,9 +83,7 @@ function Dashboard() {
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
-  const [initializing, setInitializing] = useState(
-    () => !!sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
-  )
+  const [initializing, setInitializing] = useState(() => !!resolveDashboardPassword())
 
   const loadLogs = async (password: string, options?: { showLoading?: boolean }) => {
     const showLoading = options?.showLoading ?? true
@@ -123,13 +131,13 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    const savedPassword = sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
-    if (!savedPassword) {
+    const password = resolveDashboardPassword()
+    if (!password) {
       setInitializing(false)
       return
     }
 
-    void loadLogs(savedPassword).finally(() => setInitializing(false))
+    void loadLogs(password).finally(() => setInitializing(false))
   }, [])
 
   useEffect(() => {
@@ -171,12 +179,13 @@ function Dashboard() {
 
   return (
     <>
-      <main className="tma-gallery-page tma-dashboard">
-        <header className="tma-header">
+      <RodinSiteHeader />
+      <main className="tma-gallery-page arkin-exhibition-page tma-dashboard">
+        <header className="tma-header tma-underlying-header">
           {isAuthorized && (
             <button
               type="button"
-              className="tma-dashboard-logout"
+              className="tma-dashboard-logout arkin-dashboard-logout"
               onClick={handleLogout}
             >
               Log out
@@ -184,7 +193,7 @@ function Dashboard() {
           )}
           <div className="tma-header-inner">
             <h1 className="tma-page-title">Dashboard</h1>
-            <p className="tma-page-subtitle">Live .museum activity</p>
+            <p className="tma-page-subtitle">Live Arkın Rodin Collection activity</p>
           </div>
         </header>
 
@@ -270,7 +279,7 @@ function Dashboard() {
                 </div>
               )}
               {error && <p className="tma-dashboard-error">Error: {error}</p>}
-              <SiteScopeProvider scope="museum">
+              <SiteScopeProvider scope="arkin">
                 {!loading && !error && activeTab === "activity" && (
                   <DashboardActivityPanel logs={logs} />
                 )}

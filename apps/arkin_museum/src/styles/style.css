@@ -322,6 +322,24 @@
   margin: 50px 0 0;
 }
 
+.tma-footer--artwork {
+  background-color: transparent;
+  color: inherit;
+  padding: 1.25rem 1rem 2.5rem;
+}
+
+.tma-footer-home-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: #666;
+  text-decoration: none;
+}
+
+.tma-footer-home-link:hover {
+  color: #333;
+  text-decoration: underline;
+}
+
 .tma-contact-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));

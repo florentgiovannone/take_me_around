@@ -17,11 +17,17 @@ export default defineConfig(({ mode }) => {
     .trim()
     .replace(/\/$/, "")
   const apiTarget = proxyBase || "http://127.0.0.1:5050"
+  const packagesDir = path.resolve(__dirname, "../../packages")
 
   return {
-    server: {
-      fs: {
-        allow: [path.resolve(__dirname, "../..")],
+    resolve: {
+      alias: {
+        "@tma/config": path.join(packagesDir, "config/src/index.ts"),
+        "@tma/analytics-gallery": path.join(packagesDir, "analytics-gallery/src/index.ts"),
+        "@tma/analytics-arkin": path.join(packagesDir, "analytics-arkin/src/index.ts"),
+        "@tma/analytics-museum": path.join(packagesDir, "analytics-museum/src/index.ts"),
+        "@tma/dashboard-scope": path.join(packagesDir, "dashboard-scope/src/index.ts"),
+        "@tma/dashboard-ui": path.join(packagesDir, "dashboard-ui/src/index.ts"),
       },
     },
     plugins: [
@@ -52,6 +58,9 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       allowedHosts: true,
+      fs: {
+        allow: [path.resolve(__dirname, "../..")],
+      },
       proxy: {
         "/api": {
           target: apiTarget,

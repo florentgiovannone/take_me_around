@@ -42,7 +42,7 @@ if (target) {
   }
 } else if (netlifyProductionRequiresProxyTarget()) {
   console.warn(
-    "Netlify production: no VITE_API_PROXY_TARGET — ok for static Rodin pages (/dashboard redirects externally).",
+    "Netlify production: no VITE_API_PROXY_TARGET — ok for static Rodin pages (dashboard needs API for live data).",
   );
 } else if (process.env.NETLIFY === "true") {
   console.warn(

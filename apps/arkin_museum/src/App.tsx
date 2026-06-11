@@ -1,11 +1,12 @@
 import { Route, Routes, useLocation } from "react-router-dom"
-import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
 import AllPagesPage from "./pages/AllPagesPage"
+import Dashboard from "./pages/Dashboard"
 import NotFoundPage from "./pages/NotFoundPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import RodinArtworkPage from "./pages/RodinArtworkPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
 import { getRodinArtwork } from "./data/rodinArtworks"
+import { getArtworkPageTitle } from "./utils/artworkTitles"
 import "./styles/style.css"
 import { useEffect } from "react"
 
@@ -28,7 +29,7 @@ function PageTitleUpdater() {
     const slug = location.pathname.replace(/^\//, "")
     const artwork = slug ? getRodinArtwork(slug) : undefined
     if (artwork) {
-      document.title = `${artwork.title} | Take Me Around`
+      document.title = `${getArtworkPageTitle(artwork)} | Take Me Around`
       return
     }
     document.title = "Page not found | Take Me Around"
@@ -45,10 +46,7 @@ function App() {
         <Route path="/allpages" element={<AllPagesPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-        <Route
-          path="/dashboard"
-          element={<ExternalDashboardRedirect path="/dashboard/museum" />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/:slug" element={<RodinArtworkPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

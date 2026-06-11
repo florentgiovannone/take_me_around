@@ -1,12 +1,10 @@
-import theSecret1 from "./the-secret-1.png"
-import mainCrispeeDroite1 from "./main-crispee-droite-1.png"
-import ageOfBronzeSmall1 from "./age-of-bronze-small-1.png"
+import theSecret1 from "./the-secret-1.jpg"
+import mainCrispeeDroite1 from "./main-crispee-droite-1.jpg"
+import ageOfBronzeSmall1 from "./age-of-bronze-small-1.jpg"
 import ageOfBronze1 from "./age-of-bronze-1.jpg"
 import danaide1 from "./danaide-1.jpg"
-import jeSuisBelle1 from "./je-suis-belle-1.png"
-import bustOfJeanDaire1 from "./bust-of-jean-daire-1.png"
-import bustOfJeanDaire2 from "./bust-of-jean-daire-2.png"
-import bustOfJeanDaire3 from "./bust-of-jean-daire-3.png"
+import jeSuisBelle1 from "./je-suis-belle-1.jpg"
+import bustOfJeanDaire1 from "./bust-of-jean-daire-1.jpg"
 import seatedTitan1 from "./seated-titan-1.jpg"
 import titanIv1 from "./titan-iv-1.jpg"
 import abductionOfHippodamia1 from "./abduction-of-hippodamia-1.jpg"
@@ -43,7 +41,7 @@ export const RODIN_IMAGE_GALLERIES: Partial<Record<string, string[]>> = {
   "age-of-bronze": [ageOfBronze1],
   danaide: [danaide1],
   "je-suis-belle": [jeSuisBelle1],
-  "bust-of-jean-daire": [bustOfJeanDaire1, bustOfJeanDaire2, bustOfJeanDaire3],
+  "bust-of-jean-daire": [bustOfJeanDaire1],
   "seated-titan": [seatedTitan1],
   "titan-iv": [titanIv1],
   "abduction-of-hippodamia": [abductionOfHippodamia1],

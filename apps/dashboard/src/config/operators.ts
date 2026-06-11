@@ -14,7 +14,7 @@ export const OPERATORS: OperatorProfile[] = [
   {
     id: "default",
     name: "Main Dashboard",
-    sites: ["gallery", "museum"],
+    sites: ["gallery", "museum", "arkin"],
   },
   {
     id: "museum-only",
@@ -25,6 +25,11 @@ export const OPERATORS: OperatorProfile[] = [
     id: "gallery-only",
     name: "Gallery team",
     sites: ["gallery"],
+  },
+  {
+    id: "arkin-only",
+    name: "Arkin Gallery team",
+    sites: ["arkin"],
   },
 ]
 
@@ -57,7 +62,9 @@ export function clearOperatorSession() {
 
 export function getStoredScope(): SiteScope | null {
   const raw = sessionStorage.getItem(SCOPE_SESSION_KEY)
-  if (raw === "gallery" || raw === "museum" || raw === "combined") return raw
+  if (raw === "gallery" || raw === "museum" || raw === "arkin" || raw === "combined") {
+    return raw
+  }
   return null
 }
 

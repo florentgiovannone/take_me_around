@@ -74,6 +74,10 @@
 }
 
 .arkin-exhibition-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
   font-family: "Cormorant Garamond", Garamond, "Times New Roman", serif;
   font-weight: 500;
   font-size: clamp(2.4rem, 5vw, 3.4rem);
@@ -88,11 +92,12 @@
 }
 
 .arkin-exhibition-title-alt {
+  display: block;
   font-style: normal;
   color: var(--arkin-muted);
   font-size: 0.55em;
-  vertical-align: 0.25em;
-  margin-left: 0.15em;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 .arkin-exhibition-byline {
@@ -103,21 +108,60 @@
   font-style: italic;
 }
 
-.arkin-exhibition-facts {
+.arkin-exhibition-details {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1.375rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  width: 100%;
+  max-width: min(100%, 38rem);
+  margin: 0 auto;
   font-size: 13.5px;
+  line-height: 1.45;
   color: var(--arkin-ink-soft);
 }
 
-.arkin-exhibition-facts span {
-  white-space: nowrap;
+.arkin-exhibition-details-line {
+  margin: 0;
+  width: 100%;
+  text-align: center;
 }
 
-.arkin-exhibition-facts-sep {
+.arkin-exhibition-details-line--conceived {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 1.35;
+}
+
+.arkin-exhibition-details-conceived-text {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+  will-change: transform;
+}
+
+.arkin-exhibition-details-line--location {
+  text-wrap: balance;
+}
+
+.arkin-exhibition-details-line--specs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  column-gap: 0.5rem;
+  row-gap: 0.15rem;
+}
+
+.arkin-exhibition-details-spec {
+  display: inline;
+}
+
+.arkin-exhibition-details-sep {
   color: var(--arkin-rule);
+  flex-shrink: 0;
 }
 
 .arkin-exhibition-summary {
@@ -288,18 +332,21 @@
   margin: 0 auto;
 }
 
-.arkin-exhibition-page--artwork .tma-footer-address,
-.arkin-exhibition-page--artwork .tma-footer-copyright {
+.arkin-exhibition-page--artwork .tma-footer-home-link {
+  display: inline-block;
   font-family: "Inter", sans-serif;
   font-size: 12px;
   color: var(--arkin-muted);
   text-align: center;
   letter-spacing: 0.04em;
   line-height: 1.6;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--arkin-rule);
 }
 
-.arkin-exhibition-page--artwork .tma-footer-copyright {
-  margin-top: 0.5rem;
+.arkin-exhibition-page--artwork .tma-footer-home-link:hover {
+  color: var(--arkin-accent);
+  border-bottom-color: var(--arkin-accent);
 }
 
 /* Legacy non-exhibition exhibition page shell */
@@ -328,9 +375,58 @@
   font-size: 1rem;
 }
 
+/* Dashboard — match exhibition palette instead of default blue TMA theme */
+.arkin-exhibition-page.tma-dashboard {
+  --tma-brand: var(--arkin-accent);
+  --tma-brand-dark: #5c3717;
+  --tma-brand-mid: #8f5a2a;
+  --tma-brand-light: #a86f3d;
+  --tma-brand-tint: var(--arkin-paper-2);
+  --tma-brand-tint-alt: var(--arkin-frame);
+  --tma-dashboard-tabs-bg: var(--arkin-paper-2);
+  --tma-brand-border: var(--arkin-rule);
+  --tma-brand-shadow: rgba(122, 74, 31, 0.18);
+  --tma-brand-shadow-soft: rgba(122, 74, 31, 0.08);
+  --tma-brand-shadow-focus: rgba(122, 74, 31, 0.35);
+  background: var(--arkin-paper);
+  color: var(--arkin-ink);
+}
+
+.arkin-exhibition-page.tma-dashboard .tma-dashboard-logout.arkin-dashboard-logout {
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--arkin-ink);
+  border-color: var(--arkin-rule);
+}
+
+.arkin-exhibition-page.tma-dashboard .tma-dashboard-logout.arkin-dashboard-logout:hover {
+  background: var(--arkin-frame);
+  border-color: var(--arkin-accent);
+}
+
+.arkin-exhibition-page.tma-dashboard .tma-dashboard-auth button {
+  background: var(--arkin-accent);
+}
+
+.arkin-exhibition-page.tma-dashboard .tma-dashboard-auth button:hover {
+  background: var(--tma-brand-mid);
+}
+
 @media (max-width: 520px) {
   .arkin-exhibition-page-inner {
     padding: 2.25rem 1.125rem 3.75rem;
+  }
+
+  .arkin-exhibition-details {
+    gap: 0.35rem;
+    padding-inline: 0.25rem;
+  }
+
+  .arkin-exhibition-details-line:not(.arkin-exhibition-details-line--conceived) {
+    font-size: 12.5px;
+  }
+
+  .arkin-exhibition-details-line--specs {
+    column-gap: 0.375rem;
   }
 
   .arkin-exhibition-frame {

@@ -1,0 +1,429 @@
+{
+  "the-secret": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/the-secret",
+    "caption": "Conceived circa 1894 and cast in 1960.",
+    "meta": {
+      "height": "27.9 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed with foundery mark Georges Rudier Fondeur Paris © by Musée Rodin 1960.",
+      "inventoryNumber": "RCG0071.2-25",
+      "materials": "Bronze with brown patination and green highlights.",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/e2965e_374aed4f62fe4058abd7ad25e446bddc~mv2.jpg/v1/fill/w_1552,h_2173,al_c,q_90/unnamed.jpg",
+    "slug": "the-secret",
+    "localImage": "the-secret-1.jpg"
+  },
+  "main-crispee-droite": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/right-clenched-hand%2C-large-model",
+    "caption": "Conceived before 1898 and cast between 1926 and 1965.",
+    "meta": {
+      "height": "46.5 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed Georges Rudier Fondeur Paris and © by Musée Rodin 1962. Stamped A. Rodin in the interior.",
+      "inventoryNumber": "RCG0062.2-23",
+      "materials": "Bronze",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/e2965e_af66737e6f80484fbdefb749709921cf~mv2.jpg/v1/fill/w_4000,h_6000,al_c,q_90/RCG0062%20F.jpg",
+    "slug": "main-crispee-droite",
+    "localImage": "main-crispee-droite-1.jpg"
+  },
+  "age-of-bronze-small": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/l%E2%80%99%C3%A2ge-d%E2%80%99airain%2C-petit-mod%C3%A8le%2C-2%C3%A8me-reduction-%5Bage-of-bronze%2C-small-model%2C-2nd-reduction%5D",
+    "caption": "Conceived between 1875 and 1877 and cast in November 1904, this version cast in October 1945.",
+    "meta": {
+      "height": "64.3 cm",
+      "marksAndInscriptions": "Signed A. Rodin. With the founder's mark Alexis Rudier / Fondeur Paris at the back on the right and with the interior stamp.",
+      "inventoryNumber": "RCG0063.2-23",
+      "materials": "Bronze",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/e2965e_cdfef3ecf5654699b3295e88d3fab10d~mv2.jpg/v1/fill/w_4000,h_6000,al_c,q_90/RCG0063%20D1.jpg",
+    "slug": "age-of-bronze-small",
+    "localImage": "age-of-bronze-small-1.jpg"
+  },
+  "je-suis-belle": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/je-suis-belle-%5Bi-am-beautiful%5D",
+    "caption": "Conceived between 1882 and 1885, cast in 1968.",
+    "meta": {
+      "height": "75 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed © by Musée Rodin 1968 and Georges Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0064.2-18",
+      "materials": "Bronze with dark brown, black and green patina",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_1b2f5d05a00542849d9e8ce1d62f0b48~mv2.jpeg/v1/fill/w_1066,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2012.22.45.jpeg",
+    "slug": "je-suis-belle",
+    "localImage": "je-suis-belle-1.jpg"
+  },
+  "bust-of-jean-daire": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/bust-of-jean-d%27aire",
+    "caption": "Conceived in 1886, cast in December 1940.",
+    "meta": {
+      "height": "46.9 cm",
+      "marksAndInscriptions": "Signed and stamped with the foundry mark Alexis Rudier Fondeur Paris, with repeat interior raised A. Rodin signature.",
+      "inventoryNumber": "RCG0061.2-22",
+      "materials": "Bronze with brown and green patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/e2965e_ce929419b8024872b07ee435dbba46c6~mv2.jpeg/v1/fill/w_640,h_458,al_c,q_80/RCG0061%20F.jpeg",
+    "slug": "bust-of-jean-daire",
+    "localImage": "bust-of-jean-daire-1.jpg"
+  },
+  "seated-titan": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/seated-titan",
+    "caption": "Conceived between 1878 and 1882.",
+    "meta": {
+      "height": "32 cm",
+      "marksAndInscriptions": "Signed A. Rodin, rendition model.",
+      "inventoryNumber": "RCG0026.2-05",
+      "materials": "White Marble",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_15a8183962cc4d14b555f63dd2869031~mv2.jpeg/v1/fill/w_768,h_1024,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2012.15.26.jpeg",
+    "slug": "seated-titan",
+    "localImage": "seated-titan-1.jpg"
+  },
+  "titan-iv": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/titan-iv",
+    "caption": "Conceived between 1878 and 1882.",
+    "meta": {
+      "height": "32 cm",
+      "marksAndInscriptions": "Signed A. Rodin, rendition model.",
+      "inventoryNumber": "RCG0025. 2-15",
+      "materials": "White Marble",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_0330092d68da40cfa3cc0b1d80e0acae~mv2.jpeg/v1/fill/w_768,h_1024,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2012.10.13.jpeg",
+    "slug": "titan-iv",
+    "localImage": "titan-iv-1.jpg"
+  },
+  "abduction-of-hippodamia": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/l%E2%80%99enl%C3%A8vement-d%E2%80%99hippodamie-%5Bthe-abduction-of-hippodamia%5D",
+    "caption": "Conceived and cast circa 1871.",
+    "meta": {
+      "height": "65 cm",
+      "marksAndInscriptions": "Signed Carrier Belleuse. With title plaque: L’enlèvement. Part modelled by Auguste Rodin under the mentorship of Carrier-Belleuse.",
+      "inventoryNumber": "RCG0024.2-17",
+      "materials": "Bronze with a rich green, mid- and dark-brown patination.",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_c8ddf4fb448647cbb21df8cbe2709d5f~mv2.jpeg/v1/fill/w_1200,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2011.57.34.jpeg",
+    "slug": "abduction-of-hippodamia",
+    "localImage": "abduction-of-hippodamia-1.jpg"
+  },
+  "minotaur": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/minotaur",
+    "caption": "Conceived circa 1883-1885, cast in 2013.",
+    "meta": {
+      "height": "61 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed and stamped with foundry mark EA III/IV Susse Fondeur Paris.",
+      "inventoryNumber": "RCG0023.2-21",
+      "materials": "Bronze with rich brown and green patina",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_9d9c97ef54a24d37a4e494ec7ab4c761~mv2.jpeg/v1/fill/w_1600,h_1067,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2011.55.36%20(1).jpeg",
+    "slug": "minotaur",
+    "localImage": "minotaur-1.jpg"
+  },
+  "camille-claudel-bonnet": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/camille-claudel-au-bonnet-%5Bbust-of-camille-claudel-wearing-a-bonnet%5D",
+    "caption": "Conceived in 1884, cast in July 1971.",
+    "meta": {
+      "height": "24.8 cm",
+      "marksAndInscriptions": "Signed A. Rodin with repeat interior signature. Inscribed No. 11 © by Musée Rodin 1971 and with foundry mark Georges Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0022.2-05",
+      "materials": "Bronze with a dark brown and green patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_a674ada2d8a04d5c8d98590defbe8f6c~mv2.jpeg/v1/fill/w_1235,h_1600,al_c,q_90/WhatsApp%20Image%202025-05-08%20at%2011.50.51.jpeg",
+    "slug": "camille-claudel-bonnet",
+    "localImage": "camille-claudel-bonnet-1.jpg"
+  },
+  "mme-rodin": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/mme-rodin-%5Bbust-of-rose-beuret%5D",
+    "caption": "Conceived in 1882, cast in 1971.",
+    "meta": {
+      "height": "26.9 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed A. Rudier / Alexis Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0021-0X",
+      "materials": "Bronze with dark brown and mid green patination.",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_38b479f121164005b414f848ceb3919e~mv2.jpeg/v1/fill/w_1235,h_1600,al_c,q_90/WhatsApp%20Image%202025-05-08%20at%2011.47.10%20(1).jpeg",
+    "slug": "mme-rodin",
+    "localImage": "mme-rodin-1.jpg"
+  },
+  "mask-of-hanako": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/masque-d%E2%80%99hanako%2C-%C3%A8tude-type-e-%5Bmask-of-hanako%2C-study-type-e%5D",
+    "caption": "Conceived between 1907 and 1908, this example was cast in 1956.",
+    "meta": {
+      "height": "17.8 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed © by Musée Rodin 1956 and Georges Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0020.2-06",
+      "materials": "Bronze with brown and red patination.",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_c5d6a3f6712443789773b97ff8df408d~mv2.jpeg/v1/fill/w_1179,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2011.46.05.jpeg",
+    "slug": "mask-of-hanako",
+    "localImage": "mask-of-hanako-1.jpg"
+  },
+  "head-of-lust": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/t%C3%AAte-de-la-luxure-%5Bhead-of-lust%5D",
+    "caption": "Conceived in 1882, cast between 1917 and 1918.",
+    "meta": {
+      "height": "37.3 cm",
+      "marksAndInscriptions": "Signed A. Rodin with repeat raised interior signature. Inscribed Alexis Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0019.2-05",
+      "materials": "Bronze with a rich dark green, black and brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_54e160a3947b4faaaeeced0d08e83091~mv2.jpeg/v1/fill/w_1281,h_1600,al_c,q_90/WhatsApp%20Image%202025-05-08%20at%2011.42.26.jpeg",
+    "slug": "head-of-lust",
+    "localImage": "head-of-lust-1.jpg"
+  },
+  "mask-broken-nose": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/masque-de-l%E2%80%99homme-au-nez-cass%C3%A9-%5Bmask-of-a-man-with-a-broken-nose%5D",
+    "caption": "Conceived between 1863 and 1864.",
+    "meta": {
+      "height": "25.5 cm",
+      "marksAndInscriptions": "Signed A Rodin with repeat raised interior signature. Inscribed Alexis Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0018.2-13",
+      "materials": "Bronze with a brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_93a20e2e23c14bf3803318cfe026c7a4~mv2.jpeg/v1/fill/w_1067,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2011.39.23.jpeg",
+    "slug": "mask-broken-nose",
+    "localImage": "mask-broken-nose-1.jpg"
+  },
+  "torso-great-shadow": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/torse-de-la-grande-ombre-%5Btorso-of-the-great-shadow%5D",
+    "caption": "Conceived circa 1900, cast in 2000.",
+    "meta": {
+      "height": "100 cm",
+      "marksAndInscriptions": "Signed A.Rodin. Inscribed E.GODARD Fondr © by Musée Rodin 2000.",
+      "inventoryNumber": "RCG0017.2-14",
+      "materials": "Bronze with a dark brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_d056baddcaed4036bfa2a7a8d65c5dff~mv2.jpeg/v1/fill/w_1280,h_1600,al_c,q_90/WhatsApp%20Image%202025-05-08%20at%2011.26.17.jpeg",
+    "slug": "torso-great-shadow",
+    "localImage": "torso-great-shadow-1.jpg"
+  },
+  "head-jean-de-fiennes": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/t%C3%AAte-de-jean-de-fiennes-%5Bhead-of-jean-de-fiennes%5D",
+    "caption": "Conceived in 1886, cast in 1984.",
+    "meta": {
+      "height": "32.2 cm",
+      "marksAndInscriptions": "Inscribed A. Rodin and with the foundry mark E. Godard Fondr, and dated © by Musée Rodin 1984 and by the Émile Godard foundry.",
+      "inventoryNumber": "RCG0016-0X",
+      "materials": "Bronze",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_b6d782ce02984e5187272712a772c05b~mv2.jpeg/v1/fill/w_1066,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2011.21.46.jpeg",
+    "slug": "head-jean-de-fiennes",
+    "localImage": "head-jean-de-fiennes-1.jpg"
+  },
+  "head-pierre-de-wiessant": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/t%C3%AAte-de-pierre-de-wiessant%2C-type-b-%5Bhead-of-pierre-de-wiessant%2C-type-b%5D",
+    "caption": "Conceived circa 1885, cast in 1960.",
+    "meta": {
+      "height": "43.3 cm",
+      "marksAndInscriptions": "Signed A. Rodin with raised interior signature. Inscribed © by Musée Rodin with the foundry mark Georges Rudier Fondeur Paris 1960.",
+      "inventoryNumber": "RCG0015.2-05",
+      "materials": "Bronze with a dark brown patination and green highlights",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_dd82b72959e941ed9d7755736c493b26~mv2.jpeg/v1/fill/w_1235,h_1600,al_c,q_90/WhatsApp%20Image%202025-05-08%20at%2011.19.40.jpeg",
+    "slug": "head-pierre-de-wiessant",
+    "localImage": "head-pierre-de-wiessant-1.jpg"
+  },
+  "head-eustache-de-saint-pierre": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/t%C3%AAte-d%E2%80%99eustache-de-saint-pierre%2C-%C3%A8tude-type-a%2C-grand-mod%C3%A8le--%5Bhead-of-d%E2%80%99eustache-de-saint-pierre%2C-study-type-a%2C-large-model%5D",
+    "caption": "Conceived in 1886, cast in 1974.",
+    "meta": {
+      "height": "35 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed © by Musée Rodin 1974 and Georges Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0014.2-05",
+      "materials": "Bronze with a green and brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_f12f6f6ad94d4091b5a59bcae0afda15~mv2.jpeg/v1/fill/w_1067,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-08%20at%2011.16.40.jpeg",
+    "slug": "head-eustache-de-saint-pierre",
+    "localImage": "head-eustache-de-saint-pierre-1.jpg"
+  },
+  "eve-small-model": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/eve%2C-petit-mod%C3%A8le-(mod%C3%A8le-%C3%A0-la-base-carr%C3%A9e-et-aux-pieds-plats)-%5Beve%2C-small-model-(model-with-a-square-base-and-flat-feet)%5D",
+    "caption": "Conceived in 1881, cast in April 1947.",
+    "meta": {
+      "height": "76 cm",
+      "marksAndInscriptions": "Signed A. Rodin with repeat raised interior signature. Inscribed © Alexis Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0012.2-07",
+      "materials": "Bronze with a light brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_fd80f9e8010d4a1bb13f2651a4a65c22~mv2.jpeg/v1/fill/w_1600,h_1037,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2014.30.52%20(1).jpeg",
+    "slug": "eve-small-model",
+    "localImage": "eve-small-model-1.jpg"
+  },
+  "meditation": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/la-m%C3%A9ditation-%5Bmeditation%5D-",
+    "caption": "Conceived in 1885, cast in 1930.",
+    "meta": {
+      "height": "74.1 cm",
+      "marksAndInscriptions": "Signed A. Rodin with repeat raised interior signature. Inscribed Alexis Rudier Fondeur, Paris.",
+      "inventoryNumber": "RCG0011.2-07",
+      "materials": "Bronze with a brown and dark brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_a28cc6d06f974d52b3a54399d44fd3db~mv2.jpeg/v1/fill/w_1066,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2014.23.48.jpeg",
+    "slug": "meditation",
+    "localImage": "meditation-1.jpg"
+  },
+  "iris-study-with-head": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/iris%2C-%C3%A9tude-avec-t%C3%A9te-%5Biris%2C-study-with-head%5D",
+    "caption": "Conceived between 1890 and 1891, cast in 1970.",
+    "meta": {
+      "height": "53 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed © by Musée Rodin 1971 and Susse Fondeurs, Paris. Cast by the Susse Foundry for the Musée Rodin between 1969 and 1972.",
+      "inventoryNumber": "RCG0010.2-13",
+      "materials": "Bronze with green and dark brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_4ca7e2f420434f63a65dfe1d8509b3f1~mv2.jpeg/v1/fill/w_1200,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2014.05.28%20(1).jpeg",
+    "slug": "iris-study-with-head",
+    "localImage": "iris-study-with-head-1.jpg"
+  },
+  "falling-man": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/l%E2%80%99homme-qui-tombe-%5Bthe-falling-man%5D",
+    "caption": "Conceived circa 1885, cast in 1973.",
+    "meta": {
+      "height": "58.5 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed © by Musée Rodin 1973 and Susse Fondeurs, Paris.",
+      "inventoryNumber": "RCG0009.2-04",
+      "materials": "Bronze with a rich dark green patination and brown highlights",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_90c81a99a3e6456bbf011b92c29cb736~mv2.jpeg/v1/fill/w_1280,h_1600,al_c,q_90/WhatsApp%20Image%202025-05-02%20at%2012.16.19.jpeg",
+    "slug": "falling-man",
+    "localImage": "falling-man-1.jpg"
+  },
+  "monumental-torso": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/grande-torse-de-l%E2%80%99homme-%5Bmonumental-torso%5D",
+    "caption": "Conceived in 1904, cast in 1970.",
+    "meta": {
+      "height": "102 cm",
+      "marksAndInscriptions": "Inscribed © by Musée Rodin 1970 and with the foundry mark Georges Rudier Fondeur. Paris.",
+      "inventoryNumber": "RCG0008.2-14",
+      "materials": "Bronze with a rich dark brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_87ae7c93dc53492196d69246652d9304~mv2.jpeg/v1/fill/w_1600,h_1105,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2012.11.49%20(1).jpeg",
+    "slug": "monumental-torso",
+    "localImage": "monumental-torso-1.jpg"
+  },
+  "the-kiss-3rd-reduction": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/le-baiser%2C-3%C3%A8me-r%C3%A9duction-%5Bthe-kiss%2C-2nd-reduction%5D",
+    "caption": "Conceived in 1886, this version reduction in 1901, cast in bronze between 1910 and 1918.",
+    "meta": {
+      "height": "39.5 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed F. Barbedienne Fondeur.",
+      "inventoryNumber": "RCG0007.2-21",
+      "materials": "Bronze with black and brown patination with green highlights",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/e2965e_90c7c7be31bd459c9911be83dbbd73b0~mv2.jpg/v1/fill/w_6000,h_4000,al_c,q_90/RCG0007%20DY0.jpg",
+    "slug": "the-kiss-3rd-reduction",
+    "localImage": "the-kiss-3rd-reduction-1.jpg"
+  },
+  "eternal-spring-first-state": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/l%E2%80%99%C3%A9ternel-printemps%2C-premier-%C3%A9tat-%5Beternal-spring%2C-first-state%5D",
+    "caption": "Conceived in 1884, cast in 1969.",
+    "meta": {
+      "height": "51.4 cm",
+      "marksAndInscriptions": "Signed A. Rodin with repeat raised interior signature. Inscribed © by Musée Rodin 1969 and Georges Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0006.2-08",
+      "materials": "Bronze with a dark brown and black patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_e9278809aaf74bb9958aede024df14d5~mv2.jpeg/v1/fill/w_1600,h_1037,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2012.01.19%20(1).jpeg",
+    "slug": "eternal-spring-first-state",
+    "localImage": "eternal-spring-first-state-1.jpg"
+  },
+  "triumphant-youth": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/la-jeunesse-triomphante-%5Btriumphant-youth%5D",
+    "caption": "Conceived in 1894, cast between 1906 and 1918.",
+    "meta": {
+      "height": "52 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Inscribed Thiebault Fres Paris et Cie. Suc.",
+      "inventoryNumber": "RCG0005.2-05",
+      "materials": "Bronze with a rich golden brown and dark brown patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_7d64f857a50d43c6aa3e009c40a51ae9~mv2.jpeg/v1/fill/w_1200,h_1600,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2011.53.15.jpeg",
+    "slug": "triumphant-youth",
+    "localImage": "triumphant-youth-1.jpg"
+  },
+  "death-of-adonis": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/mort-d%27adonis-%5Bdeath-of-adonis%5D",
+    "caption": "Conceived between 1885 and 1887, cast in 1956.",
+    "meta": {
+      "height": "27 cm",
+      "marksAndInscriptions": "Signed A. Rodin with repeat raised interior signature. Inscribed © by Musée Rodin 1956 and Georges Rudier Fondeur Paris.",
+      "inventoryNumber": "RCG0004.2-05",
+      "materials": "Bronze with a brown and dark green patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_0d600e33022d4085a187a3d9219e72b5~mv2.jpeg/v1/fill/w_1600,h_1067,al_c,q_85/WhatsApp%20Image%202025-05-02%20at%2011.49.08%20(1).jpeg",
+    "slug": "death-of-adonis",
+    "localImage": "death-of-adonis-1.jpg"
+  },
+  "eternal-idol-small-model": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/%C3%A9ternelle-idole%2C-petit-modele-%5Beternal-idol%2C-small-model%5D-",
+    "caption": "Conceived in 1889, cast in 1927.",
+    "meta": {
+      "height": "17.14 cm",
+      "marksAndInscriptions": "Signed A. Rodin. Numbered no.1 and stamped with the foundry mark Alexis Rudier Fondeur, Paris.",
+      "inventoryNumber": "RCG0003.20-05",
+      "materials": "Bronze with black and green patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_c6e1a410afb8465d8b0caffcdd99d7a2~mv2.jpeg/v1/fill/w_1200,h_1600,al_c,q_85/WhatsApp%20Image%202025-04-30%20at%2016.14.20%20(1).jpeg",
+    "slug": "eternal-idol-small-model",
+    "localImage": "eternal-idol-small-model-1.jpg"
+  },
+  "age-of-bronze": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/l%E2%80%99%C3%A2ge-d%E2%80%99airain-%5Bage-of-bronze%5D",
+    "caption": "Conceived between 1875 and 1877, cast in 1918.",
+    "meta": {
+      "height": "182.8 cm",
+      "marksAndInscriptions": "Signed A. Rodin.",
+      "inventoryNumber": "RCG0002.20-05",
+      "materials": "Bronze with weathered green patination",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_20ca7e1fa59e4a388f0bbae2516ed436~mv2.jpeg/v1/fill/w_1600,h_1067,al_c,q_85/WhatsApp%20Image%202025-04-30%20at%2016.06.50.jpeg",
+    "slug": "age-of-bronze",
+    "localImage": "age-of-bronze-1.jpg"
+  },
+  "jardiniere-of-the-titans": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/jardini%C3%A8re-aux-titans",
+    "caption": "Conceived circa 1877, cast before 1887.",
+    "meta": {
+      "height": "39.1 cm",
+      "marksAndInscriptions": "Signed A. Carrier Belleuse.",
+      "inventoryNumber": "RCG0001.20-13",
+      "materials": "Terracotta",
+      "location": "The Arkın Clock Tower - Arkın Group Headquarters"
+    },
+    "image": "https://static.wixstatic.com/media/6c6190_cd09ded01ef343b9afaa8505819c7f21~mv2.jpeg/v1/fill/w_1065,h_1600,al_c,q_85/WhatsApp%20Image%202025-04-25%20at%2014.32.19.jpeg",
+    "slug": "jardiniere-of-the-titans",
+    "localImage": "jardiniere-of-the-titans-1.jpg"
+  },
+  "danaide": {
+    "url": "https://www.thearkinrodincollection.com/our-exhibitions/dana%C3%AFde-%5Bdanaide%5D",
+    "caption": null,
+    "meta": {},
+    "image": null,
+    "slug": "danaide"
+  }
+}

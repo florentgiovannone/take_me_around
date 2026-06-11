@@ -1,4 +1,21 @@
-export default function Footer() {
+type FooterProps = {
+  /** Artwork pages: link to Take Me Around only (no address or copyright). */
+  variant?: "default" | "artwork"
+}
+
+export default function Footer({ variant = "default" }: FooterProps) {
+  if (variant === "artwork") {
+    return (
+      <footer className="tma-footer tma-footer--artwork">
+        <div className="tma-footer-inner">
+          <a className="tma-footer-home-link" href="https://takemearound.com/">
+            takemearound.com
+          </a>
+        </div>
+      </footer>
+    )
+  }
+
   return (
     <footer className="tma-footer">
       <div className="tma-footer-inner">

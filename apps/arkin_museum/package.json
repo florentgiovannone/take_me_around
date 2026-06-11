@@ -8,9 +8,14 @@
     "test:host": "vite --host 0.0.0.0 --port 4173 --mode test",
     "build": "node scripts/write-netlify-redirects.mjs && tsc --noEmit -p tsconfig.app.json && vite build",
     "preview": "vite preview",
-    "preview:test:host": "vite preview --host 0.0.0.0 --port 4173"
+    "preview:test:host": "vite preview --host 0.0.0.0 --port 4173",
+    "audio:export-scripts": "node scripts/export-audio-scripts.mjs",
+    "audio:voices": "node scripts/list-voices.mjs",
+    "audio:generate": "node scripts/generate-audio.mjs",
+    "audio:generate:dry-run": "node scripts/generate-audio.mjs --dry-run"
   },
   "dependencies": {
+    "@tma/analytics-arkin": "*",
     "@tma/dashboard-scope": "*",
     "@tma/dashboard-ui": "*",
     "react": "^19.2.5",

@@ -1,9 +1,8 @@
-export type SiteId = "gallery" | "museum"
+export type SiteId = "gallery" | "museum" | "arkin"
 
 export type SiteScope = SiteId | "combined"
 
-/** Sites shown on the standalone picker (gallery / museum only for now). */
-export const PICKABLE_SITE_IDS: SiteId[] = ["gallery", "museum"]
+export const PICKABLE_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin"]
 
 export const SITE_META: Record<
   SiteId,
@@ -19,24 +18,37 @@ export const SITE_META: Record<
     domainLabel: ".museum",
     host: "takemearound.museum",
   },
+  arkin: {
+    label: "Arkin Gallery",
+    domainLabel: "Arkin Gallery",
+    host: "arkingallery.netlify.app",
+  },
 }
 
+const combinedSitesLabel = PICKABLE_SITE_IDS.map((id) => SITE_META[id].domainLabel).join(
+  " + "
+)
+
 export function scopeLabel(scope: SiteScope): string {
-  if (scope === "gallery") return SITE_META.gallery.label
-  if (scope === "museum") return SITE_META.museum.label
-  return "Combined"
+  if (scope === "combined") return "Combined"
+  return SITE_META[scope].label
 }
 
 export function scopeSubtitle(scope: SiteScope): string {
-  if (scope === "gallery") return `Live ${SITE_META.gallery.domainLabel} activity`
-  if (scope === "museum") return `Live ${SITE_META.museum.domainLabel} activity`
-  return `Live combined activity (${SITE_META.gallery.domainLabel} + ${SITE_META.museum.domainLabel})`
+  if (scope === "combined") {
+    return `Live combined activity (${combinedSitesLabel})`
+  }
+  if (scope === "arkin") {
+    return `Live ${SITE_META.arkin.label} activity`
+  }
+  return `Live ${SITE_META[scope].domainLabel} activity`
 }
 
 export function scopeDomainHint(scope: SiteScope): string {
-  if (scope === "gallery") return SITE_META.gallery.host
-  if (scope === "museum") return SITE_META.museum.host
-  return `${SITE_META.gallery.host} + ${SITE_META.museum.host}`
+  if (scope === "combined") {
+    return PICKABLE_SITE_IDS.map((id) => SITE_META[id].host).join(" + ")
+  }
+  return SITE_META[scope].host
 }
 
 export function scopeBadgeLabel(scope: SiteScope): string {
@@ -46,7 +58,7 @@ export function scopeBadgeLabel(scope: SiteScope): string {
 
 export function scopeOptionLabel(scope: SiteScope): string {
   if (scope === "combined") {
-    return `Combined (${SITE_META.gallery.domainLabel} + ${SITE_META.museum.domainLabel})`
+    return `Combined (${combinedSitesLabel})`
   }
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }

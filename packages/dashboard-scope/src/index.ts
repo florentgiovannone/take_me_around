@@ -1,6 +1,7 @@
 import type { SiteScope } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
+import * as arkin from "@tma/analytics-arkin"
 import {
   buildVisitorNumberBySar,
   lookupVisitorNumber,
@@ -34,15 +35,74 @@ export const formatAndroidField = gallery.formatAndroidField
 
 export { formatVisitorNumber, buildVisitorNumberBySar, lookupVisitorNumber }
 
+function mergeUniqueLogs(...lists: PoiseLog[][]): PoiseLog[] {
+  const seen = new Set<number>()
+  const merged: PoiseLog[] = []
+  for (const list of lists) {
+    for (const row of list) {
+      if (row.int_id == null || seen.has(row.int_id)) continue
+      seen.add(row.int_id)
+      merged.push(row)
+    }
+  }
+  return merged
+}
+
+function getCombinedScopedLogs(logs: PoiseLog[]): PoiseLog[] {
+  return mergeUniqueLogs(
+    gallery.getGalleryLogs(logs),
+    museum.getMuseumLogs(logs),
+    arkin.getArkinLogs(logs)
+  )
+}
+
+function mergeSarTimelinePlots(
+  plots: Array<gallery.SarTimelinePlot | null>,
+  visitorBySar: Map<string, string>
+): gallery.SarTimelinePlot | null {
+  const valid = plots.filter((plot): plot is gallery.SarTimelinePlot => plot !== null)
+  if (valid.length === 0) return null
+  if (valid.length === 1) return sortPlotSarsByVisitor(valid[0], visitorBySar)
+  const points = valid
+    .flatMap((plot) => plot.points)
+    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+  const sars = sortSarsByVisitorNumber(
+    [...new Set(valid.flatMap((plot) => plot.sars))],
+    visitorBySar
+  )
+  const base = valid[0]
+  return {
+    sars,
+    points,
+    now: base.now,
+    totalExtentMs: Math.max(...valid.map((plot) => plot.totalExtentMs)),
+    viewportHalfExtentMs: base.viewportHalfExtentMs,
+    pastEdgeLabel: base.pastEdgeLabel,
+    futureEdgeLabel: base.futureEdgeLabel,
+  }
+}
+
 export function buildActivityVisitDetails(
   log: PoiseLog,
   logs: PoiseLog[],
   scope: SiteScope
 ): gallery.ActivityVisitDetails {
-  const details =
-    scope === "museum"
-      ? museum.buildActivityVisitDetails(log)
-      : gallery.buildActivityVisitDetails(log)
+  let details: gallery.ActivityVisitDetails
+  if (scope === "combined") {
+    if (gallery.getGalleryLogs([log]).length) {
+      details = gallery.buildActivityVisitDetails(log)
+    } else if (museum.getMuseumLogs([log]).length) {
+      details = museum.buildActivityVisitDetails(log)
+    } else {
+      details = arkin.buildActivityVisitDetails(log)
+    }
+  } else if (scope === "arkin") {
+    details = arkin.buildActivityVisitDetails(log)
+  } else if (scope === "museum") {
+    details = museum.buildActivityVisitDetails(log)
+  } else {
+    details = gallery.buildActivityVisitDetails(log)
+  }
   if (!details.sar) return details
   const visitorNumber = lookupVisitorNumber(
     details.sar,
@@ -56,71 +116,73 @@ export type ActivityEntry = gallery.GalleryActivityEntry
 
 export function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
   if (scope === "gallery") return gallery.getGalleryLogs(logs)
+  if (scope === "arkin") return arkin.getArkinLogs(logs)
   if (scope === "museum") return museum.getMuseumLogs(logs)
-  const seen = new Set<number>()
-  const merged: PoiseLog[] = []
-  for (const row of gallery.getGalleryLogs(logs)) {
-    if (seen.has(row.int_id)) continue
-    seen.add(row.int_id)
-    merged.push(row)
-  }
-  for (const row of museum.getMuseumLogs(logs)) {
-    if (seen.has(row.int_id)) continue
-    seen.add(row.int_id)
-    merged.push(row)
-  }
-  return merged
+  return getCombinedScopedLogs(logs)
 }
 
 export function trackedArtworkCount(scope: SiteScope): number {
   if (scope === "gallery") return gallery.TRACKED_GALLERY_ARTWORKS.length
+  if (scope === "arkin") return arkin.TRACKED_ARKIN_ARTWORKS.length
   if (scope === "museum") return museum.TRACKED_MUSEUM_ARTWORKS.length
-  return gallery.TRACKED_GALLERY_ARTWORKS.length + museum.TRACKED_MUSEUM_ARTWORKS.length
+  return (
+    gallery.TRACKED_GALLERY_ARTWORKS.length +
+    museum.TRACKED_MUSEUM_ARTWORKS.length +
+    arkin.TRACKED_ARKIN_ARTWORKS.length
+  )
 }
 
 export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "gallery") return "tracked .gallery scans"
+  if (scope === "arkin") return "tracked Arkın scans"
   if (scope === "museum") return "tracked .museum scans"
-  return "tracked .gallery + .museum scans"
+  return "tracked .gallery + .museum + Arkın scans"
 }
 
 export function trackedLinksMeta(scope: SiteScope): string {
   const count = trackedArtworkCount(scope)
   if (scope === "gallery") return `of ${count} tracked .gallery links`
+  if (scope === "arkin") return `of ${count} tracked Arkın links`
   if (scope === "museum") return `of ${count} tracked .museum links`
-  return `of ${count} tracked links (both sites)`
+  return `of ${count} tracked links (all sites)`
 }
 
 export function trackedScansAcrossMeta(scope: SiteScope): string {
   if (scope === "gallery") return "across tracked .gallery links"
+  if (scope === "arkin") return "across tracked Arkın links"
   if (scope === "museum") return "across tracked .museum links"
-  return "across tracked links (both sites)"
+  return "across tracked links (all sites)"
 }
 
 export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "gallery") return "takemearound.gallery"
+  if (scope === "arkin") return "arkingallery.netlify.app"
   if (scope === "museum") return "takemearound.museum"
-  return "takemearound.gallery + takemearound.museum"
+  return "takemearound.gallery + takemearound.museum + arkingallery.netlify.app"
 }
 
 export function sarTimelineDomainSuffix(scope: SiteScope): string {
   if (scope === "gallery") return ".gallery"
+  if (scope === "arkin") return "Arkın"
   if (scope === "museum") return ".museum"
   return "selected sites"
 }
 
 export function emptyActivityMessage(scope: SiteScope): string {
   if (scope === "gallery") return "No tracked .gallery activity found."
+  if (scope === "arkin") return "No tracked Arkın activity found."
   if (scope === "museum") return "No tracked .museum activity found."
   return "No tracked activity found for the selected scope."
 }
 
 export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): ActivityEntry[] {
   if (scope === "gallery") return gallery.buildGalleryActivityEntries(logs)
+  if (scope === "arkin") return arkin.buildArkinActivityEntries(logs)
   if (scope === "museum") return museum.buildMuseumActivityEntries(logs)
   const merged = [
     ...gallery.buildGalleryActivityEntries(logs),
     ...museum.buildMuseumActivityEntries(logs),
+    ...arkin.buildArkinActivityEntries(logs),
   ]
   return merged.sort((a, b) => {
     const aTime = parseLogTimestampGmt(a.timestamp)?.getTime() ?? 0
@@ -131,28 +193,35 @@ export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): Activi
 
 export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope) {
   if (scope === "gallery") return gallery.buildTrackedArtworkScanGroups(logs)
+  if (scope === "arkin") return arkin.buildTrackedArtworkScanGroups(logs)
   if (scope === "museum") return museum.buildTrackedArtworkScanGroups(logs)
   const groups = [
     ...gallery.buildTrackedArtworkScanGroups(logs),
     ...museum.buildTrackedArtworkScanGroups(logs),
+    ...arkin.buildTrackedArtworkScanGroups(logs),
   ]
   return groups.sort((a, b) => b.scans.length - a.scans.length)
 }
 
 export function buildOverviewAnalytics(logs: PoiseLog[], scope: SiteScope) {
   if (scope === "gallery") return gallery.buildOverviewAnalytics(logs)
+  if (scope === "arkin") return arkin.buildOverviewAnalytics(logs)
   if (scope === "museum") return museum.buildOverviewAnalytics(logs)
   const g = gallery.buildOverviewAnalytics(logs)
   const m = museum.buildOverviewAnalytics(logs)
-  const totalTaps = g.totalTaps + m.totalTaps
-  const activeTags = g.activeTags + m.activeTags
+  const a = arkin.buildOverviewAnalytics(logs)
+  const totalTaps = g.totalTaps + m.totalTaps + a.totalTaps
+  const activeTags = g.activeTags + m.activeTags + a.activeTags
+  const topSite = [g, m, a].reduce((best, cur) =>
+    cur.totalTaps >= best.totalTaps ? cur : best
+  )
   return {
     totalTaps,
     activeTags,
-    topTagName: g.totalTaps >= m.totalTaps ? g.topTagName : m.topTagName,
-    topTagMonthCount: g.topTagMonthCount + m.topTagMonthCount,
+    topTagName: topSite.topTagName,
+    topTagMonthCount: g.topTagMonthCount + m.topTagMonthCount + a.topTagMonthCount,
     avgPerTag: activeTags > 0 ? Math.round(totalTaps / activeTags) : 0,
-    weeklyChange: (g.weeklyChange + m.weeklyChange) / 2,
+    weeklyChange: (g.weeklyChange + m.weeklyChange + a.weeklyChange) / 3,
   }
 }
 
@@ -222,10 +291,14 @@ function mergeAudienceAnalytics(g: AudienceAnalytics, m: AudienceAnalytics): Aud
 
 export function buildAudienceAnalytics(logs: PoiseLog[], scope: SiteScope): AudienceAnalytics {
   if (scope === "gallery") return gallery.buildAudienceAnalytics(logs)
+  if (scope === "arkin") return arkin.buildAudienceAnalytics(logs)
   if (scope === "museum") return museum.buildAudienceAnalytics(logs)
   return mergeAudienceAnalytics(
-    gallery.buildAudienceAnalytics(logs),
-    museum.buildAudienceAnalytics(logs)
+    mergeAudienceAnalytics(
+      gallery.buildAudienceAnalytics(logs),
+      museum.buildAudienceAnalytics(logs)
+    ),
+    arkin.buildAudienceAnalytics(logs)
   )
 }
 
@@ -235,16 +308,18 @@ export function buildWeeklySeries(
   scope: SiteScope
 ): gallery.TimeSeriesWindow {
   if (scope === "gallery") return gallery.buildWeeklySeries(logs, weekOffset)
+  if (scope === "arkin") return arkin.buildWeeklySeries(logs, weekOffset)
   if (scope === "museum") return museum.buildWeeklySeries(logs, weekOffset)
   const g = gallery.buildWeeklySeries(logs, weekOffset)
   const m = museum.buildWeeklySeries(logs, weekOffset)
+  const a = arkin.buildWeeklySeries(logs, weekOffset)
   return {
     series: g.series.map((point, index) => ({
       ...point,
-      count: point.count + (m.series[index]?.count ?? 0),
+      count: point.count + (m.series[index]?.count ?? 0) + (a.series[index]?.count ?? 0),
     })),
     periodLabel: g.periodLabel,
-    canGoForward: g.canGoForward && m.canGoForward,
+    canGoForward: g.canGoForward && m.canGoForward && a.canGoForward,
   }
 }
 
@@ -254,24 +329,28 @@ export function buildMonthlyCalendarGrid(
   scope: SiteScope
 ): gallery.MonthlyCalendarWindow {
   if (scope === "gallery") return gallery.buildMonthlyCalendarGrid(logs, monthOffset)
+  if (scope === "arkin") return arkin.buildMonthlyCalendarGrid(logs, monthOffset)
   if (scope === "museum") return museum.buildMonthlyCalendarGrid(logs, monthOffset)
   const g = gallery.buildMonthlyCalendarGrid(logs, monthOffset)
   const m = museum.buildMonthlyCalendarGrid(logs, monthOffset)
+  const a = arkin.buildMonthlyCalendarGrid(logs, monthOffset)
   return {
     series: g.series.map((point, index) => ({
       ...point,
-      count: point.count + (m.series[index]?.count ?? 0),
+      count: point.count + (m.series[index]?.count ?? 0) + (a.series[index]?.count ?? 0),
     })),
     weeks: g.weeks.map((week, weekIndex) =>
       week.map((cell, dayIndex) => {
         if (cell.kind === "padding") return cell
-        const other = m.weeks[weekIndex]?.[dayIndex]
-        if (!other || other.kind === "padding") return cell
-        return { ...cell, count: cell.count + other.count }
+        const otherM = m.weeks[weekIndex]?.[dayIndex]
+        const otherA = a.weeks[weekIndex]?.[dayIndex]
+        const extraM = otherM && otherM.kind !== "padding" ? otherM.count : 0
+        const extraA = otherA && otherA.kind !== "padding" ? otherA.count : 0
+        return { ...cell, count: cell.count + extraM + extraA }
       })
     ),
     periodLabel: g.periodLabel,
-    canGoForward: g.canGoForward && m.canGoForward,
+    canGoForward: g.canGoForward && m.canGoForward && a.canGoForward,
   }
 }
 
@@ -279,18 +358,25 @@ export const buildWeekTotalsFromSeries = gallery.buildWeekTotalsFromSeries
 
 export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
   if (scope === "gallery") return gallery.listDistinctGallerySars(logs)
+  if (scope === "arkin") return arkin.listDistinctArkinSars(logs)
   if (scope === "museum") return museum.listDistinctMuseumSars(logs)
-  return [...new Set([...gallery.listDistinctGallerySars(logs), ...museum.listDistinctMuseumSars(logs)])].sort(
-    (a, b) => a.localeCompare(b)
-  )
+  return [
+    ...new Set([
+      ...gallery.listDistinctGallerySars(logs),
+      ...museum.listDistinctMuseumSars(logs),
+      ...arkin.listDistinctArkinSars(logs),
+    ]),
+  ].sort((a, b) => a.localeCompare(b))
 }
 
 export function buildSarTimelineEvents(logs: PoiseLog[], sarQuery: string, scope: SiteScope) {
   if (scope === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
+  if (scope === "arkin") return arkin.buildSarArkinTimelineEvents(logs, sarQuery)
   if (scope === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
   const merged = [
     ...gallery.buildSarGalleryTimelineEvents(logs, sarQuery),
     ...museum.buildSarMuseumTimelineEvents(logs, sarQuery),
+    ...arkin.buildSarArkinTimelineEvents(logs, sarQuery),
   ]
   return merged.sort((a, b) => {
     const aTime = parseLogTimestampGmt(a.timestamp)?.getTime() ?? 0
@@ -314,13 +400,18 @@ export function buildSarTimelineRowMetaMap(
 ): Map<string, gallery.SarTimelineRowMeta> {
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
   let meta: Map<string, gallery.SarTimelineRowMeta>
-  if (scope === "museum") {
+  if (scope === "arkin") {
+    meta = arkin.buildSarTimelineRowMetaMap(logs)
+  } else if (scope === "museum") {
     meta = museum.buildSarTimelineRowMetaMap(logs)
   } else if (scope === "gallery") {
     meta = gallery.buildSarTimelineRowMetaMap(logs)
   } else {
     meta = new Map(gallery.buildSarTimelineRowMetaMap(logs))
     for (const [sar, row] of museum.buildSarTimelineRowMetaMap(logs)) {
+      if (!meta.has(sar)) meta.set(sar, row)
+    }
+    for (const [sar, row] of arkin.buildSarTimelineRowMetaMap(logs)) {
       if (!meta.has(sar)) meta.set(sar, row)
     }
   }
@@ -362,29 +453,18 @@ export function buildSarTimelinePlot(
     const plot = museum.buildSarTimelinePlot(logs)
     return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
   }
-  const g = gallery.buildSarTimelinePlot(logs)
-  const m = museum.buildSarTimelinePlot(logs)
-  if (!g && !m) return null
-  if (!g) return m
-  if (!m) return g
-  const nowMs = g.now.getTime()
-  const totalExtentMs = Math.max(g.totalExtentMs, m.totalExtentMs)
-  const points = [...g.points, ...m.points].sort(
-    (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
-  )
-  const sars = sortSarsByVisitorNumber(
-    [...new Set([...g.sars, ...m.sars])],
+  if (scope === "arkin") {
+    const plot = arkin.buildSarTimelinePlot(logs)
+    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
+  }
+  return mergeSarTimelinePlots(
+    [
+      gallery.buildSarTimelinePlot(logs),
+      museum.buildSarTimelinePlot(logs),
+      arkin.buildSarTimelinePlot(logs),
+    ],
     visitorBySar
   )
-  return {
-    sars,
-    points,
-    now: g.now,
-    totalExtentMs,
-    viewportHalfExtentMs: g.viewportHalfExtentMs,
-    pastEdgeLabel: g.pastEdgeLabel,
-    futureEdgeLabel: g.futureEdgeLabel,
-  }
 }
 
 export const sarTimelineCanvasWidthPx = gallery.sarTimelineCanvasWidthPx

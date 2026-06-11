@@ -17,19 +17,16 @@ export default defineConfig(({ mode }) => {
     .trim()
     .replace(/\/$/, "")
   const apiTarget = proxyBase || "http://127.0.0.1:5050"
-  const arkinDashboard =
-    (
-      process.env.VITE_ARKIN_DASHBOARD_URL ||
-      fileEnv.VITE_ARKIN_DASHBOARD_URL ||
-      "https://arkin.takemearound.gallery"
-    )
-      .trim()
-      .replace(/\/$/, "")
-
+  const packagesDir = path.resolve(__dirname, "../../packages")
   return {
-    server: {
-      fs: {
-        allow: [path.resolve(__dirname, "../..")],
+    resolve: {
+      alias: {
+        "@tma/config": path.join(packagesDir, "config/src/index.ts"),
+        "@tma/analytics-gallery": path.join(packagesDir, "analytics-gallery/src/index.ts"),
+        "@tma/analytics-arkin": path.join(packagesDir, "analytics-arkin/src/index.ts"),
+        "@tma/analytics-museum": path.join(packagesDir, "analytics-museum/src/index.ts"),
+        "@tma/dashboard-scope": path.join(packagesDir, "dashboard-scope/src/index.ts"),
+        "@tma/dashboard-ui": path.join(packagesDir, "dashboard-ui/src/index.ts"),
       },
     },
     plugins: [
@@ -45,12 +42,6 @@ export default defineConfig(({ mode }) => {
               "[netlify-redirects] Set VITE_API_PROXY_TARGET (or VITE_API_BASE_URL) at build time so /api is proxied."
             )
           }
-          lines.push(
-            `/dashboard      ${arkinDashboard}/dashboard/museum     301!`
-          )
-          lines.push(
-            `/dashboard/*    ${arkinDashboard}/dashboard/museum/:splat  301!`
-          )
           lines.push("/*    /index.html   200")
           const out = path.resolve(process.cwd(), "dist", "_redirects")
           fs.mkdirSync(path.dirname(out), { recursive: true })
@@ -61,6 +52,9 @@ export default defineConfig(({ mode }) => {
     server: {
       host: true,
       allowedHosts: true,
+      fs: {
+        allow: [path.resolve(__dirname, "../..")],
+      },
       proxy: {
         "/api": {
           target: apiTarget,

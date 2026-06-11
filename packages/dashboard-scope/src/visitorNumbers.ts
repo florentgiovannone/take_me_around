@@ -1,17 +1,24 @@
 import type { SiteScope } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
+import * as arkin from "@tma/analytics-arkin"
 
 type PoiseLog = gallery.PoiseLog & { visitor_number?: string | null }
 
 function getSarForLog(log: PoiseLog, scope: SiteScope): string | null {
+  if (scope === "arkin") return arkin.getSarFromLog(log)
   if (scope === "museum") return museum.getSarFromLog(log)
   if (scope === "gallery") return gallery.getSarFromLog(log)
-  return gallery.getSarFromLog(log) ?? museum.getSarFromLog(log)
+  return (
+    gallery.getSarFromLog(log) ??
+    museum.getSarFromLog(log) ??
+    arkin.getSarFromLog(log)
+  )
 }
 
 function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
   if (scope === "gallery") return gallery.getGalleryLogs(logs)
+  if (scope === "arkin") return arkin.getArkinLogs(logs)
   if (scope === "museum") return museum.getMuseumLogs(logs)
   const seen = new Set<number>()
   const merged: PoiseLog[] = []
@@ -21,6 +28,11 @@ function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
     merged.push(row)
   }
   for (const row of museum.getMuseumLogs(logs)) {
+    if (seen.has(row.int_id)) continue
+    seen.add(row.int_id)
+    merged.push(row)
+  }
+  for (const row of arkin.getArkinLogs(logs)) {
     if (seen.has(row.int_id)) continue
     seen.add(row.int_id)
     merged.push(row)

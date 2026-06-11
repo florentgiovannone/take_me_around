@@ -19,6 +19,7 @@
     "paths": {
       "@tma/config": ["../../packages/config/src/index.ts"],
       "@tma/analytics-gallery": ["../../packages/analytics-gallery/src/index.ts"],
+      "@tma/analytics-arkin": ["../../packages/analytics-arkin/src/index.ts"],
       "@tma/analytics-museum": ["../../packages/analytics-museum/src/index.ts"],
       "@tma/dashboard-scope": ["../../packages/dashboard-scope/src/index.ts"],
       "@tma/dashboard-ui": ["../../packages/dashboard-ui/src/index.ts"]

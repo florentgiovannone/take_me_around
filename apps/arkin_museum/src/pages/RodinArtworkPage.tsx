@@ -1,5 +1,6 @@
-import { Fragment, useEffect } from "react"
+import { Fragment, useEffect, useLayoutEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
+import { getRodinAudio } from "../assets/Audio/rodinAudio"
 import { RODIN_IMAGE_GALLERIES, RODIN_IMAGES } from "../assets/rodin"
 import ArtworkImageGallery from "../components/ArtworkImageGallery"
 import AudioPlayer from "../components/AudioPlayer"
@@ -11,31 +12,89 @@ import {
   type RodinArtworkSource,
 } from "../data/rodinArtworks"
 import NotFoundPage from "./NotFoundPage"
+import { getArtworkDisplayTitle, getArtworkPageTitle } from "../utils/artworkTitles"
 import "../styles/style.css"
 import "../styles/rodin-exhibition.css"
 
-function ExhibitionFacts({ items }: { items: string[] }) {
-  if (items.length === 0) return null
+function ArtworkHeading({ artwork }: { artwork: RodinArtwork }) {
+  const { french, english } = getArtworkDisplayTitle(artwork)
 
   return (
-    <div className="arkin-exhibition-facts">
-      {items.map((item, index) => (
-        <Fragment key={item}>
-          {index > 0 ? <span className="arkin-exhibition-facts-sep" aria-hidden="true">·</span> : null}
-          <span>{item}</span>
-        </Fragment>
-      ))}
-    </div>
+    <h1 className="arkin-exhibition-title">
+      <span className="arkin-exhibition-title-main">{french}</span>
+      {english ? <span className="arkin-exhibition-title-alt">({english})</span> : null}
+    </h1>
   )
 }
 
-function buildExhibitionFacts(artwork: RodinArtwork): string[] {
-  const facts: string[] = []
-  if (artwork.caption) facts.push(artwork.caption)
-  if (artwork.meta?.height) facts.push(artwork.meta.height)
-  if (artwork.meta?.materials) facts.push(artwork.meta.materials)
-  if (artwork.meta?.location) facts.push(artwork.meta.location)
-  return facts
+function ConceivedLine({ text }: { text: string }) {
+  const lineRef = useRef<HTMLParagraphElement>(null)
+  const textRef = useRef<HTMLSpanElement>(null)
+
+  useLayoutEffect(() => {
+    const line = lineRef.current
+    const textEl = textRef.current
+    if (!line || !textEl) return
+
+    const fit = () => {
+      textEl.style.fontSize = ""
+      textEl.style.transform = ""
+      line.style.minHeight = ""
+      const maxSize = window.matchMedia("(max-width: 520px)").matches ? 12.5 : 13.5
+      textEl.style.fontSize = `${maxSize}px`
+
+      const available = line.clientWidth
+      const needed = textEl.scrollWidth
+      if (needed > available && available > 0) {
+        const scale = available / needed
+        textEl.style.transform = `scale(${scale})`
+        textEl.style.transformOrigin = "center top"
+        line.style.minHeight = `${textEl.getBoundingClientRect().height * scale}px`
+      }
+    }
+
+    fit()
+    window.addEventListener("resize", fit)
+    return () => window.removeEventListener("resize", fit)
+  }, [text])
+
+  return (
+    <p ref={lineRef} className="arkin-exhibition-details-line arkin-exhibition-details-line--conceived">
+      <span ref={textRef} className="arkin-exhibition-details-conceived-text">
+        {text}
+      </span>
+    </p>
+  )
+}
+
+function ExhibitionDetails({ artwork }: { artwork: RodinArtwork }) {
+  const conceived = artwork.caption
+  const size = artwork.meta?.height
+  const material = artwork.meta?.materials
+  const location = artwork.meta?.location
+  const hasSpecs = Boolean(size || material)
+
+  if (!conceived && !hasSpecs && !location) return null
+
+  return (
+    <div className="arkin-exhibition-details">
+      {conceived ? <ConceivedLine text={conceived} /> : null}
+      {hasSpecs ? (
+        <p className="arkin-exhibition-details-line arkin-exhibition-details-line--specs">
+          {size ? <span className="arkin-exhibition-details-spec">{size}</span> : null}
+          {size && material ? (
+            <span className="arkin-exhibition-details-sep" aria-hidden="true">
+              ·
+            </span>
+          ) : null}
+          {material ? <span className="arkin-exhibition-details-spec">{material}</span> : null}
+        </p>
+      ) : null}
+      {location ? (
+        <p className="arkin-exhibition-details-line arkin-exhibition-details-line--location">{location}</p>
+      ) : null}
+    </div>
+  )
 }
 
 function ExhibitionPlateCaption({ artwork }: { artwork: RodinArtwork }) {
@@ -91,7 +150,7 @@ export default function RodinArtworkPage() {
 
   useEffect(() => {
     if (artwork) {
-      document.title = `${artwork.title} | Take Me Around`
+      document.title = `${getArtworkPageTitle(artwork)} | Take Me Around`
     }
   }, [artwork])
 
@@ -100,9 +159,12 @@ export default function RodinArtworkPage() {
   }
 
   const exhibition = artwork.exhibitionStyle
-  const pageSubtitle = `${artwork.subtitle ? `${artwork.subtitle} · ` : ""}${artwork.artist}`
+  const pageSubtitle = artwork.artist
+  const displayTitle = getArtworkPageTitle(artwork)
+  const { french: displayFrench, english: displayEnglish } = getArtworkDisplayTitle(artwork)
   const gallery = slug ? RODIN_IMAGE_GALLERIES[slug] : undefined
   const imageSrc = slug ? RODIN_IMAGES[slug] : undefined
+  const audioSrc = slug ? getRodinAudio(slug) : undefined
   const aboutParagraphs = artwork.aboutParagraphs ?? []
   const hasCustomAbout = aboutParagraphs.length > 0
   const summary =
@@ -125,30 +187,25 @@ export default function RodinArtworkPage() {
         <div className="arkin-exhibition-page-inner">
           <header className="arkin-exhibition-label">
             <div className="arkin-exhibition-eyebrow">Arkın Rodin Collection — Sculpture</div>
-            <h1 className="arkin-exhibition-title">
-              <span className="arkin-exhibition-title-main">{artwork.title}</span>
-              {artwork.subtitle ? (
-                <span className="arkin-exhibition-title-alt">({artwork.subtitle})</span>
-              ) : null}
-            </h1>
+            <ArtworkHeading artwork={artwork} />
             <p className="arkin-exhibition-byline">{artwork.artist}</p>
-            <ExhibitionFacts items={buildExhibitionFacts(artwork)} />
+            <ExhibitionDetails artwork={artwork} />
             {summary ? <p className="arkin-exhibition-summary">{summary}</p> : null}
           </header>
 
-          <AudioPlayer />
+          {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
 
           <figure className="arkin-exhibition-plate">
             <div className="arkin-exhibition-frame">
               {gallery && gallery.length > 0 ? (
-                <ArtworkImageGallery images={gallery} title={artwork.title} />
+                <ArtworkImageGallery images={gallery} title={displayTitle} />
               ) : imageSrc ? (
-                <img src={imageSrc} alt={artwork.title} className="arkin-exhibition-plate-image" />
+                <img src={imageSrc} alt={displayTitle} className="arkin-exhibition-plate-image" />
               ) : (
                 <div
                   className="arkin-exhibition-plate-image arkin-exhibition-plate-placeholder"
                   role="img"
-                  aria-label={artwork.title}
+                  aria-label={displayTitle}
                 />
               )}
             </div>
@@ -160,7 +217,7 @@ export default function RodinArtworkPage() {
           {artwork.sources?.length ? <ExhibitionSources sources={artwork.sources} /> : null}
         </div>
 
-        <Footer />
+        <Footer variant="artwork" />
       </main>
     )
   }
@@ -170,13 +227,14 @@ export default function RodinArtworkPage() {
       <main className="tma-gallery-page">
         <header className="tma-header">
           <div className="tma-header-inner">
-            <h1 className="tma-page-title">{artwork.title}</h1>
+            <h1 className="tma-page-title">{displayFrench}</h1>
+            {displayEnglish ? <p className="tma-page-subtitle">({displayEnglish})</p> : null}
             <p className="tma-page-subtitle">{pageSubtitle}</p>
           </div>
         </header>
 
         <div className="tma-content">
-          <AudioPlayer />
+          {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
           {gallery && gallery.length > 0 ? (
             <ArtworkImageGallery images={gallery} title={artwork.title} />
           ) : imageSrc ? (
@@ -211,7 +269,7 @@ export default function RodinArtworkPage() {
           </p>
         </a>
       </main>
-      <Footer />
+      <Footer variant="artwork" />
     </>
   )
 }

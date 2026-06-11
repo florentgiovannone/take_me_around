@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import Footer from "../components/Footer"
 import { RODIN_ARTWORKS } from "../data/rodinArtworks"
+import { getArtworkDisplayTitle } from "../utils/artworkTitles"
 import "../styles/style.css"
 
 export default function AllPagesPage() {
@@ -14,26 +15,42 @@ export default function AllPagesPage() {
         <p>All pages in this site.</p>
 
         <h2>Artworks</h2>
-        {exhibitionArtworks.map((artwork) => (
-          <p key={artwork.slug}>
-            <Link to={`/${artwork.slug}`}>
-              {artwork.title}
-              {artwork.subtitle ? ` (${artwork.subtitle})` : ""}
-            </Link>
-          </p>
-        ))}
+        {exhibitionArtworks.map((artwork) => {
+          const { french, english } = getArtworkDisplayTitle(artwork)
+          return (
+            <p key={artwork.slug}>
+              <Link to={`/${artwork.slug}`}>
+                {french}
+                {english ? (
+                  <>
+                    <br />
+                    ({english})
+                  </>
+                ) : null}
+              </Link>
+            </p>
+          )
+        })}
 
         {otherArtworks.length > 0 ? (
           <>
             <h2>Catalogue (in progress)</h2>
-            {otherArtworks.map((artwork) => (
-              <p key={artwork.slug}>
-                <Link to={`/${artwork.slug}`}>
-                  {artwork.title}
-                  {artwork.subtitle ? ` (${artwork.subtitle})` : ""}
-                </Link>
-              </p>
-            ))}
+            {otherArtworks.map((artwork) => {
+              const { french, english } = getArtworkDisplayTitle(artwork)
+              return (
+                <p key={artwork.slug}>
+                  <Link to={`/${artwork.slug}`}>
+                    {french}
+                    {english ? (
+                      <>
+                        <br />
+                        ({english})
+                      </>
+                    ) : null}
+                  </Link>
+                </p>
+              )
+            })}
           </>
         ) : null}
 

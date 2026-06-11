@@ -9,6 +9,7 @@
   "dependencies": {
     "@tma/analytics-gallery": "*",
     "@tma/analytics-museum": "*",
+    "@tma/analytics-arkin": "*",
     "@tma/config": "*"
   }
 }
