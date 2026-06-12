@@ -5,7 +5,7 @@
 
 # /dashboard redirects to https://arkin.takemearound.gallery/dashboard/museum (vite netlify-redirects plugin).
 
-# Required for the dashboard (set in Netlify UI, then redeploy):
-#   VITE_API_PROXY_TARGET = https://YOUR-NGROK-OR-API-HOST.ngrok-free.app
-# Optional alias (same effect at build time):
-#   VITE_API_BASE_URL = same URL
+# Required for /dashboard API (Netlify UI → Environment variables → redeploy):
+#   VITE_API_PROXY_TARGET = http://52.18.254.191:5050
+#   (or https ngrok URL). Bakes /api/* proxy into dist/_redirects at build time.
+# Do NOT set VITE_API_BASE_URL to the EC2 IP for production — browser blocks HTTP from HTTPS.

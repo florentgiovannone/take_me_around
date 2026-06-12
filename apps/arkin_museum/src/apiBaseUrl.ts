@@ -4,6 +4,9 @@ function isDeployedSite(hostname: string): boolean {
     hostname === "www.takemearound.museum" ||
     hostname === "takemearound.gallery" ||
     hostname === "www.takemearound.gallery" ||
+    hostname === "arkin.takemearound.gallery" ||
+    hostname === "www.arkin.takemearound.gallery" ||
+    hostname === "arkingallery.netlify.app" ||
     hostname.endsWith(".netlify.app")
   )
 }
@@ -23,6 +26,10 @@ export function apiBaseUrl(): string {
       return ""
     }
     if (isLocal && hasProxyConfig) {
+      return ""
+    }
+    // HTTPS pages must not call http:// APIs directly (mixed content).
+    if (window.location.protocol === "https:" && apiBase.startsWith("http://")) {
       return ""
     }
   }

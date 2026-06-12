@@ -8,7 +8,11 @@ import {
   DashboardSarTimelinePanel,
   SiteScopeProvider,
 } from "@tma/dashboard-ui"
-import { apiBaseUrl, apiNeedsNgrokHeader } from "../apiBaseUrl"
+import {
+  apiNeedsNgrokHeader,
+  dashboardApiUrl,
+  formatDashboardFetchError,
+} from "../apiBaseUrl"
 import {
   clearOperatorSession,
   defaultScopeForOperator,
@@ -42,15 +46,23 @@ type FetchLogsResult =
   | { ok: false; unauthorized: boolean; message: string }
 
 async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
-  const base = apiBaseUrl()
-  const url = base ? `${base}/api/secure/items` : "/api/secure/items"
+  const url = dashboardApiUrl()
   const headers: Record<string, string> = {
     "X-Dashboard-Password": password,
   }
   if (apiNeedsNgrokHeader()) {
     headers["ngrok-skip-browser-warning"] = "true"
   }
-  const response = await fetch(url, { headers })
+  let response: Response
+  try {
+    response = await fetch(url, { headers })
+  } catch (err) {
+    return {
+      ok: false,
+      unauthorized: false,
+      message: formatDashboardFetchError(err, url),
+    }
+  }
 
   if (response.status === 401) {
     return { ok: false, unauthorized: true, message: "Incorrect password." }
