@@ -10,10 +10,14 @@
     "preview": "vite preview",
     "preview:test:host": "vite preview --host 0.0.0.0 --port 4173",
     "audio:export-scripts": "node scripts/export-audio-scripts.mjs",
+    "audio:export-scripts:tr": "node scripts/export-turkish-audio-scripts.mjs",
     "audio:voices": "node scripts/list-voices.mjs",
     "audio:generate": "node scripts/generate-audio.mjs",
     "audio:generate:tr": "node scripts/generate-audio.mjs --locale tr",
-    "audio:generate:dry-run": "node scripts/generate-audio.mjs --dry-run"
+    "audio:tr": "npm run audio:export-scripts:tr && npm run audio:generate:tr",
+    "audio:generate:dry-run": "node scripts/generate-audio.mjs --dry-run",
+    "translate:locales": "node scripts/translate-locales.mjs",
+    "translate:locales:dry-run": "node scripts/translate-locales.mjs --dry-run"
   },
   "dependencies": {
     "@tma/analytics-arkin": "*",

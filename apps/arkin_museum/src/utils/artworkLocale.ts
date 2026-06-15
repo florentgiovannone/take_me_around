@@ -1,4 +1,5 @@
 import type { RodinArtwork } from "../data/rodinArtworks"
+import { RODIN_ARTWORK_LOCALES_TR } from "../data/rodinArtworks.tr"
 
 export type ArtworkLocale = "en" | "tr"
 
@@ -32,7 +33,8 @@ export function resolveArtworkCopy(
   artwork: RodinArtwork,
   locale: ArtworkLocale
 ): ResolvedArtworkCopy {
-  const tr = locale === "tr" ? artwork.locales?.tr : undefined
+  const tr =
+    locale === "tr" ? (artwork.locales?.tr ?? RODIN_ARTWORK_LOCALES_TR[artwork.slug]) : undefined
   const meta = tr?.meta ? { ...artwork.meta, ...tr.meta } : artwork.meta
 
   return {
