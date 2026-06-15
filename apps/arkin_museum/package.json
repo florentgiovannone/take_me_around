@@ -12,6 +12,7 @@
     "audio:export-scripts": "node scripts/export-audio-scripts.mjs",
     "audio:voices": "node scripts/list-voices.mjs",
     "audio:generate": "node scripts/generate-audio.mjs",
+    "audio:generate:tr": "node scripts/generate-audio.mjs --locale tr",
     "audio:generate:dry-run": "node scripts/generate-audio.mjs --dry-run"
   },
   "dependencies": {

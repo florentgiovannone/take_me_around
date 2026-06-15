@@ -194,7 +194,7 @@ export default function RodinArtworkPage() {
   const { french: displayFrench, english: displayEnglish } = getArtworkDisplayTitle(copy)
   const gallery = slug ? RODIN_IMAGE_GALLERIES[slug] : undefined
   const imageSrc = slug ? RODIN_IMAGES[slug] : undefined
-  const audioSrc = slug ? getRodinAudio(slug) : undefined
+  const audioSrc = slug ? getRodinAudio(slug, copy.locale) : undefined
   const aboutParagraphs = copy.aboutParagraphs ?? []
   const hasCustomAbout = aboutParagraphs.length > 0
   const summary =
@@ -227,7 +227,7 @@ export default function RodinArtworkPage() {
             {summary ? <p className="arkin-exhibition-summary">{summary}</p> : null}
           </header>
 
-          {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
+          {audioSrc ? <AudioPlayer key={copy.locale} src={audioSrc} /> : null}
 
           <figure className="arkin-exhibition-plate">
             <div className="arkin-exhibition-frame">
@@ -270,7 +270,7 @@ export default function RodinArtworkPage() {
         </header>
 
         <div className="tma-content">
-          {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
+          {audioSrc ? <AudioPlayer key={copy.locale} src={audioSrc} /> : null}
           {gallery && gallery.length > 0 ? (
             <ArtworkImageGallery images={gallery} title={copy.title} />
           ) : imageSrc ? (
