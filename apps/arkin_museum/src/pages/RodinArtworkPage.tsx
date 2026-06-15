@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useLayoutEffect, useRef } from "react"
-import { useParams } from "react-router-dom"
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef } from "react"
+import { useParams, useSearchParams } from "react-router-dom"
 import { getRodinAudio } from "../assets/Audio/rodinAudio"
 import { RODIN_IMAGE_GALLERIES, RODIN_IMAGES } from "../assets/rodin"
 import ArtworkImageGallery from "../components/ArtworkImageGallery"
@@ -12,6 +12,7 @@ import {
   type RodinArtworkSource,
 } from "../data/rodinArtworks"
 import NotFoundPage from "./NotFoundPage"
+import { detectArtworkLocale, resolveArtworkCopy } from "../utils/artworkLocale"
 import { getArtworkDisplayTitle, getArtworkPageTitle } from "../utils/artworkTitles"
 import "../styles/style.css"
 import "../styles/rodin-exhibition.css"
@@ -97,7 +98,17 @@ function ExhibitionDetails({ artwork }: { artwork: RodinArtwork }) {
   )
 }
 
-function ExhibitionPlateCaption({ artwork }: { artwork: RodinArtwork }) {
+function ExhibitionPlateCaption({
+  artwork,
+  plateCaption,
+}: {
+  artwork: RodinArtwork
+  plateCaption: string | null
+}) {
+  if (plateCaption) {
+    return <figcaption className="arkin-exhibition-plate-caption">{plateCaption}</figcaption>
+  }
+
   const meta = artwork.meta
   if (!meta?.marksAndInscriptions && !meta?.inventoryNumber) return null
 
@@ -113,12 +124,18 @@ function ExhibitionPlateCaption({ artwork }: { artwork: RodinArtwork }) {
   )
 }
 
-function ExhibitionSources({ sources }: { sources: RodinArtworkSource[] }) {
+function ExhibitionSources({
+  sources,
+  sourcesLabel,
+}: {
+  sources: RodinArtworkSource[]
+  sourcesLabel: string
+}) {
   if (sources.length === 0) return null
 
   return (
     <footer className="arkin-exhibition-sources" aria-label="Sources">
-      <span className="arkin-exhibition-sources-label">Sources:</span>{" "}
+      <span className="arkin-exhibition-sources-label">{sourcesLabel}</span>{" "}
       {sources.map((source, index) => (
         <Fragment key={source.href}>
           {index > 0 ? <span className="arkin-exhibition-sources-sep" aria-hidden="true"> · </span> : null}
@@ -131,12 +148,18 @@ function ExhibitionSources({ sources }: { sources: RodinArtworkSource[] }) {
   )
 }
 
-function ExhibitionEssay({ paragraphs }: { paragraphs: string[] }) {
+function ExhibitionEssay({
+  paragraphs,
+  aboutHeading,
+}: {
+  paragraphs: string[]
+  aboutHeading: string
+}) {
   if (paragraphs.length === 0) return null
 
   return (
     <section className="arkin-exhibition-essay" aria-labelledby="arkin-exhibition-essay-heading">
-      <h2 id="arkin-exhibition-essay-heading">About the work</h2>
+      <h2 id="arkin-exhibition-essay-heading">{aboutHeading}</h2>
       {paragraphs.map((paragraph) => (
         <p key={paragraph.slice(0, 48)}>{paragraph}</p>
       ))}
@@ -146,50 +169,61 @@ function ExhibitionEssay({ paragraphs }: { paragraphs: string[] }) {
 
 export default function RodinArtworkPage() {
   const { slug } = useParams<{ slug: string }>()
+  const [searchParams] = useSearchParams()
   const artwork = slug ? getRodinArtwork(slug) : undefined
+  const locale = useMemo(() => detectArtworkLocale(searchParams), [searchParams])
+  const copy = useMemo(
+    () => (artwork ? resolveArtworkCopy(artwork, locale) : undefined),
+    [artwork, locale]
+  )
 
   useEffect(() => {
-    if (artwork) {
-      document.title = `${getArtworkPageTitle(artwork)} | Take Me Around`
+    if (copy) {
+      document.title = `${getArtworkPageTitle(copy)} | Take Me Around`
+      document.documentElement.lang = copy.locale === "tr" ? "tr" : "en"
     }
-  }, [artwork])
+  }, [copy])
 
-  if (!artwork) {
+  if (!artwork || !copy) {
     return <NotFoundPage />
   }
 
   const exhibition = artwork.exhibitionStyle
-  const pageSubtitle = artwork.artist
-  const displayTitle = getArtworkPageTitle(artwork)
-  const { french: displayFrench, english: displayEnglish } = getArtworkDisplayTitle(artwork)
+  const pageSubtitle = copy.artist
+  const displayTitle = getArtworkPageTitle(copy)
+  const { french: displayFrench, english: displayEnglish } = getArtworkDisplayTitle(copy)
   const gallery = slug ? RODIN_IMAGE_GALLERIES[slug] : undefined
   const imageSrc = slug ? RODIN_IMAGES[slug] : undefined
   const audioSrc = slug ? getRodinAudio(slug) : undefined
-  const aboutParagraphs = artwork.aboutParagraphs ?? []
+  const aboutParagraphs = copy.aboutParagraphs ?? []
   const hasCustomAbout = aboutParagraphs.length > 0
   const summary =
-    artwork.summary ?? (aboutParagraphs.length > 1 ? aboutParagraphs[0] : null)
+    copy.summary ?? (aboutParagraphs.length > 1 ? aboutParagraphs[0] : null)
   const essayParagraphs = hasCustomAbout
-    ? artwork.summary
+    ? copy.summary
       ? aboutParagraphs
       : aboutParagraphs.length > 1
         ? aboutParagraphs.slice(1)
         : aboutParagraphs
     : artwork.description
       ? [artwork.description]
-      : [
-          "This bronze is part of the Arkın Rodin Collection. Listen to the audio guide above to discover more about this piece.",
-        ]
+      : copy.locale === "tr"
+        ? [
+            "Bu bronz, Arkın Rodin Koleksiyonu'nun bir parçasıdır. Bu eser hakkında daha fazla bilgi edinmek için yukarıdaki sesli rehberi dinleyin.",
+          ]
+        : [
+            "This bronze is part of the Arkın Rodin Collection. Listen to the audio guide above to discover more about this piece.",
+          ]
 
   if (exhibition) {
     return (
       <main className="arkin-exhibition-page arkin-exhibition-page--artwork">
         <div className="arkin-exhibition-page-inner">
           <header className="arkin-exhibition-label">
-            <div className="arkin-exhibition-eyebrow">Arkın Rodin Collection — Sculpture</div>
-            <ArtworkHeading artwork={artwork} />
-            <p className="arkin-exhibition-byline">{artwork.artist}</p>
-            <ExhibitionDetails artwork={artwork} />
+            <div className="arkin-exhibition-eyebrow">{copy.exhibitionEyebrow}</div>
+            <ArtworkHeading artwork={copy} />
+            <p className="arkin-exhibition-byline">{copy.artist}</p>
+            <ExhibitionDetails artwork={copy} />
             {summary ? <p className="arkin-exhibition-summary">{summary}</p> : null}
           </header>
 
@@ -209,12 +243,14 @@ export default function RodinArtworkPage() {
                 />
               )}
             </div>
-            <ExhibitionPlateCaption artwork={artwork} />
+            <ExhibitionPlateCaption artwork={copy} plateCaption={copy.plateCaption} />
           </figure>
 
-          <ExhibitionEssay paragraphs={essayParagraphs} />
+          <ExhibitionEssay paragraphs={essayParagraphs} aboutHeading={copy.aboutHeading} />
 
-          {artwork.sources?.length ? <ExhibitionSources sources={artwork.sources} /> : null}
+          {copy.sources?.length ? (
+            <ExhibitionSources sources={copy.sources} sourcesLabel={copy.sourcesLabel} />
+          ) : null}
         </div>
 
         <Footer variant="artwork" />
@@ -236,28 +272,31 @@ export default function RodinArtworkPage() {
         <div className="tma-content">
           {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
           {gallery && gallery.length > 0 ? (
-            <ArtworkImageGallery images={gallery} title={artwork.title} />
+            <ArtworkImageGallery images={gallery} title={copy.title} />
           ) : imageSrc ? (
-            <img src={imageSrc} alt={artwork.title} className="tma-painting-image" />
+            <img src={imageSrc} alt={copy.title} className="tma-painting-image" />
           ) : (
             <div
               className="tma-painting-image tma-sculpture-placeholder"
               role="img"
-              aria-label={artwork.title}
+              aria-label={copy.title}
             />
           )}
 
-          {artwork.meta ? <LegacyMeta meta={artwork.meta} /> : null}
+          {copy.meta ? <LegacyMeta meta={copy.meta} locale={copy.locale} /> : null}
 
-          <h2>About {artwork.title}.</h2>
+          <h2>
+            {copy.locale === "tr" ? `${copy.title} hakkında` : `About ${copy.title}.`}
+          </h2>
           {hasCustomAbout ? (
             aboutParagraphs.map((paragraph) => <p key={paragraph.slice(0, 40)}>{paragraph}</p>)
           ) : (
             <>
               {artwork.description ? <p>{artwork.description}</p> : null}
               <p>
-                This bronze is part of the Arkın Rodin Collection, featuring works by Auguste Rodin
-                (1840–1917) and related sculptors.
+                {copy.locale === "tr"
+                  ? "Bu bronz, Auguste Rodin (1840–1917) ve ilgili heykeltıraşların eserlerini içeren Arkın Rodin Koleksiyonu'nun bir parçasıdır."
+                  : "This bronze is part of the Arkın Rodin Collection, featuring works by Auguste Rodin (1840–1917) and related sculptors."}
               </p>
             </>
           )}
@@ -274,36 +313,53 @@ export default function RodinArtworkPage() {
   )
 }
 
-function LegacyMeta({ meta }: { meta: RodinArtworkMeta }) {
+function LegacyMeta({ meta, locale }: { meta: RodinArtworkMeta; locale: "en" | "tr" }) {
+  const labels =
+    locale === "tr"
+      ? {
+          height: "Yükseklik",
+          marks: "İşaretler ve Yazılar",
+          inventory: "Envanter Numarası",
+          materials: "Malzemeler",
+          location: "Konum",
+        }
+      : {
+          height: "Height",
+          marks: "Marks & Inscriptions",
+          inventory: "Inventory Number",
+          materials: "Materials",
+          location: "Location",
+        }
+
   return (
     <dl className="tma-artwork-meta">
       {meta.height ? (
         <>
-          <dt>Height</dt>
+          <dt>{labels.height}</dt>
           <dd>{meta.height}</dd>
         </>
       ) : null}
       {meta.marksAndInscriptions ? (
         <>
-          <dt>Marks &amp; Inscriptions</dt>
+          <dt>{labels.marks}</dt>
           <dd>{meta.marksAndInscriptions}</dd>
         </>
       ) : null}
       {meta.inventoryNumber ? (
         <>
-          <dt>Inventory Number</dt>
+          <dt>{labels.inventory}</dt>
           <dd>{meta.inventoryNumber}</dd>
         </>
       ) : null}
       {meta.materials ? (
         <>
-          <dt>Materials</dt>
+          <dt>{labels.materials}</dt>
           <dd>{meta.materials}</dd>
         </>
       ) : null}
       {meta.location ? (
         <>
-          <dt>Location</dt>
+          <dt>{labels.location}</dt>
           <dd>{meta.location}</dd>
         </>
       ) : null}

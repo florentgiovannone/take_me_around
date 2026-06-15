@@ -11,6 +11,21 @@ export type RodinArtworkSource = {
   href: string
 }
 
+/** Per-locale overrides for exhibition copy (see `utils/artworkLocale.ts`). */
+export type RodinArtworkLocaleCopy = {
+  subtitle?: string
+  artist?: string
+  caption?: string
+  summary?: string
+  aboutParagraphs?: string[]
+  aboutHeading?: string
+  sourcesLabel?: string
+  exhibitionEyebrow?: string
+  plateCaption?: string
+  meta?: Partial<RodinArtworkMeta>
+  sources?: RodinArtworkSource[]
+}
+
 export type RodinArtwork = {
   slug: string
   /** French display name (primary line). */
@@ -31,6 +46,10 @@ export type RodinArtwork = {
   aboutParagraphs?: string[]
   /** Institutions and references cited on the page. */
   sources?: RodinArtworkSource[]
+  /** Optional translated copy (e.g. Turkish from phone locale). */
+  locales?: {
+    tr?: RodinArtworkLocaleCopy
+  }
 }
 
 export const RODIN_ARTWORKS: RodinArtwork[] = [
@@ -868,6 +887,35 @@ export const RODIN_ARTWORKS: RodinArtwork[] = [
       { label: "Montreal Museum of Fine Arts — The Eternal Idol", href: "https://www.mbam.qc.ca/en/works/71552/" },
       { label: "Christie's — Éternelle idole, grand modèle", href: "https://www.christies.com/en/lot/lot-6414756" },
     ],
+    locales: {
+      tr: {
+        subtitle: "Sonsuz İdol, Küçük Model",
+        artist: "Auguste Rodin (Fransız, 1840–1917)",
+        caption: "1889'da tasarlanmış, 1927'de dökülmüştür.",
+        exhibitionEyebrow: "Arkın Rodin Koleksiyonu — Heykel",
+        summary:
+          "Bir adam, ellerini arkasında birleştirerek diz çökmüş ve ayakta duran bir kadının göğsüne dudaklarını bastırıyor — Rodin'in en yoğun hayranlık, güvensizlik ve tapınma temalı küçük grubu, Cehennem Kapıları henüz atölyesindeyken modellenmiştir.",
+        plateCaption:
+          "Auguste Rodin (Fransız, 1840–1917), Éternelle Idole, Petit Modèle. A. Rodin imzalı. 1 numara ile numaralandırılmış ve Alexis Rudier Fondeur, Paris dökümhane damgası ile damgalanmış. Envanter RCG0003.20-05",
+        meta: {
+          height: "17,14 cm",
+          materials: "Siyah ve yeşil patine kaplı bronz",
+          location: "Arkın Saat Kulesi - Arkın Grubu Genel Merkezi",
+        },
+        aboutHeading: "Eser hakkında",
+        aboutParagraphs: [
+          "Rodin bu grubu 1889'da, hala Cehennem Kapıları ile uğraşırken yaptı. Her iki figür de sağ kapıda ayrı ayrı başladı, daha sonra onları çıkarıp birbirine yapıştırdı. Adam diz çökmüş, elleri sanki bağlanmış gibi arkasında birleştirilmiş. Kadın onun üzerinde duruyor, bir bacağını yukarı kaldırmış, neredeyse ifadesiz bir yüzle aşağıya bakıyor. Adam, dua, teslimiyet ya da yüksek sesle söyleyemediği bir itiraf gibi görünen bir hareketle ağzını kadının göğsüne gömmüş.",
+          "Rodin, hayatı boyunca bu esere üç farklı isim verdi. Komünyondaki ekmek parçasını çağrıştıran L'Hostie — Host — adını verdi. Le Sacrifice adını verdi. Sonunda L'Éternelle Idole adını seçti. Bu isimlerin ortak bir noktası var: Kadın ilahi, erkek ise ne kadar sefil olursa olsun, bir şekilde ibadet etme özgürlüğüne sahip.",
+          "Bu 17 santimetrelik versiyonun ilk kalıbı, 1891'de koleksiyoncu Antoni Roux'ya gitti. Roux, Rodin'i eseri büyütmeye ikna etti ve 1893'te Jean Escoula tarafından mermerden bir heykel oyuldu. Ancak küçük bronz heykel, daha büyük versiyonların yumuşattığı bir şeyi koruyor. Kompozisyon kapalı ve yoğun, elinde tutulan bir nesnenin boyutunda. Kısa bir süre Rodin'in sekreteri olarak görev yapan romancı Rainer Maria Rilke, heykel hakkında şöyle demiştir: ‘Cennet yakındır, ama henüz ulaşılmamıştır; Cehennem yakındır, ama henüz unutulmamıştır.’ Adamın ellerine bakın. Tamamen bağlı değiller, ama tamamen özgür de değiller.",
+        ],
+        sourcesLabel: "Kaynaklar:",
+        sources: [
+          { label: "Arkın Rodin Koleksiyonu — Éternelle Idole, Petit Modèle", href: "https://www.thearkinrodincollection.com/our-exhibitions/%C3%A9ternelle-idole%2C-petit-modele-%5Beternal-idol%2C-small-model%5D-" },
+          { label: "Montreal Güzel Sanatlar Müzesi — The Eternal Idol", href: "https://www.mbam.qc.ca/en/works/71552/" },
+          { label: "Christie's — Éternelle idole, grand modèle", href: "https://www.christies.com/en/lot/lot-6414756" },
+        ],
+      },
+    },
   },]
 
 export function getRodinArtwork(slug: string): RodinArtwork | undefined {
