@@ -1,8 +1,10 @@
-import fallenMadonnaImage from "../assets/fallen-madonna.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_The_Fallen_Madonna_with_the_Big_Boobies.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/gallery"
+
+const ARTWORK_SLUG = "fallen-madonna"
+
 
 export default function GalleryNouvionPage() {
   return (
@@ -33,10 +35,10 @@ export default function GalleryNouvionPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
 
           <img
-            src={fallenMadonnaImage}
+            src={ARTWORK_IMAGES[ARTWORK_SLUG]!}
             alt="The Fallen Madonna with the Big Boobies by Hertog van Klomp"
             className="tma-painting-image"
           />

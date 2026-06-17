@@ -91,6 +91,17 @@ function ActivityDetailsPanel({
   )
 }
 
+function renderDashboardLink(link: string) {
+  if (/^https?:\/\//i.test(link)) {
+    return (
+      <a href={link} target="_blank" rel="noopener noreferrer">
+        {link}
+      </a>
+    )
+  }
+  return link
+}
+
 function ActivityRow({
   entry,
   logs,
@@ -141,7 +152,7 @@ function ActivityRow({
           </div>
         </td>
         <td data-label="Link" className="tma-dashboard-link-cell">
-          {entry.link}
+          {renderDashboardLink(entry.link)}
         </td>
       </tr>
       {expanded && hasVisitDetails && (

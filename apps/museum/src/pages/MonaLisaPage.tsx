@@ -1,8 +1,10 @@
-import monaLisaImage from "../assets/mona-lisa.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_Mona_Lisa.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/museum"
+
+const ARTWORK_SLUG = "mona-lisa"
+
 export default function MonaLisaPage() {
   return (
     <>
@@ -28,8 +30,8 @@ export default function MonaLisaPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
-          <img src={monaLisaImage} alt="Mona Lisa by Leonardo da Vinci" className="tma-painting-image" />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
+          <img src={ARTWORK_IMAGES[ARTWORK_SLUG]!} alt="Mona Lisa by Leonardo da Vinci" className="tma-painting-image" />
           <h2>About the painting.</h2>
           <p>
             Mona Lisa (also known as La Gioconda) is a half-length portrait oil painting on a poplar wood panel,

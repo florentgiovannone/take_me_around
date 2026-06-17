@@ -1,8 +1,10 @@
-import rosettaStoneImage from "../assets/rosetta-stone.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_The_Rosetta_Stone.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/museum"
+
+const ARTWORK_SLUG = "rosetta-stone"
+
 
 export default function RosettaStonePage() {
   return (
@@ -29,8 +31,8 @@ export default function RosettaStonePage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
-          <img src={rosettaStoneImage} alt="The Rosetta Stone" className="tma-painting-image" />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
+          <img src={ARTWORK_IMAGES[ARTWORK_SLUG]!} alt="The Rosetta Stone" className="tma-painting-image" />
 
           <h2>About the The Rosetta stone.</h2>
           <p>

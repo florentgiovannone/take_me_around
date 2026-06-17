@@ -42,21 +42,18 @@ export type AudienceBreakdownRow = {
   percent: number
 }
 
+import { SITE_META } from "@tma/config"
 import { TRACKED_ARKIN_ARTWORKS, type TrackedArtwork } from "./trackedArtworks"
+import { TRACKED_ARKIN_NAME_TO_PATH } from "./trackedArtworkNames"
 
 export { TRACKED_ARKIN_ARTWORKS, type TrackedArtwork }
 
-const ARKIN_PUBLIC_ORIGIN = "https://arkingallery.netlify.app"
+const ARKIN_PUBLIC_ORIGIN = `https://${SITE_META.arkin.host}`
 
 const TRACKED_ARKIN_PATHS = TRACKED_ARKIN_ARTWORKS.map((artwork) => artwork.path)
 const TRACKED_ARKIN_PATHS_BY_LENGTH = [...TRACKED_ARKIN_PATHS].sort(
   (a, b) => b.length - a.length
 )
-const TRACKED_ARKIN_TITLES = new Set(
-  TRACKED_ARKIN_ARTWORKS.map((artwork) => artwork.title.toLowerCase())
-)
-
-const TRACKED_ARKIN_PATH_ALIASES: { match: string; canonical: string }[] = []
 
 const ARKIN_HOST_MARKERS = [
   "arkingallery.netlify.app",
@@ -88,16 +85,17 @@ export function extractTrackedPathFromMessage(message: string): string | null {
     if (normalized.includes(path)) return path
   }
 
-  for (const alias of TRACKED_ARKIN_PATH_ALIASES) {
-    if (normalized.includes(alias.match)) return alias.canonical
+  const bareSlug = normalized
+    .replace(/^https?:\/\/[^/]+/, "")
+    .replace(/^\//, "")
+    .split(/[?#]/)[0]
+    ?.trim()
+  if (bareSlug) {
+    const aliasPath = TRACKED_ARKIN_NAME_TO_PATH.get(bareSlug)
+    if (aliasPath) return aliasPath
   }
 
   return null
-}
-
-function nameMatchesTrackedArkinArtwork(name: string | null | undefined) {
-  const normalized = name?.trim().toLowerCase()
-  return Boolean(normalized && TRACKED_ARKIN_TITLES.has(normalized))
 }
 
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
@@ -109,10 +107,12 @@ export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
   const normalizedName = log.text_name?.trim().toLowerCase()
   if (!normalizedName) return null
 
-  return (
-    TRACKED_ARKIN_ARTWORKS.find((artwork) => artwork.title.toLowerCase() === normalizedName) ??
-    null
-  )
+  const aliasPath = TRACKED_ARKIN_NAME_TO_PATH.get(normalizedName)
+  if (aliasPath) {
+    return TRACKED_ARKIN_ARTWORKS.find((artwork) => artwork.path === aliasPath) ?? null
+  }
+
+  return null
 }
 
 /** True when the log belongs to one of the tracked takemearound.arkin artworks. */
@@ -123,6 +123,8 @@ export function isArkinLog(log: PoiseLog) {
 export function getArkinLogLink(log: PoiseLog) {
   const artwork = resolveTrackedArtwork(log)
   if (artwork) return getTrackedArtworkUrl(artwork.path)
+  const path = extractTrackedPathFromMessage(log.txt_message ?? "")
+  if (path) return getTrackedArtworkUrl(path)
   return log.txt_message?.trim() || "-"
 }
 
@@ -751,16 +753,10 @@ function percentChange(current: number, previous: number) {
 }
 
 function arkinSeenEntries(logs: PoiseLog[]) {
-  const arkinTagNames = new Set<string>(
-    TRACKED_ARKIN_ARTWORKS.map((artwork) => artwork.title)
-  )
-
   return getSeenEntries(logs)
+    .filter((log) => resolveTrackedArtwork(log) !== null)
     .map(parseSeenEntry)
-    .filter((entry): entry is ParsedSeen => {
-      if (!entry?.textName?.trim()) return false
-      return arkinTagNames.has(entry.textName.trim())
-    })
+    .filter((entry): entry is ParsedSeen => entry !== null)
 }
 
 export function buildOverviewAnalytics(logs: PoiseLog[]) {
@@ -954,13 +950,33 @@ function resolveSarForArkinLog(log: PoiseLog, sarByUid: Map<string, string>): st
   return null
 }
 
-/** Distinct SAR values seen on tracked .arkin links (from SEEN cookies, linked to redirects by tag UID). */
+const TAG_SESSION_PREFIX = "tag:"
+
+/** SAR cookie when present; otherwise NFC tag UID so scans still appear on the timeline. */
+function resolveSessionKey(log: PoiseLog, sarByUid: Map<string, string>): string | null {
+  const sar = resolveSarForArkinLog(log, sarByUid)
+  if (sar) return sar
+  const uid = log.txt_uid?.trim()
+  if (uid) return `${TAG_SESSION_PREFIX}${uid}`
+  return null
+}
+
+function sessionKeyMatchesQuery(sessionKey: string, query: string): boolean {
+  const q = query.trim().toLowerCase()
+  const key = sessionKey.toLowerCase()
+  if (key === q) return true
+  if (q.startsWith(TAG_SESSION_PREFIX)) return key === q
+  if (key.startsWith(TAG_SESSION_PREFIX) && key.slice(TAG_SESSION_PREFIX.length) === q) return true
+  return false
+}
+
+/** Distinct session keys (SAR cookie or NFC tag UID) for tracked Arkın activity. */
 export function listDistinctArkinSars(logs: PoiseLog[]): string[] {
   const sarByUid = buildArkinSarByTagUid(logs)
   const values = new Set<string>()
   for (const log of getArkinLogs(logs)) {
-    const sar = resolveSarForArkinLog(log, sarByUid)
-    if (sar) values.add(sar)
+    const sessionKey = resolveSessionKey(log, sarByUid)
+    if (sessionKey) values.add(sessionKey)
   }
   return [...values].sort((a, b) => a.localeCompare(b))
 }
@@ -1085,14 +1101,14 @@ export function formatSarTimelineRowMetaSubtitle(meta: SarTimelineRowMeta) {
   return formatSarRowMetaSubtitle(meta.country, meta.language)
 }
 
-/** All tracked .arkin log rows for one SAR (case-insensitive). */
+/** All tracked Arkın log rows for one session key (SAR or tag UID; case-insensitive). */
 export function getArkinLogsForSar(logs: PoiseLog[], sarQuery: string): PoiseLog[] {
-  const target = sarQuery.trim().toLowerCase()
+  const target = sarQuery.trim()
   if (!target) return []
   const sarByUid = buildArkinSarByTagUid(logs)
   return getArkinLogs(logs).filter((log) => {
-    const sar = resolveSarForArkinLog(log, sarByUid)
-    return sar?.toLowerCase() === target
+    const sessionKey = resolveSessionKey(log, sarByUid)
+    return sessionKey ? sessionKeyMatchesQuery(sessionKey, target) : false
   })
 }
 
@@ -1617,15 +1633,15 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
   const rawPoints: Omit<SarTimelinePlotPoint, "xPercent">[] = []
 
   for (const log of getArkinLogs(logs)) {
-    const sar = resolveSarForArkinLog(log, sarByUid)
-    if (!sar) continue
+    const sessionKey = resolveSessionKey(log, sarByUid)
+    if (!sessionKey) continue
     const timestamp = parseLogTimestampGmt(log.dtm_timestamp)
     if (!timestamp) continue
     const artwork = resolveTrackedArtwork(log)
     const messageType = (log.txt_message_type ?? "-").trim()
     rawPoints.push({
       logId: log.int_id,
-      sar,
+      sar: sessionKey,
       timestamp,
       offsetMs: timestamp.getTime() - nowMs,
       messageType,

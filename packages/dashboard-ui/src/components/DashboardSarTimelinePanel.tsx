@@ -29,6 +29,17 @@ function TimestampCell({ value }: { value: string | null }) {
   )
 }
 
+function renderDashboardLink(link: string) {
+  if (/^https?:\/\//i.test(link)) {
+    return (
+      <a href={link} target="_blank" rel="noopener noreferrer">
+        {link}
+      </a>
+    )
+  }
+  return link
+}
+
 export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimelinePanelProps) {
   const siteScope = useSiteAnalyticsScope()
   const [sarInput, setSarInput] = useState("")
@@ -57,7 +68,8 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
       <section className="tma-analytics-card tma-dashboard-sar-lookup">
         <h2>Live sessions</h2>
         <p className="tma-dashboard-sar-lookup-hint">
-          <strong>Y-axis:</strong> each SAR number. <strong>X-axis:</strong> time — past on the left,
+          <strong>Y-axis:</strong> each visitor session (SAR cookie when the page loads, otherwise the NFC tag ID).
+          <strong> X-axis:</strong> time — past on the left,
           <strong> now</strong> in the centre, future on the right. Dots are tracked{" "}
           <strong>{sarTimelineDomainLabel(siteScope)}</strong> events: dot colour shows scan recency (red = latest);
           square = NFC scan, circle = page visit. Scroll or use the
@@ -198,7 +210,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
                             </span>
                           </td>
                           <td data-label="Link" className="tma-dashboard-link-cell">
-                            {event.link}
+                            {renderDashboardLink(event.link)}
                           </td>
                         </tr>
                       ))}

@@ -1,8 +1,10 @@
-import royalGameOfUrImage from "../assets/royal-game-of-ur.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_The_Royal_Game_of_Ur.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/museum"
+
+const ARTWORK_SLUG = "royal-game-of-ur"
+
 
 export default function RoyalGameOfUrPage() {
   return (
@@ -29,8 +31,8 @@ export default function RoyalGameOfUrPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
-          <img src={royalGameOfUrImage} alt="The Royal Game of Ur" className="tma-painting-image" />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
+          <img src={ARTWORK_IMAGES[ARTWORK_SLUG]!} alt="The Royal Game of Ur" className="tma-painting-image" />
 
           <h2>About  The Royal Game of Ur.</h2>
           <p>

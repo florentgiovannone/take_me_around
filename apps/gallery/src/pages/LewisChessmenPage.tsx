@@ -1,8 +1,10 @@
-import lewisChessmenImage from "../assets/lewis-chessmen.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_The_Lewis_Chessmen.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/gallery"
+
+const ARTWORK_SLUG = "lewis-chessmen"
+
 
 export default function LewisChessmenPage() {
   return (
@@ -29,8 +31,8 @@ export default function LewisChessmenPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
-          <img src={lewisChessmenImage} alt="The Lewis Chessmen" className="tma-painting-image" />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
+          <img src={ARTWORK_IMAGES[ARTWORK_SLUG]!} alt="The Lewis Chessmen" className="tma-painting-image" />
 
           <h2>About The Lewis Chessmen.</h2>
           <p>

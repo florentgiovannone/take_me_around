@@ -1,8 +1,10 @@
-import qingmingFestivalImage from "../assets/qingming-festival.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_Along_the_River_During_Qingming_Festival.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/museum"
+
+const ARTWORK_SLUG = "qingming-festival"
+
 
 export default function QingmingFestivalPage() {
   return (
@@ -29,10 +31,10 @@ export default function QingmingFestivalPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
 
           <img
-            src={qingmingFestivalImage}
+            src={ARTWORK_IMAGES[ARTWORK_SLUG]!}
             alt="Along the River During Qingming Festival detail"
             className="tma-painting-image"
           />

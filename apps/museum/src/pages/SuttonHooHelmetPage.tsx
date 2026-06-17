@@ -1,8 +1,10 @@
-import suttonHooHelmetImage from "../assets/sutton-hoo-helmet.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_The_Sutton_Hoo_helmet.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/museum"
+
+const ARTWORK_SLUG = "sutton-hoo-helmet"
+
 
 export default function SuttonHooHelmetPage() {
   return (
@@ -29,8 +31,8 @@ export default function SuttonHooHelmetPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
-          <img src={suttonHooHelmetImage} alt="The Sutton Hoo helmet" className="tma-painting-image" />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
+          <img src={ARTWORK_IMAGES[ARTWORK_SLUG]!} alt="The Sutton Hoo helmet" className="tma-painting-image" />
 
           <h2>About the Helmet.</h2>
           <p>

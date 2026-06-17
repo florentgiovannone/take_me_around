@@ -1,8 +1,10 @@
-import edmondDeBelamyImage from "../assets/edmond-de-belamy.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_Portrait_of_Edmond_de_Belamy.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/museum"
+
+const ARTWORK_SLUG = "edmond-de-belamy"
+
 
 export default function EdmondDeBelamyPage() {
   return (
@@ -29,10 +31,10 @@ export default function EdmondDeBelamyPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
 
           <img
-            src={edmondDeBelamyImage}
+            src={ARTWORK_IMAGES[ARTWORK_SLUG]!}
             alt="Portrait of Edmond de Belamy"
             className="tma-painting-image"
           />

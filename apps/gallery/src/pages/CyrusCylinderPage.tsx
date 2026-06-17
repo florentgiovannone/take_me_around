@@ -1,8 +1,10 @@
-import cyrusCylinderImage from "../assets/cyrus-cylinder.png"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
-import pageAudio from "../assets/Audio/ElevenLabs_The_Cyrus_Cylinder.mp3"
+import { ARTWORK_IMAGES, getArtworkAudio } from "../assets/gallery"
+
+const ARTWORK_SLUG = "cyrus-cylinder"
+
 
 export default function CyrusCylinderPage() {
   return (
@@ -29,8 +31,8 @@ export default function CyrusCylinderPage() {
         </a>
 
         <div className="tma-content">
-          <AudioPlayer src={pageAudio} />
-          <img src={cyrusCylinderImage} alt="The Cyrus Cylinder" className="tma-painting-image" />
+          <AudioPlayer src={getArtworkAudio(ARTWORK_SLUG)!} />
+          <img src={ARTWORK_IMAGES[ARTWORK_SLUG]!} alt="The Cyrus Cylinder" className="tma-painting-image" />
 
           <h2>About the Cyrus Cylinder.</h2>
           <p>
