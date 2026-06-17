@@ -1,8 +1,8 @@
 import { type FormEvent, useMemo, useState } from "react"
 import AnalyticsStatCard from "./AnalyticsStatCard"
+import DashboardActivityTableRow from "./DashboardActivityTableRow"
 import SarTimelineChart from "./SarTimelineChart"
 import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
-import { formatLogTimestamp, messageTypeClass } from "../utils/dashboardFormatters"
 import {
   buildSarTimelineEvents,
   buildSarTimelinePlot,
@@ -17,29 +17,6 @@ type DashboardSarTimelinePanelProps = {
   logs: PoiseLog[]
 }
 
-function TimestampCell({ value }: { value: string | null }) {
-  const formatted = formatLogTimestamp(value)
-  if (!formatted) return <>-</>
-
-  return (
-    <>
-      <div>{formatted.date}</div>
-      <div className="tma-dashboard-muted">{formatted.time}</div>
-    </>
-  )
-}
-
-function renderDashboardLink(link: string) {
-  if (/^https?:\/\//i.test(link)) {
-    return (
-      <a href={link} target="_blank" rel="noopener noreferrer">
-        {link}
-      </a>
-    )
-  }
-  return link
-}
-
 export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimelinePanelProps) {
   const siteScope = useSiteAnalyticsScope()
   const [sarInput, setSarInput] = useState("")
@@ -48,7 +25,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
   const knownSars = useMemo(() => listDistinctSars(logs, siteScope), [logs, siteScope])
   const plot = useMemo(() => buildSarTimelinePlot(logs, siteScope), [logs, siteScope])
 
-  const timelineEvents = useMemo(
+  const timelineEntries = useMemo(
     () => (activeSar ? buildSarTimelineEvents(logs, activeSar, siteScope) : []),
     [logs, activeSar, siteScope]
   )
@@ -180,7 +157,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
                   Clear filter
                 </button>
               </div>
-              {timelineEvents.length === 0 ? (
+              {timelineEntries.length === 0 ? (
                 <p className="tma-analytics-empty">
                   No tracked {sarTimelineDomainSuffix(siteScope)} activity for this SAR in the current load.
                 </p>
@@ -192,27 +169,19 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
                         <th>Artwork</th>
                         <th>Time</th>
                         <th>Type</th>
+                        <th>Seen?</th>
                         <th>Link</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {timelineEvents.map((event) => (
-                        <tr key={event.logId}>
-                          <td data-label="Artwork">{event.artworkTitle}</td>
-                          <td data-label="Time">
-                            <TimestampCell value={event.timestamp} />
-                          </td>
-                          <td data-label="Type">
-                            <span
-                              className={`tma-dashboard-type-badge ${messageTypeClass(event.messageType)}`}
-                            >
-                              {event.messageType}
-                            </span>
-                          </td>
-                          <td data-label="Link" className="tma-dashboard-link-cell">
-                            {renderDashboardLink(event.link)}
-                          </td>
-                        </tr>
+                      {timelineEntries.map((entry) => (
+                        <DashboardActivityTableRow
+                          key={entry.key}
+                          entry={entry}
+                          logs={logs}
+                          scope={siteScope}
+                          showLogId={false}
+                        />
                       ))}
                     </tbody>
                   </table>

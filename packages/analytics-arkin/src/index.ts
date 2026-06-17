@@ -1186,34 +1186,14 @@ export function getArkinLogsForSar(logs: PoiseLog[], sarQuery: string): PoiseLog
   })
 }
 
-export type SarArkinTimelineEvent = {
-  logId: number
-  timestamp: string | null
-  messageType: string
-  artworkTitle: string
-  link: string
-}
+export type SarArkinTimelineEvent = ArkinActivityEntry
 
 export function buildSarArkinTimelineEvents(
   logs: PoiseLog[],
   sarQuery: string
-): SarArkinTimelineEvent[] {
-  return getArkinLogsForSar(logs, sarQuery)
-    .map((log) => {
-      const artwork = resolveTrackedArtwork(log)
-      return {
-        logId: log.int_id,
-        timestamp: log.dtm_timestamp,
-        messageType: log.txt_message_type ?? "-",
-        artworkTitle: artwork?.title ?? log.text_name?.trim() ?? "Unknown",
-        link: getArkinLogLink(log),
-      }
-    })
-    .sort((a, b) => {
-      const aTime = parseLogTimestampGmt(a.timestamp)?.getTime() ?? 0
-      const bTime = parseLogTimestampGmt(b.timestamp)?.getTime() ?? 0
-      return aTime - bTime
-    })
+): ArkinActivityEntry[] {
+  if (!sarQuery.trim()) return []
+  return buildArkinActivityEntries(getArkinLogsForSar(logs, sarQuery))
 }
 
 /** Visible window: centre to each edge = this duration (1 hour per half). */
@@ -1699,12 +1679,40 @@ export function buildSarTimelineGridTicks(
   return ticks.sort((a, b) => a.offsetMs - b.offsetMs)
 }
 
+type SarTimelinePlotPointInput = Omit<SarTimelinePlotPoint, "xPercent">
+
+/** One marker per visit: REDIRECTED + SEEN pairs in the same second collapse to SEEN (circle). */
+function collapseVisitTimelinePoints(points: SarTimelinePlotPointInput[]): SarTimelinePlotPointInput[] {
+  const byVisit = new Map<string, SarTimelinePlotPointInput>()
+
+  for (const point of points) {
+    const visitKey = `${point.sar}|${Math.floor(point.timestamp.getTime() / 1000)}`
+    const existing = byVisit.get(visitKey)
+    if (!existing) {
+      byVisit.set(visitKey, point)
+      continue
+    }
+    if (existing.isRedirect && !point.isRedirect) {
+      byVisit.set(visitKey, point)
+      continue
+    }
+    if (!existing.isRedirect && point.isRedirect) {
+      continue
+    }
+    if (point.timestamp.getTime() > existing.timestamp.getTime()) {
+      byVisit.set(visitKey, point)
+    }
+  }
+
+  return [...byVisit.values()]
+}
+
 /** All SAR rows on Y; time on X with now centered (past left, future right). */
 export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
   const ctx = buildArkinSarContext(logs)
   const now = new Date()
   const nowMs = now.getTime()
-  const rawPoints: Omit<SarTimelinePlotPoint, "xPercent">[] = []
+  const rawPoints: SarTimelinePlotPointInput[] = []
 
   for (const log of getArkinLogs(logs)) {
     const sessionKey = resolveSessionKey(log, ctx)
@@ -1727,7 +1735,9 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
 
   if (rawPoints.length === 0) return null
 
-  const maxAbsOffset = rawPoints.reduce(
+  const collapsedPoints = collapseVisitTimelinePoints(rawPoints)
+
+  const maxAbsOffset = collapsedPoints.reduce(
     (max, point) => Math.max(max, Math.abs(point.offsetMs)),
     0
   )
@@ -1737,11 +1747,11 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
     Math.ceil(maxAbsOffset * 1.05)
   )
 
-  const sars = [...new Set(rawPoints.map((point) => point.sar))].sort((a, b) =>
+  const sars = [...new Set(collapsedPoints.map((point) => point.sar))].sort((a, b) =>
     a.localeCompare(b)
   )
 
-  const points = [...rawPoints].sort(
+  const points = [...collapsedPoints].sort(
     (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
   )
 

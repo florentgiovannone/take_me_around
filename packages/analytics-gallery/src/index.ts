@@ -670,34 +670,14 @@ export function getGalleryLogsForSar(logs: PoiseLog[], sarQuery: string): PoiseL
   })
 }
 
-export type SarGalleryTimelineEvent = {
-  logId: number
-  timestamp: string | null
-  messageType: string
-  artworkTitle: string
-  link: string
-}
+export type SarGalleryTimelineEvent = GalleryActivityEntry
 
 export function buildSarGalleryTimelineEvents(
   logs: PoiseLog[],
   sarQuery: string
-): SarGalleryTimelineEvent[] {
-  return getGalleryLogsForSar(logs, sarQuery)
-    .map((log) => {
-      const artwork = resolveTrackedArtwork(log)
-      return {
-        logId: log.int_id,
-        timestamp: log.dtm_timestamp,
-        messageType: log.txt_message_type ?? "-",
-        artworkTitle: artwork?.title ?? log.text_name?.trim() ?? "Unknown",
-        link: getGalleryLogLink(log),
-      }
-    })
-    .sort((a, b) => {
-      const aTime = parseLogTimestampGmt(a.timestamp)?.getTime() ?? 0
-      const bTime = parseLogTimestampGmt(b.timestamp)?.getTime() ?? 0
-      return aTime - bTime
-    })
+): GalleryActivityEntry[] {
+  if (!sarQuery.trim()) return []
+  return buildGalleryActivityEntries(getGalleryLogsForSar(logs, sarQuery))
 }
 
 /** Visible window: centre to each edge = this duration (1 hour per half = 2h span default). */

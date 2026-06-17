@@ -369,7 +369,11 @@ export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
   ].sort((a, b) => a.localeCompare(b))
 }
 
-export function buildSarTimelineEvents(logs: PoiseLog[], sarQuery: string, scope: SiteScope) {
+export function buildSarTimelineEvents(
+  logs: PoiseLog[],
+  sarQuery: string,
+  scope: SiteScope
+): ActivityEntry[] {
   if (scope === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
   if (scope === "arkin") return arkin.buildSarArkinTimelineEvents(logs, sarQuery)
   if (scope === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)

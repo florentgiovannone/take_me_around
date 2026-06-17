@@ -225,6 +225,7 @@ export default function SarTimelineChart({
       const point = findPointForSelectedSarRecency(plot.points, sar, target)
       if (!point) return
 
+      setFocusedLogId(point.logId)
       setHoveredPoint(null)
       suppressHoverTooltipRef.current = true
 
@@ -769,6 +770,7 @@ export default function SarTimelineChart({
                           })
                         }}
                         onBlur={() => setHoveredPoint(null)}
+                        onClick={() => setFocusedLogId(point.logId)}
                       />
                     </div>
                   )
@@ -813,11 +815,12 @@ export default function SarTimelineChart({
                     ? findPointForSelectedSarRecency(plot.points, selectedSar, target)
                     : null
                 const isDisabled = !canJumpToRecency || !point
+                const isActive = point?.logId === focusedLogId
                 return (
                   <button
                     key={label}
                     type="button"
-                    className={`tma-sar-timeline-recency-item${canJumpToRecency ? " is-clickable" : ""}`}
+                    className={`tma-sar-timeline-recency-item${canJumpToRecency ? " is-clickable" : ""}${isActive ? " is-active" : ""}`}
                     disabled={isDisabled}
                     title={
                       isDisabled
