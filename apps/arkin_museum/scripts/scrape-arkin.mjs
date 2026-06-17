@@ -9,7 +9,7 @@ import { join, dirname } from "node:path"
 import { fileURLToPath } from "node:url"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const ASSETS = join(__dirname, "../src/assets/rodin")
+const ASSETS = join(__dirname, "../src/assets/arkin-museum/rodin/images")
 const OUT_JSON = join(__dirname, "arkin_scrape.json")
 
 const SLUG_MAP = {

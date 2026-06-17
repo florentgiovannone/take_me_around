@@ -23,7 +23,7 @@ import { resolveVoiceId } from "./lib/resolve-voice.mjs"
 loadEnvLocal()
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const AUDIO_DIR = join(__dirname, "../src/assets/Audio/rodin")
+const AUDIO_BASE = join(__dirname, "../src/assets/arkin-museum/rodin/audio")
 const SCRIPTS_JSON = join(__dirname, "rodin-audio-scripts.json")
 
 const args = process.argv.slice(2)
@@ -43,7 +43,8 @@ if (!existsSync(SCRIPTS_JSON)) {
 }
 
 const scripts = JSON.parse(readFileSync(SCRIPTS_JSON, "utf8"))
-mkdirSync(AUDIO_DIR, { recursive: true })
+const audioDir = join(AUDIO_BASE, locale === "tr" ? "tr" : "en")
+mkdirSync(audioDir, { recursive: true })
 
 if (!dryRun && !apiKey) {
   console.error(
@@ -95,16 +96,15 @@ for (const [slug, text] of Object.entries(scripts)) {
     continue
   }
 
-  const fileSlug = locale === "en" ? slug : `${slug}-${locale}`
-  const outPath = join(AUDIO_DIR, `${fileSlug}.mp3`)
+  const outPath = join(audioDir, `${slug}.mp3`)
   if (existsSync(outPath) && !force) {
-    console.log(`skip ${slug} (exists)`)
+    console.log(`skip ${locale}/${slug} (exists)`)
     continue
   }
 
   const speechText = speechSource.replace(/^\uFEFF/, "").trim()
 
-  console.log(`${dryRun ? "dry-run" : "generate"} ${fileSlug}: ${speechText.length} chars`)
+  console.log(`${dryRun ? "dry-run" : "generate"} ${locale}/${slug}: ${speechText.length} chars`)
 
   if (dryRun) continue
 
@@ -127,12 +127,12 @@ for (const [slug, text] of Object.entries(scripts)) {
 
   if (!response.ok) {
     const detail = await response.text()
-    console.error(`Failed ${fileSlug}: ${response.status} ${detail}`)
+    console.error(`Failed ${locale}/${slug}: ${response.status} ${detail}`)
     process.exit(1)
   }
 
   if (!response.body) {
-    console.error(`Failed ${fileSlug}: empty response body`)
+    console.error(`Failed ${locale}/${slug}: empty response body`)
     process.exit(1)
   }
 
@@ -140,4 +140,4 @@ for (const [slug, text] of Object.entries(scripts)) {
   console.log(`  wrote ${outPath}`)
 }
 
-console.log(dryRun ? "Dry run complete." : `Done. MP3s in ${AUDIO_DIR}`)
+console.log(dryRun ? "Dry run complete." : `Done. MP3s in ${audioDir}`)

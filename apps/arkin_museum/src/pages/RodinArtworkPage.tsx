@@ -1,7 +1,6 @@
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef } from "react"
 import { useParams, useSearchParams } from "react-router-dom"
-import { getRodinAudio } from "../assets/Audio/rodinAudio"
-import { RODIN_IMAGE_GALLERIES, RODIN_IMAGES } from "../assets/rodin"
+import { getRodinAudio, RODIN_IMAGE_GALLERIES, RODIN_IMAGES } from "../assets/arkin-museum/rodin"
 import ArtworkImageGallery from "../components/ArtworkImageGallery"
 import AudioPlayer from "../components/AudioPlayer"
 import Footer from "../components/Footer"
