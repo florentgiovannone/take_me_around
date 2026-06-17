@@ -110,16 +110,39 @@ export function extractTrackedPathFromMessage(message: string): string | null {
   return null
 }
 
+/** NFC labels like `English(French)` — with or without a space before `(`. */
+function normalizeTagNameCandidates(textName: string | null | undefined): string[] {
+  const raw = textName?.trim()
+  if (!raw) return []
+
+  const candidates = new Set<string>([raw.toLowerCase()])
+  const parenMatch = raw.match(/^(.+?)\s*\((.+)\)\s*$/)
+  if (parenMatch) {
+    const left = parenMatch[1].trim()
+    const right = parenMatch[2].trim()
+    candidates.add(left.toLowerCase())
+    candidates.add(right.toLowerCase())
+    candidates.add(`${left} (${right})`.toLowerCase())
+    candidates.add(`${left}(${right})`.toLowerCase())
+  }
+  return [...candidates]
+}
+
+function resolvePathFromTagName(textName: string | null | undefined): string | null {
+  for (const candidate of normalizeTagNameCandidates(textName)) {
+    const path = TRACKED_ARKIN_NAME_TO_PATH.get(candidate)
+    if (path) return path
+  }
+  return null
+}
+
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
   const path = extractTrackedPathFromMessage(log.txt_message ?? "")
   if (path) {
     return TRACKED_ARKIN_ARTWORKS.find((artwork) => artwork.path === path) ?? null
   }
 
-  const normalizedName = log.text_name?.trim().toLowerCase()
-  if (!normalizedName) return null
-
-  const aliasPath = TRACKED_ARKIN_NAME_TO_PATH.get(normalizedName)
+  const aliasPath = resolvePathFromTagName(log.text_name)
   if (aliasPath) {
     return TRACKED_ARKIN_ARTWORKS.find((artwork) => artwork.path === aliasPath) ?? null
   }
@@ -174,6 +197,9 @@ function getArtworkKey(log: PoiseLog) {
   const path = extractTrackedPathFromMessage(log.txt_message ?? "")
   if (path) return path
 
+  const aliasPath = resolvePathFromTagName(log.text_name)
+  if (aliasPath) return aliasPath
+
   return log.text_name?.trim().toLowerCase() ?? ""
 }
 
@@ -207,6 +233,16 @@ function findRedirectForSeen(seen: PoiseLog, redirects: PoiseLog[]) {
         normalizeLogTimestampKey(redirect.dtm_timestamp) === seenTimeKey
     )
     if (byArtworkAndTime) return byArtworkAndTime
+  }
+
+  const seenTagName = seen.text_name?.trim().toLowerCase()
+  if (seenTagName) {
+    const byTagNameAndTime = redirects.find(
+      (redirect) =>
+        redirect.text_name?.trim().toLowerCase() === seenTagName &&
+        normalizeLogTimestampKey(redirect.dtm_timestamp) === seenTimeKey
+    )
+    if (byTagNameAndTime) return byTagNameAndTime
   }
 
   const redirectsAtTime = redirects.filter(
@@ -944,30 +980,55 @@ export function getSarFromLog(log: PoiseLog): string | null {
   return buildActivityVisitDetails(log).sar
 }
 
-function buildArkinSarByTagUid(logs: PoiseLog[]): Map<string, string> {
-  const map = new Map<string, string>()
-  for (const log of getArkinLogs(logs)) {
-    if ((log.txt_message_type ?? "").trim().toUpperCase() !== "SEEN") continue
-    const sar = getSarFromLog(log)?.trim()
-    const uid = log.txt_uid?.trim()
-    if (sar && uid) map.set(uid, sar)
-  }
-  return map
+type ArkinSarContext = {
+  sarByUid: Map<string, string>
+  /** SAR from SEEN rows keyed by artwork + second (pairs REDIRECTED when txt_uid is null). */
+  sarByScanKey: Map<string, string>
 }
 
-function resolveSarForArkinLog(log: PoiseLog, sarByUid: Map<string, string>): string | null {
+function buildArkinSarContext(logs: PoiseLog[]): ArkinSarContext {
+  const sarByUid = new Map<string, string>()
+  const sarByScanKey = new Map<string, string>()
+
+  for (const log of logs) {
+    if (normalizeMessageType(log.txt_message_type) !== "SEEN") continue
+    const sar = getSarFromLog(log)?.trim()
+    if (!sar) continue
+
+    const uid = log.txt_uid?.trim()
+    if (uid) sarByUid.set(uid, sar)
+
+    if (!resolveTrackedArtwork(log)) continue
+    const scanKey = getActivityGroupKey(log)
+    if (!sarByScanKey.has(scanKey)) sarByScanKey.set(scanKey, sar)
+  }
+
+  return { sarByUid, sarByScanKey }
+}
+
+function resolveSarForArkinLog(log: PoiseLog, ctx: ArkinSarContext): string | null {
   const direct = getSarFromLog(log)?.trim()
   if (direct) return direct
+
   const uid = log.txt_uid?.trim()
-  if (uid) return sarByUid.get(uid) ?? null
+  if (uid) {
+    const fromUid = ctx.sarByUid.get(uid)
+    if (fromUid) return fromUid
+  }
+
+  if (resolveTrackedArtwork(log)) {
+    const fromScan = ctx.sarByScanKey.get(getActivityGroupKey(log))
+    if (fromScan) return fromScan
+  }
+
   return null
 }
 
 const TAG_SESSION_PREFIX = "tag:"
 
 /** SAR cookie when present; otherwise NFC tag UID so scans still appear on the timeline. */
-function resolveSessionKey(log: PoiseLog, sarByUid: Map<string, string>): string | null {
-  const sar = resolveSarForArkinLog(log, sarByUid)
+function resolveSessionKey(log: PoiseLog, ctx: ArkinSarContext): string | null {
+  const sar = resolveSarForArkinLog(log, ctx)
   if (sar) return sar
   const uid = log.txt_uid?.trim()
   if (uid) return `${TAG_SESSION_PREFIX}${uid}`
@@ -985,10 +1046,10 @@ function sessionKeyMatchesQuery(sessionKey: string, query: string): boolean {
 
 /** Distinct session keys (SAR cookie or NFC tag UID) for tracked Arkın activity. */
 export function listDistinctArkinSars(logs: PoiseLog[]): string[] {
-  const sarByUid = buildArkinSarByTagUid(logs)
+  const ctx = buildArkinSarContext(logs)
   const values = new Set<string>()
   for (const log of getArkinLogs(logs)) {
-    const sessionKey = resolveSessionKey(log, sarByUid)
+    const sessionKey = resolveSessionKey(log, ctx)
     if (sessionKey) values.add(sessionKey)
   }
   return [...values].sort((a, b) => a.localeCompare(b))
@@ -1063,14 +1124,14 @@ function formatSarRowMetaSubtitle(country: string | null, language: string | nul
 
 /** Country + language for each SAR (from the newest SEEN row when available). */
 export function buildSarTimelineRowMetaMap(logs: PoiseLog[]): Map<string, SarTimelineRowMeta> {
-  const sarByUid = buildArkinSarByTagUid(logs)
+  const ctx = buildArkinSarContext(logs)
   const meta = new Map<string, SarTimelineRowMeta>()
 
   const seenCandidates = getArkinLogs(logs)
     .filter((log) => (log.txt_message_type ?? "").trim().toUpperCase() === "SEEN")
     .map((log) => ({
       log,
-      sar: resolveSarForArkinLog(log, sarByUid),
+      sar: resolveSarForArkinLog(log, ctx),
       time: parseLogTimestampGmt(log.dtm_timestamp)?.getTime() ?? 0,
     }))
     .filter((entry): entry is typeof entry & { sar: string } => Boolean(entry.sar))
@@ -1118,9 +1179,9 @@ export function formatSarTimelineRowMetaSubtitle(meta: SarTimelineRowMeta) {
 export function getArkinLogsForSar(logs: PoiseLog[], sarQuery: string): PoiseLog[] {
   const target = sarQuery.trim()
   if (!target) return []
-  const sarByUid = buildArkinSarByTagUid(logs)
+  const ctx = buildArkinSarContext(logs)
   return getArkinLogs(logs).filter((log) => {
-    const sessionKey = resolveSessionKey(log, sarByUid)
+    const sessionKey = resolveSessionKey(log, ctx)
     return sessionKey ? sessionKeyMatchesQuery(sessionKey, target) : false
   })
 }
@@ -1640,13 +1701,13 @@ export function buildSarTimelineGridTicks(
 
 /** All SAR rows on Y; time on X with now centered (past left, future right). */
 export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
-  const sarByUid = buildArkinSarByTagUid(logs)
+  const ctx = buildArkinSarContext(logs)
   const now = new Date()
   const nowMs = now.getTime()
   const rawPoints: Omit<SarTimelinePlotPoint, "xPercent">[] = []
 
   for (const log of getArkinLogs(logs)) {
-    const sessionKey = resolveSessionKey(log, sarByUid)
+    const sessionKey = resolveSessionKey(log, ctx)
     if (!sessionKey) continue
     const timestamp = parseLogTimestampGmt(log.dtm_timestamp)
     if (!timestamp) continue
