@@ -156,9 +156,9 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
 
 export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "gallery") return "takemearound.gallery"
-  if (scope === "arkin") return "arkingallery.netlify.app"
+  if (scope === "arkin") return "arkin.takemearound.gallery"
   if (scope === "museum") return "takemearound.museum"
-  return "takemearound.gallery + takemearound.museum + arkingallery.netlify.app"
+  return "takemearound.gallery + takemearound.museum + arkin.takemearound.gallery"
 }
 
 export function sarTimelineDomainSuffix(scope: SiteScope): string {

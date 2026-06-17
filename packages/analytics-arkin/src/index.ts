@@ -42,13 +42,25 @@ export type AudienceBreakdownRow = {
   percent: number
 }
 
-import { SITE_META } from "@tma/config"
 import { TRACKED_ARKIN_ARTWORKS, type TrackedArtwork } from "./trackedArtworks"
 import { TRACKED_ARKIN_NAME_TO_PATH } from "./trackedArtworkNames"
 
 export { TRACKED_ARKIN_ARTWORKS, type TrackedArtwork }
 
-const ARKIN_PUBLIC_ORIGIN = `https://${SITE_META.arkin.host}`
+const ARKIN_PUBLIC_ORIGIN = "https://arkin.takemearound.gallery"
+
+const ARKIN_URL_HOST_REPLACEMENTS: [string, string][] = [
+  ["arkingallery.netlify.app", "arkin.takemearound.gallery"],
+  ["www.arkingallery.netlify.app", "www.arkin.takemearound.gallery"],
+]
+
+export function mapArkinPublicUrl(value: string): string {
+  let out = value
+  for (const [from, to] of ARKIN_URL_HOST_REPLACEMENTS) {
+    out = out.replaceAll(from, to)
+  }
+  return out
+}
 
 const TRACKED_ARKIN_PATHS = TRACKED_ARKIN_ARTWORKS.map((artwork) => artwork.path)
 const TRACKED_ARKIN_PATHS_BY_LENGTH = [...TRACKED_ARKIN_PATHS].sort(
@@ -125,7 +137,8 @@ export function getArkinLogLink(log: PoiseLog) {
   if (artwork) return getTrackedArtworkUrl(artwork.path)
   const path = extractTrackedPathFromMessage(log.txt_message ?? "")
   if (path) return getTrackedArtworkUrl(path)
-  return log.txt_message?.trim() || "-"
+  const raw = log.txt_message?.trim()
+  return raw ? mapArkinPublicUrl(raw) : "-"
 }
 
 export function getArkinLogs(logs: PoiseLog[]) {
