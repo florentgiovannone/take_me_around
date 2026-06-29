@@ -38,3 +38,14 @@ export function apiNeedsNgrokHeader(): boolean {
   const base = apiBaseUrl()
   return base === "" || base.includes("ngrok")
 }
+
+/** Secure items endpoint for the multi-site main dashboard. */
+export function dashboardApiUrl(): string {
+  const base = apiBaseUrl()
+  return base ? `${base}/api/secure/items` : "/api/secure/items"
+}
+
+export function formatDashboardFetchError(err: unknown, url: string): string {
+  const detail = err instanceof Error ? err.message : "Network error"
+  return `Could not reach ${url}: ${detail}`
+}

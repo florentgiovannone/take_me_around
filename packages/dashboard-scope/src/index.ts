@@ -8,6 +8,10 @@ import {
   sortSarsByVisitorNumber,
   formatVisitorNumber,
 } from "./visitorNumbers"
+import {
+  getActiveCombinedSiteIds,
+  isActiveCombinedSite,
+} from "./combinedSites"
 
 export type PoiseLog = gallery.PoiseLog
 export type { ActivityVisitDetails } from "@tma/analytics-gallery"
@@ -49,11 +53,21 @@ function mergeUniqueLogs(...lists: PoiseLog[][]): PoiseLog[] {
 }
 
 function getCombinedScopedLogs(logs: PoiseLog[]): PoiseLog[] {
-  return mergeUniqueLogs(
-    gallery.getGalleryLogs(logs),
-    museum.getMuseumLogs(logs),
-    arkin.getArkinLogs(logs)
-  )
+  const lists: PoiseLog[][] = []
+  if (isActiveCombinedSite("gallery")) lists.push(gallery.getGalleryLogs(logs))
+  if (isActiveCombinedSite("museum")) lists.push(museum.getMuseumLogs(logs))
+  if (isActiveCombinedSite("arkin")) lists.push(arkin.getArkinLogs(logs))
+  return mergeUniqueLogs(...lists)
+}
+
+function combinedSitesLabel(): string {
+  return getActiveCombinedSiteIds()
+    .map((id) => {
+      if (id === "gallery") return ".gallery"
+      if (id === "museum") return ".museum"
+      return "Arkın"
+    })
+    .join(" + ")
 }
 
 function mergeSarTimelinePlots(
@@ -125,18 +139,18 @@ export function trackedArtworkCount(scope: SiteScope): number {
   if (scope === "gallery") return gallery.TRACKED_GALLERY_ARTWORKS.length
   if (scope === "arkin") return arkin.TRACKED_ARKIN_ARTWORKS.length
   if (scope === "museum") return museum.TRACKED_MUSEUM_ARTWORKS.length
-  return (
-    gallery.TRACKED_GALLERY_ARTWORKS.length +
-    museum.TRACKED_MUSEUM_ARTWORKS.length +
-    arkin.TRACKED_ARKIN_ARTWORKS.length
-  )
+  return getActiveCombinedSiteIds().reduce((count, siteId) => {
+    if (siteId === "gallery") return count + gallery.TRACKED_GALLERY_ARTWORKS.length
+    if (siteId === "museum") return count + museum.TRACKED_MUSEUM_ARTWORKS.length
+    return count + arkin.TRACKED_ARKIN_ARTWORKS.length
+  }, 0)
 }
 
 export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "gallery") return "tracked .gallery scans"
   if (scope === "arkin") return "tracked Arkın scans"
   if (scope === "museum") return "tracked .museum scans"
-  return "tracked .gallery + .museum + Arkın scans"
+  return `tracked ${combinedSitesLabel()} scans`
 }
 
 export function trackedLinksMeta(scope: SiteScope): string {
@@ -158,7 +172,13 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "gallery") return "takemearound.gallery"
   if (scope === "arkin") return "arkin.takemearound.gallery"
   if (scope === "museum") return "takemearound.museum"
-  return "takemearound.gallery + takemearound.museum + arkin.takemearound.gallery"
+  return getActiveCombinedSiteIds()
+    .map((id) => {
+      if (id === "gallery") return "takemearound.gallery"
+      if (id === "museum") return "takemearound.museum"
+      return "arkin.takemearound.gallery"
+    })
+    .join(" + ")
 }
 
 export function sarTimelineDomainSuffix(scope: SiteScope): string {
@@ -179,11 +199,11 @@ export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): Activi
   if (scope === "gallery") return gallery.buildGalleryActivityEntries(logs)
   if (scope === "arkin") return arkin.buildArkinActivityEntries(logs)
   if (scope === "museum") return museum.buildMuseumActivityEntries(logs)
-  const merged = [
-    ...gallery.buildGalleryActivityEntries(logs),
-    ...museum.buildMuseumActivityEntries(logs),
-    ...arkin.buildArkinActivityEntries(logs),
-  ]
+  const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
+    if (siteId === "gallery") return gallery.buildGalleryActivityEntries(logs)
+    if (siteId === "museum") return museum.buildMuseumActivityEntries(logs)
+    return arkin.buildArkinActivityEntries(logs)
+  })
   return merged.sort((a, b) => {
     const aTime = parseLogTimestampGmt(a.timestamp)?.getTime() ?? 0
     const bTime = parseLogTimestampGmt(b.timestamp)?.getTime() ?? 0
@@ -195,11 +215,16 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope
   if (scope === "gallery") return gallery.buildTrackedArtworkScanGroups(logs)
   if (scope === "arkin") return arkin.buildTrackedArtworkScanGroups(logs)
   if (scope === "museum") return museum.buildTrackedArtworkScanGroups(logs)
-  const groups = [
-    ...gallery.buildTrackedArtworkScanGroups(logs),
-    ...museum.buildTrackedArtworkScanGroups(logs),
-    ...arkin.buildTrackedArtworkScanGroups(logs),
-  ]
+  const groups = []
+  for (const siteId of getActiveCombinedSiteIds()) {
+    if (siteId === "gallery") {
+      groups.push(...gallery.buildTrackedArtworkScanGroups(logs))
+    } else if (siteId === "museum") {
+      groups.push(...museum.buildTrackedArtworkScanGroups(logs))
+    } else {
+      groups.push(...arkin.buildTrackedArtworkScanGroups(logs))
+    }
+  }
   return groups.sort((a, b) => b.scans.length - a.scans.length)
 }
 
@@ -210,18 +235,24 @@ export function buildOverviewAnalytics(logs: PoiseLog[], scope: SiteScope) {
   const g = gallery.buildOverviewAnalytics(logs)
   const m = museum.buildOverviewAnalytics(logs)
   const a = arkin.buildOverviewAnalytics(logs)
-  const totalTaps = g.totalTaps + m.totalTaps + a.totalTaps
-  const activeTags = g.activeTags + m.activeTags + a.activeTags
-  const topSite = [g, m, a].reduce((best, cur) =>
+  const siteStats = getActiveCombinedSiteIds().map((siteId) => {
+    if (siteId === "gallery") return g
+    if (siteId === "museum") return m
+    return a
+  })
+  const totalTaps = siteStats.reduce((sum, stats) => sum + stats.totalTaps, 0)
+  const activeTags = siteStats.reduce((sum, stats) => sum + stats.activeTags, 0)
+  const topSite = siteStats.reduce((best, cur) =>
     cur.totalTaps >= best.totalTaps ? cur : best
   )
   return {
     totalTaps,
     activeTags,
     topTagName: topSite.topTagName,
-    topTagMonthCount: g.topTagMonthCount + m.topTagMonthCount + a.topTagMonthCount,
+    topTagMonthCount: siteStats.reduce((sum, stats) => sum + stats.topTagMonthCount, 0),
     avgPerTag: activeTags > 0 ? Math.round(totalTaps / activeTags) : 0,
-    weeklyChange: (g.weeklyChange + m.weeklyChange + a.weeklyChange) / 3,
+    weeklyChange:
+      siteStats.reduce((sum, stats) => sum + stats.weeklyChange, 0) / siteStats.length,
   }
 }
 
@@ -293,13 +324,18 @@ export function buildAudienceAnalytics(logs: PoiseLog[], scope: SiteScope): Audi
   if (scope === "gallery") return gallery.buildAudienceAnalytics(logs)
   if (scope === "arkin") return arkin.buildAudienceAnalytics(logs)
   if (scope === "museum") return museum.buildAudienceAnalytics(logs)
-  return mergeAudienceAnalytics(
-    mergeAudienceAnalytics(
-      gallery.buildAudienceAnalytics(logs),
-      museum.buildAudienceAnalytics(logs)
-    ),
-    arkin.buildAudienceAnalytics(logs)
-  )
+  const enabled = getActiveCombinedSiteIds()
+  const analyticsBySite = {
+    gallery: () => gallery.buildAudienceAnalytics(logs),
+    museum: () => museum.buildAudienceAnalytics(logs),
+    arkin: () => arkin.buildAudienceAnalytics(logs),
+  } satisfies Record<import("@tma/config").SiteId, () => AudienceAnalytics>
+  let merged: AudienceAnalytics | null = null
+  for (const siteId of enabled) {
+    const next = analyticsBySite[siteId]()
+    merged = merged ? mergeAudienceAnalytics(merged, next) : next
+  }
+  return merged ?? gallery.buildAudienceAnalytics(logs)
 }
 
 export function buildWeeklySeries(
@@ -313,13 +349,23 @@ export function buildWeeklySeries(
   const g = gallery.buildWeeklySeries(logs, weekOffset)
   const m = museum.buildWeeklySeries(logs, weekOffset)
   const a = arkin.buildWeeklySeries(logs, weekOffset)
+  const seriesBySite = {
+    gallery: g,
+    museum: m,
+    arkin: a,
+  } satisfies Record<import("@tma/config").SiteId, gallery.TimeSeriesWindow>
+  const enabled = getActiveCombinedSiteIds()
+  const primary = seriesBySite[enabled[0] ?? "gallery"]
   return {
-    series: g.series.map((point, index) => ({
+    series: primary.series.map((point, index) => ({
       ...point,
-      count: point.count + (m.series[index]?.count ?? 0) + (a.series[index]?.count ?? 0),
+      count: enabled.reduce(
+        (sum, siteId) => sum + (seriesBySite[siteId].series[index]?.count ?? 0),
+        0
+      ),
     })),
-    periodLabel: g.periodLabel,
-    canGoForward: g.canGoForward && m.canGoForward && a.canGoForward,
+    periodLabel: primary.periodLabel,
+    canGoForward: enabled.every((siteId) => seriesBySite[siteId].canGoForward),
   }
 }
 
@@ -334,23 +380,33 @@ export function buildMonthlyCalendarGrid(
   const g = gallery.buildMonthlyCalendarGrid(logs, monthOffset)
   const m = museum.buildMonthlyCalendarGrid(logs, monthOffset)
   const a = arkin.buildMonthlyCalendarGrid(logs, monthOffset)
+  const gridsBySite = {
+    gallery: g,
+    museum: m,
+    arkin: a,
+  } satisfies Record<import("@tma/config").SiteId, gallery.MonthlyCalendarWindow>
+  const enabled = getActiveCombinedSiteIds()
+  const primary = gridsBySite[enabled[0] ?? "gallery"]
   return {
-    series: g.series.map((point, index) => ({
+    series: primary.series.map((point, index) => ({
       ...point,
-      count: point.count + (m.series[index]?.count ?? 0) + (a.series[index]?.count ?? 0),
+      count: enabled.reduce(
+        (sum, siteId) => sum + (gridsBySite[siteId].series[index]?.count ?? 0),
+        0
+      ),
     })),
-    weeks: g.weeks.map((week, weekIndex) =>
+    weeks: primary.weeks.map((week, weekIndex) =>
       week.map((cell, dayIndex) => {
         if (cell.kind === "padding") return cell
-        const otherM = m.weeks[weekIndex]?.[dayIndex]
-        const otherA = a.weeks[weekIndex]?.[dayIndex]
-        const extraM = otherM && otherM.kind !== "padding" ? otherM.count : 0
-        const extraA = otherA && otherA.kind !== "padding" ? otherA.count : 0
-        return { ...cell, count: cell.count + extraM + extraA }
+        const extra = enabled.reduce((sum, siteId) => {
+          const other = gridsBySite[siteId].weeks[weekIndex]?.[dayIndex]
+          return sum + (other && other.kind !== "padding" ? other.count : 0)
+        }, 0)
+        return { ...cell, count: cell.count + extra }
       })
     ),
-    periodLabel: g.periodLabel,
-    canGoForward: g.canGoForward && m.canGoForward && a.canGoForward,
+    periodLabel: primary.periodLabel,
+    canGoForward: enabled.every((siteId) => gridsBySite[siteId].canGoForward),
   }
 }
 
@@ -361,11 +417,13 @@ export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
   if (scope === "arkin") return arkin.listDistinctArkinSars(logs)
   if (scope === "museum") return museum.listDistinctMuseumSars(logs)
   return [
-    ...new Set([
-      ...gallery.listDistinctGallerySars(logs),
-      ...museum.listDistinctMuseumSars(logs),
-      ...arkin.listDistinctArkinSars(logs),
-    ]),
+    ...new Set(
+      getActiveCombinedSiteIds().flatMap((siteId) => {
+        if (siteId === "gallery") return gallery.listDistinctGallerySars(logs)
+        if (siteId === "museum") return museum.listDistinctMuseumSars(logs)
+        return arkin.listDistinctArkinSars(logs)
+      })
+    ),
   ].sort((a, b) => a.localeCompare(b))
 }
 
@@ -377,11 +435,11 @@ export function buildSarTimelineEvents(
   if (scope === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
   if (scope === "arkin") return arkin.buildSarArkinTimelineEvents(logs, sarQuery)
   if (scope === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
-  const merged = [
-    ...gallery.buildSarGalleryTimelineEvents(logs, sarQuery),
-    ...museum.buildSarMuseumTimelineEvents(logs, sarQuery),
-    ...arkin.buildSarArkinTimelineEvents(logs, sarQuery),
-  ]
+  const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
+    if (siteId === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
+    if (siteId === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
+    return arkin.buildSarArkinTimelineEvents(logs, sarQuery)
+  })
   return merged.sort((a, b) => {
     const aTime = parseLogTimestampGmt(a.timestamp)?.getTime() ?? 0
     const bTime = parseLogTimestampGmt(b.timestamp)?.getTime() ?? 0
@@ -411,12 +469,17 @@ export function buildSarTimelineRowMetaMap(
   } else if (scope === "gallery") {
     meta = gallery.buildSarTimelineRowMetaMap(logs)
   } else {
-    meta = new Map(gallery.buildSarTimelineRowMetaMap(logs))
-    for (const [sar, row] of museum.buildSarTimelineRowMetaMap(logs)) {
-      if (!meta.has(sar)) meta.set(sar, row)
-    }
-    for (const [sar, row] of arkin.buildSarTimelineRowMetaMap(logs)) {
-      if (!meta.has(sar)) meta.set(sar, row)
+    meta = new Map<string, gallery.SarTimelineRowMeta>()
+    for (const siteId of getActiveCombinedSiteIds()) {
+      const siteMeta =
+        siteId === "gallery"
+          ? gallery.buildSarTimelineRowMetaMap(logs)
+          : siteId === "museum"
+            ? museum.buildSarTimelineRowMetaMap(logs)
+            : arkin.buildSarTimelineRowMetaMap(logs)
+      for (const [sar, row] of siteMeta) {
+        if (!meta.has(sar)) meta.set(sar, row)
+      }
     }
   }
   applyVisitorNumbersToRowMeta(meta, visitorBySar)
@@ -461,14 +524,12 @@ export function buildSarTimelinePlot(
     const plot = arkin.buildSarTimelinePlot(logs)
     return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
   }
-  return mergeSarTimelinePlots(
-    [
-      gallery.buildSarTimelinePlot(logs),
-      museum.buildSarTimelinePlot(logs),
-      arkin.buildSarTimelinePlot(logs),
-    ],
-    visitorBySar
-  )
+  const plots = getActiveCombinedSiteIds().map((siteId) => {
+    if (siteId === "gallery") return gallery.buildSarTimelinePlot(logs)
+    if (siteId === "museum") return museum.buildSarTimelinePlot(logs)
+    return arkin.buildSarTimelinePlot(logs)
+  })
+  return mergeSarTimelinePlots(plots, visitorBySar)
 }
 
 export const sarTimelineCanvasWidthPx = gallery.sarTimelineCanvasWidthPx
@@ -491,3 +552,5 @@ export const sarTimelineIsFullWindow = gallery.sarTimelineIsFullWindow
 export const formatSarTimelineMonthLabel = gallery.formatSarTimelineMonthLabel
 export const sarTimelineOffsetBoundsForScroll = gallery.sarTimelineOffsetBoundsForScroll
 export type SarTimelineOffsetBounds = gallery.SarTimelineOffsetBounds
+
+export { setActiveCombinedSiteIds, getActiveCombinedSiteIds } from "./combinedSites"

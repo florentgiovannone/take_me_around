@@ -1463,6 +1463,29 @@
   min-width: 0;
 }
 
+.tma-dashboard-seen-cell {
+  text-align: center;
+  width: 3.5rem;
+}
+
+.tma-dashboard-seen-tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: rgba(34, 139, 34, 0.12);
+  color: #228b22;
+  font-weight: 700;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.tma-dashboard-seen-empty {
+  color: #9aa3af;
+}
+
 .tma-dashboard-activity-expand {
   display: inline-flex;
   align-items: center;
@@ -3298,6 +3321,207 @@
 .tma-main-dashboard-header-inner {
   max-width: 1200px;
   position: relative;
+}
+
+.tma-dashboard-settings-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(6px);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tma-dashboard-settings-btn svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.tma-dashboard-settings-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+  transform: rotate(24deg);
+}
+
+.tma-dashboard-settings-btn.is-active {
+  background: #fff;
+  color: var(--tma-brand);
+  border-color: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  transform: rotate(0deg);
+}
+
+.tma-dashboard-settings-header {
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.tma-dashboard-settings-header h2 {
+  margin-bottom: 0.35rem;
+}
+
+.tma-dashboard-settings-intro {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  max-width: 36rem;
+}
+
+.tma-dashboard-settings-back {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tma-brand);
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+}
+
+.tma-dashboard-settings-back:hover {
+  background: var(--tma-brand-tint);
+}
+
+.tma-dashboard-settings-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.tma-dashboard-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid #e5eaf3;
+  border-radius: 14px;
+  background: #fff;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.tma-dashboard-settings-item.is-enabled {
+  border-color: #c8d8f2;
+  background: linear-gradient(180deg, #f8fbff 0%, #f3f8ff 100%);
+  box-shadow: 0 1px 0 rgba(10, 71, 157, 0.04);
+}
+
+.tma-dashboard-settings-item-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.tma-dashboard-settings-item-copy strong {
+  color: #111827;
+  font-size: 1rem;
+}
+
+.tma-dashboard-settings-item-copy span {
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+.tma-dashboard-toggle {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.tma-dashboard-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.tma-dashboard-toggle-track {
+  display: block;
+  position: relative;
+  width: 3rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: #d1d9e6;
+  transition: background 0.2s ease;
+}
+
+.tma-dashboard-toggle-thumb {
+  position: absolute;
+  top: 0.18rem;
+  left: 0.18rem;
+  width: 1.29rem;
+  height: 1.29rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+  transition: transform 0.2s ease;
+}
+
+.tma-dashboard-toggle.is-on .tma-dashboard-toggle-track {
+  background: var(--tma-brand);
+}
+
+.tma-dashboard-toggle.is-on .tma-dashboard-toggle-thumb {
+  transform: translateX(1.35rem);
+}
+
+.tma-dashboard-settings-note {
+  margin: 0.85rem 0 0;
+  color: #9aa3af;
+  font-size: 0.84rem;
+}
+
+.tma-dashboard-settings-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e8edf7;
+}
+
+.tma-dashboard-settings-reset {
+  border: 0;
+  background: transparent;
+  color: #6b7280;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 0.25rem;
+}
+
+.tma-dashboard-settings-reset:hover {
+  color: var(--tma-brand);
+}
+
+.tma-dashboard-settings-save {
+  border: 0;
+  border-radius: 12px;
+  padding: 0.72rem 1.15rem;
+  background: var(--tma-brand);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(10, 71, 157, 0.18);
+}
+
+.tma-dashboard-settings-save:hover {
+  background: var(--tma-brand-mid);
 }
 
 .tma-main-dashboard-eyebrow {

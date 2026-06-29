@@ -14,7 +14,7 @@ export const OPERATORS: OperatorProfile[] = [
   {
     id: "default",
     name: "Main Dashboard",
-    sites: ["gallery", "museum", "arkin"],
+    sites: ["gallery", "museum"],
   },
   {
     id: "museum-only",
@@ -25,11 +25,6 @@ export const OPERATORS: OperatorProfile[] = [
     id: "gallery-only",
     name: "Gallery team",
     sites: ["gallery"],
-  },
-  {
-    id: "arkin-only",
-    name: "Arkin Gallery team",
-    sites: ["arkin"],
   },
 ]
 
@@ -82,15 +77,18 @@ export function resolveOperator(preferredId?: string | null): OperatorProfile {
   return getOperatorById(id) ?? getOperatorById(DEFAULT_OPERATOR_ID) ?? OPERATORS[0]
 }
 
-export function defaultScopeForOperator(operator: OperatorProfile): SiteScope {
-  return siteScopesForOperator(operator)[0]
+export function defaultScopeForOperator(
+  operator: OperatorProfile,
+  allowedScopes: SiteScope[] = siteScopesForOperator(operator)
+): SiteScope {
+  return allowedScopes[0] ?? siteScopesForOperator(operator)[0]
 }
 
 export function normalizeScopeForOperator(
   scope: SiteScope | null | undefined,
-  operator: OperatorProfile
+  operator: OperatorProfile,
+  allowedScopes: SiteScope[] = siteScopesForOperator(operator)
 ): SiteScope {
-  const allowed = siteScopesForOperator(operator)
-  if (scope && allowed.includes(scope)) return scope
-  return allowed[0]
+  if (scope && allowedScopes.includes(scope)) return scope
+  return defaultScopeForOperator(operator, allowedScopes)
 }

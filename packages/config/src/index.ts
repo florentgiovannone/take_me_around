@@ -2,7 +2,9 @@ export type SiteId = "gallery" | "museum" | "arkin"
 
 export type SiteScope = SiteId | "combined"
 
-export const PICKABLE_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin"]
+export const ALL_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin"]
+
+export const PICKABLE_SITE_IDS: SiteId[] = ["gallery", "museum"]
 
 export const SITE_META: Record<
   SiteId,
@@ -21,7 +23,7 @@ export const SITE_META: Record<
   arkin: {
     label: "Arkin Gallery",
     domainLabel: "Arkin Gallery",
-    host: "arkingallery.netlify.app",
+    host: "arkin.takemearound.gallery",
   },
 }
 
@@ -56,9 +58,10 @@ export function scopeBadgeLabel(scope: SiteScope): string {
   return SITE_META[scope].domainLabel
 }
 
-export function scopeOptionLabel(scope: SiteScope): string {
+export function scopeOptionLabel(scope: SiteScope, combinedSiteIds: SiteId[] = PICKABLE_SITE_IDS): string {
   if (scope === "combined") {
-    return `Combined (${combinedSitesLabel})`
+    const label = combinedSiteIds.map((id) => SITE_META[id].domainLabel).join(" + ")
+    return `Combined (${label})`
   }
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }

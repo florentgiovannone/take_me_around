@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import ScopeSwitcher from "../components/ScopeSwitcher"
+import DashboardSettingsPage from "../components/DashboardSettingsPage"
 import {
   DashboardActivityPanel,
   DashboardAudiencePanel,
@@ -14,6 +15,10 @@ import {
   formatDashboardFetchError,
 } from "../apiBaseUrl"
 import {
+  getStoredEnabledSites,
+  scopesForEnabledSites,
+} from "../config/dashboardSites"
+import {
   clearOperatorSession,
   defaultScopeForOperator,
   getStoredOperatorId,
@@ -21,7 +26,6 @@ import {
   normalizeScopeForOperator,
   OPERATORS,
   resolveOperator,
-  siteScopesForOperator,
   storeOperatorSession,
   storeScope,
   type OperatorProfile,
@@ -33,6 +37,7 @@ import {
   type SiteId,
   type SiteScope,
 } from "@tma/config"
+import { setActiveCombinedSiteIds } from "@tma/dashboard-scope"
 import { parseApiJson } from "../parseApiJson"
 import type { PoiseLog } from "@tma/dashboard-scope"
 
@@ -40,6 +45,7 @@ const DASHBOARD_PASSWORD_KEY = "tma-main-dashboard-password"
 const POLL_INTERVAL_MS = 5000
 
 type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
+type DashboardView = "analytics" | "settings"
 
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
@@ -117,31 +123,43 @@ function Dashboard({ fixedScope }: DashboardProps) {
   const [initializing, setInitializing] = useState(
     () => !!sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
   )
+  const [dashboardView, setDashboardView] = useState<DashboardView>("analytics")
+  const [enabledSites, setEnabledSites] = useState<SiteId[]>(() => getStoredEnabledSites())
 
   const showOperatorPickerOnLogin = OPERATORS.length > 1 && !fixedScope
+  const showSettings = !fixedScope
+
+  useEffect(() => {
+    setActiveCombinedSiteIds(enabledSites)
+  }, [enabledSites])
+
+  useEffect(() => {
+    if (!isAuthorized || !activeScope) return
+    const scopes = scopesForEnabledSites(enabledSites)
+    if (scopes.includes(activeScope)) return
+    const next = scopes[0] ?? null
+    setActiveScope(next)
+    if (next) storeScope(next)
+  }, [enabledSites, isAuthorized, activeScope])
 
   const allowedScopes = useMemo(() => {
-    if (!operator) return []
-    const scopes = siteScopesForOperator(operator)
     if (fixedScope) {
-      return scopes.filter((scope) => scope === fixedScope)
+      return enabledSites.includes(fixedScope) ? [fixedScope] : []
     }
-    return scopes
-  }, [operator, fixedScope])
+    return scopesForEnabledSites(enabledSites)
+  }, [enabledSites, fixedScope])
 
   const applyOperatorSession = (nextOperator: OperatorProfile) => {
     storeOperatorSession(nextOperator.id)
     setOperator(nextOperator)
-    const scopes = fixedScope
-      ? siteScopesForOperator(nextOperator).filter((s) => s === fixedScope)
-      : siteScopesForOperator(nextOperator)
-    const nextScope = normalizeScopeForOperator(getStoredScope(), nextOperator)
+    const scopes = allowedScopes
+    const nextScope = normalizeScopeForOperator(getStoredScope(), nextOperator, scopes)
     const resolved =
       fixedScope && scopes.includes(fixedScope)
         ? fixedScope
         : scopes.includes(nextScope)
           ? nextScope
-          : scopes[0] ?? defaultScopeForOperator(nextOperator)
+          : scopes[0] ?? defaultScopeForOperator(nextOperator, scopes)
     setActiveScope(resolved)
     storeScope(resolved)
   }
@@ -246,6 +264,19 @@ function Dashboard({ fixedScope }: DashboardProps) {
     setActiveScope(scope)
     storeScope(scope)
     setActiveTab("activity")
+    setDashboardView("analytics")
+  }
+
+  const handleEnabledSitesSave = (sites: SiteId[]) => {
+    setEnabledSites(sites)
+    setActiveCombinedSiteIds(sites)
+    setActiveScope((current) => {
+      const scopes = scopesForEnabledSites(sites)
+      if (current && scopes.includes(current)) return current
+      const next = scopes[0] ?? null
+      if (next) storeScope(next)
+      return next
+    })
   }
 
   const handleLogout = () => {
@@ -261,9 +292,11 @@ function Dashboard({ fixedScope }: DashboardProps) {
     setError(null)
     setLoading(false)
     setActiveTab("activity")
+    setDashboardView("analytics")
   }
 
-  const showAnalytics = isAuthorized && operator !== null && activeScope !== null
+  const showAnalytics =
+    isAuthorized && operator !== null && activeScope !== null && allowedScopes.length > 0
 
   return (
     <main
@@ -274,6 +307,32 @@ function Dashboard({ fixedScope }: DashboardProps) {
           fixedScope ? "tma-header" : "tma-header tma-main-dashboard-header"
         }
       >
+        {showSettings && (
+          <button
+            type="button"
+            className={`tma-dashboard-settings-btn${dashboardView === "settings" ? " is-active" : ""}`}
+            onClick={() =>
+              setDashboardView((view) => (view === "settings" ? "analytics" : "settings"))
+            }
+            aria-label={dashboardView === "settings" ? "Back to dashboard" : "Open dashboard settings"}
+            title={dashboardView === "settings" ? "Back to dashboard" : "Dashboard settings"}
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 15a3 3 0 100-6 3 3 0 000 6z"
+                stroke="currentColor"
+                strokeWidth="1.75"
+              />
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        )}
         {isAuthorized && (
           <button
             type="button"
@@ -365,7 +424,15 @@ function Dashboard({ fixedScope }: DashboardProps) {
           </form>
         )}
 
-        {showAnalytics && (
+        {showAnalytics && dashboardView === "settings" && (
+          <DashboardSettingsPage
+            enabledSites={enabledSites}
+            onSave={handleEnabledSitesSave}
+            onBack={() => setDashboardView("analytics")}
+          />
+        )}
+
+        {showAnalytics && dashboardView === "analytics" && (
           <>
             {allowedScopes.length > 1 && (
               <div className="tma-dashboard-scope-bar">
@@ -373,83 +440,96 @@ function Dashboard({ fixedScope }: DashboardProps) {
                   scopes={allowedScopes}
                   value={activeScope}
                   onChange={handleScopeChange}
+                  combinedSiteIds={enabledSites}
                 />
               </div>
             )}
 
-            <nav className="tma-dashboard-tabs-nav" aria-label="Dashboard views">
-              <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === "activity"}
-                  className={`tma-dashboard-tab ${activeTab === "activity" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("activity")}
-                >
-                  Activity
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === "counts"}
-                  className={`tma-dashboard-tab ${activeTab === "counts" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("counts")}
-                >
-                  Link scan counts
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === "overview"}
-                  className={`tma-dashboard-tab ${activeTab === "overview" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("overview")}
-                >
-                  Overview
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === "audience"}
-                  className={`tma-dashboard-tab ${activeTab === "audience" ? "is-active" : ""}`}
-                  onClick={() => setActiveTab("audience")}
-                >
-                  Audience
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === "sar"}
-                  className={`tma-dashboard-tab tma-dashboard-tab--span-2${activeTab === "sar" ? " is-active" : ""}`}
-                  onClick={() => setActiveTab("sar")}
-                >
-                  Live sessions
-                </button>
-              </div>
-            </nav>
-
-            {loading && (
+            {allowedScopes.length === 0 && (
               <div className="tma-analytics-card tma-dashboard-status-card">
-                <p>Loading poise_log entries...</p>
+                <p>
+                  No dashboard sites are enabled. Open settings to choose at least one site.
+                </p>
               </div>
             )}
-            {error && <p className="tma-dashboard-error">Error: {error}</p>}
-            <SiteScopeProvider scope={activeScope}>
-              {!loading && !error && activeTab === "activity" && (
-                <DashboardActivityPanel logs={logs} />
-              )}
-              {!loading && !error && activeTab === "counts" && (
-                <DashboardCountsPanel logs={logs} />
-              )}
-              {!loading && !error && activeTab === "overview" && (
-                <DashboardOverviewPanel logs={logs} />
-              )}
-              {!loading && !error && activeTab === "audience" && (
-                <DashboardAudiencePanel logs={logs} />
-              )}
-              {!loading && !error && activeTab === "sar" && (
-                <DashboardSarTimelinePanel logs={logs} />
-              )}
-            </SiteScopeProvider>
+
+            {allowedScopes.length > 0 && (
+              <>
+                <nav className="tma-dashboard-tabs-nav" aria-label="Dashboard views">
+                  <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === "activity"}
+                      className={`tma-dashboard-tab ${activeTab === "activity" ? "is-active" : ""}`}
+                      onClick={() => setActiveTab("activity")}
+                    >
+                      Activity
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === "counts"}
+                      className={`tma-dashboard-tab ${activeTab === "counts" ? "is-active" : ""}`}
+                      onClick={() => setActiveTab("counts")}
+                    >
+                      Link scan counts
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === "overview"}
+                      className={`tma-dashboard-tab ${activeTab === "overview" ? "is-active" : ""}`}
+                      onClick={() => setActiveTab("overview")}
+                    >
+                      Overview
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === "audience"}
+                      className={`tma-dashboard-tab ${activeTab === "audience" ? "is-active" : ""}`}
+                      onClick={() => setActiveTab("audience")}
+                    >
+                      Audience
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === "sar"}
+                      className={`tma-dashboard-tab tma-dashboard-tab--span-2${activeTab === "sar" ? " is-active" : ""}`}
+                      onClick={() => setActiveTab("sar")}
+                    >
+                      Live sessions
+                    </button>
+                  </div>
+                </nav>
+
+                {loading && (
+                  <div className="tma-analytics-card tma-dashboard-status-card">
+                    <p>Loading poise_log entries...</p>
+                  </div>
+                )}
+                {error && <p className="tma-dashboard-error">Error: {error}</p>}
+                <SiteScopeProvider scope={activeScope}>
+                  {!loading && !error && activeTab === "activity" && (
+                    <DashboardActivityPanel logs={logs} />
+                  )}
+                  {!loading && !error && activeTab === "counts" && (
+                    <DashboardCountsPanel logs={logs} />
+                  )}
+                  {!loading && !error && activeTab === "overview" && (
+                    <DashboardOverviewPanel logs={logs} />
+                  )}
+                  {!loading && !error && activeTab === "audience" && (
+                    <DashboardAudiencePanel logs={logs} />
+                  )}
+                  {!loading && !error && activeTab === "sar" && (
+                    <DashboardSarTimelinePanel logs={logs} />
+                  )}
+                </SiteScopeProvider>
+              </>
+            )}
           </>
         )}
       </div>
