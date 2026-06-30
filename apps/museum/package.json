@@ -10,7 +10,21 @@
     "preview": "vite preview",
     "preview:test:host": "vite preview --host 0.0.0.0 --port 4173",
     "translate:hoa": "node scripts/translate-hoa.mjs",
-    "generate:hoa-audio": "node scripts/generate-hoa-audio.mjs"
+    "generate:hoa-audio": "node scripts/generate-hoa-audio.mjs",
+    "translate:two-fridas": "node scripts/translate-artwork.mjs --artwork two-fridas",
+    "generate:two-fridas-audio": "node scripts/generate-artwork-audio.mjs --artwork two-fridas",
+    "translate:sutton-hoo-helmet": "node scripts/translate-artwork.mjs --artwork sutton-hoo-helmet",
+    "generate:sutton-hoo-helmet-audio": "node scripts/generate-artwork-audio.mjs --artwork sutton-hoo-helmet",
+    "translate:mona-lisa": "node scripts/translate-artwork.mjs --artwork mona-lisa",
+    "generate:mona-lisa-audio": "node scripts/generate-artwork-audio.mjs --artwork mona-lisa",
+    "translate:royal-game-of-ur": "node scripts/translate-artwork.mjs --artwork royal-game-of-ur",
+    "generate:royal-game-of-ur-audio": "node scripts/generate-artwork-audio.mjs --artwork royal-game-of-ur",
+    "translate:qingming-festival": "node scripts/translate-artwork.mjs --artwork qingming-festival",
+    "generate:qingming-festival-audio": "node scripts/generate-artwork-audio.mjs --artwork qingming-festival",
+    "translate:rosetta-stone": "node scripts/translate-artwork.mjs --artwork rosetta-stone",
+    "generate:rosetta-stone-audio": "node scripts/generate-artwork-audio.mjs --artwork rosetta-stone",
+    "translate:fallen-madonna": "node scripts/translate-artwork.mjs --artwork fallen-madonna",
+    "generate:fallen-madonna-audio": "node scripts/generate-artwork-audio.mjs --artwork fallen-madonna"
   },
   "dependencies": {
     "@tma/dashboard-scope": "*",

@@ -1,4 +1,4 @@
-export type ArtworkLocale = "en" | "fr" | "ja" | "tr"
+export type ArtworkLocale = "en" | "fr" | "ja" | "ar" | "de" | "es" | "ko" | "zh" | "pt" | "tr" | "it"
 
 const enModules = import.meta.glob<string>("./en/*.mp3", {
   eager: true,
@@ -15,7 +15,42 @@ const jaModules = import.meta.glob<string>("./ja/*.mp3", {
   import: "default",
 })
 
+const arModules = import.meta.glob<string>("./ar/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
+const deModules = import.meta.glob<string>("./de/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
+const esModules = import.meta.glob<string>("./es/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
+const koModules = import.meta.glob<string>("./ko/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
+const zhModules = import.meta.glob<string>("./zh/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
+const ptModules = import.meta.glob<string>("./pt/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
 const trModules = import.meta.glob<string>("./tr/*.mp3", {
+  eager: true,
+  import: "default",
+})
+
+const itModules = import.meta.glob<string>("./it/*.mp3", {
   eager: true,
   import: "default",
 })
@@ -30,19 +65,20 @@ function indexAudioBySlug(modules: Record<string, string>) {
 }
 
 const EN_AUDIO = indexAudioBySlug(enModules)
-const FR_AUDIO = indexAudioBySlug(frModules)
-const JA_AUDIO = indexAudioBySlug(jaModules)
-const TR_AUDIO = indexAudioBySlug(trModules)
+const LOCALIZED_AUDIO: Partial<Record<ArtworkLocale, Partial<Record<string, string>>>> = {
+  fr: indexAudioBySlug(frModules),
+  ja: indexAudioBySlug(jaModules),
+  ar: indexAudioBySlug(arModules),
+  de: indexAudioBySlug(deModules),
+  es: indexAudioBySlug(esModules),
+  ko: indexAudioBySlug(koModules),
+  zh: indexAudioBySlug(zhModules),
+  pt: indexAudioBySlug(ptModules),
+  tr: indexAudioBySlug(trModules),
+  it: indexAudioBySlug(itModules),
+}
 
 export function getArtworkAudio(slug: string, locale: ArtworkLocale = "en"): string | undefined {
-  if (locale === "fr") {
-    return FR_AUDIO[slug] ?? EN_AUDIO[slug]
-  }
-  if (locale === "ja") {
-    return JA_AUDIO[slug] ?? EN_AUDIO[slug]
-  }
-  if (locale === "tr") {
-    return TR_AUDIO[slug] ?? EN_AUDIO[slug]
-  }
-  return EN_AUDIO[slug]
+  if (locale === "en") return EN_AUDIO[slug]
+  return LOCALIZED_AUDIO[locale]?.[slug] ?? EN_AUDIO[slug]
 }

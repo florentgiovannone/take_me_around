@@ -1,14 +1,12 @@
 /** Default ElevenLabs settings for museum narration. */
+import { ARTWORK_LOCALE_TARGETS } from "./artwork-locales.config.mjs"
+
 export const ELEVENLABS_DEFAULTS = {
   modelId: "eleven_multilingual_v2",
-  voices: {
-    fr: {
-      id: "QMNPncWXVcTVhJ9rDEQO",
-      label: "French",
-    },
-    ja: {
-      id: "mN6r4VCXacoTliYLh0A2",
-      label: "Japanese",
-    },
-  },
+  voices: Object.fromEntries(
+    ARTWORK_LOCALE_TARGETS.map((entry) => [
+      entry.locale,
+      { id: entry.voiceId, label: entry.label },
+    ]),
+  ),
 }

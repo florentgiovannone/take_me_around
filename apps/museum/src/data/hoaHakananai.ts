@@ -1,6 +1,17 @@
 import en from "./hoaHakananai.en.json"
 
-export type HoaHakananaiLocale = "en" | "fr" | "ja"
+export type HoaHakananaiLocale =
+  | "en"
+  | "fr"
+  | "ja"
+  | "ar"
+  | "de"
+  | "es"
+  | "ko"
+  | "zh"
+  | "pt"
+  | "tr"
+  | "it"
 
 export type HoaHakananaiCopy = {
   title: string
