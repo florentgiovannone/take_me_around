@@ -1,3 +1,4 @@
+import Footer from "../components/Footer"
 import "../styles/style.css"
 
 const SUPPORT_EMAIL = "support@takemearound.gallery"
@@ -16,6 +17,7 @@ export default function MaintenancePage() {
           if you have any questions.
         </p>
       </main>
+      <Footer />
     </div>
   )
 }

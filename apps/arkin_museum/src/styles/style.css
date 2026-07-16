@@ -314,6 +314,15 @@
   text-align: center;
 }
 
+.tma-footer-enquiry {
+  margin: 0 0 1.5rem;
+}
+
+.tma-footer-enquiry a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .tma-footer-address {
   margin: 0;
 }
@@ -2815,15 +2824,17 @@
 .tma-maintenance-shell {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.5rem;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: 0;
   background: linear-gradient(165deg, #f7f9fc 0%, #eef2f8 55%, #e8edf5 100%);
   color: #1f2937;
 }
 
 .tma-maintenance-main {
-  width: min(100%, 36rem);
+  width: min(calc(100% - 3rem), 36rem);
+  margin: auto;
   text-align: center;
   padding: 2.5rem 2rem;
   border-radius: 20px;
