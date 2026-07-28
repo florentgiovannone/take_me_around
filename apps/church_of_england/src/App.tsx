@@ -5,6 +5,7 @@ import ContactPage from "./pages/ContactPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
+import SouthwellMinsterPage from "./pages/SouthwellMinsterPage"
 import WestminsterAbbeyPage from "./pages/WestminsterAbbeyPage"
 import "./styles/style.css"
 
@@ -12,6 +13,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/": "Take Me Around",
   "/allpages": "All Pages",
   "/westminster-abbey": "Westminster Abbey",
+  "/southwell-minster": "Southwell Minster",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -38,6 +40,9 @@ function AllPage() {
       <p>Church of England demo pages.</p>
       <p>
         <Link to="/westminster-abbey">Go to Westminster Abbey page</Link>
+      </p>
+      <p>
+        <Link to="/southwell-minster">Go to Southwell Minster page</Link>
       </p>
       <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
@@ -75,6 +80,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/allpages" element={<AllPage />} />
         <Route path="/westminster-abbey" element={<WestminsterAbbeyPage />} />
+        <Route path="/southwell-minster" element={<SouthwellMinsterPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route

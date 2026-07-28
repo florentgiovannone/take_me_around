@@ -1,0 +1,366 @@
+/* Scoped Southwell Minster styles — ported from southwell-minster-source */
+
+.southwell-minster{
+    --ink: #1a1512;
+    --ink-soft: #3d332c;
+    --paper: #f7f2ea;
+    --paper-2: #efe7d9;
+    --stone: #cdbfa7;
+    --rule: #b7a685;
+    --accent: #7a2e2a;      /* deep sanctuary red */
+    --accent-soft: #9a4a44;
+    --gold: #a8842a;
+    --shadow: 0 1px 2px rgba(26,21,18,.06), 0 8px 24px rgba(26,21,18,.08);
+  }
+  .southwell-minster, .southwell-minster *, .southwell-minster *::before, .southwell-minster *::after { box-sizing: border-box; }
+  .southwell-minster{ scroll-behavior: smooth; }
+  .southwell-minster{
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.65;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .southwell-minster h1, .southwell-minster h2, .southwell-minster h3, .southwell-minster .display{
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .southwell-minster a{ color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(122,46,42,.25); }
+  .southwell-minster a:hover{ color: var(--accent-soft); border-bottom-color: currentColor; }
+
+  /* Header / hero */
+  .southwell-minster .hero{
+    position: relative;
+    min-height: 78vh;
+    display: grid;
+    align-items: end;
+    color: #f8f2e6;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .southwell-minster .hero::before{
+    content: "";
+    position: absolute; inset: 0;
+    background: var(--southwell-hero-image) center 30% / cover no-repeat;
+    filter: saturate(.9) contrast(1.02);
+    z-index: -2;
+  }
+  .southwell-minster .hero::after{
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(15,10,6,.45) 0%, rgba(15,10,6,.15) 40%, rgba(15,10,6,.75) 100%);
+    z-index: -1;
+  }
+  .southwell-minster .hero-inner{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 64px 28px 56px;
+    width: 100%;
+  }
+  .southwell-minster .eyebrow{
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .22em;
+    font-size: 12px;
+    font-weight: 600;
+    color: #f0e2c0;
+    margin-bottom: 16px;
+  }
+  .southwell-minster .hero h1{
+    color: #fdf9ef;
+    font-size: clamp(2.2rem, 5.2vw, 4.2rem);
+    margin: 0 0 .35em;
+    text-shadow: 0 2px 24px rgba(0,0,0,.35);
+  }
+  .southwell-minster .hero .tagline{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.05rem, 2vw, 1.4rem);
+    color: #f4ead4;
+    max-width: 42ch;
+    margin: 0 0 24px;
+  }
+  .southwell-minster .hero .meta{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    font-size: 14px;
+    color: #ecdfc2;
+  }
+  .southwell-minster .hero .meta span::before{
+    content: "✦";
+    margin-right: 8px;
+    color: var(--gold);
+  }
+
+  /* Sticky nav */
+  .southwell-minster nav.toc{
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgba(247,242,234,.94);
+    backdrop-filter: saturate(1.4) blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .southwell-minster nav.toc ul{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    gap: 4px 22px;
+    flex-wrap: wrap;
+    list-style: none;
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  .southwell-minster nav.toc a{
+    color: var(--ink-soft);
+    border-bottom: none;
+    padding: 6px 2px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .southwell-minster nav.toc a:hover{ color: var(--accent); }
+
+  /* Sections */
+  .southwell-minster main{ max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+  .southwell-minster section{ padding: 72px 0 24px; scroll-margin-top: 60px; }
+  .southwell-minster section + section{ border-top: 1px solid var(--rule); }
+
+  .southwell-minster .section-head{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: baseline;
+    margin-bottom: 28px;
+  }
+  .southwell-minster .section-num{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: .05em;
+  }
+  .southwell-minster h2{ font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin: 0; }
+  .southwell-minster h3{
+    font-size: 1.35rem;
+    margin: 28px 0 8px;
+    color: var(--accent);
+  }
+  .southwell-minster p{ margin: 0 0 1em; color: var(--ink-soft); }
+  .southwell-minster p strong{ color: var(--ink); }
+
+  .southwell-minster .lede{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-style: italic;
+    color: var(--ink);
+    max-width: 62ch;
+    margin-bottom: 32px;
+  }
+
+  /* History timeline */
+  .southwell-minster .timeline{
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 6px 24px;
+    margin-top: 20px;
+  }
+  .southwell-minster .timeline dt{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--accent);
+    padding-top: 2px;
+    border-right: 1px solid var(--rule);
+    padding-right: 20px;
+    text-align: right;
+  }
+  .southwell-minster .timeline dd{
+    margin: 0 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px dotted rgba(122,46,42,.18);
+    color: var(--ink-soft);
+  }
+  .southwell-minster .timeline dd:last-of-type{ border-bottom: none; }
+
+  /* Feature cards */
+  .southwell-minster .features{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 8px;
+  }
+  .southwell-minster .feature{
+    background: #fdfaf3;
+    border: 1px solid var(--stone);
+    border-left: 3px solid var(--accent);
+    padding: 22px 22px 20px;
+    box-shadow: var(--shadow);
+    border-radius: 2px;
+  }
+  .southwell-minster .feature h3{
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    color: var(--ink);
+  }
+  .southwell-minster .feature p{ margin: 0; font-size: .96rem; }
+
+  /* Two-column with image */
+  .southwell-minster .split{
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 36px;
+    align-items: start;
+    margin-top: 16px;
+  }
+  .southwell-minster .split figure{ margin: 0; }
+  .southwell-minster .split img{
+    width: 100%; height: auto; display: block;
+    border: 1px solid var(--stone);
+    box-shadow: var(--shadow);
+  }
+  .southwell-minster .split figcaption{
+    font-size: .82rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-top: 8px;
+    text-align: center;
+  }
+  @media (max-width: 780px) {
+    .southwell-minster .split{ grid-template-columns: 1fr; }
+    .southwell-minster .timeline{ grid-template-columns: 90px 1fr; }
+    .southwell-minster .hero-inner{ padding: 48px 20px 40px; }
+    .southwell-minster main{ padding: 0 20px; }
+    .southwell-minster section{ padding: 56px 0 16px; }
+  }
+
+  /* Officers grid */
+  .southwell-minster .officers{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .southwell-minster .officer{
+    background: var(--paper-2);
+    padding: 18px 20px;
+    border-radius: 2px;
+  }
+  .southwell-minster .officer .role{
+    display: block;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .southwell-minster .officer .name{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Services table */
+  .southwell-minster .services{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-top: 8px;
+  }
+  .southwell-minster .services > div{
+    background: #fdfaf3;
+    border: 1px solid var(--stone);
+    padding: 22px 24px;
+  }
+  .southwell-minster .services h3{ margin-top: 0; }
+  .southwell-minster .services table{ width: 100%; border-collapse: collapse; font-size: .95rem; }
+  .southwell-minster .services td{ padding: 8px 0; vertical-align: baseline; }
+  .southwell-minster .services td:first-child{
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    color: var(--accent);
+    width: 90px;
+    white-space: nowrap;
+  }
+  .southwell-minster .services tr + tr td{ border-top: 1px dotted rgba(122,46,42,.18); }
+  @media (max-width: 640px) { .southwell-minster .services{ grid-template-columns: 1fr; } }
+
+  /* Hours */
+  .southwell-minster .hours{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 8px;
+  }
+  .southwell-minster .hours .card{
+    padding: 22px 24px;
+    border: 1px solid var(--stone);
+    background: #fdfaf3;
+  }
+  .southwell-minster .hours .card h3{ margin-top: 0; }
+  .southwell-minster .hours dl{ margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: .95rem; }
+  .southwell-minster .hours dt{ color: var(--ink-soft); }
+  .southwell-minster .hours dd{ margin: 0; font-weight: 600; color: var(--ink); }
+
+  /* Contact */
+  .southwell-minster .contact{
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 32px;
+    margin-top: 8px;
+    align-items: start;
+  }
+  .southwell-minster .contact-card{
+    background: linear-gradient(180deg, #fdfaf3, #f4ebd8);
+    border: 1px solid var(--rule);
+    padding: 28px 30px;
+  }
+  .southwell-minster .contact-card h3{ margin-top: 0; }
+  .southwell-minster .contact-card .row{
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 10px 16px;
+    margin-bottom: 10px;
+    font-size: .96rem;
+  }
+  .southwell-minster .contact-card .row span:first-child{
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    padding-top: 3px;
+  }
+  .southwell-minster .contact-card address{ font-style: normal; color: var(--ink); }
+  @media (max-width: 780px) { .southwell-minster .contact{ grid-template-columns: 1fr; } }
+
+  /* Footer */
+  .southwell-minster footer{
+    margin-top: 80px;
+    padding: 32px 28px 40px;
+    background: #1c1611;
+    color: #d9cdb2;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .southwell-minster footer a{ color: #e9c976; border-bottom-color: rgba(233,201,118,.3); }
+  .southwell-minster footer .colophon{ font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; margin-bottom: 10px; color: #f0dfaf; }
+
+  /* Ornaments */
+  .southwell-minster .rule-ornament{
+    text-align: center;
+    color: var(--gold);
+    letter-spacing: 1.5em;
+    padding-left: 1.5em;
+    margin: 24px 0 8px;
+    font-size: 12px;
+  }
