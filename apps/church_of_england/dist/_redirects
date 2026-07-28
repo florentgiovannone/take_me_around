@@ -1,0 +1,3 @@
+/dashboard      https://arkin.takemearound.gallery/dashboard/church-of-england     301!
+/dashboard/*    https://arkin.takemearound.gallery/dashboard/church-of-england/:splat  301!
+/*    /index.html   200
