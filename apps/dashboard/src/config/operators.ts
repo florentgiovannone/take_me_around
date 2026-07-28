@@ -14,7 +14,12 @@ export const OPERATORS: OperatorProfile[] = [
   {
     id: "default",
     name: "Main Dashboard",
-    sites: ["gallery", "museum"],
+    sites: ["gallery", "museum", "church_of_england"],
+  },
+  {
+    id: "church-of-england-only",
+    name: "Church of England team",
+    sites: ["church_of_england"],
   },
   {
     id: "museum-only",
@@ -57,7 +62,13 @@ export function clearOperatorSession() {
 
 export function getStoredScope(): SiteScope | null {
   const raw = sessionStorage.getItem(SCOPE_SESSION_KEY)
-  if (raw === "gallery" || raw === "museum" || raw === "arkin" || raw === "combined") {
+  if (
+    raw === "gallery" ||
+    raw === "museum" ||
+    raw === "arkin" ||
+    raw === "church_of_england" ||
+    raw === "combined"
+  ) {
     return raw
   }
   return null

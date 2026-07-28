@@ -8,6 +8,10 @@ function App() {
       <Route path="/" element={<Dashboard />} />
       <Route path="/dashboard" element={<Dashboard fixedScope="gallery" />} />
       <Route path="/dashboard/museum" element={<Dashboard fixedScope="museum" />} />
+      <Route
+        path="/dashboard/church-of-england"
+        element={<Dashboard fixedScope="church_of_england" />}
+      />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
