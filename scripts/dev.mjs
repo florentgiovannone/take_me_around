@@ -27,20 +27,15 @@ if (!process.stdin.isTTY) {
 let selected
 try {
   selected = await checkbox({
-    message: "Which app(s) do you want to run?",
+    message: "Which app(s) do you want to run? (space to select, enter to confirm)",
     choices: apps.map((app) => ({
       name: `${app.folder} (${app.packageName})`,
       value: app.folder,
     })),
-    required: false,
+    required: true,
   })
 } catch {
   // User cancelled (Ctrl+C during prompt)
-  process.exit(0)
-}
-
-if (!selected.length) {
-  console.log("No apps selected.")
   process.exit(0)
 }
 
