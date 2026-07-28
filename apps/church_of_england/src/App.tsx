@@ -6,6 +6,7 @@ import NotFoundPage from "./pages/NotFoundPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
 import SouthwellMinsterPage from "./pages/SouthwellMinsterPage"
+import TempleOfDendurPage from "./pages/TempleOfDendurPage"
 import WestminsterAbbeyPage from "./pages/WestminsterAbbeyPage"
 import "./styles/style.css"
 
@@ -14,6 +15,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/allpages": "All Pages",
   "/westminster-abbey": "Westminster Abbey",
   "/southwell-minster": "Southwell Minster",
+  "/the-temple-of-dendur": "The Temple of Dendur",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -43,6 +45,9 @@ function AllPage() {
       </p>
       <p>
         <Link to="/southwell-minster">Go to Southwell Minster page</Link>
+      </p>
+      <p>
+        <Link to="/the-temple-of-dendur">Go to The Temple of Dendur page</Link>
       </p>
       <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
@@ -81,6 +86,7 @@ function App() {
         <Route path="/allpages" element={<AllPage />} />
         <Route path="/westminster-abbey" element={<WestminsterAbbeyPage />} />
         <Route path="/southwell-minster" element={<SouthwellMinsterPage />} />
+        <Route path="/the-temple-of-dendur" element={<TempleOfDendurPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route
