@@ -21,7 +21,7 @@ packages/
 Backend/                         API (unchanged location)
 ```
 
-Gallery, museum, and church of England apps import dashboard UI from `@tma/dashboard-ui` and scope data from `@tma/dashboard-scope`. The Arkin dashboard uses the same packages with a site-scope dropdown.
+Gallery and museum apps import dashboard UI from `@tma/dashboard-ui` and scope data from `@tma/dashboard-scope`. The Church of England app redirects `/dashboard` to the Arkin dashboard CoE scope. The Arkin dashboard uses the same packages with a site-scope dropdown.
 
 ## Commands (from repo root)
 
