@@ -46,6 +46,7 @@ export const TRACKED_CHURCH_OF_ENGLAND_ARTWORKS = [
   { title: "Westminster Abbey", path: "/westminster-abbey" },
   { title: "Southwell Minster", path: "/southwell-minster" },
   { title: "The Temple of Dendur", path: "/the-temple-of-dendur" },
+  { title: "The Kiss (Lovers)", path: "/the-kiss" },
 ] as const
 
 export type TrackedArtwork = (typeof TRACKED_CHURCH_OF_ENGLAND_ARTWORKS)[number]

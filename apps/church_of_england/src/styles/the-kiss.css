@@ -1,0 +1,179 @@
+/* Scoped The Kiss styles — ported from klimt-kiss source */
+
+.the-kiss{
+    --paper:#f6efe0;          /* warm ivory */
+    --paper-edge:#eae0c8;
+    --ink:#1a1613;
+    --ink-soft:#4a3f30;
+    --rule:#c6b382;
+    --gold:#b48a2b;           /* signature gold */
+    --gold-deep:#8a6410;
+    --klimt-black:#0e0b08;
+    --klimt-green:#4a5a3a;    /* muted meadow */
+  }
+  .the-kiss, .the-kiss *, .the-kiss *::before, .the-kiss *::after{box-sizing:border-box}
+  .the-kiss{margin:0;padding:0;background:#e6dcc2;color:var(--ink);font-family:"Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .the-kiss a{color:var(--gold-deep)}
+
+  /* --- toolbar --- */
+  
+  
+  
+  
+  
+  
+
+  /* --- page canvas --- */
+  .the-kiss .page{
+    max-width:880px;margin:0 auto;padding:3.5rem 3rem 4rem;
+    background:var(--paper);
+    box-shadow:0 0 0 1px var(--paper-edge), 0 30px 60px -30px rgba(0,0,0,.35);
+    position:relative;
+    /* subtle gold-leaf paper hint */
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(180,138,43,.06), transparent 60%),
+      radial-gradient(ellipse at 80% 90%, rgba(180,138,43,.05), transparent 60%);
+  }
+  .the-kiss .page::before{
+    content:"";position:absolute;inset:14px;border:1px solid var(--rule);pointer-events:none;
+  }
+
+  /* --- header --- */
+  .the-kiss .eyebrow{
+    text-align:center;font-size:.72rem;letter-spacing:.35em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:1.2rem;
+  }
+  .the-kiss .eyebrow .dot{display:inline-block;margin:0 .55rem;opacity:.5;color:var(--gold)}
+  .the-kiss h1{
+    font-family:"Cormorant Garamond",serif;font-weight:600;
+    font-size:clamp(2.4rem,5vw,3.6rem);line-height:1.05;
+    text-align:center;margin:0 0 .3rem;letter-spacing:.01em;
+  }
+  .the-kiss h1 em{font-style:italic;color:var(--gold-deep)}
+  .the-kiss .subtitle{
+    text-align:center;font-family:"Cormorant Garamond",serif;font-style:italic;
+    font-size:1.25rem;color:var(--ink-soft);margin:0 0 1.4rem;
+  }
+  .the-kiss .rule{
+    display:flex;align-items:center;justify-content:center;gap:.9rem;
+    margin:0 auto 2.2rem;color:var(--gold);
+  }
+  .the-kiss .rule::before, .the-kiss .rule::after{content:"";flex:0 0 90px;height:1px;background:currentColor;opacity:.75}
+  .the-kiss .rule svg{width:22px;height:22px}
+
+  /* --- image plate --- */
+  .the-kiss figure.plate{
+    margin:0 0 2rem;
+    padding:14px;
+    background:#fff;
+    /* thin gold frame */
+    border:1px solid var(--gold);
+    box-shadow:
+      inset 0 0 0 3px #fff,
+      inset 0 0 0 4px var(--gold-deep),
+      0 12px 30px -18px rgba(0,0,0,.4);
+    position:relative;
+  }
+  .the-kiss figure.plate .frame{
+    position:relative;overflow:hidden;background:#0e0b08;
+    aspect-ratio: 1/1;                     /* The Kiss is a perfect square */
+  }
+  .the-kiss figure.plate img{
+    width:100%;height:100%;object-fit:contain;display:block;background:#0e0b08;
+  }
+  .the-kiss figcaption{
+    display:flex;justify-content:space-between;gap:1rem;
+    font-size:.78rem;color:var(--ink-soft);
+    margin-top:.7rem;font-style:italic;
+  }
+  .the-kiss figcaption .credit{text-align:right;font-style:normal;letter-spacing:.03em}
+
+  /* --- facts strip --- */
+  .the-kiss .facts{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--rule);border:1px solid var(--rule);
+    margin:0 0 2.2rem;
+  }
+  .the-kiss .facts div{background:var(--paper);padding:.85rem 1rem;font-size:.78rem}
+  .the-kiss .facts .k{
+    display:block;text-transform:uppercase;letter-spacing:.16em;
+    font-size:.66rem;color:var(--ink-soft);margin-bottom:.25rem;
+  }
+  .the-kiss .facts .v{font-family:"Cormorant Garamond",serif;font-size:1.05rem;color:var(--ink)}
+
+  /* --- essay body --- */
+  .the-kiss .lede{
+    font-family:"Cormorant Garamond",serif;
+    font-size:1.35rem;line-height:1.5;color:var(--ink);
+    margin:0 0 1.6rem;
+  }
+  .the-kiss .lede::first-letter{
+    font-family:"Cormorant Garamond",serif;font-weight:700;
+    float:left;font-size:3.6rem;line-height:.85;
+    padding:.35rem .6rem 0 0;color:var(--gold);
+    text-shadow:0 1px 0 var(--gold-deep);
+  }
+  .the-kiss h2{
+    font-family:"Cormorant Garamond",serif;font-weight:600;
+    font-size:1.55rem;margin:2rem 0 .55rem;letter-spacing:.01em;
+  }
+  .the-kiss h2::before{
+    content:"";display:inline-block;width:22px;height:1px;
+    background:var(--gold);vertical-align:middle;margin-right:.7rem;
+  }
+  .the-kiss p{font-size:1rem;line-height:1.7;margin:0 0 1rem;color:var(--ink)}
+  .the-kiss p.small{font-size:.9rem;color:var(--ink-soft)}
+  .the-kiss blockquote{
+    margin:1.4rem 0;padding:.2rem 1.2rem;
+    border-left:2px solid var(--gold);
+    font-family:"Cormorant Garamond",serif;font-style:italic;
+    font-size:1.15rem;color:var(--ink);line-height:1.55;
+  }
+  .the-kiss blockquote cite{
+    display:block;margin-top:.4rem;font-style:normal;font-family:"Inter",sans-serif;
+    font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+  }
+
+  .the-kiss ul.motifs{list-style:none;padding:0;margin:0 0 1rem;display:grid;grid-template-columns:1fr 1fr;gap:.4rem 1.4rem}
+  .the-kiss ul.motifs li{position:relative;padding-left:1.1rem;font-size:.95rem;line-height:1.5}
+  .the-kiss ul.motifs li::before{
+    content:"";position:absolute;left:0;top:.55rem;width:.5rem;height:.5rem;
+    background:var(--gold);transform:rotate(45deg);
+  }
+  .the-kiss ul.motifs strong{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:1.05rem}
+
+  .the-kiss .visit{
+    margin:2.2rem 0 0;padding:1.2rem 1.3rem;
+    background:#efe6cd;border-left:3px solid var(--gold);
+    font-size:.92rem;color:var(--ink);
+  }
+  .the-kiss .visit strong{font-family:"Cormorant Garamond",serif;font-size:1.1rem;letter-spacing:.02em}
+
+  .the-kiss footer.colophon{
+    margin-top:2.6rem;padding-top:1.2rem;border-top:1px solid var(--rule);
+    display:flex;justify-content:space-between;gap:1rem;
+    font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+  }
+
+  /* --- edit affordances --- */
+  
+  
+  
+  
+  
+
+  @media print{
+    .the-kiss .toolbar{display:none}
+    .the-kiss{background:#fff}
+    .the-kiss .page{box-shadow:none;max-width:none;margin:0;padding:1.5cm}
+  }
+  @media (max-width:640px){
+    .the-kiss .page{padding:2rem 1.2rem 2.4rem}
+    .the-kiss .facts{grid-template-columns:1fr 1fr}
+    .the-kiss ul.motifs{grid-template-columns:1fr}
+  }
+.the-kiss {
+  background: #e6dcc2;
+  padding: 2rem 1rem 3rem;
+  min-height: 40vh;
+}
