@@ -1,10 +1,10 @@
-export type SiteId = "gallery" | "museum" | "arkin"
+export type SiteId = "gallery" | "museum" | "arkin" | "church_of_england"
 
 export type SiteScope = SiteId | "combined"
 
-export const ALL_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin"]
+export const ALL_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin", "church_of_england"]
 
-export const PICKABLE_SITE_IDS: SiteId[] = ["gallery", "museum"]
+export const PICKABLE_SITE_IDS: SiteId[] = ["gallery", "museum", "church_of_england"]
 
 export const SITE_META: Record<
   SiteId,
@@ -24,6 +24,11 @@ export const SITE_META: Record<
     label: "Arkin Gallery",
     domainLabel: "Arkin Gallery",
     host: "arkin.takemearound.gallery",
+  },
+  church_of_england: {
+    label: "Church of England",
+    domainLabel: "Church of England",
+    host: "church.takemearound.gallery",
   },
 }
 
