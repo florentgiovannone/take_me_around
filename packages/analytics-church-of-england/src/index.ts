@@ -63,25 +63,32 @@ export function getTrackedArtworkUrl(path: string) {
   return `https://church.takemearound.gallery${path}`
 }
 
-/** Reject bare gallery and other hosts; allow the Church host and path-only messages. */
+const CHURCH_OF_ENGLAND_HOSTNAME = "church.takemearound.gallery"
+
+/** Reject foreign hosts; allow the exact Church host and messages without a host. */
 function isChurchOfEnglandDomainMessage(message: string) {
-  const normalized = message.toLowerCase()
-  if (
-    normalized.includes("takemearound.museum") ||
-    normalized.includes("arkin.takemearound.gallery") ||
-    normalized.includes("arkingallery.netlify.app")
-  ) {
-    return false
+  const absoluteUrls = message.match(/https?:\/\/[^\s<>"']+/gi) ?? []
+  for (const candidate of absoluteUrls) {
+    try {
+      if (new URL(candidate).hostname !== CHURCH_OF_ENGLAND_HOSTNAME) return false
+    } catch {
+      return false
+    }
   }
-  if (
-    normalized.includes("takemearound.gallery") &&
-    !normalized.includes("church.takemearound.gallery")
-  ) {
-    return false
+
+  const schemeLessHosts =
+    message.match(
+      /(?:^|[\s([{"'])((?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#][^\s<>"']*)?)/gi
+    ) ?? []
+  for (const match of schemeLessHosts) {
+    const candidate = match.trim().replace(/^[([{"']+/, "")
+    try {
+      if (new URL(`https://${candidate}`).hostname !== CHURCH_OF_ENGLAND_HOSTNAME) return false
+    } catch {
+      return false
+    }
   }
-  if (normalized.includes("http") && !normalized.includes("church.takemearound.gallery")) {
-    return false
-  }
+
   return true
 }
 
