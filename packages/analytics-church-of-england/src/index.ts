@@ -64,6 +64,19 @@ export function getTrackedArtworkUrl(path: string) {
 }
 
 const CHURCH_OF_ENGLAND_HOSTNAME = "church.takemearound.gallery"
+const FOREIGN_TRACKED_HOSTNAMES = new Set([
+  "takemearound.museum",
+  "takemearound.gallery",
+  "arkin.takemearound.gallery",
+])
+const SCHEME_LESS_HOST_PATTERN =
+  /(?:^|[\s([{"'])((?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#][^\s<>"']*)?)/gi
+
+function schemeLessHostCandidates(message: string) {
+  return (message.match(SCHEME_LESS_HOST_PATTERN) ?? []).map((match) =>
+    match.trim().replace(/^[([{"']+/, "")
+  )
+}
 
 /** Reject foreign hosts; allow the exact Church host and messages without a host. */
 function isChurchOfEnglandDomainMessage(message: string) {
@@ -76,12 +89,7 @@ function isChurchOfEnglandDomainMessage(message: string) {
     }
   }
 
-  const schemeLessHosts =
-    message.match(
-      /(?:^|[\s([{"'])((?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#][^\s<>"']*)?)/gi
-    ) ?? []
-  for (const match of schemeLessHosts) {
-    const candidate = match.trim().replace(/^[([{"']+/, "")
+  for (const candidate of schemeLessHostCandidates(message)) {
     try {
       if (new URL(`https://${candidate}`).hostname !== CHURCH_OF_ENGLAND_HOSTNAME) return false
     } catch {
@@ -90,6 +98,31 @@ function isChurchOfEnglandDomainMessage(message: string) {
   }
 
   return true
+}
+
+function messageLooksLinkShaped(message: string) {
+  const trimmed = message.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return false
+  return (
+    trimmed.startsWith("/") ||
+    trimmed.includes("://") ||
+    schemeLessHostCandidates(trimmed).length > 0
+  )
+}
+
+function containsForeignTrackedRedirectUrl(message: string) {
+  const candidates = [
+    ...(message.match(/https?:\/\/[^\s<>"']+/gi) ?? []),
+    ...schemeLessHostCandidates(message).map((candidate) => `https://${candidate}`),
+  ]
+
+  return candidates.some((candidate) => {
+    try {
+      return FOREIGN_TRACKED_HOSTNAMES.has(new URL(candidate).hostname.toLowerCase())
+    } catch {
+      return false
+    }
+  })
 }
 
 export function extractTrackedPathFromMessage(message: string): string | null {
@@ -115,12 +148,14 @@ function nameMatchesTrackedChurchOfEnglandArtwork(name: string | null | undefine
 
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
   const message = log.txt_message?.trim() ?? ""
-  if (message && !isChurchOfEnglandDomainMessage(message)) return null
 
   const path = extractTrackedPathFromMessage(message)
   if (path) {
     return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.path === path) ?? null
   }
+
+  if (containsForeignTrackedRedirectUrl(message)) return null
+  if (messageLooksLinkShaped(message) && !isChurchOfEnglandDomainMessage(message)) return null
 
   const normalizedName = log.text_name?.trim().toLowerCase()
   if (!normalizedName) return null

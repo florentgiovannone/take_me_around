@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ALL_SITE_IDS, SITE_META, type SiteId } from "@tma/config"
+import { ALL_SITE_IDS, PICKABLE_SITE_IDS, SITE_META, type SiteId } from "@tma/config"
 import { normalizeEnabledSites, storeEnabledSites } from "../config/dashboardSites"
 
 type DashboardSettingsPageProps = {
@@ -61,7 +61,7 @@ export default function DashboardSettingsPage({
   }
 
   const handleReset = () => {
-    setDraftSites(normalizeEnabledSites(["gallery", "museum"]))
+    setDraftSites(normalizeEnabledSites(PICKABLE_SITE_IDS))
   }
 
   const handleSave = () => {
@@ -114,7 +114,7 @@ export default function DashboardSettingsPage({
 
       <div className="tma-dashboard-settings-actions">
         <button type="button" className="tma-dashboard-settings-reset" onClick={handleReset}>
-          Reset to Gallery + Museum
+          Reset to defaults
         </button>
         <button type="button" className="tma-dashboard-settings-save" onClick={handleSave}>
           Save and return
