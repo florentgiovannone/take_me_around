@@ -12,10 +12,15 @@
     "build:arkin-museum": "npm run build -w @tma/app-arkin-museum",
     "build:dashboard": "npm run build -w @tma/app-dashboard",
     "build:church-of-england": "npm run build -w @tma/app-church-of-england",
+    "dev": "node scripts/dev.mjs",
     "dev:gallery": "npm run dev -w @tma/app-gallery",
     "dev:museum": "npm run dev -w @tma/app-museum",
     "dev:arkin-museum": "npm run dev -w @tma/app-arkin-museum",
     "dev:dashboard": "npm run dev -w @tma/app-dashboard",
     "dev:church-of-england": "npm run dev -w @tma/app-church-of-england"
+  },
+  "devDependencies": {
+    "@inquirer/prompts": "^8.5.2",
+    "concurrently": "^10.0.4"
   }
 }
