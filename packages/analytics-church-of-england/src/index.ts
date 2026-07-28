@@ -67,6 +67,7 @@ export function getTrackedArtworkUrl(path: string) {
 function isChurchOfEnglandDomainMessage(message: string) {
   const normalized = message.toLowerCase()
   if (
+    normalized.includes("takemearound.museum") ||
     normalized.includes("arkin.takemearound.gallery") ||
     normalized.includes("arkingallery.netlify.app")
   ) {
@@ -106,7 +107,10 @@ function nameMatchesTrackedChurchOfEnglandArtwork(name: string | null | undefine
 }
 
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
-  const path = extractTrackedPathFromMessage(log.txt_message ?? "")
+  const message = log.txt_message?.trim() ?? ""
+  if (message && !isChurchOfEnglandDomainMessage(message)) return null
+
+  const path = extractTrackedPathFromMessage(message)
   if (path) {
     return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.path === path) ?? null
   }
