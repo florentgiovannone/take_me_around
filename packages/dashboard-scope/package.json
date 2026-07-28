@@ -7,6 +7,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@tma/analytics-church-of-england": "*",
     "@tma/analytics-gallery": "*",
     "@tma/analytics-museum": "*",
     "@tma/analytics-arkin": "*",
