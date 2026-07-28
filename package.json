@@ -13,6 +13,7 @@
     "build:dashboard": "npm run build -w @tma/app-dashboard",
     "build:church-of-england": "npm run build -w @tma/app-church-of-england",
     "dev": "node scripts/dev.mjs",
+    "test": "node --test scripts/lib/*.test.mjs",
     "dev:gallery": "npm run dev -w @tma/app-gallery",
     "dev:museum": "npm run dev -w @tma/app-museum",
     "dev:arkin-museum": "npm run dev -w @tma/app-arkin-museum",

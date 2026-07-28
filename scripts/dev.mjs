@@ -48,7 +48,6 @@ const selectedApps = apps.filter((app) => selected.includes(app.folder))
 const commands = buildConcurrentlyCommands(selectedApps)
 
 const { result } = concurrently(commands, {
-  prefixColors: true,
   killOthersOn: ["failure"],
 })
 
