@@ -1,13 +1,12 @@
 import Footer from "../components/Footer"
 import "../styles/style.css"
-import AudioPlayer from "../components/AudioPlayer"
-import { STOP_IMAGES, getStopAudio } from "../assets/church-of-england"
+import SectionAudio from "../components/SectionAudio"
+import { STOP_IMAGES } from "../assets/church-of-england"
 import { westminsterAbbeyCopy as copy } from "../data/westminsterAbbey"
 
-const STOP_SLUG = "westminster-abbey"
+const WORK_SLUG = "westminster-abbey"
 
 export default function WestminsterAbbeyPage() {
-  const audioSrc = getStopAudio(STOP_SLUG)
   return (
     <>
       <main className="tma-gallery-page">
@@ -23,16 +22,17 @@ export default function WestminsterAbbeyPage() {
           </p>
         </a>
         <div className="tma-content">
-          {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
           <img
-            src={STOP_IMAGES[STOP_SLUG]!}
+            src={STOP_IMAGES[WORK_SLUG]!}
             alt={copy.imageAlt}
             className="tma-painting-image"
           />
+          <SectionAudio workSlug={WORK_SLUG} sectionId="about" />
           <h2>{copy.aboutHeading}</h2>
           {copy.aboutParagraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 48)}>{paragraph}</p>
           ))}
+          <SectionAudio workSlug={WORK_SLUG} sectionId="history" />
           <h2>{copy.historyHeading}</h2>
           {copy.historyParagraphs.map((paragraph) => (
             <p key={paragraph.slice(0, 48)}>{paragraph}</p>

@@ -49,6 +49,7 @@ export const TRACKED_MUSEUM_ARTWORKS = [
   { title: "The Sutton Hoo helmet", path: "/the-sutton-hoo-helmet" },
   { title: "The Royal Game of Ur", path: "/the-royal-game-of-ur" },
   { title: "Hoa Hakananaiʻa", path: "/hoa-hakananai-a" },
+  { title: "The Temple of Dendur", path: "/the-temple-of-dendur" },
 ] as const
 
 export type TrackedArtwork = (typeof TRACKED_MUSEUM_ARTWORKS)[number]

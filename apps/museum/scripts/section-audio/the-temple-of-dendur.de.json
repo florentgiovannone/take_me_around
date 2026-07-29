@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Einleitung",
+    "speechText": "Der Tempel von Dendur ist der einzige vollständig erhaltene ägyptische Tempel auf der westlichen Hemisphäre. Der Tempel von Dendur wurde um das Jahr 15 v. Chr. am Westufer des Nils in Unter-Nubien erbaut. Er wurde von Augustus, dem ersten römischen Kaiser Ägyptens, in Auftrag gegeben und der Göttin Isis sowie den beiden einheimischen Brüdern Pediese und Pihor gewidmet, die nach ihrem Ertrinken im Fluss als Halbgötter verehrt wurden."
+  },
+  {
+    "id": "political-temple",
+    "title": "Ein politischer Tempel in einer römischen Provinz",
+    "speechText": "Nachdem Augustus Kleopatra und Marcus Antonius besiegt hatte, zentralisierte er die Tempelverwaltung Ägyptens und gab Bauprojekte für regionale Götter in Auftrag. Der kleine Sandsteinschrein in Dendur war einer davon. An seinen Wänden erscheint Augustus als Pharao, der den Göttern Opfer darbringt – ein kaiserliches Schauspiel, das sich an die nubischen Untertanen richtete, die noch immer nach alter Sitte verehrten."
+  },
+  {
+    "id": "reading-walls",
+    "title": "Die Wände lesen",
+    "speechText": "Ägyptische Tempel waren Abbilder der Natur: Das Heiligtum war der Urhügel, die Säulen die Nil-Sümpfe, die Decke der Himmel. In Dendur wachsen Papyrus und Lotus aus dem Sockel; die Säulen der Vorhalle ragen wie Papyrusstängel empor; der Türsturz zeigt die Sonnenscheibe und die Flügel des Horus; die Decke der Vorhalle ist mit Geiern übersät; die Außenwände zeigen den König bei Opfergaben an die Gottheiten; und an der Rückwand des Heiligtums verehrt Pihor die Isis. Viele Kartuschen tragen lediglich die Aufschrift „Pharao“ – eine wiederverwendbare Abkürzung aus der Römerzeit."
+  },
+  {
+    "id": "rescued-from-nile",
+    "title": "Aus dem Nil gerettet",
+    "speechText": "Als Ägypten den Assuan-Staudamm errichtete, waren Dutzende von Denkmälern durch den Nassersee bedroht. Die UNESCO leitete eine internationale Rettungsaktion. Aus Dankbarkeit schenkte Ägypten dem amerikanischen Volk 1965 den Tempel von Dendur. Er wurde dem Metropolitan Museum übergeben, traf in Hunderten von Kisten ein und wurde im Nordflügel wieder aufgebaut, der 1978 neben einem Spiegelteich eröffnet wurde, der den Nil symbolisiert."
+  },
+  {
+    "id": "looking-closely",
+    "title": "Genau hinschauen",
+    "speechText": "Nähern Sie sich zunächst vom Tor aus. Im Inneren durchqueren Sie drei Räume von zunehmender Heiligkeit: einen Pronaos mit zwei Säulen, einen Opferraum und das Heiligtum der Isis. Achten Sie an der Außenseite auf griechische und koptische Graffiti – Namen von Pilgern, die über einen Zeitraum von fast zwei Jahrtausenden in den Stein geritzt wurden. Die Galerie 131 befindet sich am nördlichen Ende des Museums; planen Sie etwa zwanzig Minuten ein, bei guten Lichtverhältnissen auch etwas mehr."
+  }
+]

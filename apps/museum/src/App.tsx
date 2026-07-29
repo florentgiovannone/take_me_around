@@ -5,6 +5,7 @@ import HoaHakananaiPage from "./pages/HoaHakananaiPage"
 import LewisChessmenPage from "./pages/LewisChessmenPage"
 import RoyalGameOfUrPage from "./pages/RoyalGameOfUrPage"
 import RosettaStonePage from "./pages/RosettaStonePage"
+import TempleOfDendurPage from "./pages/TempleOfDendurPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
 import ContactPage from "./pages/ContactPage"
@@ -22,6 +23,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/the-rosetta-stone": "The Rosetta Stone",
   "/the-royal-game-of-ur": "The Royal Game of Ur",
   "/the-sutton-hoo-helmet": "The Sutton Hoo helmet",
+  "/the-temple-of-dendur": "The Temple of Dendur",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -65,6 +67,9 @@ function AllPage() {
         <Link to="/the-rosetta-stone">Go to The Rosetta Stone page</Link>
       </p>
       <p>
+        <Link to="/the-temple-of-dendur">Go to The Temple of Dendur page</Link>
+      </p>
+      <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
       </p>
       <p>
@@ -106,6 +111,7 @@ function App() {
         <Route path="/the-rosetta-stone" element={<RosettaStonePage />} />
         <Route path="/the-royal-game-of-ur" element={<RoyalGameOfUrPage />} />
         <Route path="/the-sutton-hoo-helmet" element={<SuttonHooHelmetPage />} />
+        <Route path="/the-temple-of-dendur" element={<TempleOfDendurPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route

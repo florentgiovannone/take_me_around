@@ -5,6 +5,7 @@ import MonaLisaPage from "./pages/MonaLisaPage"
 import QingmingFestivalPage from "./pages/QingmingFestivalPage"
 import StarryNightPage from "./pages/StarryNightPage"
 import TwoFridasPage from "./pages/TwoFridasPage"
+import TheKissPage from "./pages/TheKissPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
 import ContactPage from "./pages/ContactPage"
@@ -23,6 +24,7 @@ const PAGE_TITLES: Record<string, string> = {
     "Along the River During Qingming Festival",
   "/the-starry-night": "The Starry Night",
   "/the-two-fridas": "The Two Fridas",
+  "/the-kiss": "The Kiss",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -68,6 +70,9 @@ function AllPage() {
         <Link to="/the-two-fridas">Go to The Two Fridas page</Link>
       </p>
       <p>
+        <Link to="/the-kiss">Go to The Kiss page</Link>
+      </p>
+      <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
       </p>
       <p>
@@ -111,6 +116,7 @@ function App() {
         />
         <Route path="/the-starry-night" element={<StarryNightPage />} />
         <Route path="/the-two-fridas" element={<TwoFridasPage />} />
+        <Route path="/the-kiss" element={<TheKissPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route

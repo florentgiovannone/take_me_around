@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Introduzione",
+    "speechText": "Il Tempio di Dendur è l’unico tempio egizio completo presente nell’emisfero occidentale. Costruito sulla riva occidentale del Nilo nella Bassa Nubia intorno al 15 a.C., il Tempio di Dendur fu commissionato da Augusto, il primo imperatore romano d'Egitto, e dedicato alla dea Iside e a due fratelli del luogo, Pediese e Pihor, che furono venerati come semidei dopo essere annegati nel fiume."
+  },
+  {
+    "id": "political-temple",
+    "title": "Un tempio politico in una provincia romana",
+    "speechText": "Dopo aver sconfitto Cleopatra e Marco Antonio, Augusto centralizzò l’amministrazione dei templi egizi e commissionò progetti di costruzione dedicati alle divinità regionali. Il piccolo santuario in arenaria di Dendur fu uno di questi. Sulle sue pareti Augusto appare nei panni del faraone mentre offre doni agli dei: una messinscena imperiale rivolta ai sudditi nubiani che continuavano a praticare il culto secondo le antiche usanze."
+  },
+  {
+    "id": "reading-walls",
+    "title": "Leggere le pareti",
+    "speechText": "I templi egizi erano rappresentazioni del mondo naturale: il santuario era il tumulo primordiale, le colonne le paludi del Nilo, il soffitto il cielo. A Dendur, papiri e fiori di loto spuntano dalla base; le colonne del portico si ergono come steli di papiro; l’architrave del portone raffigura il disco solare e le ali di Horus; il soffitto del portico è popolato di avvoltoi; le pareti esterne mostrano il re che offre doni alle divinità; e sulla parete posteriore del santuario Pihor adora Iside. Molti cartigli recano semplicemente la scritta «faraone», un’abbreviazione riutilizzabile risalente all’epoca romana."
+  },
+  {
+    "id": "rescued-from-nile",
+    "title": "Salvato dal Nilo",
+    "speechText": "Quando l’Egitto costruì la Grande Diga di Assuan, il Lago Nasser mise a rischio decine di monumenti. L’UNESCO guidò un’operazione internazionale di salvataggio. In segno di gratitudine, nel 1965 l’Egitto donò il Tempio di Dendur al popolo americano. Il tempio fu assegnato al Metropolitan Museum, arrivò in centinaia di casse e fu ricostruito nell’ala nord, inaugurata nel 1978 accanto a uno specchio d’acqua che simboleggia il Nilo."
+  },
+  {
+    "id": "looking-closely",
+    "title": "Osservando attentamente",
+    "speechText": "Avvicinatevi prima dal cancello. All’interno si attraversano tre spazi di sacralità crescente: un pronao con due colonne, una sala delle offerte e il santuario di Iside. All’esterno cercate i graffiti greci e copti: nomi di pellegrini incisi nella pietra nel corso di quasi due millenni. La sala 131 si trova all’estremità nord del museo; prevedete circa venti minuti per la visita, o anche di più se la luce è favorevole."
+  }
+]

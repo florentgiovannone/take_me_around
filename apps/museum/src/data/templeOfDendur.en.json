@@ -1,0 +1,83 @@
+{
+  "banner": "Learn how this experience works",
+  "eyebrow": "The Met Fifth Avenue · Egyptian Art · Gallery 131",
+  "eyebrowParts": ["The Met Fifth Avenue", "Egyptian Art", "Gallery 131"],
+  "title": "The Temple of Dendur",
+  "subtitle": "A Nubian temple for Isis, gifted by Egypt to the American people",
+  "imageAlt": "The Temple of Dendur reassembled in Gallery 131 of The Metropolitan Museum of Art",
+  "figcaption": "The temple and its gate, reassembled beside a reflecting pool in the glazed north wing.",
+  "credit": "Image: The Metropolitan Museum of Art, Object No. 68.154",
+  "facts": [
+    { "k": "Date", "v": "completed by 10 BC" },
+    { "k": "Reign", "v": "Caesar Augustus" },
+    { "k": "From", "v": "Dendur, Lower Nubia" },
+    { "k": "Material", "v": "Aeolian sandstone" },
+    { "k": "Temple", "v": "6.4 × 6.4 × 12.5 m" },
+    { "k": "Gate", "v": "8.1 × 3.7 × 3.4 m" },
+    { "k": "Acquired", "v": "Gift of Egypt, 1965" },
+    { "k": "On view since", "v": "1978, Gallery 131" }
+  ],
+  "lede": "The Temple of Dendur is the only complete Egyptian temple in the Western Hemisphere. Built on the west bank of the Nile in Lower Nubia around 15 BC, it was commissioned by the first Roman emperor of Egypt, Augustus, and dedicated to the goddess Isis and to two local heroes — brothers named Pediese and Pihor — who were revered as demigods after drowning in the river.",
+  "sections": [
+    {
+      "id": "political-temple",
+      "heading": "A political temple in a Roman province",
+      "paragraphs": [
+        "After Augustus defeated Cleopatra VII and Mark Antony in 31 BC, he confiscated the property of Egypt's temples and centralised their administration. To smooth the change of regime he commissioned at least seventeen building projects for regional gods; the small sandstone shrine at Tutzis, today known as Dendur, was one of them. On its walls Augustus appears as pharaoh in traditional Egyptian regalia, making offerings to the gods — a piece of imperial theatre aimed at Nubian subjects who still worshipped in the old way."
+      ]
+    },
+    {
+      "id": "reading-walls",
+      "heading": "Reading the walls",
+      "paragraphs": [
+        "Egyptian temples were understood as images of the natural world: the sanctuary was the primeval mound, the columns the reeds and lotuses of the Nile marshes, the ceiling the sky. Dendur's decoration follows that programme almost as an illustrated cosmology."
+      ],
+      "motifs": [
+        {
+          "label": "Base of the temple",
+          "text": "Papyrus and lotus plants seem to grow out of water represented by figures of Hapy, god of the Nile flood."
+        },
+        {
+          "label": "Porch columns",
+          "text": "Rise like tall bundles of papyrus stalks bound with lotus blossoms."
+        },
+        {
+          "label": "Gate lintel",
+          "text": "A sun disk flanked by the outspread wings of Horus, the sky god."
+        },
+        {
+          "label": "Porch ceiling",
+          "text": "Vultures with outspread wings stand in for the vault of heaven."
+        },
+        {
+          "label": "Outer walls",
+          "text": "Two horizontal registers of sunk relief show the king offering to deities who hold sceptres and the ankh, the sign of life."
+        },
+        {
+          "label": "Sanctuary back wall",
+          "text": "Pihor worships Isis; below, Pediese — now damaged — worships Osiris. This is the ritual heart of the building."
+        }
+      ],
+      "afterNote": "Look for the cartouches beside the king's head. Many are simply inscribed \"pharaoh\" rather than a personal name — a shortcut the Roman-era masons could reuse whoever sat on the throne."
+    },
+    {
+      "id": "rescued-from-nile",
+      "heading": "Rescued from the Nile",
+      "paragraphs": [
+        "When Egypt began building the Aswan High Dam in the 1960s, a vast artificial lake — Lake Nasser — was set to swallow dozens of ancient monuments. UNESCO led an international rescue and the United States contributed substantial funds. In gratitude Egypt presented four of the salvaged monuments to countries that had helped; the Temple of Dendur was given to the American people in 1965 and awarded to the Metropolitan Museum in 1967 after a national competition.",
+        "The temple arrived in some 640 crates weighing more than 800 tonnes. It was reassembled block by block inside the purpose-built north wing, which opened in 1978. The glazed north wall faces a reflecting pool that stands in for the Nile, and the light shifts through the day much as it once did at Dendur."
+      ]
+    },
+    {
+      "id": "looking-closely",
+      "heading": "Looking closely",
+      "paragraphs": [
+        "Approach from the gate first, so you enter the temple as an ancient worshipper would have. Inside you pass through three spaces of increasing sanctity: a pronaos with two columns; an offering room whose reliefs are cut in raised rather than sunk relief; and, at the back, the small sanctuary of Isis. On the exterior look for Greek and Coptic graffiti — pilgrims' names cut into the stone across nearly two millennia, including a demotic dedication by a nineteenth-century traveller. They are part of the object's history now."
+      ],
+      "visitLabel": "Finding it.",
+      "visitBody": "Gallery 131, on the ground floor at the north end of the Museum. Enter from the Great Hall, walk through the Egyptian galleries in chronological order (Old Kingdom → Middle → New → Late Period → Ptolemaic) and Dendur is the culmination. Allow twenty minutes; more if the light is good."
+    }
+  ],
+  "colophonLeft": "The Metropolitan Museum of Art · 1000 Fifth Avenue, New York",
+  "colophonRight": "Object No. 68.154 · Egyptian Art"
+}

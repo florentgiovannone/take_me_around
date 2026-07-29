@@ -1,0 +1,65 @@
+{
+  "banner": "Learn how this experience works",
+  "eyebrowParts": ["Belvedere, Vienna", "Upper Belvedere", "Vienna 1900"],
+  "title": "The Kiss",
+  "titleEm": "(Lovers)",
+  "subtitle": "Gustav Klimt · the summit of the Golden Period, 1908/09",
+  "imageAlt": "Gustav Klimt, The Kiss (Lovers), 1908/09, oil and gold leaf on canvas, Belvedere, Vienna",
+  "figcaption": "Two lovers kneel on a flowering meadow, wrapped in a single mantle of gold; the exhibition title was Liebespaar, \"Lovers\".",
+  "credit": "Belvedere, Vienna · Inv. no. 912",
+  "facts": [
+    { "k": "Artist", "v": "Gustav Klimt (1862–1918)" },
+    { "k": "Date", "v": "1908, completed 1909" },
+    { "k": "Medium", "v": "Oil, gold & silver leaf on canvas" },
+    { "k": "Size", "v": "180 × 180 cm (square)" },
+    { "k": "Inv. no.", "v": "Belvedere 912" },
+    { "k": "First shown", "v": "Kunstschau, Vienna, 1908" },
+    { "k": "Acquired", "v": "Moderne Galerie, 1908 · 25,000 crowns" },
+    { "k": "On view", "v": "Upper Belvedere, Klimt gallery" }
+  ],
+  "lede": "Kneeling on a small meadow of wildflowers, at the edge of what looks like a cliff, two lovers are wrapped in a single golden mantle. The man leans in; the woman tilts her face up to be kissed, her eyes closed, her hand curled around his. Behind them there is no room and no landscape — only a shimmering field of gold. The Kiss is the most famous painting of the Vienna 1900 moment, and one of the very few pictures in the history of Western art that manages to be at once wildly ornamental and genuinely tender.",
+  "sections": [
+    {
+      "id": "golden-period",
+      "heading": "Klimt's Golden Period",
+      "paragraphs": [
+        "By 1907 Gustav Klimt was Vienna's most celebrated — and most contested — painter. His allegorical ceilings for the University had been rejected as obscene, he had co‑founded and then walked out of the Secession, and he was living with his companion Emilie Flöge above his suburban garden studio. Two experiences pushed him toward gold. First, a trip in 1903 to Ravenna, where the Byzantine mosaics of San Vitale — Justinian and Theodora against a wall of shimmering gold — showed him a way to detach figures from space and turn them into icons. Second, his father's trade: Ernst Klimt had been a gold engraver. Between 1903 and 1909 Klimt built up a series of \"gold pictures\" — the Beethoven Frieze, Judith I, the Portrait of Adele Bloch‑Bauer I, and finally The Kiss — laying real gold and silver leaf directly onto the canvas."
+      ]
+    },
+    {
+      "id": "reading-picture",
+      "heading": "Reading the picture",
+      "paragraphs": [
+        "The composition is stricter than it first looks. The lovers form a single golden shape — a rounded, phallic silhouette — that stands on a narrow ledge of flowers and floats against a matte gold ground. Only the visible skin (his neck, her face, arms and feet) and the meadow are painted illusionistically; the rest is ornament. Klimt divides that ornament sharply along gendered lines, an idea he had been working out since the Beethoven Frieze."
+      ],
+      "motifs": [
+        { "label": "His robe.", "text": "Rectangles and squares in black, white and silver — hard, architectural, \"masculine\"." },
+        { "label": "Her robe.", "text": "Ovals and concentric circles in gold, rose and violet — soft, organic, \"feminine\"." },
+        { "label": "The meadow.", "text": "Real wildflowers — poppies, daisies, ivy — the only naturalistic passage in the picture." },
+        { "label": "The cliff edge.", "text": "Her toes curl over a small precipice: ecstasy poised on the brink of the void." },
+        { "label": "Her hand.", "text": "The fingers of her right hand grip his; the tendons are drawn with anatomical care." },
+        { "label": "The gold ground.", "text": "Not sky, not wall — an icon painter's timeless field, borrowed from Ravenna." }
+      ],
+      "quote": "All art is erotic.",
+      "quoteCite": "— Gustav Klimt, remark to Berta Zuckerkandl, c. 1905"
+    },
+    {
+      "id": "kunstschau-1908",
+      "heading": "The Kunstschau of 1908",
+      "paragraphs": [
+        "Klimt unveiled the painting at the 1908 Kunstschau in Vienna, a mammoth exhibition he had organised with a breakaway group of artists on empty land where the Konzerthaus now stands. It hung as the centrepiece of the \"Klimt Room\" under the more discreet title Liebespaar — \"Lovers\". The Austrian state, through its newly founded Moderne Galerie in the Lower Belvedere, bought the picture straight off the wall for 25,000 crowns before it was even finished. It was an astonishing price for a contemporary Austrian work, and made the young museum's reputation overnight."
+      ]
+    },
+    {
+      "id": "looking-closely",
+      "heading": "Looking closely at the Belvedere",
+      "paragraphs": [
+        "The painting has hung in the Belvedere ever since — since 1953 in the Upper Belvedere, where the Vienna 1900 collection is arranged around the Marble Hall on the upper floor. It shares its gallery with Judith I, several Attersee landscapes and the double portrait of Fritza Riedler; Egon Schiele's Death and the Maiden is next door. In reproduction the picture always looks like paper; in person the gold is real metal — you see it catch the light and turn from bronze to lemon as you move sideways. Try to stand about two to three metres back so the full square reads as a single shape, then step in to look at the meadow and the hands."
+      ],
+      "visitLabel": "Finding it.",
+      "visitBody": "Upper Belvedere (Oberes Belvedere), Prinz‑Eugen‑Straße 27, 1030 Vienna. Take tram D to Schloss Belvedere. Enter the palace, climb the state staircase to the upper floor, cross the Marble Hall and turn into the Klimt gallery — The Kiss is on the end wall. Open daily 09:00–18:00 (Fridays until 21:00). Go first thing or last hour; the room is small and fills quickly."
+    }
+  ],
+  "colophonLeft": "Österreichische Galerie Belvedere · Prinz‑Eugen‑Straße 27, Vienna",
+  "colophonRight": "Inv. no. 912 · Klimt Collection"
+}

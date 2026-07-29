@@ -87,6 +87,50 @@ export const ARTWORKS = {
       { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
     ],
   },
+  "cyrus-cylinder": {
+    app: "museum",
+    slug: "cyrus-cylinder",
+    dataBase: "cyrusCylinder",
+    exportPrefix: "CYRUS_CYLINDER",
+    copyTypeName: "CyrusCylinderCopy",
+    sections: [
+      { headingKey: "aboutCylinderHeading", paragraphsKey: "aboutCylinderParagraphs" },
+      { headingKey: "aboutBabyloniansHeading", paragraphsKey: "aboutBabyloniansParagraphs" },
+    ],
+  },
+  "lewis-chessmen": {
+    app: "museum",
+    slug: "lewis-chessmen",
+    dataBase: "lewisChessmen",
+    exportPrefix: "LEWIS_CHESSMEN",
+    copyTypeName: "LewisChessmenCopy",
+    sections: [
+      { headingKey: "aboutChessmenHeading", paragraphsKey: "aboutChessmenParagraphs" },
+      { headingKey: "aboutNorseHeading", paragraphsKey: "aboutNorseParagraphs" },
+    ],
+  },
+  "starry-night": {
+    app: "gallery",
+    slug: "starry-night",
+    dataBase: "starryNight",
+    exportPrefix: "STARRY_NIGHT",
+    copyTypeName: "StarryNightCopy",
+    sections: [
+      { headingKey: "aboutPaintingHeading", paragraphsKey: "aboutPaintingParagraphs" },
+      { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
+    ],
+  },
+  "edmond-de-belamy": {
+    app: "gallery",
+    slug: "edmond-de-belamy",
+    dataBase: "edmondDeBelamy",
+    exportPrefix: "EDMOND_DE_BELAMY",
+    copyTypeName: "EdmondDeBelamyCopy",
+    sections: [
+      { headingKey: "aboutPaintingHeading", paragraphsKey: "aboutPaintingParagraphs" },
+      { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
+    ],
+  },
 }
 
 export const APP_ROOTS = {

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Introduction",
+    "speechText": "Le temple de Dendour est le seul temple égyptien complet de l'hémisphère occidental. Construit sur la rive ouest du Nil, en Basse-Nubie, vers l'an 15 avant J.-C., le temple de Dendour fut commandé par Auguste, premier empereur romain d'Égypte, et dédié à la déesse Isis ainsi qu'à deux frères de la région, Pediese et Pihor, vénérés comme des demi-dieux après s'être noyés dans le fleuve."
+  },
+  {
+    "id": "political-temple",
+    "title": "Un temple politique dans une province romaine",
+    "speechText": "Après avoir vaincu Cléopâtre et Marc Antoine, Auguste centralisa l’administration des temples d’Égypte et lança des projets de construction dédiés aux divinités régionales. Le petit sanctuaire en grès de Dendour en faisait partie. Sur ses murs, Auguste apparaît en pharaon, faisant des offrandes aux dieux — une mise en scène impériale destinée aux sujets nubiens qui pratiquaient encore le culte à l’ancienne."
+  },
+  {
+    "id": "reading-walls",
+    "title": "Lire entre les lignes",
+    "speechText": "Les temples égyptiens étaient des représentations du monde naturel : le sanctuaire symbolisait le monticule primitif, les colonnes les marais du Nil, le plafond le ciel. À Dendour, des papyrus et des lotus poussent à la base ; les colonnes du porche s’élèvent comme des tiges de papyrus ; le linteau de la porte représente le disque solaire et les ailes d’Horus ; le plafond du porche est peuplé de vautours ; les murs extérieurs montrent le roi faisant des offrandes aux divinités ; et sur le mur du fond du sanctuaire, Pihor rend hommage à Isis. De nombreux cartouches portent simplement l’inscription « pharaon », une abréviation réutilisable datant de l’époque romaine."
+  },
+  {
+    "id": "rescued-from-nile",
+    "title": "Sauvé du Nil",
+    "speechText": "Lorsque l'Égypte a construit le grand barrage d'Assouan, le lac Nasser a menacé des dizaines de monuments. L'UNESCO a mené une opération internationale de sauvetage. En signe de gratitude, l'Égypte a offert le temple de Dendour au peuple américain en 1965. Il a été confié au Metropolitan Museum, est arrivé dans des centaines de caisses et a été remonté dans l'aile nord, qui a ouvert ses portes en 1978, à côté d'un bassin réfléchissant qui symbolise le Nil."
+  },
+  {
+    "id": "looking-closely",
+    "title": "En y regardant de plus près",
+    "speechText": "Commencez par vous approcher par la porte d’entrée. À l’intérieur, vous traverserez trois espaces dont le caractère sacré va croissant : un pronaos à deux colonnes, une salle d’offrandes et le sanctuaire d’Isis. À l’extérieur, cherchez les graffitis grecs et coptes — les noms des pèlerins gravés dans la pierre depuis près de deux millénaires. La salle 131 se trouve à l'extrémité nord du musée ; prévoyez environ vingt minutes pour la visiter, voire davantage si la lumière est favorable."
+  }
+]

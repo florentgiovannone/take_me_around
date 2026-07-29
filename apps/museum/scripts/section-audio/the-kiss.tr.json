@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Giriş",
+    "speechText": "Bir uçurum gibi görünen yerin kenarında, yabani çiçeklerle kaplı küçük bir çayırda diz çökmüş iki sevgili, tek bir altın pelerinle sarılmış durumda. Adam eğiliyor; kadın öpülmek için yüzünü yukarı doğru kaldırıyor, gözleri kapalı, eli adamın elini sıkıca kavrıyor. Arkalarında sadece parıldayan altın rengi bir alan uzanıyor. “Öpücük”, Viyana’nın 1900’lü yıllarındaki en ünlü tablosudur — son derece süslü ve içten bir şefkatle dolu."
+  },
+  {
+    "id": "golden-period",
+    "title": "Klimt'in Altın Dönemi",
+    "speechText": "1907 yılına gelindiğinde Gustav Klimt, Viyana’nın en ünlü ve en tartışmalı ressamı olmuştu. 1903’te Ravenna’ya yaptığı bir gezi sırasında Bizans altın mozaiklerini görmüş ve babasının altın oymacılığı mesleği de onu bu yönde daha da ilerlemeye itmişti. 1903 ile 1909 yılları arasında, tuval üzerine gerçek altın ve gümüş varak yerleştirerek bir dizi altın resim yarattı; bu serinin doruk noktası ise *Öpücük* adlı eseriydi."
+  },
+  {
+    "id": "reading-picture",
+    "title": "Resmi okumak",
+    "speechText": "Aşıklar, mat altın renkli bir arka plan üzerinde, çiçeklerle süslenmiş dar bir çıkıntıda tek bir altın şekil oluşturuyor. Sadece ten ve çayır illüzyonist bir şekilde resmedilmiş; geri kalanı süsleme niteliğinde. Erkeğin cüppesinde dikdörtgenler ve kareler, kadınınkinde ise ovaller ve daireler kullanılmış. Kadının ayak parmakları küçük bir uçurumun kenarında kıvrılıyor ve altın zemin, Ravenna’dan ödünç alınmış, ikon ressamlarının zamansız bir alanı. Klimt’in 1905 civarında belirttiği gibi: tüm sanat erotiktir."
+  },
+  {
+    "id": "kunstschau-1908",
+    "title": "1908 Kunstschau Sergisi",
+    "speechText": "Klimt, bu tabloyu 1908 yılında Viyana’da düzenlenen Kunstschau sergisinde “Liebespaar” (Aşıklar) adıyla sergiledi. Avusturya devleti, tablo henüz tamamlanmadan duvardan indirilmeden hemen 25.000 kron karşılığında satın aldı; bu şaşırtıcı fiyat, genç Moderne Galerie’nin ününü bir gecede pekiştirdi."
+  },
+  {
+    "id": "looking-closely",
+    "title": "Belvedere’ye yakından bir bakış",
+    "speechText": "Tablo, Yukarı Belvedere’deki Klimt galerisinde sergileniyor. Yakından bakıldığında altın, gerçek metalden yapılmış — hareket ettiğinizde ışığı yansıtıyor. Tamamen kare şeklini tek bir şekil olarak görebilmek için iki ila üç metre geriye çekilin, ardından öne doğru adım atarak çayır ve elleri inceleyin. Tabloyu Viyana’daki Prinz-Eugen-Strasse 27 numarada bulabilirsiniz; D tramvayına binip Schloss Belvedere durağında inin."
+  }
+]

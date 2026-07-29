@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Introdução",
+    "speechText": "O Templo de Dendur é o único templo egípcio completo no Hemisfério Ocidental. Construído na margem oeste do Nilo, na Baixa Núbia, por volta de 15 a.C., o Templo de Dendur foi encomendado por Augusto, o primeiro imperador romano do Egito, e dedicado à deusa Ísis e a dois irmãos locais, Pediese e Pihor, que passaram a ser reverenciados como semideuses após se afogarem no rio."
+  },
+  {
+    "id": "political-temple",
+    "title": "Um templo político em uma província romana",
+    "speechText": "Depois que Augusto derrotou Cleópatra e Marco Antônio, ele centralizou a administração dos templos do Egito e encomendou projetos de construção para deuses regionais. O pequeno santuário de arenito em Dendur foi um deles. Em suas paredes, Augusto aparece como faraó, fazendo oferendas aos deuses — uma encenação imperial voltada para os súditos núbios que ainda praticavam o culto à maneira antiga."
+  },
+  {
+    "id": "reading-walls",
+    "title": "Interpretando as mensagens nas paredes",
+    "speechText": "Os templos egípcios eram representações do mundo natural: o santuário, o monte primitivo; as colunas, os pântanos do Nilo; o teto, o céu. Em Dendur, papiros e lótus crescem da base; as colunas do pórtico erguem-se como talos de papiro; o lintel do portão exibe o disco solar e as asas de Hórus; o teto do pórtico está repleto de abutres; as paredes externas mostram o rei fazendo oferendas às divindades; e, na parede posterior do santuário, Pihor adora Ísis. Muitos cartuchos simplesmente trazem a inscrição “faraó”, uma abreviação reutilizável da era romana."
+  },
+  {
+    "id": "rescued-from-nile",
+    "title": "Resgatado do Nilo",
+    "speechText": "Quando o Egito construiu a Barragem Alta de Assuã, o Lago Nasser ameaçou dezenas de monumentos. A UNESCO liderou uma operação internacional de resgate. Em sinal de gratidão, o Egito doou o Templo de Dendur ao povo americano em 1965. Ele foi concedido ao Museu Metropolitano, chegou em centenas de caixotes e foi remontado na ala norte, inaugurada em 1978 ao lado de um espelho d’água que representa o Nilo."
+  },
+  {
+    "id": "looking-closely",
+    "title": "Olhando com atenção",
+    "speechText": "Comece pela entrada principal. No interior, você passa por três espaços de santidade crescente: um pronaos com duas colunas, uma sala de oferendas e o santuário de Ísis. No exterior, procure grafites gregos e coptas — nomes de peregrinos gravados na pedra ao longo de quase dois milênios. A galeria 131 fica na extremidade norte do museu; reserve cerca de vinte minutos, ou mais se a iluminação estiver boa."
+  }
+]

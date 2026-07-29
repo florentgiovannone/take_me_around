@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Giriş",
+    "speechText": "Dendur Tapınağı, Batı Yarımküre’deki tek eksiksiz Mısır tapınağıdır. MÖ 15 civarında Aşağı Nubia'da Nil'in batı yakasında inşa edilen Dendur Tapınağı, Mısır'ın ilk Roma imparatoru Augustus tarafından yaptırılmış ve tanrıça İsis ile nehirde boğulduktan sonra yarı tanrı olarak saygı gören iki yerel kardeş, Pediese ve Pihor'a adanmıştır."
+  },
+  {
+    "id": "political-temple",
+    "title": "Bir Roma eyaletindeki siyasi tapınak",
+    "speechText": "Augustus, Kleopatra ve Mark Antony’yi mağlup ettikten sonra, Mısır’ın tapınak idaresini merkezileştirdi ve bölgesel tanrılar için inşaat projeleri başlatırdı. Dendur’daki küçük kumtaşı tapınak da bunlardan biriydi. Duvarlarında Augustus, tanrılara adaklar sunan bir firavun olarak tasvir edilmiştir — bu, hâlâ eski geleneklere göre ibadet eden Nubyalı tebaaya yönelik bir imparatorluk tiyatrosuydu."
+  },
+  {
+    "id": "reading-walls",
+    "title": "Duvarlardan okuma",
+    "speechText": "Mısır tapınakları, doğa dünyasının birer yansımasıydı: kutsal alan ilkel höyük, sütunlar Nil bataklıkları, tavan ise gökyüzü. Dendur'da, tabanından papirüs ve lotus bitkileri filizlenir; sundurma sütunları papirüs sapları gibi yükselir; kapı lento üzerinde güneş diski ve Horus'un kanatları resmedilmiştir; sundurma tavanı akbabalarla doludur; dış duvarlarda kralın tanrılara adak sunduğu sahneler yer alır; ve kutsal alanın arka duvarında Pihor, İsis'e tapınmaktadır. Birçok kartuşta sadece “firavun” yazmaktadır; bu, Roma döneminde tekrar tekrar kullanılan bir kısaltmadır."
+  },
+  {
+    "id": "rescued-from-nile",
+    "title": "Nil Nehri’nden kurtarıldı",
+    "speechText": "Mısır, Asvan Yüksek Barajı’nı inşa ettiğinde, Nasır Gölü onlarca anıtı tehdit etti. UNESCO, uluslararası bir kurtarma operasyonu yürüttü. Mısır, minnettarlığını göstermek amacıyla 1965 yılında Dendur Tapınağı’nı Amerikan halkına hediye etti. Tapınak, Metropolitan Müzesi’ne bağışlandı; yüzlerce sandık halinde müzeye ulaştı ve 1978 yılında açılan kuzey kanadında, Nil Nehri’ni simgeleyen bir yansıma havuzunun yanında yeniden monte edildi."
+  },
+  {
+    "id": "looking-closely",
+    "title": "Yakından bakıldığında",
+    "speechText": "Önce kapıdan girin. İçeride, kutsallığı giderek artan üç mekândan geçersiniz: iki sütunlu bir pronaos, bir adak odası ve İsis’in kutsal alanı. Dış cephede, yaklaşık iki bin yıl boyunca taşa kazınmış hacıların isimlerinden oluşan Yunan ve Kıpti grafitilerini arayın. 131 numaralı galeri, müzenin kuzey ucunda yer alır; burayı gezmek için yaklaşık yirmi dakika ayırın; ışık koşulları uygunsa daha fazla zaman ayırabilirsiniz."
+  }
+]

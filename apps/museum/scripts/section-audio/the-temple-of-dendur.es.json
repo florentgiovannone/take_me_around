@@ -1,0 +1,27 @@
+[
+  {
+    "id": "intro",
+    "title": "Introducción",
+    "speechText": "El templo de Dendur es el único templo egipcio completo del hemisferio occidental. Construido en la orilla occidental del Nilo, en la Baja Nubia, hacia el año 15 a. C., el templo de Dendur fue encargado por Augusto, el primer emperador romano de Egipto, y dedicado a la diosa Isis y a dos hermanos de la zona, Pediese y Pihor, que fueron venerados como semidioses tras ahogarse en el río."
+  },
+  {
+    "id": "political-temple",
+    "title": "Un templo político en una provincia romana",
+    "speechText": "Tras derrotar a Cleopatra y a Marco Antonio, Augusto centralizó la administración de los templos de Egipto y encargó proyectos de construcción dedicados a los dioses regionales. El pequeño santuario de arenisca de Dendur fue uno de ellos. En sus paredes, Augusto aparece como faraón, realizando ofrendas a los dioses: una puesta en escena imperial dirigida a los súbditos nubios que aún practicaban el culto a la antigua usanza."
+  },
+  {
+    "id": "reading-walls",
+    "title": "Leer entre líneas",
+    "speechText": "Los templos egipcios eran representaciones del mundo natural: el santuario, el montículo primigenio; las columnas, los pantanos del Nilo; el techo, el cielo. En Dendur, el papiro y el loto crecen desde la base; las columnas del pórtico se alzan como tallos de papiro; el dintel de la puerta muestra el disco solar y las alas de Horus; el techo del pórtico está repleto de buitres; las paredes exteriores muestran al rey ofreciendo sacrificios a las deidades; y en la pared trasera del santuario, Pihor rinde culto a Isis. Muchos cartuchos simplemente dicen «faraón», una abreviatura reutilizable de la época romana."
+  },
+  {
+    "id": "rescued-from-nile",
+    "title": "Rescatado del Nilo",
+    "speechText": "Cuando Egipto construyó la Gran Presa de Asuán, el lago Nasser puso en peligro docenas de monumentos. La UNESCO lideró una operación internacional de rescate. En señal de agradecimiento, Egipto donó el Templo de Dendur al pueblo estadounidense en 1965. Se cedió al Museo Metropolitano, llegó en cientos de cajas y se volvió a montar en el ala norte, que se inauguró en 1978 junto a un estanque reflectante que simula el Nilo."
+  },
+  {
+    "id": "looking-closely",
+    "title": "Fijándonos bien",
+    "speechText": "Acércate primero por la puerta de entrada. En el interior, atravesarás tres espacios de santidad creciente: un pronaos con dos columnas, una sala de ofrendas y el santuario de Isis. En el exterior, fíjate en los grafitis griegos y coptos: nombres de peregrinos grabados en la piedra a lo largo de casi dos milenios. La galería 131 se encuentra en el extremo norte del museo; reserva unos veinte minutos para visitarla, o más si la luz es buena."
+  }
+]

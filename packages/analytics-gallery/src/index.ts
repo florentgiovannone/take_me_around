@@ -49,6 +49,7 @@ export const TRACKED_GALLERY_ARTWORKS = [
   { title: "Portrait of Edmond de Belamy", path: "/portrait-of-edmond-de-belamy" },
   { title: "The Starry Night", path: "/the-starry-night" },
   { title: "Mona Lisa", path: "/mona-lisa" },
+  { title: "The Kiss", path: "/the-kiss" },
 ] as const
 
 export type TrackedArtwork = (typeof TRACKED_GALLERY_ARTWORKS)[number]

@@ -98,6 +98,86 @@
     color: var(--gold);
   }
 
+  /* Dean welcome video */
+  .southwell-minster .welcome-dean{
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--rule);
+  }
+  .southwell-minster .welcome-dean-inner{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 28px 44px;
+    text-align: center;
+  }
+  .southwell-minster .welcome-dean-invite{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+  .southwell-minster .welcome-dean-video,
+  .southwell-minster .welcome-dean-placeholder{
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #1a1512;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .southwell-minster .welcome-dean-video{
+    object-fit: contain;
+  }
+  .southwell-minster .welcome-dean-placeholder{
+    display: grid;
+    place-items: center;
+    background:
+      linear-gradient(135deg, rgba(168,132,42,.12) 0%, transparent 50%),
+      repeating-linear-gradient(
+        -45deg,
+        var(--paper-2),
+        var(--paper-2) 12px,
+        #e5dccb 12px,
+        #e5dccb 24px
+      );
+    border-style: dashed;
+  }
+  .southwell-minster .welcome-dean-placeholder-label{
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: rgba(247,242,234,.92);
+    padding: 0.55rem 0.9rem;
+  }
+  .southwell-minster .welcome-dean-attribution{
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin: 1.15rem 0 0;
+    color: var(--ink-soft);
+  }
+  .southwell-minster .welcome-dean-role{
+    font-size: 0.8rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .southwell-minster .welcome-dean-name{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .southwell-minster .welcome-dean-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
   /* Sticky nav */
   .southwell-minster nav.toc{
     position: sticky;
@@ -112,18 +192,22 @@
     margin: 0 auto;
     padding: 10px 20px;
     display: flex;
-    gap: 4px 22px;
-    flex-wrap: wrap;
+    gap: 4px 16px;
+    flex-wrap: nowrap;
     list-style: none;
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 500;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
   .southwell-minster nav.toc a{
     color: var(--ink-soft);
     border-bottom: none;
     padding: 6px 2px;
     text-transform: uppercase;
-    letter-spacing: .08em;
+    letter-spacing: .06em;
+    white-space: nowrap;
   }
   .southwell-minster nav.toc a:hover{ color: var(--accent); }
 
