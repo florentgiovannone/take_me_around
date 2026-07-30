@@ -203,12 +203,8 @@ export default function SouthwellMinsterPage() {
             <span className="name">The Rt Revd Paul Williams</span>
           </div>
           <div className="officer">
-            <span className="role">Dean of Southwell (Interim)</span>
-            <span className="name">The Revd Canon Dr Neil Evans</span>
-          </div>
-          <div className="officer">
-            <span className="role">Dean-designate (from April 2026)</span>
-            <span className="name">The Very Revd Stephen Evans</span>
+            <span className="role">The Dean</span>
+            <span className="name">The Very Revd Dr Stephen Evans</span>
           </div>
           <div className="officer">
             <span className="role">Canon Precentor</span>
