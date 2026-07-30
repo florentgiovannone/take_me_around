@@ -1,6 +1,10 @@
 [build]
-  command = "cd ../.. && npm ci && npm run build -w @tma/app-church-of-england"
-  publish = "dist"
+  # Netlify runs this site with repo root as cwd (Package directory =
+  # apps/church_of_england). Install from the monorepo root; publish the
+  # Vite outDir under the app. If you instead set Base directory to
+  # apps/church_of_england, change publish back to "dist".
+  command = "cd \"$(git rev-parse --show-toplevel)\" && npm ci && npm run build -w @tma/app-church-of-england"
+  publish = "apps/church_of_england/dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/church_of_england packages"
 
 # /dashboard redirects to https://arkin.takemearound.gallery/dashboard/church-of-england

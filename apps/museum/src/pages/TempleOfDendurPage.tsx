@@ -78,7 +78,12 @@ export default function TempleOfDendurPage() {
                   <ul className="motifs">
                     {section.motifs.map((motif) => (
                       <li key={motif.label}>
-                        <strong>{motif.label}.</strong> {motif.text}
+                        <strong>
+                          {/[.!?…]$/.test(motif.label.trim())
+                            ? motif.label
+                            : `${motif.label}.`}
+                        </strong>{" "}
+                        {motif.text}
                       </li>
                     ))}
                   </ul>

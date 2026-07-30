@@ -220,8 +220,17 @@
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 20px;
-    align-items: baseline;
+    align-items: start;
     margin-bottom: 28px;
+  }
+  .southwell-minster .section-head-main{
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+  .southwell-minster .section-head-main .tma-audio-player{
+    margin: 0 0 0.35rem;
   }
   .southwell-minster .section-num{
     font-family: 'Cormorant Garamond', serif;
@@ -229,6 +238,7 @@
     font-size: 1.1rem;
     color: var(--gold);
     letter-spacing: .05em;
+    padding-top: 0.35rem;
   }
   .southwell-minster h2{ font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin: 0; }
   .southwell-minster h3{

@@ -38,7 +38,7 @@ export default function SouthwellMinsterPage() {
       <section className="welcome-dean" aria-labelledby="welcome-dean-heading">
         <div className="welcome-dean-inner">
           <p id="welcome-dean-heading" className="welcome-dean-invite">
-            Play the welcome message below from Father Stephen
+            Play a welcome message from Father Stephen
           </p>
           {welcomeVideoSrc ? (
             <video
@@ -81,8 +81,10 @@ export default function SouthwellMinsterPage() {
       <section id="history">
         <div className="section-head">
           <div className="section-num">I.</div>
-          <SectionAudio workSlug="southwell-minster" sectionId="history" />
-          <h2>A brief history</h2>
+          <div className="section-head-main">
+            <SectionAudio workSlug="southwell-minster" sectionId="history" />
+            <h2>A brief history</h2>
+          </div>
         </div>
         <p className="lede">A minster church has stood at Southwell for well over a thousand years — outlasting Vikings, the Reformation, civil war and fire — and today serves as the mother church of the Diocese of Southwell &amp; Nottingham.</p>
 
@@ -122,8 +124,10 @@ export default function SouthwellMinsterPage() {
       <section id="treasures">
         <div className="section-head">
           <div className="section-num">II.</div>
-          <SectionAudio workSlug="southwell-minster" sectionId="treasures" />
-          <h2>Treasures and places of interest</h2>
+          <div className="section-head-main">
+            <SectionAudio workSlug="southwell-minster" sectionId="treasures" />
+            <h2>Treasures and places of interest</h2>
+          </div>
         </div>
         <p className="lede">From England’s finest medieval leaf-carvings to a 16th-century Flemish east window, the Minster is unusually rich in things worth pausing over.</p>
 
@@ -186,8 +190,10 @@ export default function SouthwellMinsterPage() {
       <section id="officers">
         <div className="section-head">
           <div className="section-num">III.</div>
-          <SectionAudio workSlug="southwell-minster" sectionId="officers" />
-          <h2>Principal officers</h2>
+          <div className="section-head-main">
+            <SectionAudio workSlug="southwell-minster" sectionId="officers" />
+            <h2>Principal officers</h2>
+          </div>
         </div>
         <p className="lede">Southwell Minster is governed by its <strong>Chapter</strong>, chaired by the Dean, with support and oversight from the Cathedral Council and the wider College of Canons. Below are the principal office-holders as currently listed by the Minster.</p>
 
@@ -240,8 +246,10 @@ export default function SouthwellMinsterPage() {
       <section id="music">
         <div className="section-head">
           <div className="section-num">IV.</div>
-          <SectionAudio workSlug="southwell-minster" sectionId="music" />
-          <h2>Music foundation &amp; choirs</h2>
+          <div className="section-head-main">
+            <SectionAudio workSlug="southwell-minster" sectionId="music" />
+            <h2>Music foundation &amp; choirs</h2>
+          </div>
         </div>
         <p className="lede">A choir has sung at Southwell for more than nine hundred years — a continuous tradition of choral worship stretching from the medieval Vicars Choral to today's Cathedral Choir of boy and girl choristers, professional Lay Clerks and the volunteer Minster Chorale.</p>
 
@@ -293,8 +301,10 @@ export default function SouthwellMinsterPage() {
       <section id="worship">
         <div className="section-head">
           <div className="section-num">V.</div>
-          <SectionAudio workSlug="southwell-minster" sectionId="worship" />
-          <h2>Liturgy and daily services</h2>
+          <div className="section-head-main">
+            <SectionAudio workSlug="southwell-minster" sectionId="worship" />
+            <h2>Liturgy and daily services</h2>
+          </div>
         </div>
         <p className="lede">The Minster’s daily round of prayer follows the Church of England’s Common Worship pattern, sustained during term by one of the country’s most distinguished cathedral music foundations.</p>
 

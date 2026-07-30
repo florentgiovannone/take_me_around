@@ -34,17 +34,17 @@ npm run build:gallery    # single app (also build:museum, build:church-of-englan
 
 ## Netlify (one repo, four public sites + dashboard)
 
-Set **Base directory** per site:
+Set **Base directory** per site (or leave Base empty and set **Package directory** — see Church of England note):
 
 | Site | Base directory | Publish directory |
 |------|----------------|-------------------|
 | Gallery | `apps/gallery` | `dist` |
 | Museum | `apps/museum` | `dist` |
 | Arkin Museum | `apps/arkin_museum` | `dist` |
-| Church of England | `apps/church_of_england` | `dist` |
+| Church of England | *(empty)* + Package directory `apps/church_of_england` | `apps/church_of_england/dist` |
 | Arkin dashboard | `apps/dashboard` | `dist` |
 
-Each app’s `netlify.toml` runs `cd ../.. && npm ci && npm run build -w @tma/app-*` so workspace packages are built. Path-based `ignore` skips deploys when unrelated folders change.
+Most apps’ `netlify.toml` run `cd ../.. && npm ci && npm run build -w @tma/app-*` with Base = `apps/<app>`. CoE installs from the git root and publishes `apps/church_of_england/dist` so it works when Netlify’s cwd is the repo root. Path-based `ignore` skips deploys when unrelated folders change.
 
 Gallery, museum, and church of England redirect `/dashboard` to the Arkin dashboard (see each app’s Vite `netlify-redirects` plugin).
 

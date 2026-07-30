@@ -1,0 +1,19 @@
+# Dependencies (must be at repo root — app-level ignores do not cover this)
+node_modules/
+
+# Local env
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+*.sw?
+.idea/
+
+# Build / caches
+dist/
+*.local
+
+# Large local video masters (compressed web file is committed)
+*.source.mp4

@@ -24,7 +24,19 @@
     "translate:rosetta-stone": "node scripts/translate-artwork.mjs --artwork rosetta-stone",
     "generate:rosetta-stone-audio": "node scripts/generate-artwork-audio.mjs --artwork rosetta-stone",
     "translate:fallen-madonna": "node scripts/translate-artwork.mjs --artwork fallen-madonna",
-    "generate:fallen-madonna-audio": "node scripts/generate-artwork-audio.mjs --artwork fallen-madonna"
+    "generate:fallen-madonna-audio": "node scripts/generate-artwork-audio.mjs --artwork fallen-madonna",
+    "translate:cyrus-cylinder": "node scripts/translate-artwork.mjs --artwork cyrus-cylinder",
+    "generate:cyrus-cylinder-audio": "node scripts/generate-artwork-audio.mjs --artwork cyrus-cylinder",
+    "translate:lewis-chessmen": "node scripts/translate-artwork.mjs --artwork lewis-chessmen",
+    "generate:lewis-chessmen-audio": "node scripts/generate-artwork-audio.mjs --artwork lewis-chessmen",
+    "translate:starry-night": "node scripts/translate-artwork.mjs --artwork starry-night",
+    "generate:starry-night-audio": "node scripts/generate-artwork-audio.mjs --artwork starry-night",
+    "translate:edmond-de-belamy": "node scripts/translate-artwork.mjs --artwork edmond-de-belamy",
+    "generate:edmond-de-belamy-audio": "node scripts/generate-artwork-audio.mjs --artwork edmond-de-belamy",
+    "translate:essay:dendur": "node scripts/translate-essay-artwork.mjs --artwork the-temple-of-dendur",
+    "translate:essay:kiss": "node scripts/translate-essay-artwork.mjs --artwork the-kiss",
+    "audio:sections:dendur": "node scripts/generate-section-audio.mjs --work the-temple-of-dendur",
+    "audio:sections:kiss": "node scripts/generate-section-audio.mjs --work the-kiss"
   },
   "dependencies": {
     "@tma/dashboard-scope": "*",

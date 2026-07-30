@@ -4,8 +4,8 @@
  *
  * Usage:
  *   node scripts/generate-section-audio.mjs
- *   node scripts/generate-section-audio.mjs --work the-kiss
- *   node scripts/generate-section-audio.mjs --work southwell-minster --section history
+ *   node scripts/generate-section-audio.mjs --work southwell-minster
+ *   node scripts/generate-section-audio.mjs --work westminster-abbey --section history
  *   node scripts/generate-section-audio.mjs --dry-run
  */
 import { createWriteStream, existsSync, mkdirSync } from "node:fs"
