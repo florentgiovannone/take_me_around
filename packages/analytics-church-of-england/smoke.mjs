@@ -13,7 +13,22 @@ const baseLog = {
 const cases = [
   {
     name: "accepts the CoE URL and tracked path",
+    message: "https://takemearound.church/westminster-abbey",
+    expected: true,
+  },
+  {
+    name: "accepts the legacy CoE host",
     message: "https://church.takemearound.gallery/westminster-abbey",
+    expected: true,
+  },
+  {
+    name: "accepts Southwell introduction path",
+    message: "https://takemearound.church/Southwell_Minster/introduction",
+    expected: true,
+  },
+  {
+    name: "accepts legacy Southwell path alias",
+    message: "https://takemearound.church/southwell-minster",
     expected: true,
   },
   {

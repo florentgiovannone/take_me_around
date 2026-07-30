@@ -44,7 +44,7 @@ export type AudienceBreakdownRow = {
 
 export const TRACKED_CHURCH_OF_ENGLAND_ARTWORKS = [
   { title: "Westminster Abbey", path: "/westminster-abbey" },
-  { title: "Southwell Minster", path: "/southwell-minster" },
+  { title: "Southwell Minster", path: "/Southwell_Minster/introduction" },
 ] as const
 
 export type TrackedArtwork = (typeof TRACKED_CHURCH_OF_ENGLAND_ARTWORKS)[number]
@@ -57,14 +57,21 @@ const TRACKED_CHURCH_OF_ENGLAND_TITLES = new Set(
   TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => artwork.title.toLowerCase())
 )
 
-/** Legacy URL variants that should roll up to a canonical tracked path. */
-const TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES: { match: string; canonical: string }[] = []
+/** Legacy URL variants that should roll up to a canonical tracked path (lowercase match keys). */
+const TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES: { match: string; canonical: string }[] = [
+  { match: "/southwell-minster", canonical: "/Southwell_Minster/introduction" },
+  { match: "/southwell_minster", canonical: "/Southwell_Minster/introduction" },
+]
 
 export function getTrackedArtworkUrl(path: string) {
-  return `https://church.takemearound.gallery${path}`
+  return `https://takemearound.church${path}`
 }
 
-const CHURCH_OF_ENGLAND_HOSTNAME = "church.takemearound.gallery"
+const CHURCH_OF_ENGLAND_HOSTNAME = "takemearound.church"
+const CHURCH_OF_ENGLAND_HOSTNAMES = new Set([
+  CHURCH_OF_ENGLAND_HOSTNAME,
+  "church.takemearound.gallery",
+])
 const FOREIGN_TRACKED_HOSTNAMES = new Set([
   "takemearound.museum",
   "takemearound.gallery",
@@ -79,12 +86,12 @@ function schemeLessHostCandidates(message: string) {
   )
 }
 
-/** Reject foreign hosts; allow the exact Church host and messages without a host. */
+/** Reject foreign hosts; allow known Church hosts and messages without a host. */
 function isChurchOfEnglandDomainMessage(message: string) {
   const absoluteUrls = message.match(/https?:\/\/[^\s<>"']+/gi) ?? []
   for (const candidate of absoluteUrls) {
     try {
-      if (new URL(candidate).hostname !== CHURCH_OF_ENGLAND_HOSTNAME) return false
+      if (!CHURCH_OF_ENGLAND_HOSTNAMES.has(new URL(candidate).hostname.toLowerCase())) return false
     } catch {
       return false
     }
@@ -92,7 +99,9 @@ function isChurchOfEnglandDomainMessage(message: string) {
 
   for (const candidate of schemeLessHostCandidates(message)) {
     try {
-      if (new URL(`https://${candidate}`).hostname !== CHURCH_OF_ENGLAND_HOSTNAME) return false
+      if (!CHURCH_OF_ENGLAND_HOSTNAMES.has(new URL(`https://${candidate}`).hostname.toLowerCase())) {
+        return false
+      }
     } catch {
       return false
     }
@@ -132,11 +141,11 @@ export function extractTrackedPathFromMessage(message: string): string | null {
   const normalized = message.toLowerCase()
 
   for (const path of TRACKED_CHURCH_OF_ENGLAND_PATHS_BY_LENGTH) {
-    if (normalized.includes(path)) return path
+    if (normalized.includes(path.toLowerCase())) return path
   }
 
   for (const alias of TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES) {
-    if (normalized.includes(alias.match)) return alias.canonical
+    if (normalized.includes(alias.match.toLowerCase())) return alias.canonical
   }
 
   return null
@@ -167,7 +176,7 @@ export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
   )
 }
 
-/** True when the log belongs to one of the tracked church.takemearound.gallery artworks. */
+/** True when the log belongs to one of the tracked takemearound.church artworks. */
 export function isChurchOfEnglandLog(log: PoiseLog) {
   return resolveTrackedArtwork(log) !== null
 }

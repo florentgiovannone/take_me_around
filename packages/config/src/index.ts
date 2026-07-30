@@ -28,7 +28,7 @@ export const SITE_META: Record<
   church_of_england: {
     label: "Church of England",
     domainLabel: "Church of England",
-    host: "church.takemearound.gallery",
+    host: "takemearound.church",
   },
 }
 

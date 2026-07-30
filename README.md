@@ -9,7 +9,7 @@ apps/
   gallery/            → takemearound.gallery
   museum/             → takemearound.museum
   arkin_museum/       → clone of museum (separate Netlify site / domain)
-  church_of_england/  → church.takemearound.gallery (Westminster Abbey demo)
+  church_of_england/  → takemearound.church (Westminster Abbey + Southwell Minster)
   dashboard/          → arkin.takemearound.gallery (combined + per-site analytics)
 packages/
   config/                        Site scope types and labels

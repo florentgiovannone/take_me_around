@@ -191,7 +191,7 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "gallery") return "takemearound.gallery"
   if (scope === "arkin") return "arkin.takemearound.gallery"
   if (scope === "museum") return "takemearound.museum"
-  if (scope === "church_of_england") return "church.takemearound.gallery"
+  if (scope === "church_of_england") return "takemearound.church"
   return getActiveCombinedSiteIds()
     .map((id) => SITE_META[id].host)
     .join(" + ")

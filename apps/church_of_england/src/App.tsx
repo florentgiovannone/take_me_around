@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Link, Route, Routes, useLocation } from "react-router-dom"
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom"
 import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
 import ContactPage from "./pages/ContactPage"
 import NotFoundPage from "./pages/NotFoundPage"
@@ -9,11 +9,13 @@ import SouthwellMinsterPage from "./pages/SouthwellMinsterPage"
 import WestminsterAbbeyPage from "./pages/WestminsterAbbeyPage"
 import "./styles/style.css"
 
+export const SOUTHWELL_MINSTER_PATH = "/Southwell_Minster/introduction"
+
 const PAGE_TITLES: Record<string, string> = {
   "/": "Take Me Around",
   "/allpages": "All Pages",
   "/westminster-abbey": "Westminster Abbey",
-  "/southwell-minster": "Southwell Minster",
+  [SOUTHWELL_MINSTER_PATH]: "Southwell Minster",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -42,7 +44,7 @@ function AllPage() {
         <Link to="/westminster-abbey">Go to Westminster Abbey page</Link>
       </p>
       <p>
-        <Link to="/southwell-minster">Go to Southwell Minster page</Link>
+        <Link to={SOUTHWELL_MINSTER_PATH}>Go to Southwell Minster page</Link>
       </p>
       <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
@@ -80,7 +82,9 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/allpages" element={<AllPage />} />
         <Route path="/westminster-abbey" element={<WestminsterAbbeyPage />} />
-        <Route path="/southwell-minster" element={<SouthwellMinsterPage />} />
+        <Route path={SOUTHWELL_MINSTER_PATH} element={<SouthwellMinsterPage />} />
+        <Route path="/Southwell_Minster" element={<Navigate to={SOUTHWELL_MINSTER_PATH} replace />} />
+        <Route path="/southwell-minster" element={<Navigate to={SOUTHWELL_MINSTER_PATH} replace />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route

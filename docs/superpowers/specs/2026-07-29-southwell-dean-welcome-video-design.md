@@ -3,7 +3,7 @@
 **Date:** 2026-07-29  
 **Status:** Implemented  
 **App:** `apps/church_of_england`  
-**Page:** `/southwell-minster`
+**Page:** `/Southwell_Minster/introduction`
 
 ## Goal
 
@@ -49,6 +49,6 @@ Style under `.southwell-minster` so it matches the page (type, colour, spacing).
 
 ## Verification
 
-- Block appears between hero and TOC on `/southwell-minster`  
+- Block appears between hero and TOC on `/Southwell_Minster/introduction`  
 - Player shows when `welcome-dean.mp4` is present  
 - CoE build passes  
