@@ -216,6 +216,27 @@
   .southwell-minster section{ padding: 72px 0 24px; scroll-margin-top: 60px; }
   .southwell-minster section + section{ border-top: 1px solid var(--rule); }
 
+  .southwell-minster .section-placeholder{
+    margin-top: 8px;
+    padding: 28px 24px;
+    background: var(--paper-2);
+    border: 1px dashed var(--rule);
+    border-radius: 2px;
+  }
+  .southwell-minster .section-placeholder-label{
+    margin: 0 0 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .southwell-minster .section-placeholder p:last-child{
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
   .southwell-minster .section-head{
     display: grid;
     grid-template-columns: auto 1fr;

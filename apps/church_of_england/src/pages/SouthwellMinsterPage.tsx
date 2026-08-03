@@ -71,6 +71,8 @@ export default function SouthwellMinsterPage() {
           <li><a href="#music">Music &amp; choirs</a></li>
           <li><a href="#worship">Liturgy &amp; services</a></li>
           <li><a href="#visit">Opening hours</a></li>
+          <li><a href="#donate">Donate</a></li>
+          <li><a href="#projects">Our projects</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -388,10 +390,52 @@ export default function SouthwellMinsterPage() {
         </div>
       </section>
 
+      {/* DONATE */}
+      <section id="donate">
+        <div className="section-head">
+          <div className="section-num">VII.</div>
+          <div className="section-head-main">
+            <h2>Donate</h2>
+          </div>
+        </div>
+        <p className="lede">
+          Support the life and work of Southwell Minster — content for this
+          section will follow.
+        </p>
+        <div className="section-placeholder" aria-label="Donate section placeholder">
+          <p className="section-placeholder-label">Donate — coming soon</p>
+          <p>
+            Placeholder for donation copy, links, and any call-to-action. Wire
+            in giving details when ready.
+          </p>
+        </div>
+      </section>
+
+      {/* OUR PROJECTS */}
+      <section id="projects">
+        <div className="section-head">
+          <div className="section-num">VIII.</div>
+          <div className="section-head-main">
+            <h2>Our projects</h2>
+          </div>
+        </div>
+        <p className="lede">
+          Current and planned projects at Southwell Minster — content for this
+          section will follow.
+        </p>
+        <div className="section-placeholder" aria-label="Our projects section placeholder">
+          <p className="section-placeholder-label">Our projects — coming soon</p>
+          <p>
+            Placeholder for project summaries, images, and updates. Add
+            individual project entries when ready.
+          </p>
+        </div>
+      </section>
+
       {/* CONTACT */}
       <section id="contact">
         <div className="section-head">
-          <div className="section-num">VII.</div>
+          <div className="section-num">IX.</div>
           <h2>Contact &amp; how to find us</h2>
         </div>
 
