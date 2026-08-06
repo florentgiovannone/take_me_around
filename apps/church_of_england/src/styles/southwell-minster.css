@@ -120,14 +120,15 @@
   .southwell-minster .welcome-dean-video,
   .southwell-minster .welcome-dean-placeholder{
     display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #1a1512;
+    width: min(100%, 360px);
+    margin-inline: auto;
+    aspect-ratio: 9 / 16;
+    background: transparent;
     border: 1px solid var(--rule);
     border-radius: 2px;
   }
   .southwell-minster .welcome-dean-video{
-    object-fit: contain;
+    object-fit: cover;
   }
   .southwell-minster .welcome-dean-placeholder{
     display: grid;
