@@ -1,7 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import AllPagesPage from "./pages/AllPagesPage"
 import Dashboard from "./pages/Dashboard"
-import MaintenancePage from "./pages/MaintenancePage"
 import NotFoundPage from "./pages/NotFoundPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import RodinArtworkPage from "./pages/RodinArtworkPage"
@@ -11,8 +10,6 @@ import { getArtworkPageTitle } from "./utils/artworkTitles"
 import "./styles/style.css"
 import { useEffect } from "react"
 
-const MAINTENANCE_MODE = import.meta.env.VITE_ARKIN_MAINTENANCE_MODE !== "false"
-
 const STATIC_TITLES: Record<string, string> = {
   "/allpages": "All Pages",
   "/underlying-technology": "Underlying Technology",
@@ -20,16 +17,12 @@ const STATIC_TITLES: Record<string, string> = {
   "/dashboard": "Dashboard",
 }
 
-function PageTitleUpdater({ maintenance = false }: { maintenance?: boolean }) {
+function PageTitleUpdater() {
   const location = useLocation()
 
   useEffect(() => {
     if (location.pathname === "/dashboard") {
       document.title = "Dashboard | Take Me Around"
-      return
-    }
-    if (maintenance) {
-      document.title = "Unavailable | Take Me Around"
       return
     }
 
@@ -45,47 +38,23 @@ function PageTitleUpdater({ maintenance = false }: { maintenance?: boolean }) {
       return
     }
     document.title = "Page not found | Take Me Around"
-  }, [location.pathname, maintenance])
+  }, [location.pathname])
 
   return null
 }
 
-function ExhibitionRoutes() {
-  return (
-    <Routes>
-      <Route path="/allpages" element={<AllPagesPage />} />
-      <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/:slug" element={<RodinArtworkPage />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
-  )
-}
-
-function MaintenanceRoutes() {
-  return (
-    <Routes>
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="*" element={<MaintenancePage />} />
-    </Routes>
-  )
-}
-
 function App() {
-  if (MAINTENANCE_MODE) {
-    return (
-      <>
-        <PageTitleUpdater maintenance />
-        <MaintenanceRoutes />
-      </>
-    )
-  }
-
   return (
     <>
       <PageTitleUpdater />
-      <ExhibitionRoutes />
+      <Routes>
+        <Route path="/allpages" element={<AllPagesPage />} />
+        <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/:slug" element={<RodinArtworkPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
     </>
   )
 }
