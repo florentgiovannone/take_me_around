@@ -127,7 +127,7 @@ export default function SouthwellMinsterPage() {
         <div className="section-head">
           <div className="section-num">II.</div>
           <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="treasures" />
+            <SectionAudio workSlug="southwell-minster" sectionId="treasures" showIcon />
             <h2>Treasures and places of interest</h2>
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function SouthwellMinsterPage() {
         <div className="section-head">
           <div className="section-num">III.</div>
           <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="officers" />
+            <SectionAudio workSlug="southwell-minster" sectionId="officers" showIcon />
             <h2>Principal officers</h2>
           </div>
         </div>
@@ -245,7 +245,7 @@ export default function SouthwellMinsterPage() {
         <div className="section-head">
           <div className="section-num">IV.</div>
           <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="music" />
+            <SectionAudio workSlug="southwell-minster" sectionId="music" showIcon />
             <h2>Music foundation &amp; choirs</h2>
           </div>
         </div>
@@ -300,7 +300,7 @@ export default function SouthwellMinsterPage() {
         <div className="section-head">
           <div className="section-num">V.</div>
           <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="worship" />
+            <SectionAudio workSlug="southwell-minster" sectionId="worship" showIcon />
             <h2>Liturgy and daily services</h2>
           </div>
         </div>

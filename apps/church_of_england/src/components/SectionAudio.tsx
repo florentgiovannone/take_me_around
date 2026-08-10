@@ -6,6 +6,8 @@ type SectionAudioProps = {
   sectionId: string
   /** When true, show the headphones listen hint above the player (Southwell History). */
   showHint?: boolean
+  /** When true, show the headphones glyph above the player (Southwell sections without hint). */
+  showIcon?: boolean
 }
 
 const HINT_COPY =
@@ -34,9 +36,18 @@ function HeadphonesIcon({ decorative }: { decorative: boolean }) {
 }
 
 /** Renders a section player when the matching mp3 exists. */
-export default function SectionAudio({ workSlug, sectionId, showHint = false }: SectionAudioProps) {
+export default function SectionAudio({
+  workSlug,
+  sectionId,
+  showHint = false,
+  showIcon = false,
+}: SectionAudioProps) {
   const src = getSectionAudio(workSlug, sectionId)
   if (!src) return null
+
+  if (!showHint && !showIcon) {
+    return <AudioPlayer src={src} />
+  }
 
   return (
     <div className="tma-section-audio-block">
