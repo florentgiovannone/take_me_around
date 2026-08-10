@@ -84,7 +84,7 @@ export default function SouthwellMinsterPage() {
         <div className="section-head">
           <div className="section-num">I.</div>
           <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="history" />
+            <SectionAudio workSlug="southwell-minster" sectionId="history" showHint />
             <h2>A brief history</h2>
           </div>
         </div>
