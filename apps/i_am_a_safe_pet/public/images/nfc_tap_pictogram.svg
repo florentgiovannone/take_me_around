@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 2048 2048" width="2048" height="2048"
+     shape-rendering="geometricPrecision"
+     text-rendering="geometricPrecision">
+  <title>NFC Tap Pictogram (editable)</title>
+  <desc>
+    Editable SVG. Every colour element has its own id and inline fill/stroke.
+    Change the CSS custom properties in the &lt;style&gt; block below to restyle
+    the whole design at once, or edit any element individually by its id in
+    Illustrator / Figma / Inkscape / a text editor.
+  </desc>
+
+  <!-- ===================== EDITABLE PALETTE ===================== -->
+  <style>
+    :root {
+      /* Aligned to TMA brand blues */
+      --navy:        #062c61;
+      --deep-blue:   #0a479d;
+      --bright-blue: #3d7bc4;
+      --gold:        #7eb8ff;
+      --white:       #FFFFFF;
+      --notch:       #3d7bc4;
+    }
+    .ring          { fill: var(--navy); }
+    .gold-ring     { stroke: var(--gold); fill: none; }
+    .nfc-dot       { fill: var(--deep-blue); }
+    .nfc-wave      { stroke: var(--deep-blue); fill: none; }
+    .phone-body    { fill: var(--navy); }
+    .screen        { fill: var(--bright-blue); }
+    .mini-nfc-dot  { fill: var(--white); }
+    .mini-nfc-wave { stroke: var(--white); fill: none; }
+    .notch         { fill: var(--notch); }
+    .spark         { stroke: var(--gold); fill: none; }
+  </style>
+
+  <defs>
+    <filter id="phone-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="12" />
+      <feOffset dx="12" dy="18" result="off" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.35" /></feComponentTransfer>
+      <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ===================== NAVY RING (annulus) ===================== -->
+  <path id="outer-ring" class="ring"
+        d="M 20.00 1024.00 A 1004.00 1004.00 0 1 1 2028.00 1024.00 A 1004.00 1004.00 0 1 1 20.00 1024.00 Z M 100.32 1024.00 A 923.68 923.68 0 1 0 1947.68 1024.00 A 923.68 923.68 0 1 0 100.32 1024.00 Z"
+        fill="#122042" fill-rule="evenodd" />
+
+  <!-- ===================== GOLD ACCENT RING ===================== -->
+  <circle id="gold-ring" class="gold-ring"
+          cx="1024.0" cy="1024.0" r="938.74"
+          fill="none" stroke="#F0BE3C" stroke-width="8" />
+
+  <!-- ===================== NFC WAVE MARK ===================== -->
+  <g id="nfc-logo">
+    <rect id="nfc-dot" class="nfc-dot"
+          x="285.06" y="901.97"
+          width="244.05" height="244.05"
+          rx="42.71" fill="#1C448C" />
+    <path id="nfc-wave-1" class="nfc-wave" d="M 918.79 691.70 A 610.14 610.14 0 0 1 918.79 1356.30"
+          fill="none" stroke="#1C448C" stroke-width="216.94" stroke-linecap="butt" />
+    <path id="nfc-wave-2" class="nfc-wave" d="M 1225.81 492.31 A 976.22 976.22 0 0 1 1225.81 1555.69"
+          fill="none" stroke="#1C448C" stroke-width="216.94" stroke-linecap="butt" />
+    <path id="nfc-wave-3" class="nfc-wave" d="M 1544.20 285.55 A 1355.86 1355.86 0 0 1 1544.20 1762.45"
+          fill="none" stroke="#1C448C" stroke-width="216.94" stroke-linecap="butt" />
+  </g>
+
+  <!-- ===================== PHONE ===================== -->
+  <g id="phone" transform="rotate(-14 1498.94 1024.00)" filter="url(#phone-shadow)">
+    <rect id="phone-body" class="phone-body"
+          x="1243.05" y="605.27"
+          width="511.79" height="837.47"
+          rx="92.12" fill="#122042" />
+    <rect id="phone-screen" class="screen"
+          x="1289.11" y="688.17"
+          width="419.67" height="671.65"
+          rx="51.18" fill="#0084FF" />
+    <rect id="phone-notch" class="notch"
+          x="1427.29" y="630.60"
+          width="143.30" height="20.94"
+          rx="10.47" fill="#3C5078" />
+    <g id="mini-nfc">
+      <rect id="mini-nfc-dot" class="mini-nfc-dot"
+            x="1411.94" y="998.41"
+            width="51.18" height="51.18"
+            rx="10.24" fill="#FFFFFF" />
+      <path id="mini-nfc-wave-1" class="mini-nfc-wave" d="M 1497.62 984.98 A 71.65 71.65 0 0 1 1497.62 1063.02"
+            fill="none" stroke="#FFFFFF" stroke-width="17.91" stroke-linecap="butt" />
+      <path id="mini-nfc-wave-2" class="mini-nfc-wave" d="M 1531.96 962.68 A 112.59 112.59 0 0 1 1531.96 1085.32"
+            fill="none" stroke="#FFFFFF" stroke-width="17.91" stroke-linecap="butt" />
+      <path id="mini-nfc-wave-3" class="mini-nfc-wave" d="M 1566.30 940.38 A 153.54 153.54 0 0 1 1566.30 1107.62"
+            fill="none" stroke="#FFFFFF" stroke-width="17.91" stroke-linecap="butt" />
+    </g>
+  </g>
+
+  <!-- ===================== TAP-CONTACT SPARK ===================== -->
+  <g id="spark">
+    <line id="spark-1" class="spark"
+          x1="1751.93" y1="1024.00" x2="1812.17" y2="1024.00"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-2" class="spark"
+          x1="1740.16" y1="1052.40" x2="1782.76" y2="1094.99"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-3" class="spark"
+          x1="1711.77" y1="1064.16" x2="1711.77" y2="1124.40"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-4" class="spark"
+          x1="1683.37" y1="1052.40" x2="1640.77" y2="1094.99"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-5" class="spark"
+          x1="1671.61" y1="1024.00" x2="1611.37" y2="1024.00"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-6" class="spark"
+          x1="1683.37" y1="995.60" x2="1640.77" y2="953.01"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-7" class="spark"
+          x1="1711.77" y1="983.84" x2="1711.77" y2="923.60"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+    <line id="spark-8" class="spark"
+          x1="1740.16" y1="995.60" x2="1782.76" y2="953.01"
+          stroke="#F0BE3C" stroke-width="17.07" stroke-linecap="round" />
+  </g>
+</svg>

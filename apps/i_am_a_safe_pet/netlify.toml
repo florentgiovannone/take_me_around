@@ -1,0 +1,4 @@
+[build]
+  command = "cd \"$(git rev-parse --show-toplevel)\" && npm ci && npm run build -w @tma/app-i-am-a-safe-pet"
+  publish = "apps/i_am_a_safe_pet/dist"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/i_am_a_safe_pet"
