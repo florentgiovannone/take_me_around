@@ -39,12 +39,29 @@ if (!dryRun && !apiKey) {
   process.exit(1)
 }
 if (!dryRun && !voiceId) {
-  console.error("Set ELEVENLABS_VOICE_ID in .env.local")
-  process.exit(1)
+  console.warn(
+    "ELEVENLABS_VOICE_ID unset — sections without an explicit voiceId will fail.",
+  )
 }
 
-async function synthesize(speechText) {
-  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+function resolveSectionVoiceId(section) {
+  if (section.envVoiceKey) {
+    const fromEnv = process.env[section.envVoiceKey]
+    if (fromEnv) return { voiceId: fromEnv, source: section.envVoiceKey }
+    if (section.voiceId) return { voiceId: section.voiceId, source: "config fallback" }
+    return { voiceId: null, source: section.envVoiceKey }
+  }
+  if (section.voiceId) return { voiceId: section.voiceId, source: "config" }
+  if (voiceId) return { voiceId, source: "ELEVENLABS_VOICE_ID" }
+  return { voiceId: null, source: "ELEVENLABS_VOICE_ID" }
+}
+
+async function synthesize(speechText, resolvedVoiceId) {
+  if (!resolvedVoiceId) {
+    throw new Error("Missing voice id (section envVoiceKey / voiceId or ELEVENLABS_VOICE_ID)")
+  }
+
+  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${resolvedVoiceId}`, {
     method: "POST",
     headers: {
       "xi-api-key": apiKey,
@@ -96,14 +113,22 @@ for (const [workSlug, work] of Object.entries(works)) {
     const spokenText =
       section.id === "intro" ? section.speechText : `${section.title}. ${section.speechText}`
 
+    const resolved = resolveSectionVoiceId(section)
     console.log(
-      `${dryRun ? "dry-run" : "generate"} ${label}: ${spokenText.length} chars — ${section.title}`,
+      `${dryRun ? "dry-run" : "generate"} ${label}: ${spokenText.length} chars — ${section.title}` +
+        (resolved.voiceId ? ` (voice ${resolved.voiceId} via ${resolved.source})` : ""),
     )
 
     if (dryRun) continue
 
+    if (!resolved.voiceId) {
+      throw new Error(
+        `No voice for ${label}. Set ${section.envVoiceKey || "ELEVENLABS_VOICE_ID"} in .env.local`,
+      )
+    }
+
     mkdirSync(outDir, { recursive: true })
-    const stream = await synthesize(spokenText)
+    const stream = await synthesize(spokenText, resolved.voiceId)
     await pipeline(stream, createWriteStream(outPath))
     generated += 1
   }

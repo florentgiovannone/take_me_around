@@ -82,9 +82,9 @@ export default function SouthwellMinsterPage() {
       {/* HISTORY */}
       <section id="history">
         <div className="section-head">
-          <div className="section-num">I.</div>
-          <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="history" showHint />
+          <SectionAudio workSlug="southwell-minster" sectionId="history" showHint />
+          <div className="section-title">
+            <div className="section-num">I.</div>
             <h2>A brief history</h2>
           </div>
         </div>
@@ -125,9 +125,9 @@ export default function SouthwellMinsterPage() {
       {/* TREASURES */}
       <section id="treasures">
         <div className="section-head">
-          <div className="section-num">II.</div>
-          <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="treasures" showIcon />
+          <SectionAudio workSlug="southwell-minster" sectionId="treasures" showIcon />
+          <div className="section-title">
+            <div className="section-num">II.</div>
             <h2>Treasures and places of interest</h2>
           </div>
         </div>
@@ -191,9 +191,9 @@ export default function SouthwellMinsterPage() {
       {/* OFFICERS */}
       <section id="officers">
         <div className="section-head">
-          <div className="section-num">III.</div>
-          <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="officers" showIcon />
+          <SectionAudio workSlug="southwell-minster" sectionId="officers" showIcon />
+          <div className="section-title">
+            <div className="section-num">III.</div>
             <h2>Principal officers</h2>
           </div>
         </div>
@@ -243,9 +243,9 @@ export default function SouthwellMinsterPage() {
       {/* MUSIC */}
       <section id="music">
         <div className="section-head">
-          <div className="section-num">IV.</div>
-          <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="music" showIcon />
+          <SectionAudio workSlug="southwell-minster" sectionId="music" showIcon />
+          <div className="section-title">
+            <div className="section-num">IV.</div>
             <h2>Music foundation &amp; choirs</h2>
           </div>
         </div>
@@ -298,9 +298,9 @@ export default function SouthwellMinsterPage() {
       {/* WORSHIP */}
       <section id="worship">
         <div className="section-head">
-          <div className="section-num">V.</div>
-          <div className="section-head-main">
-            <SectionAudio workSlug="southwell-minster" sectionId="worship" showIcon />
+          <SectionAudio workSlug="southwell-minster" sectionId="worship" showIcon />
+          <div className="section-title">
+            <div className="section-num">V.</div>
             <h2>Liturgy and daily services</h2>
           </div>
         </div>
@@ -345,8 +345,10 @@ export default function SouthwellMinsterPage() {
       {/* VISIT / HOURS */}
       <section id="visit">
         <div className="section-head">
-          <div className="section-num">VI.</div>
-          <h2>Opening hours</h2>
+          <div className="section-title">
+            <div className="section-num">VI.</div>
+            <h2>Opening hours</h2>
+          </div>
         </div>
         <p className="lede">The Minster is open to visitors every day of the year, without charge. Donations towards its upkeep are gratefully received.</p>
 
@@ -393,20 +395,63 @@ export default function SouthwellMinsterPage() {
       {/* DONATE */}
       <section id="donate">
         <div className="section-head">
-          <div className="section-num">VII.</div>
-          <div className="section-head-main">
+          <SectionAudio workSlug="southwell-minster" sectionId="donate" showIcon />
+          <div className="section-title">
+            <div className="section-num">VII.</div>
             <h2>Donate</h2>
           </div>
         </div>
-        <p className="lede">
-          Support the life and work of Southwell Minster — content for this
-          section will follow.
-        </p>
-        <div className="section-placeholder" aria-label="Donate section placeholder">
-          <p className="section-placeholder-label">Donate — coming soon</p>
+        <div className="donate-copy">
           <p>
-            Placeholder for donation copy, links, and any call-to-action. Wire
-            in giving details when ready.
+            The stone above you was raised in eleven hundred and eight. It is the finest
+            Norman nave left standing in England — round arch after round arch, cut by men
+            who knew they would never live to see the roof closed over them.
+          </p>
+          <p>
+            And walk east, into the Chapter House. There, carved into the stone eight hundred years ago,
+            are the leaves of this county. Hawthorn; oak; maple; buttercup, and vine. Whoever cut them
+            had clearly walked out into the woods and looked — <strong>really</strong> looked — at a
+            living thing, and made it permanent. They have not withered in seven centuries.
+          </p>
+          <p>
+            None of this is a museum. It is an active place of worship, still worked, still sung in,
+            still lit; a place of spiritual warmth and comfort.
+          </p>
+          <p>
+            It costs more than five thousand pounds a day simply to keep these doors open — the heating,
+            the glass, the fabric, the choristers, the liturgy.
+          </p>
+          <p>
+            There is no charge to come in. There never has been, and the Chapter will keep it that way.
+            You can, however, play an important part in helping with this mission. Last year the average
+            visitor left one pound and eighty-eight pence.
+          </p>
+          <p>
+            We&apos;d like to ask you for a donation of five pounds.
+          </p>
+          <p>
+            If this place has given you a moment of stillness today, and enriched your day, please give
+            it your help — by using the &ldquo;Donate now&rdquo; button: tick Gift Aid if you&apos;re a
+            UK taxpayer: for each £5 it adds an extra £1.25, and it costs you nothing extra.
+          </p>
+          <p className="donate-cta">
+            <a
+              className="donate-button"
+              href="https://southwellminster.churchsuite.com/donate/fund/qx2ayo61"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Donate now
+            </a>
+          </p>
+          <p>
+            Most importantly please recognise that you leave this place with no obligation. Please only
+            give according to your means. Do not give what you can ill-afford. You leave always with the
+            Lord&apos;s blessing.
+          </p>
+          <p className="donate-close">
+            The leaves have lasted eight hundred years. Whether they last another eight hundred is,
+            rather quietly, up to us.
           </p>
         </div>
       </section>
@@ -414,8 +459,8 @@ export default function SouthwellMinsterPage() {
       {/* OUR PROJECTS */}
       <section id="projects">
         <div className="section-head">
-          <div className="section-num">VIII.</div>
-          <div className="section-head-main">
+          <div className="section-title">
+            <div className="section-num">VIII.</div>
             <h2>Our projects</h2>
           </div>
         </div>
@@ -435,8 +480,10 @@ export default function SouthwellMinsterPage() {
       {/* CONTACT */}
       <section id="contact">
         <div className="section-head">
-          <div className="section-num">IX.</div>
-          <h2>Contact &amp; how to find us</h2>
+          <div className="section-title">
+            <div className="section-num">IX.</div>
+            <h2>Contact &amp; how to find us</h2>
+          </div>
         </div>
 
         <div className="contact">

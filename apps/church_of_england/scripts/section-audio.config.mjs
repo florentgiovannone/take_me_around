@@ -50,6 +50,15 @@ export const SECTION_AUDIO_WORKS = {
         speechText:
           "The Minster keeps a full Anglican cathedral daily office: Morning Prayer, Holy Communion, and Evening Prayer or Evensong every day. Choral services are sung most days in term by the Cathedral Choir. The Sunday Cathedral Eucharist at ten o’clock and Sunday Evensong at half past three are live-streamed. Visitors of all traditions are welcome, and there is no admission charge.",
       },
+      {
+        id: "donate",
+        title: "Donate",
+        /** Reverend / donation voice — set via ELEVENLABS_VOICE_ID_REV (separate from ELEVENLABS_VOICE_ID). */
+        envVoiceKey: "ELEVENLABS_VOICE_ID_REV",
+        voiceId: "McCpKDz9Fm00UGapoXxs",
+        speechText:
+          "The stone above you was raised in eleven hundred and eight. It is the finest Norman nave left standing in England — round arch after round arch, cut by men who knew they would never live to see the roof closed over them. And walk east, into the Chapter House. There, carved into the stone eight hundred years ago, are the leaves of this county. Hawthorn; oak; maple; buttercup, and vine. Whoever cut them had clearly walked out into the woods and looked — really looked — at a living thing, and made it permanent. They have not withered in seven centuries. None of this is a museum. It is an active place of worship, still worked, still sung in, still lit; a place of spiritual warmth and comfort. It costs more than five thousand pounds a day simply to keep these doors open — the heating, the glass, the fabric, the choristers, the liturgy. There is no charge to come in. There never has been, and the Chapter will keep it that way. You can, however, play an important part in helping with this mission. Last year the average visitor left one pound and eighty-eight pence. We'd like to ask you for a donation of five pounds. If this place has given you a moment of stillness today, and enriched your day, please give it your help — by using the Donate now button: tick Gift Aid if you're a UK taxpayer: for each five pounds it adds an extra one pound twenty-five, and it costs you nothing extra. Most importantly please recognise that you leave this place with no obligation. Please only give according to your means. Do not give what you can ill-afford. You leave always with the Lord's blessing. The leaves have lasted eight hundred years. Whether they last another eight hundred is, rather quietly, up to us.",
+      },
     ],
   }
 }

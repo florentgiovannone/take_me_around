@@ -239,20 +239,20 @@
   }
 
   .southwell-minster .section-head{
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-bottom: 28px;
+  }
+  .southwell-minster .section-title{
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 20px;
-    align-items: start;
-    margin-bottom: 28px;
-  }
-  .southwell-minster .section-head-main{
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    align-items: baseline;
     min-width: 0;
   }
-  .southwell-minster .section-head-main .tma-audio-player{
-    margin: 0 0 0.35rem;
+  .southwell-minster .section-head .tma-audio-player{
+    margin: 0;
   }
   .southwell-minster .tma-section-audio-block{
     display: flex;
@@ -292,7 +292,6 @@
     font-size: 1.1rem;
     color: var(--gold);
     letter-spacing: .05em;
-    padding-top: 0.35rem;
   }
   .southwell-minster h2{ font-size: clamp(1.8rem, 3.4vw, 2.6rem); margin: 0; }
   .southwell-minster h3{
@@ -310,6 +309,44 @@
     color: var(--ink);
     max-width: 62ch;
     margin-bottom: 32px;
+  }
+
+  .southwell-minster .donate-copy{
+    max-width: 68ch;
+  }
+  .southwell-minster .donate-copy p{
+    margin: 0 0 1.15em;
+  }
+  .southwell-minster .donate-cta{
+    margin: 1.75em 0 1.5em;
+  }
+  .southwell-minster .donate-button{
+    display: inline-block;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #fdf9ef;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    padding: 0.85em 1.45em;
+    border-radius: 2px;
+    box-shadow: var(--shadow);
+  }
+  .southwell-minster .donate-button:hover{
+    color: #fdf9ef;
+    background: var(--accent-soft);
+    border-color: var(--accent-soft);
+    border-bottom-color: var(--accent-soft);
+  }
+  .southwell-minster .donate-close{
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-top: 1.5em;
   }
 
   /* History timeline */
