@@ -4,13 +4,13 @@
 
 **Goal:** On Southwell Minster, show an italic headphones hint above the first section audio player and an outline headphone glyph with every section audio control.
 
-**Architecture:** Enhance CoE `SectionAudio` with an optional `showHint` prop and an inline outline headphones SVG (`currentColor`). History passes `showHint`; other Southwell sections get the glyph only. Styles stay scoped under `.southwell-minster`.
+**Architecture:** Enhance CoE `SectionAudio` with optional `showHint` and `showIcon` props and an inline outline headphones SVG (`currentColor`). History passes `showHint`; other Southwell sections pass `showIcon`. Default (Westminster etc.): plain `AudioPlayer` when `src` exists. Styles stay scoped under `.southwell-minster`.
 
 **Tech Stack:** React 19, TypeScript, Vite, existing CoE `AudioPlayer` / `getSectionAudio`
 
 ## Global Constraints
 
-- Scope: Southwell Minster only (do not change Westminster markup beyond shared `SectionAudio` behaviour that still no-ops when audio is missing)
+- Scope: Southwell Minster only (Westminster and other pages use default `SectionAudio` — plain player, no glyph)
 - Hint copy exact: `Where you see the audio control below, and in each section where you see an audio icon, you can listen as you browse or move around. Please use your headphones or ear pods.`
 - Glyph: outline headphones from headphone-glyph pack (`currentColor`, ~1em)
 - Hint: italic, ~0.9–0.95rem, soft ink; no cards/badges/overlays
@@ -23,8 +23,8 @@
 
 | Path | Role |
 |------|------|
-| `apps/church_of_england/src/components/SectionAudio.tsx` | Glyph + optional hint + `AudioPlayer` |
-| `apps/church_of_england/src/pages/SouthwellMinsterPage.tsx` | Pass `showHint` on History only |
+| `apps/church_of_england/src/components/SectionAudio.tsx` | Optional glyph/hint wrapper + `AudioPlayer` |
+| `apps/church_of_england/src/pages/SouthwellMinsterPage.tsx` | `showHint` on History; `showIcon` on other Southwell sections |
 | `apps/church_of_england/src/styles/southwell-minster.css` | Hint/icon spacing under `.southwell-minster` |
 
 **Spec:** `docs/superpowers/specs/2026-08-10-southwell-audio-listen-hint-design.md`
@@ -35,14 +35,14 @@
 
 **Files:**
 - Modify: `apps/church_of_england/src/components/SectionAudio.tsx`
-- Modify: `apps/church_of_england/src/pages/SouthwellMinsterPage.tsx` (History call site only)
+- Modify: `apps/church_of_england/src/pages/SouthwellMinsterPage.tsx` (Southwell call sites)
 - Modify: `apps/church_of_england/src/styles/southwell-minster.css`
 
 **Interfaces:**
 - Consumes: `getSectionAudio(workSlug, sectionId): string | null`, `AudioPlayer({ src: string })`
-- Produces: `SectionAudio({ workSlug: string, sectionId: string, showHint?: boolean })`
+- Produces: `SectionAudio({ workSlug: string, sectionId: string, showHint?: boolean, showIcon?: boolean })`
 
-- [ ] **Step 1: Replace `SectionAudio.tsx` with glyph + optional hint**
+- [ ] **Step 1: Replace `SectionAudio.tsx` with opt-in glyph + optional hint**
 
 ```tsx
 import AudioPlayer from "./AudioPlayer"
@@ -53,6 +53,8 @@ type SectionAudioProps = {
   sectionId: string
   /** When true, show the headphones listen hint above the player (Southwell History). */
   showHint?: boolean
+  /** When true, show the headphones glyph above the player (Southwell sections without hint). */
+  showIcon?: boolean
 }
 
 const HINT_COPY =
@@ -81,9 +83,18 @@ function HeadphonesIcon({ decorative }: { decorative: boolean }) {
 }
 
 /** Renders a section player when the matching mp3 exists. */
-export default function SectionAudio({ workSlug, sectionId, showHint = false }: SectionAudioProps) {
+export default function SectionAudio({
+  workSlug,
+  sectionId,
+  showHint = false,
+  showIcon = false,
+}: SectionAudioProps) {
   const src = getSectionAudio(workSlug, sectionId)
   if (!src) return null
+
+  if (!showHint && !showIcon) {
+    return <AudioPlayer src={src} />
+  }
 
   return (
     <div className="tma-section-audio-block">
@@ -103,21 +114,24 @@ export default function SectionAudio({ workSlug, sectionId, showHint = false }: 
 }
 ```
 
-- [ ] **Step 2: Pass `showHint` on Southwell History only**
+- [ ] **Step 2: Pass `showHint` / `showIcon` on Southwell call sites**
 
-In `apps/church_of_england/src/pages/SouthwellMinsterPage.tsx`, change the History call only:
+In `apps/church_of_england/src/pages/SouthwellMinsterPage.tsx`:
 
 ```tsx
 <SectionAudio workSlug="southwell-minster" sectionId="history" showHint />
 ```
 
-Leave treasures / officers / music / worship as:
+Other Southwell sections with audio:
 
 ```tsx
-<SectionAudio workSlug="southwell-minster" sectionId="treasures" />
+<SectionAudio workSlug="southwell-minster" sectionId="treasures" showIcon />
+<SectionAudio workSlug="southwell-minster" sectionId="officers" showIcon />
+<SectionAudio workSlug="southwell-minster" sectionId="music" showIcon />
+<SectionAudio workSlug="southwell-minster" sectionId="worship" showIcon />
 ```
 
-(and the other sectionIds unchanged).
+Westminster and other pages: leave call sites unchanged (no props — plain `AudioPlayer`).
 
 - [ ] **Step 3: Add scoped styles in `southwell-minster.css`**
 
@@ -174,8 +188,9 @@ With `npm run dev` already on Church of England (`http://localhost:5173/`):
 
 1. Open `/southwell-minster`.
 2. History: italic hint with outline headphone icon appears above the first audio control; copy matches the Global Constraints sentence exactly.
-3. Treasures / officers / music / worship: outline headphone icon appears with each section player; no repeated hint paragraph.
-4. Sections without an mp3 still render no audio UI (unchanged null behaviour).
+3. Treasures / officers / music / worship: outline headphone icon appears with each section player (`showIcon`); no repeated hint paragraph.
+4. Westminster Abbey: plain audio players only — no glyph or hint wrapper.
+5. Sections without an mp3 still render no audio UI (unchanged null behaviour).
 
 - [ ] **Step 6: Commit**
 
@@ -199,9 +214,10 @@ EOF
 
 | Spec requirement | Task |
 |------------------|------|
-| Southwell only | Task 1 (History `showHint`; other apps untouched) |
+| Southwell only | Task 1 (`showHint` / `showIcon` on Southwell; Westminster default unchanged) |
 | Exact hint copy | Task 1 `HINT_COPY` |
-| Outline glyph on every section player | Task 1 always renders icon when `src` exists |
+| Outline glyph on Southwell section players | Task 1 glyph when `showHint` or `showIcon` is true |
+| Default plain player (Westminster etc.) | Task 1 returns `<AudioPlayer />` when neither prop is set |
 | Italic smaller hint | Task 1 CSS |
 | a11y: decorative vs labeled icon | Task 1 `HeadphonesIcon` |
 | No new test harness | Build + manual verification |
@@ -209,5 +225,5 @@ EOF
 ## Placeholder / consistency scan
 
 - No TBD/TODO steps.
-- Prop name `showHint` consistent across component and page.
+- Prop names `showHint` and `showIcon` consistent across component and page.
 - Class names `tma-section-audio-block`, `tma-audio-listen-hint`, `tma-headphones-icon`, `tma-section-audio-icon` used consistently in TSX and CSS.
