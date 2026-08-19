@@ -21,4 +21,4 @@ Copy `.env.example` to `.env` and set `VITE_API_PROXY_TARGET`, `VITE_ARKIN_DASHB
 | Publish directory | `dist` |
 
 Public host in config: `takemearound.church`.
-Canonical Southwell stop: `/Southwell_Minster/introduction`.
+Canonical Southwell stop: `/minster_cathedral/Southwell/deans_welcome_message`.

@@ -44,7 +44,7 @@ export type AudienceBreakdownRow = {
 
 export const TRACKED_CHURCH_OF_ENGLAND_ARTWORKS = [
   { title: "Westminster Abbey", path: "/westminster-abbey" },
-  { title: "Southwell Minster", path: "/Southwell_Minster/introduction" },
+  { title: "Southwell Minster", path: "/minster_cathedral/Southwell/deans_welcome_message" },
 ] as const
 
 export type TrackedArtwork = (typeof TRACKED_CHURCH_OF_ENGLAND_ARTWORKS)[number]
@@ -59,8 +59,9 @@ const TRACKED_CHURCH_OF_ENGLAND_TITLES = new Set(
 
 /** Legacy URL variants that should roll up to a canonical tracked path (lowercase match keys). */
 const TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES: { match: string; canonical: string }[] = [
-  { match: "/southwell-minster", canonical: "/Southwell_Minster/introduction" },
-  { match: "/southwell_minster", canonical: "/Southwell_Minster/introduction" },
+  { match: "/southwell-minster", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
+  { match: "/southwell_minster/introduction", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
+  { match: "/southwell_minster", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
 ]
 
 export function getTrackedArtworkUrl(path: string) {

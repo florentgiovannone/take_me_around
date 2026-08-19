@@ -22,7 +22,12 @@ const cases = [
     expected: true,
   },
   {
-    name: "accepts Southwell introduction path",
+    name: "accepts Southwell dean welcome path",
+    message: "https://takemearound.church/minster_cathedral/Southwell/deans_welcome_message",
+    expected: true,
+  },
+  {
+    name: "accepts legacy Southwell introduction path",
     message: "https://takemearound.church/Southwell_Minster/introduction",
     expected: true,
   },

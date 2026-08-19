@@ -9,7 +9,7 @@ import SouthwellMinsterPage from "./pages/SouthwellMinsterPage"
 import WestminsterAbbeyPage from "./pages/WestminsterAbbeyPage"
 import "./styles/style.css"
 
-export const SOUTHWELL_MINSTER_PATH = "/Southwell_Minster/introduction"
+export const SOUTHWELL_MINSTER_PATH = "/minster_cathedral/Southwell/deans_welcome_message"
 
 const PAGE_TITLES: Record<string, string> = {
   "/": "Take Me Around",
@@ -83,6 +83,7 @@ function App() {
         <Route path="/allpages" element={<AllPage />} />
         <Route path="/westminster-abbey" element={<WestminsterAbbeyPage />} />
         <Route path={SOUTHWELL_MINSTER_PATH} element={<SouthwellMinsterPage />} />
+        <Route path="/Southwell_Minster/introduction" element={<Navigate to={SOUTHWELL_MINSTER_PATH} replace />} />
         <Route path="/Southwell_Minster" element={<Navigate to={SOUTHWELL_MINSTER_PATH} replace />} />
         <Route path="/southwell-minster" element={<Navigate to={SOUTHWELL_MINSTER_PATH} replace />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
