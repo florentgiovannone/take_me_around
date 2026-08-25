@@ -1,0 +1,256 @@
+/* Dashboard restyle using Southwell Minster tokens, type, and chrome. */
+
+.southwell-dashboard.tma-dashboard {
+  --tma-brand: #7a2e2a;
+  --tma-brand-dark: #1a1512;
+  --tma-brand-mid: #9a4a44;
+  --tma-brand-light: #a8842a;
+  --tma-brand-tint: #efe7d9;
+  --tma-brand-tint-alt: #f7f2ea;
+  --tma-dashboard-tabs-bg: transparent;
+  --tma-brand-border: #b7a685;
+  --tma-brand-shadow: rgba(26, 21, 18, 0.08);
+  --tma-brand-shadow-soft: rgba(26, 21, 18, 0.06);
+  --tma-brand-shadow-focus: rgba(122, 46, 42, 0.28);
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+.southwell-dashboard .southwell-dashboard-hero {
+  min-height: 48vh;
+}
+
+.southwell-dashboard .tma-dashboard-logout {
+  top: 1.15rem;
+  right: 1.15rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fdf9ef;
+  background: rgba(28, 22, 17, 0.35);
+  border: 1px solid rgba(240, 226, 192, 0.45);
+  border-radius: 2px;
+  backdrop-filter: blur(6px);
+}
+
+.southwell-dashboard .tma-dashboard-logout:hover {
+  background: rgba(122, 46, 42, 0.72);
+  border-color: rgba(253, 249, 239, 0.55);
+}
+
+.southwell-dashboard .tma-content {
+  max-width: 1080px;
+  padding: 0 28px 3rem;
+}
+
+.southwell-dashboard-tabs-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  width: 100%;
+  margin: 0 -28px 1.75rem;
+  padding: 0 28px;
+  background: rgba(247, 242, 234, 0.94);
+  backdrop-filter: saturate(1.4) blur(8px);
+  border-bottom: 1px solid var(--rule);
+  justify-content: flex-start;
+}
+
+.southwell-dashboard .tma-dashboard-tabs,
+.southwell-dashboard .tma-dashboard-tabs--wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 4px 16px;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 0;
+  overflow-x: auto;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  scrollbar-width: thin;
+}
+
+.southwell-dashboard .tma-dashboard-tab {
+  flex: 0 0 auto;
+  border-radius: 0;
+  padding: 6px 2px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.southwell-dashboard .tma-dashboard-tab:hover:not(.is-active) {
+  background: transparent;
+  color: var(--accent);
+}
+
+.southwell-dashboard .tma-dashboard-tab.is-active {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+  border-bottom: 1px solid var(--accent);
+}
+
+.southwell-dashboard .tma-dashboard-auth {
+  max-width: 420px;
+  margin: 2.5rem auto 0;
+  padding: 28px 30px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #fdfaf3, #f4ebd8);
+  box-shadow: var(--shadow);
+}
+
+.southwell-dashboard .tma-dashboard-auth label {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.southwell-dashboard .tma-dashboard-auth input {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.southwell-dashboard .tma-dashboard-auth input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--tma-brand-shadow-focus);
+}
+
+.southwell-dashboard .tma-dashboard-auth button {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fdf9ef;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+}
+
+.southwell-dashboard .tma-dashboard-auth button:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent-soft);
+  box-shadow: var(--shadow);
+}
+
+.southwell-dashboard .tma-dashboard-error {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  color: var(--accent);
+  background: rgba(122, 46, 42, 0.08);
+  border: 1px solid rgba(122, 46, 42, 0.28);
+  border-radius: 2px;
+}
+
+.southwell-dashboard .tma-analytics-stat-card,
+.southwell-dashboard .tma-analytics-card {
+  background: linear-gradient(180deg, #fdfaf3, #f4ebd8);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+}
+
+.southwell-dashboard .tma-analytics-stat-icon {
+  border-radius: 2px;
+  background: var(--paper-2);
+  color: var(--accent);
+}
+
+.southwell-dashboard .tma-analytics-stat-label {
+  color: var(--accent);
+  letter-spacing: 0.12em;
+}
+
+.southwell-dashboard .tma-analytics-stat-value,
+.southwell-dashboard .tma-analytics-card h2,
+.southwell-dashboard .tma-analytics-card-header h2 {
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.southwell-dashboard .tma-analytics-stat-meta {
+  color: var(--ink-soft);
+}
+
+.southwell-dashboard .tma-analytics-stat-meta.is-accent {
+  color: var(--accent);
+}
+
+.southwell-dashboard .tma-dashboard-table-wrap,
+.southwell-dashboard .tma-dashboard-nested-table {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--paper);
+  box-shadow: none;
+}
+
+.southwell-dashboard .tma-dashboard-table thead th,
+.southwell-dashboard .tma-dashboard-nested-table th {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--paper-2);
+}
+
+.southwell-dashboard .tma-footer {
+  margin-top: 80px;
+  padding: 32px 28px 40px;
+  background: #1c1611;
+  color: #d9cdb2;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.southwell-dashboard .tma-footer-enquiry,
+.southwell-dashboard .tma-footer-address,
+.southwell-dashboard .tma-footer-copyright {
+  margin: 0 0 10px;
+}
+
+.southwell-dashboard .tma-footer-copyright {
+  font-family: "Cormorant Garamond", serif;
+  font-style: italic;
+  font-size: 15px;
+  color: #f0dfaf;
+}
+
+.southwell-dashboard .tma-footer-enquiry a {
+  color: #e9c976;
+}
+
+@media (max-width: 768px) {
+  .southwell-dashboard .southwell-dashboard-hero {
+    min-height: 36vh;
+  }
+
+  .southwell-dashboard .tma-content {
+    padding: 0 16px 2rem;
+  }
+
+  .southwell-dashboard-tabs-nav {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 0 16px;
+  }
+}

@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useRef, useState } from "react"
+import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react"
 import Footer from "../components/Footer"
 import {
   DashboardActivityPanel,
@@ -11,7 +11,10 @@ import {
 import { apiBaseUrl, apiNeedsNgrokHeader } from "../apiBaseUrl"
 import { parseApiJson } from "../parseApiJson"
 import type { PoiseLog } from "@tma/dashboard-scope"
+import westFront from "../assets/church-of-england/images/southwell/west-front.jpg"
 import "../styles/style.css"
+import "../styles/southwell-minster.css"
+import "../styles/southwell-dashboard.css"
 
 const DASHBOARD_PASSWORD_KEY = "tma-dashboard-password-church"
 const POLL_INTERVAL_MS = 5000
@@ -174,26 +177,30 @@ function Dashboard() {
     setActiveTab("activity")
   }
 
-  return (
-    <>
-      <main className="tma-gallery-page tma-dashboard">
-        <header className="tma-header">
-          {isAuthorized && (
-            <button
-              type="button"
-              className="tma-dashboard-logout"
-              onClick={handleLogout}
-            >
-              Log out
-            </button>
-          )}
-          <div className="tma-header-inner">
-            <h1 className="tma-page-title">Dashboard</h1>
-            <p className="tma-page-subtitle">Live .church activity</p>
-          </div>
-        </header>
+  const heroStyle = {
+    "--southwell-hero-image": `url(${westFront})`,
+  } as CSSProperties
 
-        <div className="tma-content">
+  return (
+    <div className="southwell-minster southwell-dashboard tma-dashboard">
+      <header className="hero southwell-dashboard-hero" role="banner" style={heroStyle}>
+        {isAuthorized && (
+          <button
+            type="button"
+            className="tma-dashboard-logout"
+            onClick={handleLogout}
+          >
+            Log out
+          </button>
+        )}
+        <div className="hero-inner">
+          <div className="eyebrow">Take Me Around · .church</div>
+          <h1>Dashboard</h1>
+          <p className="tagline">Live .church activity</p>
+        </div>
+      </header>
+
+      <div className="tma-content">
           {initializing && (
             <div className="tma-analytics-card tma-dashboard-status-card">
               <p>Restoring dashboard session...</p>
@@ -219,7 +226,7 @@ function Dashboard() {
 
           {isAuthorized && (
             <>
-              <nav className="tma-dashboard-tabs-nav" aria-label="Dashboard views">
+              <nav className="tma-dashboard-tabs-nav southwell-dashboard-tabs-nav" aria-label="Dashboard views">
                 <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
                   <button
                     type="button"
@@ -295,9 +302,8 @@ function Dashboard() {
             </>
           )}
         </div>
-      </main>
       <Footer />
-    </>
+    </div>
   )
 }
 
