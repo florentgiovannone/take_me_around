@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom"
-import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
 import ContactPage from "./pages/ContactPage"
+import Dashboard from "./pages/Dashboard"
 import NotFoundPage from "./pages/NotFoundPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
@@ -88,12 +88,7 @@ function App() {
         <Route path="/southwell-minster" element={<Navigate to={SOUTHWELL_MINSTER_PATH} replace />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ExternalDashboardRedirect path="/dashboard/church-of-england" />
-          }
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

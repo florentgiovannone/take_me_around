@@ -7,8 +7,8 @@
   publish = "apps/church_of_england/dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/church_of_england packages"
 
-# /dashboard redirects to https://arkin.takemearound.gallery/dashboard/church-of-england
-# (vite netlify-redirects plugin).
+# /dashboard is served by the SPA (in-app analytics). Vite writes dist/_redirects
+# with /api/* proxy + /* → /index.html (no off-site /dashboard 301).
 
 # Required for production deploys (set in Netlify UI, then redeploy):
 #   VITE_API_PROXY_TARGET = https://YOUR-NGROK-OR-API-HOST.ngrok-free.app

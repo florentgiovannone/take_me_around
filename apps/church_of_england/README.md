@@ -11,7 +11,9 @@ npm install
 npm run dev:church-of-england
 ```
 
-Copy `.env.example` to `.env` and set `VITE_API_PROXY_TARGET`, `VITE_ARKIN_DASHBOARD_URL` if needed.
+Copy `.env.example` to `.env.local` and set `VITE_API_PROXY_TARGET`. Optional: `VITE_DASHBOARD_PASSWORD` to auto-unlock `/dashboard` in local dev.
+
+`/dashboard` is the church-only analytics dashboard (same tabs as Arkin). Church tags also remain on the main dashboard at `https://arkin.takemearound.gallery` (scope Church of England).
 
 ## Netlify
 
