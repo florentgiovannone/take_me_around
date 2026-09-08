@@ -11,7 +11,7 @@ npm install
 npm run dev:church-of-england
 ```
 
-Copy `.env.example` to `.env.local` and set `VITE_API_PROXY_TARGET`. Optional: `VITE_DASHBOARD_PASSWORD` so `/dashboard` can call the API — it must match `DASHBOARD_PASSWORD` (same value as the main dashboard). The Southwell dashboard is passwordless: click **Unlock** to open it.
+Copy `.env.example` to `.env.local` and set `VITE_API_PROXY_TARGET`. Optional: `VITE_DASHBOARD_PASSWORD` (must match API `DASHBOARD_PASSWORD`) for one-click **Unlock**. If that env is unset — including on Netlify — `/dashboard` asks for the password instead.
 
 `/dashboard` is the church-only analytics dashboard (same tabs as Arkin). Church tags also remain on the main dashboard at `https://arkin.takemearound.gallery` (scope Church of England).
 

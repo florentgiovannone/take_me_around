@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, useEffect, useState } from "react"
+import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react"
 import Footer from "../components/Footer"
 import {
   DashboardActivityPanel,
@@ -16,9 +16,15 @@ import "../styles/style.css"
 import "../styles/southwell-minster.css"
 import "../styles/southwell-dashboard.css"
 
+const DASHBOARD_PASSWORD_KEY = "tma-dashboard-password-church"
 const POLL_INTERVAL_MS = 5000
-const SOUTHWELL_UNLOCK_KEY = "tma-southwell-dashboard-unlocked"
-const apiPassword = (import.meta.env.VITE_DASHBOARD_PASSWORD ?? "").trim()
+const envDashboardPassword = (import.meta.env.VITE_DASHBOARD_PASSWORD ?? "").trim()
+
+/** Build-time env (local or Netlify) wins; otherwise reuse a typed session password. */
+function resolveDashboardPassword(): string | null {
+  if (envDashboardPassword) return envDashboardPassword
+  return sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
+}
 
 type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
 
@@ -38,7 +44,7 @@ async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
   const response = await fetch(url, { headers })
 
   if (response.status === 401) {
-    return { ok: false, unauthorized: true, message: "Dashboard API access was denied." }
+    return { ok: false, unauthorized: true, message: "Incorrect password." }
   }
   if (response.status === 503) {
     return {
@@ -68,18 +74,19 @@ async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
 }
 
 function Dashboard() {
+  const passwordRef = useRef("")
   const [logs, setLogs] = useState<PoiseLog[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [authError, setAuthError] = useState<string | null>(null)
   const [isAuthorized, setIsAuthorized] = useState(false)
+  const [passwordInput, setPasswordInput] = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const [initializing, setInitializing] = useState(
-    () => sessionStorage.getItem(SOUTHWELL_UNLOCK_KEY) === "1"
-  )
+  const [initializing, setInitializing] = useState(() => !!resolveDashboardPassword())
   const [activeTab, setActiveTab] = useState<DashboardTab>("activity")
+  const passwordless = Boolean(envDashboardPassword)
 
-  const loadLogs = async (options?: { showLoading?: boolean }) => {
+  const loadLogs = async (password: string, options?: { showLoading?: boolean }) => {
     const showLoading = options?.showLoading ?? true
     if (showLoading) {
       setLoading(true)
@@ -88,13 +95,17 @@ function Dashboard() {
     }
 
     try {
-      const result = await fetchDashboardLogs(apiPassword)
+      const result = await fetchDashboardLogs(password)
       if (!result.ok) {
         if (result.unauthorized) {
-          sessionStorage.removeItem(SOUTHWELL_UNLOCK_KEY)
+          sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
+          passwordRef.current = ""
           setIsAuthorized(false)
+          setPasswordInput("")
           setAuthError(
-            "Could not open Southwell Minster. Set VITE_DASHBOARD_PASSWORD in .env.local to match the API."
+            passwordless
+              ? "Could not open Southwell Minster. The dashboard password in this deploy does not match the API."
+              : result.message
           )
         } else if (showLoading) {
           setAuthError(result.message)
@@ -104,7 +115,8 @@ function Dashboard() {
         return false
       }
 
-      sessionStorage.setItem(SOUTHWELL_UNLOCK_KEY, "1")
+      sessionStorage.setItem(DASHBOARD_PASSWORD_KEY, password)
+      passwordRef.current = password
       setLogs(result.data)
       setIsAuthorized(true)
       setError(null)
@@ -126,8 +138,12 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    if (!initializing) return
-    void loadLogs({ showLoading: true }).finally(() => setInitializing(false))
+    const password = resolveDashboardPassword()
+    if (!password) {
+      setInitializing(false)
+      return
+    }
+    void loadLogs(password).finally(() => setInitializing(false))
     // eslint-disable-next-line react-hooks/exhaustive-deps -- restore session once on mount
   }, [])
 
@@ -135,7 +151,7 @@ function Dashboard() {
     if (!isAuthorized) return
 
     const interval = setInterval(() => {
-      void loadLogs({ showLoading: false })
+      void loadLogs(passwordRef.current, { showLoading: false })
     }, POLL_INTERVAL_MS)
 
     return () => clearInterval(interval)
@@ -144,15 +160,22 @@ function Dashboard() {
 
   const submitUnlock = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const password = envDashboardPassword || passwordInput.trim()
+    if (!password) {
+      setAuthError("Enter a password.")
+      return
+    }
     setSubmitting(true)
-    await loadLogs({ showLoading: true })
+    await loadLogs(password, { showLoading: true })
     setSubmitting(false)
   }
 
   const handleLogout = () => {
-    sessionStorage.removeItem(SOUTHWELL_UNLOCK_KEY)
+    sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
+    passwordRef.current = ""
     setIsAuthorized(false)
     setLogs([])
+    setPasswordInput("")
     setError(null)
     setAuthError(null)
     setLoading(false)
@@ -188,8 +211,21 @@ function Dashboard() {
         )}
         {!initializing && !isAuthorized && (
           <form className="tma-dashboard-auth" onSubmit={submitUnlock}>
+            {!passwordless && (
+              <>
+                <label htmlFor="dashboard-password">Enter password to access this page</label>
+                <input
+                  id="dashboard-password"
+                  type="password"
+                  value={passwordInput}
+                  onChange={(event) => setPasswordInput(event.target.value)}
+                  placeholder="Password"
+                  autoComplete="current-password"
+                />
+              </>
+            )}
             <button type="submit" disabled={unlocking}>
-              {unlocking ? "Unlocking..." : "Unlock"}
+              {unlocking ? "Unlocking..." : passwordless ? "Unlock" : "Unlock dashboard"}
             </button>
             {authError && <p className="tma-dashboard-error">{authError}</p>}
           </form>
