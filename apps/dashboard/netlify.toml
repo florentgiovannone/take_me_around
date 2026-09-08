@@ -6,8 +6,16 @@
 # Custom domain: arkin.takemearound.gallery (primary dashboard host).
 # Legacy dashboards on takemearound.gallery/dashboard and takemearound.museum/dashboard
 # redirect to this site (see gallery/museum Netlify _redirects).
+# /demodashboard and /dashboard/church-of-england are public. An edge function
+# attaches X-Dashboard-Password for /api/secure/* so the browser never sees it.
+
+[[edge_functions]]
+  function = "inject-dashboard-password"
+  path = "/api/secure/*"
 
 # Build-time env (Site settings → Environment variables → Scopes: Builds only or All):
 #   VITE_API_PROXY_TARGET = https://YOUR-SUBDOMAIN.ngrok-free.app   (recommended)
 # Same URL works as VITE_API_BASE_URL if you prefer direct API calls (needs CORS on the API).
+# For passwordless Demo / church dashboards (server-side):
+#   VITE_DASHBOARD_PASSWORD or DASHBOARD_PASSWORD = backend DASHBOARD_PASSWORD
 # After changing either variable, trigger Deploy → Clear cache and deploy site.

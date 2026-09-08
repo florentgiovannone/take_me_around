@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react"
+import { type CSSProperties, useEffect, useState } from "react"
 import Footer from "../components/Footer"
 import {
   DashboardActivityPanel,
@@ -16,15 +16,7 @@ import "../styles/style.css"
 import "../styles/southwell-minster.css"
 import "../styles/southwell-dashboard.css"
 
-const DASHBOARD_PASSWORD_KEY = "tma-dashboard-password-church"
 const POLL_INTERVAL_MS = 5000
-const envDashboardPassword = (import.meta.env.VITE_DASHBOARD_PASSWORD ?? "").trim()
-
-/** Build-time env (local or Netlify) wins; otherwise reuse a typed session password. */
-function resolveDashboardPassword(): string | null {
-  if (envDashboardPassword) return envDashboardPassword
-  return sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
-}
 
 type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
 
@@ -32,19 +24,21 @@ type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
   | { ok: false; unauthorized: boolean; message: string }
 
-async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
+async function fetchDashboardLogs(): Promise<FetchLogsResult> {
   const base = apiBaseUrl()
   const url = base ? `${base}/api/secure/items` : "/api/secure/items"
-  const headers: Record<string, string> = {
-    "X-Dashboard-Password": password,
-  }
+  const headers: Record<string, string> = {}
   if (apiNeedsNgrokHeader()) {
     headers["ngrok-skip-browser-warning"] = "true"
   }
   const response = await fetch(url, { headers })
 
   if (response.status === 401) {
-    return { ok: false, unauthorized: true, message: "Incorrect password." }
+    return {
+      ok: false,
+      unauthorized: true,
+      message: "Dashboard API access was denied.",
+    }
   }
   if (response.status === 503) {
     return {
@@ -58,7 +52,7 @@ async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
       ok: false,
       unauthorized: false,
       message:
-        "API not reachable (404). Check Flask + ngrok are running and VITE_API_BASE_URL in .env matches your ngrok URL.",
+        "API not reachable (404). Check Flask is running and VITE_API_PROXY_TARGET matches the API host.",
     }
   }
   if (!response.ok) {
@@ -74,59 +68,35 @@ async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
 }
 
 function Dashboard() {
-  const passwordRef = useRef("")
   const [logs, setLogs] = useState<PoiseLog[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [authError, setAuthError] = useState<string | null>(null)
-  const [isAuthorized, setIsAuthorized] = useState(false)
-  const [passwordInput, setPasswordInput] = useState("")
-  const [submitting, setSubmitting] = useState(false)
-  const [initializing, setInitializing] = useState(() => !!resolveDashboardPassword())
+  const [ready, setReady] = useState(false)
   const [activeTab, setActiveTab] = useState<DashboardTab>("activity")
-  const passwordless = Boolean(envDashboardPassword)
 
-  const loadLogs = async (password: string, options?: { showLoading?: boolean }) => {
+  const loadLogs = async (options?: { showLoading?: boolean }) => {
     const showLoading = options?.showLoading ?? true
     if (showLoading) {
       setLoading(true)
       setError(null)
-      setAuthError(null)
     }
 
     try {
-      const result = await fetchDashboardLogs(password)
+      const result = await fetchDashboardLogs()
       if (!result.ok) {
-        if (result.unauthorized) {
-          sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
-          passwordRef.current = ""
-          setIsAuthorized(false)
-          setPasswordInput("")
-          setAuthError(
-            passwordless
-              ? "Could not open Southwell Minster. The dashboard password in this deploy does not match the API."
-              : result.message
-          )
-        } else if (showLoading) {
-          setAuthError(result.message)
-        } else {
+        if (showLoading) {
           setError(result.message)
         }
         return false
       }
 
-      sessionStorage.setItem(DASHBOARD_PASSWORD_KEY, password)
-      passwordRef.current = password
       setLogs(result.data)
-      setIsAuthorized(true)
+      setReady(true)
       setError(null)
-      setAuthError(null)
       return true
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load items"
       if (showLoading) {
-        setAuthError(message)
-      } else {
         setError(message)
       }
       return false
@@ -138,64 +108,28 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    const password = resolveDashboardPassword()
-    if (!password) {
-      setInitializing(false)
-      return
-    }
-    void loadLogs(password).finally(() => setInitializing(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- restore session once on mount
+    void loadLogs({ showLoading: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- load once on mount
   }, [])
 
   useEffect(() => {
-    if (!isAuthorized) return
+    if (!ready) return
 
     const interval = setInterval(() => {
-      void loadLogs(passwordRef.current, { showLoading: false })
+      void loadLogs({ showLoading: false })
     }, POLL_INTERVAL_MS)
 
     return () => clearInterval(interval)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- poll only when auth toggles
-  }, [isAuthorized])
-
-  const submitUnlock = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const password = envDashboardPassword || passwordInput.trim()
-    if (!password) {
-      setAuthError("Enter a password.")
-      return
-    }
-    setSubmitting(true)
-    await loadLogs(password, { showLoading: true })
-    setSubmitting(false)
-  }
-
-  const handleLogout = () => {
-    sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
-    passwordRef.current = ""
-    setIsAuthorized(false)
-    setLogs([])
-    setPasswordInput("")
-    setError(null)
-    setAuthError(null)
-    setLoading(false)
-    setActiveTab("activity")
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- poll after first successful load
+  }, [ready])
 
   const heroStyle = {
     "--southwell-hero-image": `url(${westFront})`,
   } as CSSProperties
 
-  const unlocking = submitting || loading
-
   return (
     <div className="southwell-minster southwell-dashboard tma-dashboard">
       <header className="hero southwell-dashboard-hero" role="banner" style={heroStyle}>
-        {isAuthorized && (
-          <button type="button" className="tma-dashboard-logout" onClick={handleLogout}>
-            Log out
-          </button>
-        )}
         <div className="hero-inner">
           <div className="eyebrow">Take Me Around · .church</div>
           <h1>Dashboard</h1>
@@ -204,35 +138,6 @@ function Dashboard() {
       </header>
 
       <div className="tma-content">
-        {initializing && (
-          <div className="tma-analytics-card tma-dashboard-status-card">
-            <p>Restoring dashboard session...</p>
-          </div>
-        )}
-        {!initializing && !isAuthorized && (
-          <form className="tma-dashboard-auth" onSubmit={submitUnlock}>
-            {!passwordless && (
-              <>
-                <label htmlFor="dashboard-password">Enter password to access this page</label>
-                <input
-                  id="dashboard-password"
-                  type="password"
-                  value={passwordInput}
-                  onChange={(event) => setPasswordInput(event.target.value)}
-                  placeholder="Password"
-                  autoComplete="current-password"
-                />
-              </>
-            )}
-            <button type="submit" disabled={unlocking}>
-              {unlocking ? "Unlocking..." : passwordless ? "Unlock" : "Unlock dashboard"}
-            </button>
-            {authError && <p className="tma-dashboard-error">{authError}</p>}
-          </form>
-        )}
-
-        {isAuthorized && (
-          <>
         <nav className="tma-dashboard-tabs-nav southwell-dashboard-tabs-nav" aria-label="Dashboard views">
           <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
             <button
@@ -306,8 +211,6 @@ function Dashboard() {
             <DashboardSarTimelinePanel logs={logs} />
           )}
         </SiteScopeProvider>
-          </>
-        )}
       </div>
       <Footer />
     </div>

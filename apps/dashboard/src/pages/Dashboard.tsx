@@ -31,6 +31,7 @@ import {
   resolveOperator,
   storeOperatorSession,
   storeScope,
+  SOUTHWELL_MINSTER_OPERATOR_ID,
   TMA_DEMO_OPERATOR_ID,
   type OperatorProfile,
 } from "../config/operators"
@@ -56,13 +57,21 @@ const DASHBOARD_PASSWORD_KEY = "tma-main-dashboard-password"
 const POLL_INTERVAL_MS = 5000
 const envDashboardPassword = (import.meta.env.VITE_DASHBOARD_PASSWORD ?? "").trim()
 
+function isPasswordlessSurface(options?: {
+  fixedOperatorId?: string
+  fixedScope?: SiteScope
+}) {
+  if (options?.fixedOperatorId) {
+    return Boolean(getOperatorById(options.fixedOperatorId)?.skipPassword)
+  }
+  return options?.fixedScope === "church_of_england"
+}
+
 function operatorSkipsPassword(
   operatorId: string,
   options?: { fixedScope?: OperatorSiteId; fixedOperatorId?: string }
 ) {
-  if (options?.fixedOperatorId) {
-    return Boolean(getOperatorById(options.fixedOperatorId)?.skipPassword)
-  }
+  if (isPasswordlessSurface(options)) return true
   if (options?.fixedScope) return false
   return Boolean(getOperatorById(operatorId)?.skipPassword)
 }
@@ -94,8 +103,9 @@ type FetchLogsResult =
 
 async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
   const url = dashboardApiUrl()
-  const headers: Record<string, string> = {
-    "X-Dashboard-Password": password,
+  const headers: Record<string, string> = {}
+  if (password) {
+    headers["X-Dashboard-Password"] = password
   }
   if (apiNeedsNgrokHeader()) {
     headers["ngrok-skip-browser-warning"] = "true"
@@ -151,7 +161,6 @@ type DashboardProps = {
 function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   const passwordRef = useRef("")
   const [logs, setLogs] = useState<PoiseLog[]>([])
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<DashboardTab>("activity")
   const [operator, setOperator] = useState<OperatorProfile | null>(null)
@@ -160,6 +169,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   const [loginOperatorId, setLoginOperatorId] = useState(
     () => fixedOperatorId ?? resolveOperator().id
   )
+  const passwordlessSurface = isPasswordlessSurface({ fixedOperatorId, fixedScope })
   const loginSkipsPassword = operatorSkipsPassword(loginOperatorId, {
     fixedScope,
     fixedOperatorId,
@@ -169,10 +179,11 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   const [submitting, setSubmitting] = useState(false)
   const [initializing, setInitializing] = useState(
     () =>
-      Boolean(fixedOperatorId) ||
-      !!sessionStorage.getItem(DASHBOARD_PASSWORD_KEY) ||
-      Boolean(storedSkipPasswordOperatorId())
+      !passwordlessSurface &&
+      (!!sessionStorage.getItem(DASHBOARD_PASSWORD_KEY) ||
+        Boolean(storedSkipPasswordOperatorId()))
   )
+  const [loading, setLoading] = useState(passwordlessSurface)
   const [dashboardView, setDashboardView] = useState<DashboardView>("analytics")
   const [enabledSites, setEnabledSites] = useState<SiteId[]>(() => getStoredEnabledSites())
 
@@ -227,20 +238,20 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
     if (allowedScopes.includes(activeScope)) return
     const next = allowedScopes[0] ?? null
     setActiveScope(next)
-    if (next && !standaloneDemo) storeScope(next)
-  }, [allowedScopes, isAuthorized, activeScope, standaloneDemo])
+    if (next && !passwordlessSurface) storeScope(next)
+  }, [allowedScopes, isAuthorized, activeScope, passwordlessSurface])
 
   const applyOperatorSession = (
     nextOperator: OperatorProfile,
     options?: { useStoredScope?: boolean }
   ) => {
-    if (!standaloneDemo) {
+    if (!passwordlessSurface) {
       storeOperatorSession(nextOperator.id)
     }
     setOperator(nextOperator)
     const scopes = allowedScopesForOperator(nextOperator, enabledSites, fixedScope)
     const storedScope =
-      options?.useStoredScope === false || standaloneDemo ? null : getStoredScope()
+      options?.useStoredScope === false || passwordlessSurface ? null : getStoredScope()
     const nextScope = normalizeScopeForOperator(storedScope, nextOperator, scopes)
     const resolved =
       fixedScope && scopes.includes(fixedScope)
@@ -249,7 +260,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
           ? nextScope
           : scopes[0] ?? defaultScopeForOperator(nextOperator, scopes)
     setActiveScope(resolved)
-    if (!standaloneDemo) {
+    if (!passwordlessSurface) {
       storeScope(resolved)
     }
   }
@@ -269,24 +280,25 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
       const result = await fetchDashboardLogs(password)
       if (!result.ok) {
         if (result.unauthorized) {
-          if (!standaloneDemo) {
+          if (!passwordlessSurface) {
             sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
             clearOperatorSession()
+            setOperator(null)
+            setActiveScope(null)
           }
           passwordRef.current = ""
           setIsAuthorized(false)
-          setOperator(null)
-          setActiveScope(null)
           setPasswordInput("")
           const skipPassword = Boolean(
-            (options?.operatorId && getOperatorById(options.operatorId)?.skipPassword) ||
+            passwordlessSurface ||
+              (options?.operatorId && getOperatorById(options.operatorId)?.skipPassword) ||
               standaloneDemo
           )
-          setAuthError(
-            skipPassword
-              ? passwordlessOpenError(options?.operatorId ?? loginOperatorId)
-              : result.message
-          )
+          const message = skipPassword
+            ? passwordlessOpenError(options?.operatorId ?? loginOperatorId)
+            : result.message
+          setAuthError(message)
+          if (passwordlessSurface) setError(message)
         } else if (showLoading) {
           setAuthError(result.message)
         } else {
@@ -295,7 +307,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
         return
       }
 
-      if (password && !standaloneDemo) {
+      if (password && !passwordlessSurface) {
         sessionStorage.setItem(DASHBOARD_PASSWORD_KEY, password)
       }
       passwordRef.current = password
@@ -315,6 +327,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
       const message = err instanceof Error ? err.message : "Failed to load items"
       if (showLoading) {
         setAuthError(message)
+        if (passwordlessSurface) setError(message)
       } else {
         setError(message)
       }
@@ -326,18 +339,24 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   }
 
   useEffect(() => {
-    const savedPassword = standaloneDemo
-      ? null
-      : sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
-    if (savedPassword) {
-      void loadLogs(savedPassword, { showLoading: true }).finally(() => setInitializing(false))
-      return
-    }
-    if (standaloneDemo) {
+    if (passwordlessSurface) {
+      const lockedOperator =
+        (fixedOperatorId ? getOperatorById(fixedOperatorId) : undefined) ??
+        (fixedScope === "church_of_england"
+          ? getOperatorById(SOUTHWELL_MINSTER_OPERATOR_ID)
+          : undefined)
+      if (lockedOperator) {
+        applyOperatorSession(lockedOperator, { useStoredScope: false })
+      }
       void loadLogs(resolveApiPassword(), {
         showLoading: true,
-        operatorId: loginOperatorId,
-      }).finally(() => setInitializing(false))
+        operatorId: lockedOperator?.id ?? loginOperatorId,
+      })
+      return
+    }
+    const savedPassword = sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
+    if (savedPassword) {
+      void loadLogs(savedPassword, { showLoading: true }).finally(() => setInitializing(false))
       return
     }
     const storedSkipPasswordId = storedSkipPasswordOperatorId()
@@ -422,7 +441,10 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   }
 
   const showAnalytics =
-    isAuthorized && operator !== null && activeScope !== null && allowedScopes.length > 0
+    (isAuthorized || passwordlessSurface) &&
+    operator !== null &&
+    activeScope !== null &&
+    allowedScopes.length > 0
 
   return (
     <main
@@ -459,7 +481,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
             </svg>
           </button>
         )}
-        {isAuthorized && !standaloneDemo && (
+        {isAuthorized && !passwordlessSurface && (
           <button
             type="button"
             className="tma-dashboard-logout"
@@ -516,7 +538,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
             <p>{copy.restoring}</p>
           </div>
         )}
-        {!initializing && !isAuthorized && (
+        {!initializing && !isAuthorized && !passwordlessSurface && (
           <form className="tma-dashboard-auth" onSubmit={submitPassword}>
             {showOperatorPickerOnLogin && (
               <label htmlFor="dashboard-operator">Operator profile</label>
@@ -561,14 +583,9 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
                 />
               </>
             )}
-            {!standaloneDemo && (
-              <button type="submit" disabled={submitting || (loginSkipsPassword && loading)}>
-                {submitting || (loginSkipsPassword && loading) ? copy.unlocking : copy.unlock}
-              </button>
-            )}
-            {standaloneDemo && loginSkipsPassword && (loading || submitting) && (
-              <p>{copy.openingDemo}</p>
-            )}
+            <button type="submit" disabled={submitting || (loginSkipsPassword && loading)}>
+              {submitting || (loginSkipsPassword && loading) ? copy.unlocking : copy.unlock}
+            </button>
             {authError && <p className="tma-dashboard-error">{authError}</p>}
           </form>
         )}
