@@ -1,0 +1,32 @@
+[
+  {
+    "id": "history",
+    "title": "Una breve historia",
+    "speechText": "En Southwell se alza una iglesia catedral desde hace más de mil años, y hoy en día es la iglesia madre de la diócesis de Southwell y Nottingham. Según la tradición, Paulino fundó aquí una iglesia en el año seiscientos veintisiete. La construcción de la catedral normanda se inició alrededor del año 1108. El coro, de estilo inglés temprano, se reconstruyó en el siglo XIII, y la sala capitular se comenzó a construir en 1288. La catedral pasó a ser catedral en 1884 y, a diferencia de todas las demás catedrales inglesas, conserva su antiguo título de «Minster»."
+  },
+  {
+    "id": "treasures",
+    "title": "Tesoros y lugares de interés",
+    "speechText": "Southwell está repleta de elementos que merecen una parada. La Sala Capitular está decorada con las «Hojas de Southwell», unas tallas de follaje del siglo XIII consideradas entre las más bellas de Gran Bretaña. No te pierdas tampoco la nave normanda, el tímpano tallado, el púlpito de estilo decorado, el coro de estilo inglés temprano, la ventana oriental de estilo flamenco, la «Ventana de los Ángeles» de Patrick Reyntiens, de 1996, y las capillas destinadas a la oración privada."
+  },
+  {
+    "id": "officers",
+    "title": "Miembros principales de la dirección",
+    "speechText": "La catedral de Southwell está dirigida por su Capítulo, presidido por el deán, con el apoyo del Consejo de la Catedral y del Colegio de Canónigos. Entre los principales responsables se encuentran el obispo de Southwell y Nottingham, el deán, el canónigo precentor, los miembros del Capítulo, el rector chori —el director musical— y el sacristán jefe, además del personal y unos trescientos voluntarios."
+  },
+  {
+    "id": "music",
+    "title": "Fundación musical y coros",
+    "speechText": "En Southwell lleva más de novecientos años cantando un coro. Hoy en día, el Coro de la Catedral, formado por niños y niñas y por cantores laicos profesionales, comparte la música en condiciones de total igualdad. La Minster Chorale, fundada en mil novecientos noventa y cuatro, canta cuando el Coro de la Catedral está de permiso. El órgano principal se encuentra en el púlpito medieval; también hay un órgano en la nave y un órgano de cámara."
+  },
+  {
+    "id": "worship",
+    "title": "Liturgia y oficios diarios",
+    "speechText": "La catedral celebra diariamente el oficio completo de la Iglesia anglicana: la oración matutina, la Santa Comunión y la oración vespertina o «Evensong» todos los días. Durante el curso académico, el coro de la catedral ofrece servicios corales casi todos los días. La eucaristía dominical de la catedral, a las diez en punto, y el «Evensong» dominical, a las tres y media, se retransmiten en directo. Los visitantes de todas las tradiciones son bienvenidos y la entrada es gratuita."
+  },
+  {
+    "id": "donate",
+    "title": "Donar",
+    "speechText": "La piedra que tienes sobre tu cabeza se erigió en el año 1108. Es la nave normanda mejor conservada que queda en Inglaterra: arco redondo tras arco redondo, tallados por hombres que sabían que nunca vivirían para ver cómo se cerraba el techo sobre ellos. Y camina hacia el este, hasta la Sala Capitular. Allí, talladas en la piedra hace ochocientos años, se encuentran las hojas de este condado: espino, roble, arce, ranúnculo y parra. Quienquiera que las tallara, sin duda se había adentrado en el bosque y había observado —observado de verdad— un ser vivo, y lo había inmortalizado. No se han marchitado en siete siglos. Nada de esto es un museo. Es un lugar de culto activo, donde aún se celebra la misa, se canta y se enciende la luz; un lugar de calidez y consuelo espirituales. Cuesta más de cinco mil libras al día simplemente mantener estas puertas abiertas: la calefacción, los cristales, los tejidos, los coristas, la liturgia. La entrada es gratuita. Siempre lo ha sido, y el Cabildo se asegurará de que siga siendo así. Sin embargo, tú puedes desempeñar un papel importante ayudando en esta misión. El año pasado, el visitante medio dejó una libra y ochenta y ocho peniques. Nos gustaría pedirte una donación de cinco libras. Si este lugar te ha brindado hoy un momento de tranquilidad y ha enriquecido tu día, por favor, colabora haciendo clic en el botón «Donar ahora»: marca la casilla «Gift Aid» si eres contribuyente en el Reino Unido; por cada cinco libras, se añade una libra con veinticinco peniques extra, y a ti no te supone ningún coste adicional. Y lo más importante: ten en cuenta que te vas de aquí sin ninguna obligación. Por favor, dona solo según tus posibilidades. No des lo que no puedas permitirte. Te vas siempre con la bendición del Señor. Las hojas han perdurado ochocientos años. Que duren otros ochocientos más depende, en cierto modo, de nosotros."
+  }
+]

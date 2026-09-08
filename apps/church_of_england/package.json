@@ -9,7 +9,8 @@
     "build": "node scripts/write-netlify-redirects.mjs && tsc --noEmit -p tsconfig.app.json && vite build",
     "preview": "vite preview",
     "preview:test:host": "vite preview --host 0.0.0.0 --port 4173",
-    "audio:sections": "node scripts/generate-section-audio.mjs"
+    "audio:sections": "node scripts/generate-section-audio.mjs",
+    "translate:southwell": "node scripts/translate-southwell.mjs"
   },
   "dependencies": {
     "@tma/dashboard-scope": "*",

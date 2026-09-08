@@ -1,11 +1,15 @@
 import AudioPlayer from "./AudioPlayer"
 import { getSectionAudio } from "../assets/church-of-england"
+import type { ArtworkPageLocale } from "../utils/artworkPageLocale"
 
 type SectionAudioProps = {
   workSlug: string
   sectionId: string
+  locale?: ArtworkPageLocale
   /** When true, show the headphones listen hint above the player (Southwell History). */
   showHint?: boolean
+  /** Translated listen hint; falls back to English if omitted. */
+  hint?: string
   /** When true, show the headphones glyph above the player (Southwell sections without hint). */
   showIcon?: boolean
 }
@@ -39,10 +43,12 @@ function HeadphonesIcon({ decorative }: { decorative: boolean }) {
 export default function SectionAudio({
   workSlug,
   sectionId,
+  locale = "en",
   showHint = false,
+  hint,
   showIcon = false,
 }: SectionAudioProps) {
-  const src = getSectionAudio(workSlug, sectionId)
+  const src = getSectionAudio(workSlug, sectionId, locale)
   if (!src) return null
 
   if (!showHint && !showIcon) {
@@ -54,7 +60,7 @@ export default function SectionAudio({
       {showHint ? (
         <p className="tma-audio-listen-hint">
           <HeadphonesIcon decorative />
-          <span>{HINT_COPY}</span>
+          <span>{hint ?? HINT_COPY}</span>
         </p>
       ) : (
         <div className="tma-section-audio-icon" aria-hidden={false}>

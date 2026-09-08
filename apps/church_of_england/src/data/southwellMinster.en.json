@@ -1,0 +1,311 @@
+{
+  "audioHint": "Where you see the audio control below, and in each section where you see an audio icon, you can listen as you browse or move around. Please use your headphones or ear pods.",
+  "eyebrow": "Nottinghamshire · Church of England",
+  "title": "Southwell Minster",
+  "tagline": "The Cathedral & Parish Church of the Blessed Virgin Mary — a Norman jewel of the English Midlands, in continuous prayer since 627.",
+  "meta": [
+    "Founded c. 627",
+    "Norman rebuilding from 1108",
+    "Cathedral since 1884"
+  ],
+  "welcome": {
+    "invite": "Play a welcome message from Father Stephen",
+    "videoUnsupported": "Your browser does not support the video element.",
+    "placeholderLabel": "Welcome video — coming soon",
+    "role": "The Very Reverend",
+    "name": "Dr Stephen Evans",
+    "title": "Dean of Southwell Minster"
+  },
+  "toc": [
+    { "href": "#history", "label": "History" },
+    { "href": "#treasures", "label": "Treasures & interior" },
+    { "href": "#officers", "label": "Principal officers" },
+    { "href": "#music", "label": "Music & choirs" },
+    { "href": "#worship", "label": "Liturgy & services" },
+    { "href": "#visit", "label": "Opening hours" },
+    { "href": "#donate", "label": "Donate" },
+    { "href": "#projects", "label": "Our projects" },
+    { "href": "#contact", "label": "Contact" }
+  ],
+  "history": {
+    "num": "I.",
+    "heading": "A brief history",
+    "lede": "A minster church has stood at Southwell for well over a thousand years — outlasting Vikings, the Reformation, civil war and fire — and today serves as the mother church of the Diocese of Southwell & Nottingham.",
+    "paragraphs": [
+      "Tradition holds that <strong>Paulinus, the first Archbishop of York, founded the earliest church here in 627</strong> while baptising converts in the River Trent. In <strong>956</strong> King Eadwig granted land at Southwell to Oskytel, Archbishop of York, and a Saxon minster church was established; the manor was recorded in detail in the <em>Domesday Book</em> of 1086.",
+      "The present <strong>Norman Minster</strong> was begun about <strong>1108</strong>, rebuilt over the earlier Anglo-Saxon foundations. The nave, transepts, central tower and the two western “pepperpot” towers survive as one of the finest examples of severe Romanesque design in England. The <strong>Early English quire</strong> was rebuilt between 1234 and 1251, and the celebrated <strong>Chapter House</strong> was begun in 1288.",
+      "Suppressed by Henry VIII in <strong>1540</strong>, the collegiate church was refounded in 1543, lost its status again in 1548, and was finally restored in 1557. During the Civil War, <strong>Charles I surrendered at Southwell in 1646</strong> after the siege of Newark. In <strong>1711</strong> lightning struck the south-west spire and fire destroyed the roofs, bells, clock and organ; both spires were removed in 1805 and only rebuilt in 1879–81 during Ewan Christian’s extensive Victorian restoration.",
+      "The Minster became a <strong>cathedral in 1884</strong>, when the new Diocese of Southwell was created to serve Nottinghamshire and Derbyshire (Derby becoming a separate diocese in 1927). It remains dedicated to the Blessed Virgin Mary and, uniquely among English cathedrals, retains its ancient title of <em>Minster</em>."
+    ],
+    "figureAlt": "The great west window of Southwell Minster, framed by the two Norman ‘pepperpot’ towers.",
+    "figureCaption": "The Norman west front, with its distinctive “pepperpot” towers and the 1996 Angel Window by Patrick Reyntiens.",
+    "timelineLabel": "Timeline of Southwell Minster",
+    "timeline": [
+      { "year": "627", "text": "Paulinus, first Archbishop of York, credited with founding a church at Southwell." },
+      { "year": "956", "text": "King Eadwig grants land to Archbishop Oskytel; a Saxon minster is established." },
+      { "year": "1108", "text": "Norman rebuilding begins at the east end; nave commenced after 1120." },
+      { "year": "1234–51", "text": "The Early English quire is rebuilt." },
+      { "year": "1288", "text": "Construction of the octagonal Chapter House begins." },
+      { "year": "1320–40", "text": "The great stone pulpitum (choir screen) is carved in the Decorated style." },
+      { "year": "1540–57", "text": "Suppressed under Henry VIII, restored under Philip and Mary." },
+      { "year": "1646", "text": "Charles I surrenders to Scottish Presbyterian troops at Southwell." },
+      { "year": "1711", "text": "Lightning strike; fire destroys the roofs, bells, clock and organ." },
+      { "year": "1879–81", "text": "Ewan Christian’s restoration; the western spires are re-erected." },
+      { "year": "1884", "text": "Southwell Minster becomes a cathedral of the new diocese." },
+      { "year": "1996", "text": "Patrick Reyntiens’ great Angel Window installed at the west end." },
+      { "year": "2021", "text": "Chapter House reopens after major restoration, with cantilever lift for full access." }
+    ]
+  },
+  "treasures": {
+    "num": "II.",
+    "heading": "Treasures and places of interest",
+    "lede": "From England’s finest medieval leaf-carvings to a 16th-century Flemish east window, the Minster is unusually rich in things worth pausing over.",
+    "leavesHeading": "The Leaves of Southwell",
+    "leavesBody": "The <strong>Chapter House</strong> (begun 1288) is octagonal, has no central pillar, and is decorated with the deeply-undercut foliage carvings collectively known as <strong>“The Leaves of Southwell.”</strong> Individual species — ivy, maple, oak, hop, hawthorn — are all identifiable, interspersed with Green Men and mythological figures. Regarded as the finest 13th-century naturalistic carving in the United Kingdom, they were the subject of Nikolaus Pevsner’s classic 1945 monograph and were voted Britain’s favourite cathedral treasure in a 2023 public poll.",
+    "figureAlt": "Naturalistic 13th-century leaf carvings around the doorway of Southwell Minster’s Chapter House.",
+    "figureCaption": "“The Leaves of Southwell” — 13th-century foliage carvings around the Chapter House portal, voted the nation’s favourite cathedral treasure in 2023.",
+    "features": [
+      {
+        "heading": "The Norman nave",
+        "body": "Seven bays of short, circular columns with scalloped capitals; a single large triforium arch in each bay; small round-headed clerestory windows and circular external openings — one of the outstanding survivals of severe English Romanesque."
+      },
+      {
+        "heading": "The tympanum",
+        "body": "The late-11th-century carved tympanum in the north transept, together with a fragment of tessellated floor, are the sole visible remains of the earlier Anglo-Saxon minster."
+      },
+      {
+        "heading": "The pulpitum (rood screen)",
+        "body": "An elaborately carved stone choir screen of 1320–40, an outstanding example of the Decorated style, with two storeys of ogee-arched niches and openwork gables framing the entrance to the quire."
+      },
+      {
+        "heading": "The Early English quire",
+        "body": "Rebuilt 1234–51 in a pure Early English style: clustered columns, twin lancets to the upper storey, ribbed stone vault and a square east end lit by two tiers of four lancet windows."
+      },
+      {
+        "heading": "The east window",
+        "body": "Four Renaissance panels of 16th-century Flemish glass by Jean Chastellain, after designs by Noël Bellemare, originally made for the Temple Church in Paris and presented to the Minster in 1818; the four evangelists above are by Clayton & Bell (1876)."
+      },
+      {
+        "heading": "The Angel Window",
+        "body": "Installed at the west end in <strong>1996</strong>, this great modern window by <strong>Patrick Reyntiens</strong> — one of Britain’s foremost stained-glass artists — is the Minster’s most striking recent addition."
+      },
+      {
+        "heading": "Tomb of Archbishop Sandys",
+        "body": "The finest of the Minster’s memorials: the alabaster tomb of <strong>Edwin Sandys, Archbishop of York (d. 1588)</strong>, whose family long held estates in Nottinghamshire."
+      },
+      {
+        "heading": "The Newstead lectern",
+        "body": "A medieval brass eagle lectern, believed to have been recovered from the lake at Newstead Abbey after the Dissolution and given to the Minster by Archdeacon Kaye in 1805."
+      },
+      {
+        "heading": "The central Norman tower",
+        "body": "Two ornamental stages — intersecting arches below, plain arches above — place the crossing tower high among England’s surviving Norman towers."
+      },
+      {
+        "heading": "Chapels for prayer",
+        "body": "Three chapels are set aside for private prayer, including <strong>St Oswald’s Chapel</strong> (used daily for Morning Prayer and Holy Communion) and the <strong>Airmen’s Chapel</strong>, commemorating RAF Bomber Command in Nottinghamshire."
+      }
+    ]
+  },
+  "officers": {
+    "num": "III.",
+    "heading": "Principal officers",
+    "lede": "Southwell Minster is governed by its <strong>Chapter</strong>, chaired by the Dean, with support and oversight from the Cathedral Council and the wider College of Canons. Below are the principal office-holders as currently listed by the Minster.",
+    "people": [
+      { "role": "Bishop of Southwell & Nottingham", "name": "The Rt Revd Paul Williams" },
+      { "role": "The Dean", "name": "The Very Revd Dr Stephen Evans" },
+      { "role": "Canon Precentor", "name": "The Revd Canon Dr Richard Frith" },
+      { "role": "Executive Member of Chapter", "name": "The Revd Canon Dr Stephen Hippisley-Cox" },
+      { "role": "Executive Member of Chapter", "name": "The Revd Amanda Lees" },
+      { "role": "Senior Non-Executive Member", "name": "Mrs Jan Richardson MBE DL" },
+      { "role": "Rector Chori (Director of Music)", "name": "Paul Provost" },
+      { "role": "Assistant Director of Music", "name": "Jonathan Allsopp" },
+      { "role": "Head Verger", "name": "Andrew Todd" }
+    ],
+    "note": "The Non-Executive members of Chapter also include Mr Andrew Corner, Mr Nick Alexander, Mrs Ann Carter-Gray, Mrs Marion Oswald, Mr David Walker and Mr Jonathan Wheeler. The Cathedral also employs a Chief Operating Officer and Chief Finance Officer alongside some 32 staff and around 300 volunteers."
+  },
+  "music": {
+    "num": "IV.",
+    "heading": "Music foundation & choirs",
+    "lede": "A choir has sung at Southwell for more than nine hundred years — a continuous tradition of choral worship stretching from the medieval Vicars Choral to today's Cathedral Choir of boy and girl choristers, professional Lay Clerks and the volunteer Minster Chorale.",
+    "songHeading": "Nine centuries of song",
+    "songParagraphs": [
+      "The Minster's musical life began with a college of <strong>Vicars Choral</strong>, resident in the buildings that stood on the site of today's Vicars' Court. One or two of their number were designated <strong>Rector Chori</strong> — “Ruler of the Choir” — a title first formally recorded at Southwell in <strong>1499</strong> and still used for the Director of Music today. Boy Choristers were added to the Vicars Choral, and the Vicars were gradually replaced by lay singers — the <strong>Lay Clerks</strong> — giving the choir substantially the shape it has today.",
+      "In <strong>2005</strong> a Girls’ Choir was founded by the then Assistant Director of Music. It was fully integrated into the Cathedral Choir in <strong>2019</strong>; today boy and girl choristers enjoy <strong>complete parity</strong>, sharing services, robes (cassock and surplice), age ranges and title — all are simply Cathedral Choristers. In <strong>2021</strong> Southwell appointed its <strong>first-ever female head chorister</strong> in the Minster’s thousand-year history, and in 2025 the Minster celebrated the Girls’ Choir’s twentieth anniversary."
+    ],
+    "figureAlt": "The medieval stone pulpitum of Southwell Minster with the Nicholson organ mounted above.",
+    "figureCaption": "The pulpitum with the main Nicholson organ mounted above, in its Caröe case.",
+    "choirsHeading": "The choirs today",
+    "features": [
+      {
+        "heading": "Boy Choristers",
+        "body": "The traditional treble line, drawn from The Minster School. The boys usually sing on their own for Monday and Tuesday Evensong and join the Lay Clerks from Thursday to Sunday during term, alternating with the girls."
+      },
+      {
+        "heading": "Girl Choristers",
+        "body": "Founded in 2005 and now fully equal partners in the Cathedral Choir — currently around 18 girls, sharing all chorister duties, rehearsals, tours and recordings on the same footing as the boys."
+      },
+      {
+        "heading": "Lay Clerks",
+        "body": "Six professional Lay Clerks and six Auxiliary Lay Clerks — the adult alto, tenor and bass lines, direct descendants of the medieval Vicars Choral. They sing with the choristers from Thursday to Sunday and on feast days."
+      },
+      {
+        "heading": "The Minster Chorale",
+        "body": "Founded in <strong>1994</strong>, an auditioned adult voluntary choir of up to thirty singers directed by the Assistant Director of Music. Sings for services when the Cathedral Choir is on leave, plus monthly Sunday Mattins."
+      },
+      {
+        "heading": "The Minster School",
+        "body": "All choristers are educated at <strong>The Minster School</strong>, a Church of England academy with a music-specialist Junior Department (Years 3–6) and a member of the Choir Schools’ Association."
+      },
+      {
+        "heading": "Southwell Choral Society",
+        "body": "A non-auditioning community choir of over sixty years’ standing, rehearsing weekly in the Minster during term — the wider musical community that gathers around the foundation."
+      }
+    ],
+    "organsHeading": "The organs",
+    "organsBody": "The Minster’s main instrument stands on the medieval pulpitum in an oak case designed by <strong>W. D. Caröe</strong>. The present Screen Organ was rebuilt through the 1990s by leading organ builders (advised by John Norman, Stephen Bicknell and Ian Bell) with the Caröe case preserved on historical grounds. A separate <strong>Nave Organ</strong>, whose lineage traces back to a 1662 instrument by “Mr Derbie” and repairs after the great fire of 1711, supports congregational singing at the west end, and a fine <strong>chamber organ</strong> is used for continuo and smaller-scale liturgy. A 72-page illustrated booklet, <em>The Organs of Southwell Minster</em> by former Rector Chori Paul Hale, is available from the Cathedral Shop."
+  },
+  "worship": {
+    "num": "V.",
+    "heading": "Liturgy and daily services",
+    "lede": "The Minster’s daily round of prayer follows the Church of England’s Common Worship pattern, sustained during term by one of the country’s most distinguished cathedral music foundations.",
+    "paragraphs": [
+      "Southwell keeps a full <strong>Anglican cathedral daily office</strong>: Morning Prayer, Holy Communion (the Eucharist) and Evening Prayer or Evensong are offered every day. Choral services are sung most days during school terms by the <strong>Cathedral Choir</strong> — the Boy Choristers, Girl Choristers and Lay Clerks — who between them provide music for eight choral services a week. On Sundays the Girl and Boy Choristers sing the Eucharist and Evensong in rotation with the Lay Clerks. Additional services are sung by the <strong>Minster Chorale</strong>, a chamber choir of up to thirty volunteer singers founded in 1994.",
+      "The <strong>Sunday Cathedral Eucharist (10.00am)</strong> and <strong>Sunday Evensong (3.30pm)</strong> are live-streamed and remain available online for a week and a day respectively. Visitors of all traditions are warmly welcome; there is no admission charge."
+    ],
+    "figureAlt": "The quire of Southwell Minster looking east, showing the medieval stalls and stone vaulting.",
+    "figureCaption": "The Early English quire, where choral Evensong is sung most days during term.",
+    "weekdayHeading": "Weekday pattern",
+    "weekdayRows": [
+      {
+        "clock": "8.30am",
+        "detail": "Morning Prayer — <em>St Oswald’s Chapel</em>"
+      },
+      {
+        "clock": "12.15pm",
+        "detail": "Holy Communion — <em>St Oswald’s / Airmen’s Chapel</em><br /><small>(Saturdays: 9.00am)</small>"
+      },
+      {
+        "clock": "5.30pm",
+        "detail": "Choral Evensong — <em>The Quire</em><br /><small>(said Evening Prayer on Wednesdays; sung Mon, Tue, Thu, Fri, Sat in term time)</small>"
+      }
+    ],
+    "sundayHeading": "Sunday pattern",
+    "sundayRows": [
+      { "clock": "8.00am", "detail": "Holy Communion (BCP, said)" },
+      { "clock": "10.00am", "detail": "Sung Cathedral Eucharist — <em>live-streamed</em>" },
+      { "clock": "3.30pm", "detail": "Choral Evensong — <em>live-streamed</em>" }
+    ],
+    "timesNote": "<em>Service times can vary on feast days and during school holidays — please check the Services Calendar on the Minster website before travelling.</em>"
+  },
+  "visit": {
+    "num": "VI.",
+    "heading": "Opening hours",
+    "lede": "The Minster is open to visitors every day of the year, without charge. Donations towards its upkeep are gratefully received.",
+    "cards": [
+      {
+        "heading": "The Cathedral",
+        "rows": [
+          { "days": "Monday – Saturday", "clock": "10.00am – 6.30pm" },
+          { "days": "Sunday", "clock": "10.00am – 4.30pm" }
+        ],
+        "note": "Stewards are normally on duty from 10.30am to 5.00pm (Mon–Sat) and 11.00am to 5.00pm on Sunday. Occasional service or event closures may apply at short notice."
+      },
+      {
+        "heading": "Minster Office",
+        "rows": [{ "days": "Monday – Friday", "clock": "10.00am – 1.00pm" }],
+        "note": "The Minster Centre houses the office, education team and tourist information point."
+      },
+      {
+        "heading": "Refectory",
+        "rows": [
+          { "days": "Mon – Sat", "clock": "9.30am – 4.00pm" },
+          { "days": "Sunday", "clock": "10.00am – 4.00pm" }
+        ]
+      },
+      {
+        "heading": "Cathedral Shop",
+        "rows": [
+          { "days": "Mon – Sat", "clock": "10.00am – 4.00pm" },
+          { "days": "Sunday", "clock": "11.30am – 3.30pm" }
+        ]
+      },
+      {
+        "heading": "Archbishop’s Palace & Gardens",
+        "rows": [{ "days": "Daily", "clock": "9.00am – 5.00pm" }],
+        "note": "Free entry to the ruined medieval palace and sensory gardens adjoining the Minster."
+      }
+    ]
+  },
+  "donate": {
+    "num": "VII.",
+    "heading": "Donate",
+    "paragraphs": [
+      "The stone above you was raised in eleven hundred and eight. It is the finest Norman nave left standing in England — round arch after round arch, cut by men who knew they would never live to see the roof closed over them.",
+      "And walk east, into the Chapter House. There, carved into the stone eight hundred years ago, are the leaves of this county. Hawthorn; oak; maple; buttercup, and vine. Whoever cut them had clearly walked out into the woods and looked — <strong>really</strong> looked — at a living thing, and made it permanent. They have not withered in seven centuries.",
+      "None of this is a museum. It is an active place of worship, still worked, still sung in, still lit; a place of spiritual warmth and comfort.",
+      "It costs more than five thousand pounds a day simply to keep these doors open — the heating, the glass, the fabric, the choristers, the liturgy.",
+      "There is no charge to come in. There never has been, and the Chapter will keep it that way. You can, however, play an important part in helping with this mission. Last year the average visitor left one pound and eighty-eight pence.",
+      "We'd like to ask you for a donation of five pounds.",
+      "If this place has given you a moment of stillness today, and enriched your day, please give it your help — by using the “Donate now” button: tick Gift Aid if you're a UK taxpayer: for each £5 it adds an extra £1.25, and it costs you nothing extra."
+    ],
+    "button": "Donate now",
+    "donateHref": "https://southwellminster.churchsuite.com/donate/fund/qx2ayo61",
+    "after": "Most importantly please recognise that you leave this place with no obligation. Please only give according to your means. Do not give what you can ill-afford. You leave always with the Lord's blessing.",
+    "close": "The leaves have lasted eight hundred years. Whether they last another eight hundred is, rather quietly, up to us."
+  },
+  "projects": {
+    "num": "VIII.",
+    "heading": "Our projects",
+    "lede": "Current and planned projects at Southwell Minster — content for this section will follow.",
+    "placeholderLabel": "Our projects — coming soon",
+    "placeholderBody": "Placeholder for project summaries, images, and updates. Add individual project entries when ready."
+  },
+  "contact": {
+    "num": "IX.",
+    "heading": "Contact & how to find us",
+    "minsterHeading": "Southwell Minster",
+    "addressLabel": "Address",
+    "addressLines": [
+      "The Minster Centre",
+      "Church Street",
+      "Southwell",
+      "Nottinghamshire NG25 0HD",
+      "United Kingdom"
+    ],
+    "telephoneLabel": "Telephone",
+    "telephone": "+441636812649",
+    "telephoneDisplay": "01636 812649",
+    "mainOffice": "(Main Office)",
+    "emailLabel": "Email",
+    "email": "office@southwellminster.org.uk",
+    "websiteLabel": "Website",
+    "websiteUrl": "https://www.southwellminster.org",
+    "websiteDisplay": "southwellminster.org",
+    "urgentLabel": "Urgent clergy",
+    "urgentTel": "+441636817290",
+    "urgentDisplay": "01636 817290",
+    "shopLabel": "Shop",
+    "shopTel": "+441636812933",
+    "shopTelDisplay": "01636 812933",
+    "shopEmail": "cathedralshop@southwellminster.org.uk",
+    "gettingHereHeading": "Getting here",
+    "gettingHere": [
+      "Southwell is a small market town in central Nottinghamshire, seven miles from the A1 and about 30 minutes by road from Nottingham on the A612. The Minster stands on Church Street in the centre of the town, a short walk from the Saturday market square.",
+      "<strong>Guided tours</strong> can be pre-booked through the Minster Office; <strong>education visits</strong> are arranged separately on <a href=\"tel:+441636817287\">01636 817287</a>.",
+      "<strong>Online worship:</strong> the Sunday Eucharist and Evensong are live-streamed from the Minster’s website and remain available for catch-up during the following week."
+    ],
+    "socialPrefix": "Social media:",
+    "facebook": "Facebook",
+    "facebookUrl": "https://www.facebook.com/SouthwellMinster",
+    "twitter": "Twitter/X",
+    "twitterUrl": "https://twitter.com/SouthwMinster",
+    "instagram": "Instagram",
+    "instagramUrl": "https://www.instagram.com/SouthwellMinster"
+  },
+  "footer": {
+    "latinColophon": "✦ Ecclesia Cathedralis Sanctae Mariae de Southwell ✦",
+    "credit": "Concise visitor guide compiled from the Minster’s own publications, the Association of English Cathedrals, and Wikipedia. Not an official Minster publication.",
+    "photos": "Photographs: west front, west window, quire, Chapter House portal and pulpitum with organ — Wikimedia Commons (Diliff and Geograph contributors), CC BY-SA."
+  }
+}

@@ -24,3 +24,4 @@ Copy `.env.example` to `.env.local` and set `VITE_API_PROXY_TARGET`. Optional: `
 
 Public host in config: `takemearound.church`.
 Canonical Southwell stop: `/minster_cathedral/Southwell/deans_welcome_message`.
+Southwell uses the same visitor languages as gallery and museum (`?lang=fr` or the browser language): English, French, Japanese, Arabic, German, Spanish, Korean, Chinese, Portuguese, Turkish, Italian.

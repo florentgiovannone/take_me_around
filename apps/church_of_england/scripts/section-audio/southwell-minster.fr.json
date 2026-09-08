@@ -1,0 +1,32 @@
+[
+  {
+    "id": "history",
+    "title": "Un bref historique",
+    "speechText": "Une église-cathédrale se dresse à Southwell depuis bien plus de mille ans et fait aujourd’hui office d’église mère du diocèse de Southwell et Nottingham. La tradition veut que Paulinus y ait fondé une église en 627. La construction de la cathédrale normande débuta vers 1108. Le chœur, de style anglo-normand, fut reconstruit au XIIIe siècle, et celle de la salle capitulaire commença en 1288. La cathédrale obtint le statut de cathédrale en 1884 et, fait unique parmi les cathédrales anglaises, elle conserve son ancien titre de « minster »."
+  },
+  {
+    "id": "treasures",
+    "title": "Trésors et lieux d'intérêt",
+    "speechText": "Southwell regorge de merveilles qui méritent qu’on s’y attarde. La salle capitulaire est ornée des « Feuilles de Southwell » — des sculptures végétales du XIIIe siècle considérées comme parmi les plus belles de Grande-Bretagne. Ne manquez pas non plus la nef normande, le tympan sculpté, la chaire de style « Decorated », le chœur de style « Early English », la fenêtre orientale de style flamand, la « fenêtre des anges » de Patrick Reyntiens datant de 1996, ainsi que les chapelles réservées à la prière privée."
+  },
+  {
+    "id": "officers",
+    "title": "Principaux dirigeants",
+    "speechText": "La cathédrale de Southwell est dirigée par son chapitre, présidé par le doyen, avec le soutien du conseil de la cathédrale et du collège des chanoines. Parmi les principaux responsables figurent l’évêque de Southwell et Nottingham, le doyen, le chanoine précentor, les membres du chapitre, le recteur chori — directeur musical — et le sacristain en chef, ainsi que le personnel et environ trois cents bénévoles."
+  },
+  {
+    "id": "music",
+    "title": "École de musique et chorales",
+    "speechText": "Un chœur chante à Southwell depuis plus de neuf cents ans. Aujourd’hui, le chœur de la cathédrale, composé de jeunes choristes et de choristes professionnels laïcs, partage la scène sur un pied d’égalité totale. La Minster Chorale, fondée en 1994, se produit lorsque le chœur de la cathédrale est en congé. L'orgue principal trône sur le pulpitum médiéval ; on trouve également un orgue de nef et un orgue de chambre."
+  },
+  {
+    "id": "worship",
+    "title": "Liturgie et offices quotidiens",
+    "speechText": "La cathédrale célèbre quotidiennement l'office complet de la cathédrale anglicane : prière du matin, Sainte Communion et prière du soir ou « Evensong » tous les jours. La plupart des jours de la période scolaire, le chœur de la cathédrale anime des offices chantés. L'Eucharistie dominicale de la cathédrale à 10 heures et l'« Evensong » dominical à 15 h 30 sont diffusés en direct. Les visiteurs de toutes confessions sont les bienvenus, et l'entrée est gratuite."
+  },
+  {
+    "id": "donate",
+    "title": "Faire un don",
+    "speechText": "La pierre qui se dresse au-dessus de vous a été érigée en 1108. C’est la plus belle nef normande encore debout en Angleterre — une succession d’arcs en plein cintre, taillés par des hommes qui savaient qu’ils ne vivraient pas assez longtemps pour voir le toit se refermer au-dessus d’eux. Marchez ensuite vers l’est, jusqu’à la salle capitulaire. Là, sculptées dans la pierre il y a huit cents ans, se trouvent les feuilles emblématiques de ce comté : l’aubépine, le chêne, l’érable, le bouton d’or et la vigne. Celui qui les a sculptées s’était manifestement promené dans les bois et avait observé — vraiment observé — un être vivant, pour l’immortaliser. Elles n’ont pas flétri en sept siècles. Rien de tout cela n’est un musée. C’est un lieu de culte actif, où l’on officie encore, où l’on chante encore, où l’on allume encore des cierges ; un lieu de chaleur et de réconfort spirituels. Il en coûte plus de cinq mille livres par jour rien que pour maintenir ces portes ouvertes — le chauffage, les vitraux, les tissus, les choristes, la liturgie. L’entrée est gratuite. Elle l’a toujours été, et le Chapitre veillera à ce qu’il en reste ainsi. Vous pouvez toutefois jouer un rôle important en contribuant à cette mission. L’année dernière, chaque visiteur a laissé en moyenne une livre et quatre-vingt-huit pence. Nous aimerions vous demander un don de cinq livres. Si ce lieu vous a offert aujourd’hui un moment de recueillement et a enrichi votre journée, merci de lui apporter votre soutien — en cliquant sur le bouton « Faire un don maintenant » : cochez la case « Gift Aid » si vous êtes contribuable au Royaume-Uni : pour chaque don de cinq livres, cela ajoute une livre vingt-cinq supplémentaire, sans que cela ne vous coûte rien de plus. Mais surtout, sachez que vous quittez cet endroit sans aucune obligation. Ne donnez que selon vos moyens. Ne donnez pas ce que vous ne pouvez pas vous permettre. Vous repartez toujours avec la bénédiction du Seigneur. Ces feuilles ont traversé huit cents ans. Qu’elles en traversent huit cents de plus dépend, en toute discrétion, de nous."
+  }
+]
