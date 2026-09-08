@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import AnalyticsStatCard, { StatIcon } from "./AnalyticsStatCard"
 import ChartCountReadout from "./ChartCountReadout"
-import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import type { CalendarDayCell, MonthlyCalendarWindow, PoiseLog, TimeSeriesPoint } from "@tma/dashboard-scope"
 import {
   buildMonthlyCalendarGrid,
@@ -19,11 +19,12 @@ type DashboardOverviewPanelProps = {
   logs: PoiseLog[]
 }
 
-const CALENDAR_WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const
-
-function formatPointValue(point: TimeSeriesPoint) {
-  if (point.isFuture) return "Upcoming"
-  return `${formatNumber(point.count)} tap${point.count === 1 ? "" : "s"}`
+function formatPointValue(
+  point: TimeSeriesPoint,
+  copy: ReturnType<typeof useDashboardCopy>
+) {
+  if (point.isFuture) return copy.upcoming
+  return copy.taps(point.count)
 }
 
 type DayBarColumnProps = {
@@ -34,6 +35,7 @@ type DayBarColumnProps = {
   selectedPoint: TimeSeriesPoint | null
   tapToSelect: boolean
   onSelect: (point: TimeSeriesPoint | null) => void
+  copy: ReturnType<typeof useDashboardCopy>
 }
 
 function DayBarColumn({
@@ -44,6 +46,7 @@ function DayBarColumn({
   selectedPoint,
   tapToSelect,
   onSelect,
+  copy,
 }: DayBarColumnProps) {
   const { height, isZero } = getBarHeight(point.count, maxCount)
   const shade = 18 + (dayIndex / Math.max(seriesLength - 1, 1)) * 62
@@ -62,7 +65,7 @@ function DayBarColumn({
       tabIndex={tapToSelect && !point.isFuture ? 0 : undefined}
       aria-pressed={tapToSelect && !point.isFuture ? isSelected : undefined}
       aria-label={
-        tapToSelect && !point.isFuture ? `${point.label}, ${formatPointValue(point)}` : undefined
+        tapToSelect && !point.isFuture ? `${point.label}, ${formatPointValue(point, copy)}` : undefined
       }
       onMouseEnter={tapToSelect ? undefined : () => onSelect(point)}
       onMouseLeave={tapToSelect ? undefined : () => onSelect(null)}
@@ -92,6 +95,7 @@ function DayBarColumn({
 
 export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelProps) {
   const siteScope = useSiteAnalyticsScope()
+  const copy = useDashboardCopy()
   const [timeRange, setTimeRange] = useState<"daily" | "monthly">("daily")
   const [periodOffset, setPeriodOffset] = useState(0)
   const [selectedPoint, setSelectedPoint] = useState<TimeSeriesPoint | null>(null)
@@ -149,6 +153,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
             selectedPoint={selectedPoint}
             tapToSelect={tapToSelect}
             onSelect={setSelectedPoint}
+            copy={copy}
           />
         </div>
       </div>
@@ -164,13 +169,13 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
               <path d="M4 4h6v16H4V4zm10 8h6v8h-6v-8z" fill="currentColor" />
             </svg>
           </StatIcon>
-          <p className="tma-analytics-stat-label">Total Taps</p>
+          <p className="tma-analytics-stat-label">{copy.totalTaps}</p>
           <p className="tma-analytics-stat-value">{formatNumber(analytics.totalTaps)}</p>
           <p
             className={`tma-analytics-stat-meta ${analytics.weeklyChange >= 0 ? "is-positive" : "is-negative"
               }`}
           >
-            {formatSignedPercent(analytics.weeklyChange)} this week
+            {formatSignedPercent(analytics.weeklyChange)} {copy.thisWeek}
           </p>
         </article>
 
@@ -183,9 +188,9 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
               />
             </svg>
           </StatIcon>
-          <p className="tma-analytics-stat-label">Active Tags</p>
+          <p className="tma-analytics-stat-label">{copy.activeTags}</p>
           <p className="tma-analytics-stat-value">{formatNumber(analytics.activeTags)}</p>
-          <p className="tma-analytics-stat-meta">{analytics.activeTags} links tracked</p>
+          <p className="tma-analytics-stat-meta">{copy.linksTracked(analytics.activeTags)}</p>
         </article>
 
         <article className="tma-analytics-stat-card">
@@ -197,12 +202,12 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
               />
             </svg>
           </StatIcon>
-          <p className="tma-analytics-stat-label">Top Tag</p>
+          <p className="tma-analytics-stat-label">{copy.topTag}</p>
           <p className="tma-analytics-stat-value tma-analytics-stat-value--text">
             {analytics.topTagName}
           </p>
           <p className="tma-analytics-stat-meta is-accent">
-            {formatNumber(analytics.topTagMonthCount)} taps this month
+            {formatNumber(analytics.topTagMonthCount)} {copy.tapsThisMonth}
           </p>
         </article>
 
@@ -215,16 +220,16 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
               />
             </svg>
           </StatIcon>
-          <p className="tma-analytics-stat-label">Avg / Tag</p>
+          <p className="tma-analytics-stat-label">{copy.avgPerTag}</p>
           <p className="tma-analytics-stat-value">{formatNumber(analytics.avgPerTag)}</p>
-          <p className="tma-analytics-stat-meta">taps per link</p>
+          <p className="tma-analytics-stat-meta">{copy.tapsPerLink}</p>
         </article>
       </div>
 
       <section className="tma-analytics-card tma-analytics-chart-card">
         <div className="tma-analytics-card-header">
-          <h2>Taps Over Time</h2>
-          <div className="tma-analytics-toggle" role="tablist" aria-label="Time range">
+          <h2>{copy.tapsOverTime}</h2>
+          <div className="tma-analytics-toggle" role="tablist" aria-label={copy.timeRange}>
             <button
               type="button"
               role="tab"
@@ -232,7 +237,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
               className={timeRange === "daily" ? "is-active" : ""}
               onClick={() => handleTimeRangeChange("daily")}
             >
-              Weekly
+              {copy.weekly}
             </button>
             <button
               type="button"
@@ -241,7 +246,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
               className={timeRange === "monthly" ? "is-active" : ""}
               onClick={() => handleTimeRangeChange("monthly")}
             >
-              Monthly
+              {copy.monthly}
             </button>
           </div>
         </div>
@@ -250,7 +255,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
           <button
             type="button"
             className="tma-analytics-period-btn"
-            aria-label={timeRange === "daily" ? "Previous week" : "Previous month"}
+            aria-label={timeRange === "daily" ? copy.previousWeek : copy.previousMonth}
             onClick={() => {
               setPeriodOffset((current) => current + 1)
               setSelectedPoint(null)
@@ -262,7 +267,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
           <button
             type="button"
             className="tma-analytics-period-btn"
-            aria-label={timeRange === "daily" ? "Next week" : "Next month"}
+            aria-label={timeRange === "daily" ? copy.nextWeek : copy.nextMonth}
             disabled={!canGoForward}
             onClick={() => {
               setPeriodOffset((current) => Math.max(0, current - 1))
@@ -275,18 +280,18 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
 
         <ChartCountReadout
           label={selectedPoint?.label ?? null}
-          value={selectedPoint ? formatPointValue(selectedPoint) : null}
+          value={selectedPoint ? formatPointValue(selectedPoint, copy) : null}
           tapToSelect={tapToSelect}
           idleMessage={
-            tapToSelect ? "Tap a day to see tap counts" : "Hover a day to see tap counts"
+            tapToSelect ? copy.tapDay : copy.hoverDay
           }
         />
 
         <div className="tma-analytics-bar-chart-scroll">
           {isMonthly ? (
-            <div className="tma-analytics-calendar" aria-label="Taps over time calendar">
+            <div className="tma-analytics-calendar" aria-label={copy.tapsCalendar}>
               <div className="tma-analytics-calendar-weekdays" aria-hidden="true">
-                {CALENDAR_WEEKDAYS.map((weekday) => (
+                {copy.weekdays.map((weekday) => (
                   <span key={weekday} className="tma-analytics-calendar-weekday">
                     {weekday}
                   </span>
@@ -307,7 +312,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
           ) : (
             <div
               className="tma-analytics-bar-chart tma-analytics-bar-chart--interactive"
-              aria-label="Taps over time"
+              aria-label={copy.tapsOverTime}
               style={{ gridTemplateColumns: `repeat(${series.length}, minmax(0, 1fr))` }}
             >
               {series.map((point, index) => (
@@ -320,6 +325,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
                   selectedPoint={selectedPoint}
                   tapToSelect={tapToSelect}
                   onSelect={setSelectedPoint}
+                  copy={copy}
                 />
               ))}
             </div>
@@ -328,30 +334,30 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
 
         <div className="tma-analytics-week-totals">
           <h3 className="tma-analytics-week-totals-title">
-            {isMonthly ? "Total taps per month" : "Total taps per week"}
+            {isMonthly ? copy.totalTapsPerMonth : copy.totalTapsPerWeek}
           </h3>
           <ul className="tma-analytics-week-totals-list">
             {isMonthly ? (
               monthTotal === 0 ? (
-                <li className="tma-analytics-week-totals-empty">No taps in this period.</li>
+                <li className="tma-analytics-week-totals-empty">{copy.noTapsInPeriod}</li>
               ) : (
                 <li className="tma-analytics-week-totals-item">
                   <span>{periodLabel}</span>
                   <strong>
-                    {formatNumber(monthTotal)} tap{monthTotal === 1 ? "" : "s"}
+                    {copy.taps(monthTotal)}
                   </strong>
                 </li>
               )
             ) : (
               <>
                 {weekTotals.length === 0 && (
-                  <li className="tma-analytics-week-totals-empty">No taps in this period.</li>
+                  <li className="tma-analytics-week-totals-empty">{copy.noTapsInPeriod}</li>
                 )}
                 {weekTotals.map((week) => (
                   <li key={week.key} className="tma-analytics-week-totals-item">
                     <span>{periodLabel}</span>
                     <strong>
-                      {formatNumber(week.count)} tap{week.count === 1 ? "" : "s"}
+                      {copy.taps(week.count)}
                     </strong>
                   </li>
                 ))}

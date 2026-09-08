@@ -1,3 +1,5 @@
+import { dashboardCopy } from "../i18n/copy"
+import { getDashboardLocale } from "@tma/config"
 import { parseLogTimestampGmt } from "@tma/dashboard-scope"
 
 export function formatLogTimestamp(value: string | null) {
@@ -27,16 +29,17 @@ export function formatRelativeTime(value: string | null) {
   const timestamp = parseLogTimestampGmt(value)
   if (!timestamp) return "-"
 
+  const copy = dashboardCopy(getDashboardLocale())
   const diffMs = Date.now() - timestamp.getTime()
   const diffMinutes = Math.floor(diffMs / 60000)
-  if (diffMinutes < 1) return "Just now"
-  if (diffMinutes < 60) return `${diffMinutes}m ago`
+  if (diffMinutes < 1) return copy.justNow
+  if (diffMinutes < 60) return copy.minutesAgo(diffMinutes)
 
   const diffHours = Math.floor(diffMinutes / 60)
-  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffHours < 24) return copy.hoursAgo(diffHours)
 
   const diffDays = Math.floor(diffHours / 24)
-  if (diffDays < 7) return `${diffDays}d ago`
+  if (diffDays < 7) return copy.daysAgo(diffDays)
 
   return formatLogTimestampUtcDisplay(value) ?? "-"
 }

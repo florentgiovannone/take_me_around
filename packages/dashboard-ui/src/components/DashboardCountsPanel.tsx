@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import AnalyticsStatCard from "./AnalyticsStatCard"
-import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import { formatLogTimestamp } from "../utils/dashboardFormatters"
 import {
   buildTrackedArtworkScanGroups,
@@ -30,6 +30,7 @@ function TimestampCell({ value }: { value: string | null }) {
 
 export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps) {
   const siteScope = useSiteAnalyticsScope()
+  const copy = useDashboardCopy()
   const artworkScanGroups = useMemo(
     () => buildTrackedArtworkScanGroups(logs, siteScope),
     [logs, siteScope]
@@ -44,7 +45,7 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
     <div className="tma-analytics-panel">
       <div className="tma-analytics-stats tma-analytics-stats--3">
         <AnalyticsStatCard
-          label="Total Scans"
+          label={copy.totalScans}
           value={formatNumber(totalScans)}
           meta={trackedScansAcrossMeta(siteScope)}
           icon={
@@ -54,7 +55,7 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
           }
         />
         <AnalyticsStatCard
-          label="Active Links"
+          label={copy.activeLinks}
           value={formatNumber(activeLinks)}
           meta={trackedLinksMeta(siteScope)}
           icon={
@@ -64,10 +65,10 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
           }
         />
         <AnalyticsStatCard
-          label="Top Link"
+          label={copy.topLink}
           value={topLink?.scans.length ? topLink.title : "—"}
           valueClassName="tma-analytics-stat-value--text"
-          meta={topLink?.scans.length ? `${formatNumber(topLink.scans.length)} scans` : "no data yet"}
+          meta={topLink?.scans.length ? copy.scans(topLink.scans.length) : copy.noDataYet}
           metaClassName="is-accent"
           icon={
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -82,9 +83,9 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
 
       <section className="tma-analytics-card">
         <div className="tma-analytics-card-header">
-          <h2>Link Scan Counts</h2>
+          <h2>{copy.linkScanCounts}</h2>
           <span className="tma-dashboard-count-pill">
-            {formatNumber(linkCount)} links
+            {copy.links(linkCount)}
           </span>
         </div>
 
@@ -96,7 +97,7 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
                   <span className="tma-dashboard-link-card-title">{group.title}</span>
                   <span className="tma-dashboard-link-card-url">{group.url}</span>
                 </div>
-                <span className="tma-dashboard-scan-count">{group.scans.length} scans</span>
+                <span className="tma-dashboard-scan-count">{copy.scans(group.scans.length)}</span>
               </summary>
 
               {group.scans.length > 0 && (
@@ -104,21 +105,21 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
                   <table className="tma-dashboard-nested-table tma-dashboard-nested-table--modern">
                     <thead>
                       <tr>
-                        <th>Time</th>
-                        <th>Type</th>
-                        <th>Android</th>
-                        <th>ID</th>
+                        <th>{copy.time}</th>
+                        <th>{copy.type}</th>
+                        <th>{copy.android}</th>
+                        <th>{copy.id}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {group.scans.map((scan) => (
                         <tr key={scan.int_id}>
-                          <td data-label="Time">
+                          <td data-label={copy.time}>
                             <TimestampCell value={scan.dtm_timestamp} />
                           </td>
-                          <td data-label="Type">{scan.txt_message_type ?? "-"}</td>
-                          <td data-label="Android">{formatAndroidField(scan)}</td>
-                          <td data-label="ID">{scan.int_id}</td>
+                          <td data-label={copy.type}>{scan.txt_message_type ?? "-"}</td>
+                          <td data-label={copy.android}>{formatAndroidField(scan)}</td>
+                          <td data-label={copy.id}>{scan.int_id}</td>
                         </tr>
                       ))}
                     </tbody>

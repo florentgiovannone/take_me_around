@@ -2,7 +2,7 @@ import { ALL_SITE_IDS, PICKABLE_SITE_IDS, type SiteId } from "@tma/config"
 
 export const ENABLED_SITES_STORAGE_KEY = "tma-main-dashboard-enabled-sites"
 
-const DEFAULT_ENABLED_SITES: SiteId[] = [...PICKABLE_SITE_IDS]
+const DEFAULT_ENABLED_SITES: SiteId[] = [...ALL_SITE_IDS]
 
 function isSiteId(value: string): value is SiteId {
   return ALL_SITE_IDS.includes(value as SiteId)
@@ -26,11 +26,10 @@ export function storeEnabledSites(siteIds: SiteId[]) {
 }
 
 export function scopesForEnabledSites(siteIds: SiteId[]): import("@tma/config").SiteScope[] {
-  const scopes: import("@tma/config").SiteScope[] = [...siteIds]
   if (siteIds.length > 1) {
-    scopes.push("combined")
+    return ["combined", ...siteIds]
   }
-  return scopes
+  return [...siteIds]
 }
 
 export function normalizeEnabledSites(siteIds: SiteId[]): SiteId[] {

@@ -1,3 +1,5 @@
+import { isTmaDemoTagName } from "@tma/config"
+
 export type PoiseLog = {
   int_id: number
   dtm_timestamp: string | null
@@ -127,6 +129,7 @@ export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
 
 /** True when the log belongs to one of the tracked takemearound.gallery artworks. */
 export function isGalleryLog(log: PoiseLog) {
+  if (isTmaDemoTagName(log.text_name)) return false
   return resolveTrackedArtwork(log) !== null
 }
 
@@ -136,15 +139,70 @@ export function getGalleryLogLink(log: PoiseLog) {
   return log.txt_message?.trim() || "-"
 }
 
+const ANONYMOUS_SEEN_PAIR_MAX_MS = 5000
+
+function isPairableSeenNeighbor(redirect: PoiseLog, neighbor: PoiseLog) {
+  if (normalizeMessageType(neighbor.txt_message_type) !== "SEEN") return false
+  if (!(neighbor.txt_message ?? "").trim().startsWith("{")) return false
+  if (!timestampsCloseEnough(neighbor, redirect)) return false
+  if (isTmaDemoTagName(neighbor.text_name)) return false
+
+  const redirectUid = redirect.txt_uid?.trim()
+  const seenUid = neighbor.txt_uid?.trim()
+  if (redirectUid && seenUid && redirectUid === seenUid) return true
+
+  const redirectName = redirect.text_name?.trim().toLowerCase()
+  const seenName = neighbor.text_name?.trim().toLowerCase()
+  if (redirectName && seenName && redirectName === seenName) return true
+
+  return !seenName && !seenUid
+}
+
+function timestampsCloseEnough(left: PoiseLog, right: PoiseLog, maxMs = ANONYMOUS_SEEN_PAIR_MAX_MS) {
+  const leftTime = parseLogTimestampGmt(left.dtm_timestamp)?.getTime()
+  const rightTime = parseLogTimestampGmt(right.dtm_timestamp)?.getTime()
+  if (leftTime == null || rightTime == null) return false
+  return Math.abs(leftTime - rightTime) <= maxMs
+}
+
+function withTrackedArtworkName(log: PoiseLog, artwork: TrackedArtwork): PoiseLog {
+  if (log.text_name?.trim()) return log
+  return { ...log, text_name: artwork.title }
+}
+
+function seenNeighborForGalleryRedirect(redirect: PoiseLog, byId: Map<number, PoiseLog>) {
+  for (const neighborId of [redirect.int_id - 1, redirect.int_id + 1]) {
+    const neighbor = byId.get(neighborId)
+    if (!neighbor) continue
+    if (!isPairableSeenNeighbor(redirect, neighbor)) continue
+    return neighbor
+  }
+  return null
+}
+
+/** Gallery logs plus nearby SEEN rows Poise writes next to a gallery REDIRECTED (same tag name, or unnamed). */
 export function getGalleryLogs(logs: PoiseLog[]) {
-  return logs.filter(isGalleryLog)
+  const galleryLogs = logs.filter(isGalleryLog)
+  const included = new Set(galleryLogs.map((log) => log.int_id))
+  const byId = new Map(logs.map((log) => [log.int_id, log]))
+  const extras: PoiseLog[] = []
+
+  for (const log of galleryLogs) {
+    if (normalizeMessageType(log.txt_message_type) !== "REDIRECTED") continue
+    const artwork = resolveTrackedArtwork(log)
+    if (!artwork) continue
+    const seen = seenNeighborForGalleryRedirect(log, byId)
+    if (!seen || included.has(seen.int_id)) continue
+    included.add(seen.int_id)
+    extras.push(withTrackedArtworkName(seen, artwork))
+  }
+
+  return extras.length ? [...galleryLogs, ...extras] : galleryLogs
 }
 
 export function getRedirectScans(logs: PoiseLog[]) {
-  return logs.filter(
-    (row) =>
-      row.txt_message_type === "REDIRECTED" &&
-      extractTrackedPathFromMessage(row.txt_message ?? "") !== null
+  return getGalleryLogs(logs).filter(
+    (row) => normalizeMessageType(row.txt_message_type) === "REDIRECTED"
   )
 }
 
@@ -203,6 +261,22 @@ function findRedirectForSeen(seen: PoiseLog, redirects: PoiseLog[]) {
     )
     if (byArtworkAndTime) return byArtworkAndTime
   }
+
+  const seenName = seen.text_name?.trim().toLowerCase()
+  if (seenName) {
+    const byName = redirects.find(
+      (redirect) =>
+        redirect.text_name?.trim().toLowerCase() === seenName &&
+        timestampsCloseEnough(seen, redirect)
+    )
+    if (byName) return byName
+  }
+
+  const byNeighbor = redirects.find(
+    (redirect) =>
+      Math.abs(redirect.int_id - seen.int_id) === 1 && timestampsCloseEnough(seen, redirect)
+  )
+  if (byNeighbor) return byNeighbor
 
   const redirectsAtTime = redirects.filter(
     (redirect) => normalizeLogTimestampKey(redirect.dtm_timestamp) === seenTimeKey

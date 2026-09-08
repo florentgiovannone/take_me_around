@@ -2,7 +2,7 @@ import { type FormEvent, useMemo, useState } from "react"
 import AnalyticsStatCard from "./AnalyticsStatCard"
 import DashboardActivityTableRow from "./DashboardActivityTableRow"
 import SarTimelineChart from "./SarTimelineChart"
-import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import {
   buildSarTimelineEvents,
   buildSarTimelinePlot,
@@ -19,6 +19,7 @@ type DashboardSarTimelinePanelProps = {
 
 export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimelinePanelProps) {
   const siteScope = useSiteAnalyticsScope()
+  const copy = useDashboardCopy()
   const [sarInput, setSarInput] = useState("")
   const [activeSar, setActiveSar] = useState("")
 
@@ -43,24 +44,19 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
   return (
     <div className="tma-analytics-panel">
       <section className="tma-analytics-card tma-dashboard-sar-lookup">
-        <h2>Live sessions</h2>
+        <h2>{copy.liveSessions}</h2>
         <p className="tma-dashboard-sar-lookup-hint">
-          <strong>Y-axis:</strong> each visitor session (SAR cookie when the page loads, otherwise the NFC tag ID).
-          <strong> X-axis:</strong> time — past on the left,
-          <strong> now</strong> in the centre, future on the right. Dots are tracked{" "}
-          <strong>{sarTimelineDomainLabel(siteScope)}</strong> events: dot colour shows scan recency (red = latest);
-          square = NFC scan, circle = page visit. Scroll or use the
-          hour buttons to move along the timeline. Click a SAR row to filter the event log below.
+          {copy.liveSessionsHint(sarTimelineDomainLabel(siteScope))}
         </p>
         <form className="tma-dashboard-sar-lookup-form" onSubmit={applySar}>
-          <label htmlFor="sar-lookup-input">Filter event log (optional)</label>
+          <label htmlFor="sar-lookup-input">{copy.filterEventLog}</label>
           <input
             id="sar-lookup-input"
             type="text"
             list="sar-known-values"
             value={sarInput}
             onChange={(event) => setSarInput(event.target.value)}
-            placeholder="Paste SAR to filter log"
+            placeholder={copy.pasteSar}
             autoComplete="off"
           />
           <datalist id="sar-known-values">
@@ -68,18 +64,18 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
               <option key={sar} value={sar} />
             ))}
           </datalist>
-          <button type="submit">Filter log</button>
+          <button type="submit">{copy.filterLog}</button>
         </form>
         {knownSars.length > 0 && (
           <p className="tma-dashboard-sar-lookup-meta">
-            {formatNumber(knownSars.length)} SAR{knownSars.length === 1 ? "" : "s"} in this load
+            {copy.sarsInLoad(knownSars.length)}
           </p>
         )}
       </section>
 
       {!plot && (
         <div className="tma-analytics-card tma-dashboard-status-card">
-          <p>No SAR-linked {sarTimelineDomainSuffix(siteScope)} activity in this dashboard load yet.</p>
+          <p>{copy.noSarActivity(sarTimelineDomainSuffix(siteScope))}</p>
         </div>
       )}
 
@@ -87,9 +83,9 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
         <>
           <div className="tma-analytics-stats tma-analytics-stats--3">
             <AnalyticsStatCard
-              label="SAR users"
+              label={copy.sarUsers}
               value={formatNumber(plot.sars.length)}
-              meta="rows on timeline"
+              meta={copy.rowsOnTimeline}
               icon={
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path
@@ -100,9 +96,9 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
               }
             />
             <AnalyticsStatCard
-              label="NFC Scans"
+              label={copy.nfcScans}
               value={formatNumber(redirectCount)}
-              meta={`REDIRECTED on ${sarTimelineDomainSuffix(siteScope)}`}
+              meta={copy.redirectedOn(sarTimelineDomainSuffix(siteScope))}
               icon={
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 4h6v16H4V4zm10 8h6v8h-6v-8z" fill="currentColor" />
@@ -110,9 +106,9 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
               }
             />
             <AnalyticsStatCard
-              label="All events"
+              label={copy.allEvents}
               value={formatNumber(plot.points.length)}
-              meta="scans + page visits"
+              meta={copy.scansAndVisits}
               icon={
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path
@@ -126,7 +122,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
 
           <section className="tma-analytics-card tma-analytics-chart-card tma-sar-timeline-card">
             <div className="tma-analytics-card-header">
-              <h2>Session timeline</h2>
+              <h2>{copy.sessionTimeline}</h2>
             </div>
             <div className="tma-sar-timeline-chart-scroll">
               <SarTimelineChart
@@ -144,7 +140,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
             <section className="tma-analytics-card">
               <div className="tma-analytics-card-header">
                 <h2>
-                  Event log — <span className="tma-dashboard-sar-inline">{activeSar}</span>
+                  {copy.eventLog} <span className="tma-dashboard-sar-inline">{activeSar}</span>
                 </h2>
                 <button
                   type="button"
@@ -154,23 +150,23 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
                     setSarInput("")
                   }}
                 >
-                  Clear filter
+                  {copy.clearFilter}
                 </button>
               </div>
               {timelineEntries.length === 0 ? (
                 <p className="tma-analytics-empty">
-                  No tracked {sarTimelineDomainSuffix(siteScope)} activity for this SAR in the current load.
+                  {copy.noSarActivityForFilter(sarTimelineDomainSuffix(siteScope))}
                 </p>
               ) : (
                 <div className="tma-dashboard-table-wrap tma-dashboard-table-wrap--inset">
                   <table className="tma-dashboard-table tma-dashboard-table--activity-modern">
                     <thead>
                       <tr>
-                        <th>Artwork</th>
-                        <th>Time</th>
-                        <th>Type</th>
-                        <th>Seen?</th>
-                        <th>Link</th>
+                        <th>{copy.artwork}</th>
+                        <th>{copy.time}</th>
+                        <th>{copy.type}</th>
+                        <th>{copy.seen}</th>
+                        <th>{copy.link}</th>
                       </tr>
                     </thead>
                     <tbody>

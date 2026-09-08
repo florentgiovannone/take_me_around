@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react"
-import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import {
   buildSarTimelineGridTicks,
   buildSarTimelinePlot,
@@ -129,6 +129,7 @@ export default function SarTimelineChart({
   onSelectSar,
 }: SarTimelineChartProps) {
   const siteScope = useSiteAnalyticsScope()
+  const copy = useDashboardCopy()
   const plot = useMemo(() => buildSarTimelinePlot(logs, siteScope), [logs, siteScope])
   const rowMeta = useMemo(
     () => buildSarTimelineRowMetaMap(logs, siteScope),
@@ -551,62 +552,62 @@ export default function SarTimelineChart({
     label: string
     markerClass: string
   }[] = [
-    { target: "older", label: "Older", markerClass: "is-older-scan" },
-    { target: 3, label: "3rd latest", markerClass: "is-recent-scan-3" },
-    { target: 2, label: "2nd latest", markerClass: "is-recent-scan-2" },
-    { target: 1, label: "Latest", markerClass: "is-latest-scan" },
+    { target: "older", label: copy.older, markerClass: "is-older-scan" },
+    { target: 3, label: copy.thirdLatest, markerClass: "is-recent-scan-3" },
+    { target: 2, label: copy.secondLatest, markerClass: "is-recent-scan-2" },
+    { target: 1, label: copy.latest, markerClass: "is-latest-scan" },
   ]
 
   return (
     <div
       className={`tma-sar-timeline-chart${isTightZoom ? " is-tight-zoom" : ""}`}
-      aria-label="Live sessions timeline"
+      aria-label={copy.liveSessionsTimeline}
       onMouseMove={enableHoverTooltip}
       onMouseLeave={clearHoverTooltip}
     >
       <div className="tma-sar-timeline-chart-body">
         <p className="tma-sar-timeline-view-range">
-          <span className="tma-sar-timeline-view-range-label">Visible window</span>
+          <span className="tma-sar-timeline-view-range-label">{copy.visibleWindow}</span>
           {formatSarTimelineViewRange(viewRange)}
         </p>
 
         <div className="tma-sar-timeline-y-corner" aria-hidden="true" />
 
         <div className="tma-sar-timeline-x-axis-hints" aria-hidden="true">
-          <span className="tma-sar-timeline-x-hint tma-sar-timeline-x-hint--past">← Past</span>
+          <span className="tma-sar-timeline-x-hint tma-sar-timeline-x-hint--past">{copy.past}</span>
           <span className="tma-sar-timeline-x-hint tma-sar-timeline-x-hint--future">
-            Future →
+            {copy.future}
           </span>
         </div>
 
-        <div className="tma-sar-timeline-zoom" role="group" aria-label="Zoom timeline">
+        <div className="tma-sar-timeline-zoom" role="group" aria-label={copy.zoomTimeline}>
           <button
             type="button"
             className="tma-sar-timeline-zoom-btn"
             onClick={() => changeZoom("in")}
             disabled={!canZoomIn}
-            aria-label="Zoom in (shorter time span)"
-            title="Zoom in"
+            aria-label={copy.zoomIn}
+            title={copy.zoomIn}
           >
             +
           </button>
           <span className="tma-sar-timeline-zoom-label">
-            {formatSarTimelineZoomSpan(zoomHalfExtentMs, plot?.totalExtentMs)} window
+            {formatSarTimelineZoomSpan(zoomHalfExtentMs, plot?.totalExtentMs)} {copy.windowSuffix}
           </span>
           <button
             type="button"
             className="tma-sar-timeline-zoom-btn"
             onClick={() => changeZoom("out")}
             disabled={!canZoomOut}
-            aria-label="Zoom out (longer time span)"
-            title="Zoom out"
+            aria-label={copy.zoomOut}
+            title={copy.zoomOut}
           >
             −
           </button>
         </div>
 
-        <div className="tma-sar-timeline-toolbar" role="group" aria-label="Scroll timeline">
-          <div className="tma-sar-timeline-shift-group" aria-label="Scroll to past">
+        <div className="tma-sar-timeline-toolbar" role="group" aria-label={copy.scrollTimeline}>
+          <div className="tma-sar-timeline-shift-group" aria-label={copy.scrollPast}>
             {[1, 2, 3, 4].map((hours) => (
               <button
                 key={`past-${hours}`}
@@ -619,9 +620,9 @@ export default function SarTimelineChart({
             ))}
           </div>
           <button type="button" className="tma-sar-timeline-center-btn" onClick={() => scrollToNow()}>
-            Now
+            {copy.now}
           </button>
-          <div className="tma-sar-timeline-shift-group" aria-label="Scroll to future">
+          <div className="tma-sar-timeline-shift-group" aria-label={copy.scrollFuture}>
             {[4, 3, 2, 1].map((hours) => (
               <button
                 key={`future-${hours}`}
@@ -635,7 +636,7 @@ export default function SarTimelineChart({
           </div>
         </div>
 
-        <div className="tma-sar-timeline-y-axis-rows" aria-label="SAR users" style={{ height: plotHeight }}>
+        <div className="tma-sar-timeline-y-axis-rows" aria-label={copy.sarUsers} style={{ height: plotHeight }}>
           {plot.sars.map((sar) => {
             const meta = rowMeta.get(sar)
             const isFocused = highlightLower && sar.toLowerCase() === highlightLower
@@ -780,7 +781,7 @@ export default function SarTimelineChart({
               <div
                 className="tma-sar-timeline-ticks"
                 style={{ height: TICKS_HEIGHT_PX, width: canvasWidth }}
-                aria-label="Time axis (GMT)"
+                aria-label={copy.timeAxis}
               >
                 {ticks
                   .filter((tick) => !tick.isTrueNow)
@@ -801,10 +802,10 @@ export default function SarTimelineChart({
         <div className="tma-sar-timeline-legend">
           <div className="tma-sar-timeline-legend-group tma-sar-timeline-legend-group--order">
             <span className="tma-sar-timeline-legend-group-title">
-              Scan order (per user, past ← → now)
+              {copy.scanOrder}
               {canJumpToRecency && (
                 <span className="tma-sar-timeline-legend-group-hint">
-                  · click a colour to jump to that scan
+                  {copy.clickColour}
                 </span>
               )}
             </span>
@@ -825,9 +826,9 @@ export default function SarTimelineChart({
                     title={
                       isDisabled
                         ? canJumpToRecency
-                          ? `No ${label.toLowerCase()} scan for this session`
-                          : "Select a session on the timeline first"
-                        : `Jump to ${label.toLowerCase()} scan`
+                          ? copy.noRecencyScan(label)
+                          : copy.selectSessionFirst
+                        : copy.jumpToScan(label)
                     }
                     onClick={() => scrollToRecency(target)}
                   >
@@ -847,14 +848,14 @@ export default function SarTimelineChart({
                 className="tma-sar-timeline-marker is-redirect tma-sar-timeline-marker--legend"
                 aria-hidden="true"
               />
-              NFC scan
+              {copy.nfcScan}
             </span>
             <span className="tma-sar-timeline-legend-item">
               <span
                 className="tma-sar-timeline-marker is-seen tma-sar-timeline-marker--legend"
                 aria-hidden="true"
               />
-              Page visit
+              {copy.pageVisit}
             </span>
           </div>
           <span className="tma-sar-timeline-legend-meta">

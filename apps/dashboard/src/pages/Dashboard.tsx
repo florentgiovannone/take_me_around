@@ -8,6 +8,7 @@ import {
   DashboardOverviewPanel,
   DashboardSarTimelinePanel,
   SiteScopeProvider,
+  dashboardCopy,
 } from "@tma/dashboard-ui"
 import {
   apiNeedsNgrokHeader,
@@ -19,8 +20,10 @@ import {
   scopesForEnabledSites,
 } from "../config/dashboardSites"
 import {
+  allowedScopesForOperator,
   clearOperatorSession,
   defaultScopeForOperator,
+  getOperatorById,
   getStoredOperatorId,
   getStoredScope,
   normalizeScopeForOperator,
@@ -28,12 +31,20 @@ import {
   resolveOperator,
   storeOperatorSession,
   storeScope,
+  TMA_DEMO_OPERATOR_ID,
   type OperatorProfile,
 } from "../config/operators"
 import {
+  ALL_DASHBOARD_SITE_IDS,
+  ALL_SITE_IDS,
+  detectDashboardLocale,
+  getDashboardLocale,
+  setDashboardLocale,
   scopeBadgeLabel,
   scopeSubtitle,
   SITE_META,
+  type DashboardLocale,
+  type OperatorSiteId,
   type SiteId,
   type SiteScope,
 } from "@tma/config"
@@ -43,6 +54,36 @@ import type { PoiseLog } from "@tma/dashboard-scope"
 
 const DASHBOARD_PASSWORD_KEY = "tma-main-dashboard-password"
 const POLL_INTERVAL_MS = 5000
+const envDashboardPassword = (import.meta.env.VITE_DASHBOARD_PASSWORD ?? "").trim()
+
+function operatorSkipsPassword(
+  operatorId: string,
+  options?: { fixedScope?: OperatorSiteId; fixedOperatorId?: string }
+) {
+  if (options?.fixedOperatorId) {
+    return Boolean(getOperatorById(options.fixedOperatorId)?.skipPassword)
+  }
+  if (options?.fixedScope) return false
+  return Boolean(getOperatorById(operatorId)?.skipPassword)
+}
+
+function resolveApiPassword() {
+  return envDashboardPassword || sessionStorage.getItem(DASHBOARD_PASSWORD_KEY) || ""
+}
+
+function storedSkipPasswordOperatorId() {
+  const storedId = getStoredOperatorId()
+  if (!storedId || !getOperatorById(storedId)?.skipPassword) return null
+  return storedId
+}
+
+function passwordlessOpenError(operatorId: string) {
+  if (getDashboardLocale() === "pt-BR") {
+    return dashboardCopy("pt-BR").couldNotOpenDemo
+  }
+  const name = getOperatorById(operatorId)?.name ?? "this dashboard"
+  return `Could not open ${name}. Set VITE_DASHBOARD_PASSWORD in apps/dashboard/.env to match the API.`
+}
 
 type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
 type DashboardView = "analytics" | "settings"
@@ -103,9 +144,11 @@ async function fetchDashboardLogs(password: string): Promise<FetchLogsResult> {
 type DashboardProps = {
   /** Lock to one site scope (e.g. /dashboard/museum). Combined is omitted unless allowed. */
   fixedScope?: SiteId
+  /** Lock to one operator (e.g. /demodashboard). Skips the operator picker. */
+  fixedOperatorId?: string
 }
 
-function Dashboard({ fixedScope }: DashboardProps) {
+function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   const passwordRef = useRef("")
   const [logs, setLogs] = useState<PoiseLog[]>([])
   const [loading, setLoading] = useState(false)
@@ -115,45 +158,90 @@ function Dashboard({ fixedScope }: DashboardProps) {
   const [activeScope, setActiveScope] = useState<SiteScope | null>(null)
   const [passwordInput, setPasswordInput] = useState("")
   const [loginOperatorId, setLoginOperatorId] = useState(
-    () => resolveOperator().id
+    () => fixedOperatorId ?? resolveOperator().id
   )
+  const loginSkipsPassword = operatorSkipsPassword(loginOperatorId, {
+    fixedScope,
+    fixedOperatorId,
+  })
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [initializing, setInitializing] = useState(
-    () => !!sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
+    () =>
+      Boolean(fixedOperatorId) ||
+      !!sessionStorage.getItem(DASHBOARD_PASSWORD_KEY) ||
+      Boolean(storedSkipPasswordOperatorId())
   )
   const [dashboardView, setDashboardView] = useState<DashboardView>("analytics")
   const [enabledSites, setEnabledSites] = useState<SiteId[]>(() => getStoredEnabledSites())
 
-  const showOperatorPickerOnLogin = OPERATORS.length > 1 && !fixedScope
-  const showSettings = !fixedScope
+  const standaloneDemo = Boolean(fixedOperatorId)
+  const showOperatorPickerOnLogin = OPERATORS.length > 1 && !fixedScope && !standaloneDemo
+  const showSettings = !fixedScope && !standaloneDemo && (!operator || operator.sites.length > 1)
+  const phoneLocale = useMemo<DashboardLocale>(() => {
+    if (typeof window === "undefined") return "en"
+    return detectDashboardLocale(new URLSearchParams(window.location.search))
+  }, [])
+  const isDemoSurface =
+    standaloneDemo ||
+    activeScope === "tma_demo" ||
+    loginOperatorId === TMA_DEMO_OPERATOR_ID
+  const locale: DashboardLocale = isDemoSurface ? phoneLocale : "en"
+  const copy = dashboardCopy(locale)
 
   useEffect(() => {
-    setActiveCombinedSiteIds(enabledSites)
-  }, [enabledSites])
+    setDashboardLocale(locale)
+    if (!standaloneDemo) return
+    document.documentElement.lang = locale === "pt-BR" ? "pt-BR" : "en"
+    document.title =
+      locale === "pt-BR"
+        ? "Painel Demo TMA — Take Me Around"
+        : "TMA Demo Dashboard — Take Me Around"
+  }, [locale, standaloneDemo])
+
+  useEffect(() => {
+    const allDashboards = Boolean(
+      operator && operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
+    )
+    setActiveCombinedSiteIds(allDashboards ? ALL_SITE_IDS : enabledSites)
+  }, [enabledSites, operator])
+
+  const allowedScopes = useMemo(() => {
+    if (fixedOperatorId) {
+      const lockedOperator = getOperatorById(fixedOperatorId)
+      if (!lockedOperator) return []
+      return allowedScopesForOperator(lockedOperator, enabledSites)
+    }
+    if (!operator) {
+      if (fixedScope) {
+        return enabledSites.includes(fixedScope) ? [fixedScope] : []
+      }
+      return scopesForEnabledSites(enabledSites)
+    }
+    return allowedScopesForOperator(operator, enabledSites, fixedScope)
+  }, [enabledSites, fixedScope, fixedOperatorId, operator])
 
   useEffect(() => {
     if (!isAuthorized || !activeScope) return
-    const scopes = scopesForEnabledSites(enabledSites)
-    if (scopes.includes(activeScope)) return
-    const next = scopes[0] ?? null
+    if (allowedScopes.includes(activeScope)) return
+    const next = allowedScopes[0] ?? null
     setActiveScope(next)
-    if (next) storeScope(next)
-  }, [enabledSites, isAuthorized, activeScope])
+    if (next && !standaloneDemo) storeScope(next)
+  }, [allowedScopes, isAuthorized, activeScope, standaloneDemo])
 
-  const allowedScopes = useMemo(() => {
-    if (fixedScope) {
-      return enabledSites.includes(fixedScope) ? [fixedScope] : []
+  const applyOperatorSession = (
+    nextOperator: OperatorProfile,
+    options?: { useStoredScope?: boolean }
+  ) => {
+    if (!standaloneDemo) {
+      storeOperatorSession(nextOperator.id)
     }
-    return scopesForEnabledSites(enabledSites)
-  }, [enabledSites, fixedScope])
-
-  const applyOperatorSession = (nextOperator: OperatorProfile) => {
-    storeOperatorSession(nextOperator.id)
     setOperator(nextOperator)
-    const scopes = allowedScopes
-    const nextScope = normalizeScopeForOperator(getStoredScope(), nextOperator, scopes)
+    const scopes = allowedScopesForOperator(nextOperator, enabledSites, fixedScope)
+    const storedScope =
+      options?.useStoredScope === false || standaloneDemo ? null : getStoredScope()
+    const nextScope = normalizeScopeForOperator(storedScope, nextOperator, scopes)
     const resolved =
       fixedScope && scopes.includes(fixedScope)
         ? fixedScope
@@ -161,7 +249,9 @@ function Dashboard({ fixedScope }: DashboardProps) {
           ? nextScope
           : scopes[0] ?? defaultScopeForOperator(nextOperator, scopes)
     setActiveScope(resolved)
-    storeScope(resolved)
+    if (!standaloneDemo) {
+      storeScope(resolved)
+    }
   }
 
   const loadLogs = async (
@@ -179,14 +269,24 @@ function Dashboard({ fixedScope }: DashboardProps) {
       const result = await fetchDashboardLogs(password)
       if (!result.ok) {
         if (result.unauthorized) {
-          sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
-          clearOperatorSession()
+          if (!standaloneDemo) {
+            sessionStorage.removeItem(DASHBOARD_PASSWORD_KEY)
+            clearOperatorSession()
+          }
           passwordRef.current = ""
           setIsAuthorized(false)
           setOperator(null)
           setActiveScope(null)
           setPasswordInput("")
-          setAuthError(result.message)
+          const skipPassword = Boolean(
+            (options?.operatorId && getOperatorById(options.operatorId)?.skipPassword) ||
+              standaloneDemo
+          )
+          setAuthError(
+            skipPassword
+              ? passwordlessOpenError(options?.operatorId ?? loginOperatorId)
+              : result.message
+          )
         } else if (showLoading) {
           setAuthError(result.message)
         } else {
@@ -195,7 +295,9 @@ function Dashboard({ fixedScope }: DashboardProps) {
         return
       }
 
-      sessionStorage.setItem(DASHBOARD_PASSWORD_KEY, password)
+      if (password && !standaloneDemo) {
+        sessionStorage.setItem(DASHBOARD_PASSWORD_KEY, password)
+      }
       passwordRef.current = password
       setLogs(result.data)
       setIsAuthorized(true)
@@ -203,7 +305,10 @@ function Dashboard({ fixedScope }: DashboardProps) {
       setAuthError(null)
       if (!operator) {
         applyOperatorSession(
-          resolveOperator(options?.operatorId ?? getStoredOperatorId() ?? loginOperatorId)
+          resolveOperator(
+            fixedOperatorId ?? options?.operatorId ?? getStoredOperatorId() ?? loginOperatorId
+          ),
+          { useStoredScope: !options?.operatorId }
         )
       }
     } catch (err) {
@@ -221,13 +326,29 @@ function Dashboard({ fixedScope }: DashboardProps) {
   }
 
   useEffect(() => {
-    const savedPassword = sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
-    if (!savedPassword) {
-      setInitializing(false)
+    const savedPassword = standaloneDemo
+      ? null
+      : sessionStorage.getItem(DASHBOARD_PASSWORD_KEY)
+    if (savedPassword) {
+      void loadLogs(savedPassword, { showLoading: true }).finally(() => setInitializing(false))
       return
     }
-
-    void loadLogs(savedPassword, { showLoading: true }).finally(() => setInitializing(false))
+    if (standaloneDemo) {
+      void loadLogs(resolveApiPassword(), {
+        showLoading: true,
+        operatorId: loginOperatorId,
+      }).finally(() => setInitializing(false))
+      return
+    }
+    const storedSkipPasswordId = storedSkipPasswordOperatorId()
+    if (storedSkipPasswordId) {
+      void loadLogs(resolveApiPassword(), {
+        showLoading: true,
+        operatorId: storedSkipPasswordId,
+      }).finally(() => setInitializing(false))
+      return
+    }
+    setInitializing(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- restore session once on mount
   }, [])
 
@@ -247,13 +368,13 @@ function Dashboard({ fixedScope }: DashboardProps) {
     setAuthError(null)
     setError(null)
 
-    if (!passwordInput.trim()) {
+    if (!loginSkipsPassword && !passwordInput.trim()) {
       setAuthError("Enter a password.")
       return
     }
 
     setSubmitting(true)
-    await loadLogs(passwordInput.trim(), {
+    await loadLogs(loginSkipsPassword ? resolveApiPassword() : passwordInput.trim(), {
       showLoading: true,
       operatorId: loginOperatorId,
     })
@@ -269,9 +390,14 @@ function Dashboard({ fixedScope }: DashboardProps) {
 
   const handleEnabledSitesSave = (sites: SiteId[]) => {
     setEnabledSites(sites)
-    setActiveCombinedSiteIds(sites)
+    const allDashboards = Boolean(
+      operator && operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
+    )
+    setActiveCombinedSiteIds(allDashboards ? ALL_SITE_IDS : sites)
     setActiveScope((current) => {
-      const scopes = scopesForEnabledSites(sites)
+      const scopes = operator
+        ? allowedScopesForOperator(operator, sites, fixedScope)
+        : scopesForEnabledSites(sites)
       if (current && scopes.includes(current)) return current
       const next = scopes[0] ?? null
       if (next) storeScope(next)
@@ -333,13 +459,13 @@ function Dashboard({ fixedScope }: DashboardProps) {
             </svg>
           </button>
         )}
-        {isAuthorized && (
+        {isAuthorized && !standaloneDemo && (
           <button
             type="button"
             className="tma-dashboard-logout"
             onClick={handleLogout}
           >
-            Log out
+            {copy.logOut}
           </button>
         )}
         <div
@@ -356,17 +482,17 @@ function Dashboard({ fixedScope }: DashboardProps) {
             </>
           ) : (
             <>
-              <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
+              <h5 className="tma-main-dashboard-eyebrow">{copy.eyebrow}</h5>
               <h1 className="tma-page-title tma-main-dashboard-title">
                 {activeScope ? (
-                  <>Live
+                  <>{copy.titleLiveBefore}{" "}
                     <span className="tma-main-dashboard-site-badge">
                       {scopeBadgeLabel(activeScope)}
                     </span>
-                    Dashboard
+                    {copy.titleLiveAfter ? ` ${copy.titleLiveAfter}` : ""}
                   </>
                 ) : (
-                  "Dashboard"
+                  copy.titleFallback
                 )}
               </h1>
               <p className="tma-page-subtitle tma-main-dashboard-subtitle">
@@ -374,7 +500,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
                   ? ' '
                   : operator
                     ? ' '
-                    : "Sign in to continue"}
+                    : copy.signIn}
               </p>
               {operator && (
                 <p className="tma-main-dashboard-operator-meta"> </p>
@@ -387,7 +513,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
       <div className="tma-content">
         {initializing && (
           <div className="tma-analytics-card tma-dashboard-status-card">
-            <p>Restoring dashboard session...</p>
+            <p>{copy.restoring}</p>
           </div>
         )}
         {!initializing && !isAuthorized && (
@@ -399,27 +525,50 @@ function Dashboard({ fixedScope }: DashboardProps) {
               <select
                 id="dashboard-operator"
                 value={loginOperatorId}
-                onChange={(event) => setLoginOperatorId(event.target.value)}
+                onChange={(event) => {
+                  setLoginOperatorId(event.target.value)
+                  setAuthError(null)
+                }}
               >
-                {OPERATORS.map((entry) => (
-                  <option key={entry.id} value={entry.id}>
-                    {entry.name} ({entry.sites.map((s) => SITE_META[s].domainLabel).join(", ")})
-                  </option>
-                ))}
+                {OPERATORS.map((entry) => {
+                  const siteLabels = [
+                    ...new Set(entry.sites.map((siteId) => SITE_META[siteId].domainLabel)),
+                  ].join(", ")
+                  const optionLabel =
+                    entry.sites.length > 1
+                      ? `${entry.name} (all dashboards)`
+                      : siteLabels && siteLabels !== entry.name
+                        ? `${entry.name} (${siteLabels})`
+                        : entry.name
+                  return (
+                    <option key={entry.id} value={entry.id}>
+                      {optionLabel}
+                    </option>
+                  )
+                })}
               </select>
             )}
-            <label htmlFor="dashboard-password">Enter password to access this dashboard</label>
-            <input
-              id="dashboard-password"
-              type="password"
-              value={passwordInput}
-              onChange={(event) => setPasswordInput(event.target.value)}
-              placeholder="Password"
-              autoComplete="current-password"
-            />
-            <button type="submit" disabled={submitting}>
-              {submitting ? "Unlocking..." : "Unlock dashboard"}
-            </button>
+            {!loginSkipsPassword && (
+              <>
+                <label htmlFor="dashboard-password">Enter password to access this dashboard</label>
+                <input
+                  id="dashboard-password"
+                  type="password"
+                  value={passwordInput}
+                  onChange={(event) => setPasswordInput(event.target.value)}
+                  placeholder="Password"
+                  autoComplete="current-password"
+                />
+              </>
+            )}
+            {!standaloneDemo && (
+              <button type="submit" disabled={submitting || (loginSkipsPassword && loading)}>
+                {submitting || (loginSkipsPassword && loading) ? copy.unlocking : copy.unlock}
+              </button>
+            )}
+            {standaloneDemo && loginSkipsPassword && (loading || submitting) && (
+              <p>{copy.openingDemo}</p>
+            )}
             {authError && <p className="tma-dashboard-error">{authError}</p>}
           </form>
         )}
@@ -440,7 +589,11 @@ function Dashboard({ fixedScope }: DashboardProps) {
                   scopes={allowedScopes}
                   value={activeScope}
                   onChange={handleScopeChange}
-                  combinedSiteIds={enabledSites}
+                  combinedSiteIds={
+                    operator && operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
+                      ? ALL_SITE_IDS
+                      : enabledSites
+                  }
                 />
               </div>
             )}
@@ -455,7 +608,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
 
             {allowedScopes.length > 0 && (
               <>
-                <nav className="tma-dashboard-tabs-nav" aria-label="Dashboard views">
+                <nav className="tma-dashboard-tabs-nav" aria-label={copy.dashboardViews}>
                   <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
                     <button
                       type="button"
@@ -464,7 +617,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
                       className={`tma-dashboard-tab ${activeTab === "activity" ? "is-active" : ""}`}
                       onClick={() => setActiveTab("activity")}
                     >
-                      Activity
+                      {copy.activity}
                     </button>
                     <button
                       type="button"
@@ -473,7 +626,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
                       className={`tma-dashboard-tab ${activeTab === "counts" ? "is-active" : ""}`}
                       onClick={() => setActiveTab("counts")}
                     >
-                      Link scan counts
+                      {copy.counts}
                     </button>
                     <button
                       type="button"
@@ -482,7 +635,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
                       className={`tma-dashboard-tab ${activeTab === "overview" ? "is-active" : ""}`}
                       onClick={() => setActiveTab("overview")}
                     >
-                      Overview
+                      {copy.overview}
                     </button>
                     <button
                       type="button"
@@ -491,7 +644,7 @@ function Dashboard({ fixedScope }: DashboardProps) {
                       className={`tma-dashboard-tab ${activeTab === "audience" ? "is-active" : ""}`}
                       onClick={() => setActiveTab("audience")}
                     >
-                      Audience
+                      {copy.audience}
                     </button>
                     <button
                       type="button"
@@ -500,18 +653,18 @@ function Dashboard({ fixedScope }: DashboardProps) {
                       className={`tma-dashboard-tab tma-dashboard-tab--span-2${activeTab === "sar" ? " is-active" : ""}`}
                       onClick={() => setActiveTab("sar")}
                     >
-                      Live sessions
+                      {copy.liveSessions}
                     </button>
                   </div>
                 </nav>
 
                 {loading && (
                   <div className="tma-analytics-card tma-dashboard-status-card">
-                    <p>Loading poise_log entries...</p>
+                    <p>{copy.loading}</p>
                   </div>
                 )}
-                {error && <p className="tma-dashboard-error">Error: {error}</p>}
-                <SiteScopeProvider scope={activeScope}>
+                {error && <p className="tma-dashboard-error">{copy.errorPrefix} {error}</p>}
+                <SiteScopeProvider scope={activeScope} locale={locale}>
                   {!loading && !error && activeTab === "activity" && (
                     <DashboardActivityPanel logs={logs} />
                   )}

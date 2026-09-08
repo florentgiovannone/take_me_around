@@ -1,9 +1,16 @@
-import type { SiteId, SiteScope } from "@tma/config"
+import {
+  ALL_DASHBOARD_SITE_IDS,
+  type OperatorSiteId,
+  type SiteId,
+  type SiteScope,
+} from "@tma/config"
+import { scopesForEnabledSites } from "./dashboardSites"
 
 export type OperatorProfile = {
   id: string
   name: string
-  sites: SiteId[]
+  sites: OperatorSiteId[]
+  skipPassword?: boolean
 }
 
 export const OPERATOR_SESSION_KEY = "tma-main-dashboard-operator-id"
@@ -14,12 +21,19 @@ export const OPERATORS: OperatorProfile[] = [
   {
     id: "default",
     name: "Main Dashboard",
-    sites: ["gallery", "museum", "church_of_england"],
+    sites: [...ALL_DASHBOARD_SITE_IDS],
+  },
+  {
+    id: "tma-demo",
+    name: "TMA Demo",
+    sites: ["tma_demo"],
+    skipPassword: true,
   },
   {
     id: "church-of-england-only",
-    name: "Church of England team",
+    name: "Southwell Minster",
     sites: ["church_of_england"],
+    skipPassword: true,
   },
   {
     id: "museum-only",
@@ -34,17 +48,35 @@ export const OPERATORS: OperatorProfile[] = [
 ]
 
 export const DEFAULT_OPERATOR_ID = "default"
+export const TMA_DEMO_OPERATOR_ID = "tma-demo"
+export const SOUTHWELL_MINSTER_OPERATOR_ID = "church-of-england-only"
 
 export function getOperatorById(id: string): OperatorProfile | undefined {
   return OPERATORS.find((operator) => operator.id === id)
 }
 
 export function siteScopesForOperator(operator: OperatorProfile): SiteScope[] {
-  const scopes: SiteScope[] = [...operator.sites]
   if (operator.sites.length > 1) {
-    scopes.push("combined")
+    return ["combined", ...operator.sites]
   }
-  return scopes
+  return [...operator.sites]
+}
+
+export function allowedScopesForOperator(
+  operator: OperatorProfile,
+  enabledSites: SiteId[],
+  fixedScope?: OperatorSiteId
+): SiteScope[] {
+  if (fixedScope) {
+    return operator.sites.includes(fixedScope) ? [fixedScope] : []
+  }
+  if (operator.sites.length === 1) {
+    return [...operator.sites]
+  }
+  if (operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length) {
+    return siteScopesForOperator(operator)
+  }
+  return scopesForEnabledSites(enabledSites)
 }
 
 export function getStoredOperatorId(): string | null {
@@ -67,6 +99,7 @@ export function getStoredScope(): SiteScope | null {
     raw === "museum" ||
     raw === "arkin" ||
     raw === "church_of_england" ||
+    raw === "tma_demo" ||
     raw === "combined"
   ) {
     return raw
@@ -92,6 +125,7 @@ export function defaultScopeForOperator(
   operator: OperatorProfile,
   allowedScopes: SiteScope[] = siteScopesForOperator(operator)
 ): SiteScope {
+  if (allowedScopes.includes("combined")) return "combined"
   return allowedScopes[0] ?? siteScopesForOperator(operator)[0]
 }
 

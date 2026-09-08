@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from "react"
 import ChartCountReadout from "./ChartCountReadout"
-import { formatNumber } from "@tma/dashboard-scope"
+import { useDashboardCopy } from "../hooks/useSiteAnalyticsScope"
 export type AudienceBreakdownItem = {
   key: string
   label: string
@@ -27,8 +27,12 @@ type AudienceBreakdownListProps = {
   className?: string
 }
 
-function formatVisitLabel(count: number, percent: number) {
-  return `${formatNumber(count)} visit${count === 1 ? "" : "s"} · ${percent}%`
+function formatVisitLabel(
+  count: number,
+  percent: number,
+  copy: ReturnType<typeof useDashboardCopy>
+) {
+  return copy.visitsDotPercent(copy.visits(count), percent)
 }
 
 function toggleSelection(
@@ -50,13 +54,14 @@ export default function AudienceBreakdownList({
   onKeyDown,
   className,
 }: AudienceBreakdownListProps) {
+  const copy = useDashboardCopy()
   return (
     <div className={className}>
       <ChartCountReadout
         label={selection?.label ?? null}
         value={
           selection?.percent != null
-            ? formatVisitLabel(selection.count, selection.percent)
+            ? formatVisitLabel(selection.count, selection.percent, copy)
             : null
         }
         tapToSelect={tapToSelect}
@@ -81,7 +86,7 @@ export default function AudienceBreakdownList({
                 aria-pressed={tapToSelect ? isSelected : undefined}
                 aria-label={
                   tapToSelect
-                    ? `${item.label}, ${formatVisitLabel(item.count, item.percent)}`
+                    ? `${item.label}, ${formatVisitLabel(item.count, item.percent, copy)}`
                     : undefined
                 }
                 onClick={

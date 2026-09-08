@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
         "@tma/analytics-gallery": path.join(packagesDir, "analytics-gallery/src/index.ts"),
         "@tma/analytics-arkin": path.join(packagesDir, "analytics-arkin/src/index.ts"),
         "@tma/analytics-museum": path.join(packagesDir, "analytics-museum/src/index.ts"),
+        "@tma/analytics-tma-demo": path.join(packagesDir, "analytics-tma-demo/src/index.ts"),
         "@tma/dashboard-scope": path.join(packagesDir, "dashboard-scope/src/index.ts"),
         "@tma/dashboard-ui": path.join(packagesDir, "dashboard-ui/src/index.ts"),
       },

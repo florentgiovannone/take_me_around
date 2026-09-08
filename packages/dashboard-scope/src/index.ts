@@ -1,8 +1,9 @@
-import { SITE_META, type SiteScope } from "@tma/config"
+import { SITE_META, dashboardIntlLocale, getDashboardLocale, type SiteScope } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
 import * as arkin from "@tma/analytics-arkin"
 import * as churchOfEngland from "@tma/analytics-church-of-england"
+import * as tmaDemo from "@tma/analytics-tma-demo"
 import {
   buildVisitorNumberBySar,
   lookupVisitorNumber,
@@ -34,9 +35,15 @@ export type {
 } from "@tma/analytics-gallery"
 
 export const parseLogTimestampGmt = gallery.parseLogTimestampGmt
-export const formatNumber = gallery.formatNumber
+export function formatNumber(value: number) {
+  return value.toLocaleString(dashboardIntlLocale())
+}
 export const formatSignedPercent = gallery.formatSignedPercent
 export const formatAndroidField = gallery.formatAndroidField
+
+function isDemoPortuguese() {
+  return getDashboardLocale() === "pt-BR"
+}
 
 export { formatVisitorNumber, buildVisitorNumberBySar, lookupVisitorNumber }
 
@@ -123,6 +130,8 @@ export function buildActivityVisitDetails(
     details = museum.buildActivityVisitDetails(log)
   } else if (scope === "church_of_england") {
     details = churchOfEngland.buildActivityVisitDetails(log)
+  } else if (scope === "tma_demo") {
+    details = tmaDemo.buildActivityVisitDetails(log)
   } else {
     details = gallery.buildActivityVisitDetails(log)
   }
@@ -138,12 +147,14 @@ export function buildActivityVisitDetails(
 export type ActivityEntry =
   | gallery.GalleryActivityEntry
   | churchOfEngland.ChurchOfEnglandActivityEntry
+  | tmaDemo.TmaDemoActivityEntry
 
 export function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
   if (scope === "gallery") return gallery.getGalleryLogs(logs)
   if (scope === "arkin") return arkin.getArkinLogs(logs)
   if (scope === "museum") return museum.getMuseumLogs(logs)
   if (scope === "church_of_england") return churchOfEngland.getChurchOfEnglandLogs(logs)
+  if (scope === "tma_demo") return tmaDemo.getTmaDemoLogs(logs)
   return getCombinedScopedLogs(logs)
 }
 
@@ -154,6 +165,7 @@ export function trackedArtworkCount(scope: SiteScope): number {
   if (scope === "church_of_england") {
     return churchOfEngland.TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.length
   }
+  if (scope === "tma_demo") return tmaDemo.TRACKED_TMA_DEMO_ARTWORKS.length
   return getActiveCombinedSiteIds().reduce((count, siteId) => {
     if (siteId === "gallery") return count + gallery.TRACKED_GALLERY_ARTWORKS.length
     if (siteId === "museum") return count + museum.TRACKED_MUSEUM_ARTWORKS.length
@@ -167,6 +179,9 @@ export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "arkin") return "tracked Arkın scans"
   if (scope === "museum") return "tracked .museum scans"
   if (scope === "church_of_england") return "tracked Church of England scans"
+  if (scope === "tma_demo") {
+    return isDemoPortuguese() ? "leituras rastreadas do TMA Demo" : "tracked TMA Demo scans"
+  }
   return `tracked ${combinedSitesLabel()} scans`
 }
 
@@ -176,6 +191,11 @@ export function trackedLinksMeta(scope: SiteScope): string {
   if (scope === "arkin") return `of ${count} tracked Arkın links`
   if (scope === "museum") return `of ${count} tracked .museum links`
   if (scope === "church_of_england") return `of ${count} tracked Church of England links`
+  if (scope === "tma_demo") {
+    return isDemoPortuguese()
+      ? `de ${count} tags rastreadas do TMA Demo`
+      : `of ${count} tracked TMA Demo tags`
+  }
   return `of ${count} tracked links (all sites)`
 }
 
@@ -184,6 +204,11 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
   if (scope === "arkin") return "across tracked Arkın links"
   if (scope === "museum") return "across tracked .museum links"
   if (scope === "church_of_england") return "across tracked Church of England links"
+  if (scope === "tma_demo") {
+    return isDemoPortuguese()
+      ? "nas tags rastreadas do TMA Demo"
+      : "across tracked TMA Demo tags"
+  }
   return "across tracked links (all sites)"
 }
 
@@ -192,6 +217,7 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "arkin") return "arkin.takemearound.gallery"
   if (scope === "museum") return "takemearound.museum"
   if (scope === "church_of_england") return "takemearound.church"
+  if (scope === "tma_demo") return "TMA Demo"
   return getActiveCombinedSiteIds()
     .map((id) => SITE_META[id].host)
     .join(" + ")
@@ -202,6 +228,7 @@ export function sarTimelineDomainSuffix(scope: SiteScope): string {
   if (scope === "arkin") return "Arkın"
   if (scope === "museum") return ".museum"
   if (scope === "church_of_england") return "Church of England"
+  if (scope === "tma_demo") return "TMA Demo"
   return "selected sites"
 }
 
@@ -210,6 +237,11 @@ export function emptyActivityMessage(scope: SiteScope): string {
   if (scope === "arkin") return "No tracked Arkın activity found."
   if (scope === "museum") return "No tracked .museum activity found."
   if (scope === "church_of_england") return "No tracked Church of England activity found."
+  if (scope === "tma_demo") {
+    return isDemoPortuguese()
+      ? "Nenhuma atividade rastreada do TMA Demo encontrada."
+      : "No tracked TMA Demo activity found."
+  }
   return "No tracked activity found for the selected scope."
 }
 
@@ -220,6 +252,7 @@ export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): Activi
   if (scope === "church_of_england") {
     return churchOfEngland.buildChurchOfEnglandActivityEntries(logs)
   }
+  if (scope === "tma_demo") return tmaDemo.buildTmaDemoActivityEntries(logs)
   const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
     if (siteId === "gallery") return gallery.buildGalleryActivityEntries(logs)
     if (siteId === "museum") return museum.buildMuseumActivityEntries(logs)
@@ -240,6 +273,7 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope
   if (scope === "church_of_england") {
     return churchOfEngland.buildTrackedArtworkScanGroups(logs)
   }
+  if (scope === "tma_demo") return tmaDemo.buildTrackedArtworkScanGroups(logs)
   const groups = []
   for (const siteId of getActiveCombinedSiteIds()) {
     if (siteId === "gallery") {
@@ -260,6 +294,7 @@ export function buildOverviewAnalytics(logs: PoiseLog[], scope: SiteScope) {
   if (scope === "arkin") return arkin.buildOverviewAnalytics(logs)
   if (scope === "museum") return museum.buildOverviewAnalytics(logs)
   if (scope === "church_of_england") return churchOfEngland.buildOverviewAnalytics(logs)
+  if (scope === "tma_demo") return tmaDemo.buildOverviewAnalytics(logs)
   const g = gallery.buildOverviewAnalytics(logs)
   const m = museum.buildOverviewAnalytics(logs)
   const a = arkin.buildOverviewAnalytics(logs)
@@ -355,6 +390,7 @@ export function buildAudienceAnalytics(logs: PoiseLog[], scope: SiteScope): Audi
   if (scope === "arkin") return arkin.buildAudienceAnalytics(logs)
   if (scope === "museum") return museum.buildAudienceAnalytics(logs)
   if (scope === "church_of_england") return churchOfEngland.buildAudienceAnalytics(logs)
+  if (scope === "tma_demo") return tmaDemo.buildAudienceAnalytics(logs) as AudienceAnalytics
   const enabled = getActiveCombinedSiteIds()
   const analyticsBySite = {
     gallery: () => gallery.buildAudienceAnalytics(logs),
@@ -379,6 +415,7 @@ export function buildWeeklySeries(
   if (scope === "arkin") return arkin.buildWeeklySeries(logs, weekOffset)
   if (scope === "museum") return museum.buildWeeklySeries(logs, weekOffset)
   if (scope === "church_of_england") return churchOfEngland.buildWeeklySeries(logs, weekOffset)
+  if (scope === "tma_demo") return tmaDemo.buildWeeklySeries(logs, weekOffset)
   const g = gallery.buildWeeklySeries(logs, weekOffset)
   const m = museum.buildWeeklySeries(logs, weekOffset)
   const a = arkin.buildWeeklySeries(logs, weekOffset)
@@ -415,6 +452,7 @@ export function buildMonthlyCalendarGrid(
   if (scope === "church_of_england") {
     return churchOfEngland.buildMonthlyCalendarGrid(logs, monthOffset)
   }
+  if (scope === "tma_demo") return tmaDemo.buildMonthlyCalendarGrid(logs, monthOffset)
   const g = gallery.buildMonthlyCalendarGrid(logs, monthOffset)
   const m = museum.buildMonthlyCalendarGrid(logs, monthOffset)
   const a = arkin.buildMonthlyCalendarGrid(logs, monthOffset)
@@ -457,6 +495,7 @@ export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
   if (scope === "arkin") return arkin.listDistinctArkinSars(logs)
   if (scope === "museum") return museum.listDistinctMuseumSars(logs)
   if (scope === "church_of_england") return churchOfEngland.listDistinctChurchOfEnglandSars(logs)
+  if (scope === "tma_demo") return tmaDemo.listDistinctTmaDemoSars(logs)
   return [
     ...new Set(
       getActiveCombinedSiteIds().flatMap((siteId) => {
@@ -480,6 +519,7 @@ export function buildSarTimelineEvents(
   if (scope === "church_of_england") {
     return churchOfEngland.buildSarChurchOfEnglandTimelineEvents(logs, sarQuery)
   }
+  if (scope === "tma_demo") return tmaDemo.buildSarTmaDemoTimelineEvents(logs, sarQuery)
   const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
     if (siteId === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
     if (siteId === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
@@ -514,6 +554,8 @@ export function buildSarTimelineRowMetaMap(
     meta = museum.buildSarTimelineRowMetaMap(logs)
   } else if (scope === "church_of_england") {
     meta = churchOfEngland.buildSarTimelineRowMetaMap(logs)
+  } else if (scope === "tma_demo") {
+    meta = tmaDemo.buildSarTimelineRowMetaMap(logs)
   } else if (scope === "gallery") {
     meta = gallery.buildSarTimelineRowMetaMap(logs)
   } else {
@@ -578,6 +620,10 @@ export function buildSarTimelinePlot(
     const plot = churchOfEngland.buildSarTimelinePlot(logs)
     return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
   }
+  if (scope === "tma_demo") {
+    const plot = tmaDemo.buildSarTimelinePlot(logs)
+    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
+  }
   const plots = getActiveCombinedSiteIds().map((siteId) => {
     if (siteId === "gallery") return gallery.buildSarTimelinePlot(logs)
     if (siteId === "museum") return museum.buildSarTimelinePlot(logs)
@@ -593,11 +639,24 @@ export const sarTimelinePointPx = gallery.sarTimelinePointPx
 export const sarTimelineHourScrollPx = gallery.sarTimelineHourScrollPx
 export const buildSarTimelineGridTicks = gallery.buildSarTimelineGridTicks
 export const sarTimelineViewportRange = gallery.sarTimelineViewportRange
-export const formatSarTimelineViewRange = gallery.formatSarTimelineViewRange
+export function formatSarTimelineViewRange(
+  range: gallery.SarTimelineViewportRange
+): string {
+  return isDemoPortuguese()
+    ? tmaDemo.formatSarTimelineViewRange(range)
+    : gallery.formatSarTimelineViewRange(range)
+}
 export const SAR_TIMELINE_ZOOM_MIN_HALF_MS = gallery.SAR_TIMELINE_ZOOM_MIN_HALF_MS
 export const SAR_TIMELINE_ZOOM_MAX_HALF_MS = gallery.SAR_TIMELINE_ZOOM_MAX_HALF_MS
 export const SAR_TIMELINE_ZOOM_LEVELS_HALF_MS = gallery.SAR_TIMELINE_ZOOM_LEVELS_HALF_MS
-export const formatSarTimelineZoomSpan = gallery.formatSarTimelineZoomSpan
+export function formatSarTimelineZoomSpan(
+  halfExtentMs: number,
+  totalExtentMs?: number
+) {
+  return isDemoPortuguese()
+    ? tmaDemo.formatSarTimelineZoomSpan(halfExtentMs, totalExtentMs)
+    : gallery.formatSarTimelineZoomSpan(halfExtentMs, totalExtentMs)
+}
 export const sarTimelineFitAllHalfMs = gallery.sarTimelineFitAllHalfMs
 export const sarTimelineZoomLevelsForPlot = gallery.sarTimelineZoomLevelsForPlot
 export const sarTimelineZoomIndexForHalf = gallery.sarTimelineZoomIndexForHalf

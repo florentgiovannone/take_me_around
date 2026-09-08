@@ -3,6 +3,7 @@ import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
 import * as arkin from "@tma/analytics-arkin"
 import * as churchOfEngland from "@tma/analytics-church-of-england"
+import * as tmaDemo from "@tma/analytics-tma-demo"
 import { getActiveCombinedSiteIds } from "./combinedSites"
 
 type PoiseLog = gallery.PoiseLog & { visitor_number?: string | null }
@@ -11,12 +12,14 @@ function getSarForLog(log: PoiseLog, scope: SiteScope): string | null {
   if (scope === "arkin") return arkin.getSarFromLog(log)
   if (scope === "museum") return museum.getSarFromLog(log)
   if (scope === "church_of_england") return churchOfEngland.getSarFromLog(log)
+  if (scope === "tma_demo") return tmaDemo.getSarFromLog(log)
   if (scope === "gallery") return gallery.getSarFromLog(log)
   return (
     gallery.getSarFromLog(log) ??
     museum.getSarFromLog(log) ??
     arkin.getSarFromLog(log) ??
-    churchOfEngland.getSarFromLog(log)
+    churchOfEngland.getSarFromLog(log) ??
+    tmaDemo.getSarFromLog(log)
   )
 }
 
@@ -25,6 +28,7 @@ function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
   if (scope === "arkin") return arkin.getArkinLogs(logs)
   if (scope === "museum") return museum.getMuseumLogs(logs)
   if (scope === "church_of_england") return churchOfEngland.getChurchOfEnglandLogs(logs)
+  if (scope === "tma_demo") return tmaDemo.getTmaDemoLogs(logs)
   const seen = new Set<number>()
   const merged: PoiseLog[] = []
   for (const siteId of getActiveCombinedSiteIds()) {

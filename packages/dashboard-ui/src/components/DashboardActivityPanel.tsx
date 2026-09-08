@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import AnalyticsStatCard from "./AnalyticsStatCard"
 import DashboardActivityTableRow from "./DashboardActivityTableRow"
-import { useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import { formatRelativeTime } from "../utils/dashboardFormatters"
 import {
   buildActivityEntries,
@@ -18,6 +18,7 @@ type DashboardActivityPanelProps = {
 
 export default function DashboardActivityPanel({ logs }: DashboardActivityPanelProps) {
   const siteScope = useSiteAnalyticsScope()
+  const copy = useDashboardCopy()
   const activityEntries = useMemo(
     () => buildActivityEntries(logs, siteScope),
     [logs, siteScope]
@@ -46,7 +47,7 @@ export default function DashboardActivityPanel({ logs }: DashboardActivityPanelP
     <div className="tma-analytics-panel">
       <div className="tma-analytics-stats tma-analytics-stats--3">
         <AnalyticsStatCard
-          label="Total Events"
+          label={copy.totalEvents}
           value={formatNumber(activityEntries.length)}
           meta={trackedScansMeta(siteScope)}
           icon={
@@ -56,7 +57,7 @@ export default function DashboardActivityPanel({ logs }: DashboardActivityPanelP
           }
         />
         <AnalyticsStatCard
-          label="Artworks"
+          label={copy.artworks}
           value={formatNumber(uniqueArtworks)}
           meta={trackedLinksMeta(siteScope)}
           icon={
@@ -69,10 +70,10 @@ export default function DashboardActivityPanel({ logs }: DashboardActivityPanelP
           }
         />
         <AnalyticsStatCard
-          label="Latest Scan"
+          label={copy.latestScan}
           value={formatRelativeTime(latestScan)}
           valueClassName="tma-analytics-stat-value--text"
-          meta="updates every 5s"
+          meta={copy.updatesEvery5s}
           metaClassName="is-accent"
           icon={
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -90,20 +91,20 @@ export default function DashboardActivityPanel({ logs }: DashboardActivityPanelP
 
       <section className="tma-analytics-card">
         <div className="tma-analytics-card-header">
-          <h2>Live Activity</h2>
-          <span className="tma-dashboard-live-badge">Live</span>
+          <h2>{copy.liveActivity}</h2>
+          <span className="tma-dashboard-live-badge">{copy.live}</span>
         </div>
 
         <div className="tma-dashboard-table-wrap tma-dashboard-table-wrap--inset">
           <table className="tma-dashboard-table tma-dashboard-table--activity-modern">
             <thead>
               <tr>
-                <th>Log ID</th>
-                <th>Artwork</th>
-                <th>Time</th>
-                <th>Type</th>
-                <th>Seen?</th>
-                <th>Link</th>
+                <th>{copy.logId}</th>
+                <th>{copy.artwork}</th>
+                <th>{copy.time}</th>
+                <th>{copy.type}</th>
+                <th>{copy.seen}</th>
+                <th>{copy.link}</th>
               </tr>
             </thead>
             <tbody>

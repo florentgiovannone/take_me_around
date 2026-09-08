@@ -31,6 +31,8 @@ Edit `src/config/operators.ts` to add or change operators. Each operator has an 
 
 When more than one operator exists, a **profile picker** appears on the login form. The chosen profile is stored in the session.
 
+**TMA Demo** and **Southwell Minster** are passwordless: pick the profile and click **Unlock**. Other operators still need the dashboard password.
+
 Optional build-time default (skips login picker behaviour for restores):
 
 ```env
@@ -42,6 +44,9 @@ VITE_DASHBOARD_OPERATOR_ID=museum-only
 | Path | Behaviour |
 |------|-----------|
 | `/` | Full dashboard with scope switcher |
+| `/demodashboard` | Standalone **TMA Demo** (no password, no operator picker) |
+| `/demo` | Redirects to `/demodashboard` |
+| `/dashboard/tma-demo` | Redirects to `/demodashboard` |
 | `/dashboard` | Locked to `.gallery` |
 | `/dashboard/museum` | Locked to `.museum` |
 

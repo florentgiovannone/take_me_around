@@ -13,7 +13,11 @@ export { default as SarTimelineChart } from "./components/SarTimelineChart"
 export {
   SiteScopeProvider,
   useSiteAnalyticsScope,
+  useDashboardCopy,
+  useDashboardLocale,
 } from "./hooks/useSiteAnalyticsScope"
+export { dashboardCopy } from "./i18n/copy"
+export type { DashboardCopy } from "./i18n/copy"
 export { useMediaQuery } from "./hooks/useMediaQuery"
 export { useTapChartInteraction } from "./hooks/useTapChartInteraction"
 

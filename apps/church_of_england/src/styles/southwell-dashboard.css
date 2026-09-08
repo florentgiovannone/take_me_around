@@ -151,6 +151,11 @@
   box-shadow: var(--shadow);
 }
 
+.southwell-dashboard .tma-dashboard-auth button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .southwell-dashboard .tma-dashboard-error {
   font-family: "Cormorant Garamond", serif;
   font-style: italic;

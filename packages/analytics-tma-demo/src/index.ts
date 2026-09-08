@@ -1,4 +1,10 @@
-import { isTmaDemoTagName } from "@tma/config"
+import {
+  TMA_DEMO_TAG_NAMES,
+  canonicalTmaDemoTagName,
+  dashboardIntlLocale,
+  getDashboardLocale,
+  tmaDemoDisplayTitle,
+} from "@tma/config"
 
 export type PoiseLog = {
   int_id: number
@@ -44,151 +50,44 @@ export type AudienceBreakdownRow = {
   percent: number
 }
 
-export const TRACKED_CHURCH_OF_ENGLAND_ARTWORKS = [
-  { title: "Westminster Abbey", path: "/westminster-abbey" },
-  { title: "Southwell Minster", path: "/minster_cathedral/Southwell/deans_welcome_message" },
-] as const
+export const TRACKED_TMA_DEMO_ARTWORKS = TMA_DEMO_TAG_NAMES.map((name) => ({
+  tagName: name,
+  title: tmaDemoDisplayTitle(name),
+  path: `/demo/${name}`,
+}))
 
-export type TrackedArtwork = (typeof TRACKED_CHURCH_OF_ENGLAND_ARTWORKS)[number]
-
-const TRACKED_CHURCH_OF_ENGLAND_PATHS = TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => artwork.path)
-const TRACKED_CHURCH_OF_ENGLAND_PATHS_BY_LENGTH = [...TRACKED_CHURCH_OF_ENGLAND_PATHS].sort(
-  (a, b) => b.length - a.length
-)
-const TRACKED_CHURCH_OF_ENGLAND_TITLES = new Set(
-  TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => artwork.title.toLowerCase())
-)
-
-/** Legacy URL variants that should roll up to a canonical tracked path (lowercase match keys). */
-const TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES: { match: string; canonical: string }[] = [
-  { match: "/southwell-minster", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
-  { match: "/southwell_minster/introduction", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
-  { match: "/southwell_minster", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
-]
+export type TrackedArtwork = (typeof TRACKED_TMA_DEMO_ARTWORKS)[number]
 
 export function getTrackedArtworkUrl(path: string) {
-  return `https://takemearound.church${path}`
+  return path
 }
 
-const CHURCH_OF_ENGLAND_HOSTNAME = "takemearound.church"
-const CHURCH_OF_ENGLAND_HOSTNAMES = new Set([
-  CHURCH_OF_ENGLAND_HOSTNAME,
-  "church.takemearound.gallery",
-])
-const FOREIGN_TRACKED_HOSTNAMES = new Set([
-  "takemearound.museum",
-  "takemearound.gallery",
-  "arkin.takemearound.gallery",
-])
-const SCHEME_LESS_HOST_PATTERN =
-  /(?:^|[\s([{"'])((?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#][^\s<>"']*)?)/gi
-
-function schemeLessHostCandidates(message: string) {
-  return (message.match(SCHEME_LESS_HOST_PATTERN) ?? []).map((match) =>
-    match.trim().replace(/^[([{"']+/, "")
-  )
-}
-
-/** Reject foreign hosts; allow known Church hosts and messages without a host. */
-function isChurchOfEnglandDomainMessage(message: string) {
-  const absoluteUrls = message.match(/https?:\/\/[^\s<>"']+/gi) ?? []
-  for (const candidate of absoluteUrls) {
-    try {
-      if (!CHURCH_OF_ENGLAND_HOSTNAMES.has(new URL(candidate).hostname.toLowerCase())) return false
-    } catch {
-      return false
-    }
-  }
-
-  for (const candidate of schemeLessHostCandidates(message)) {
-    try {
-      if (!CHURCH_OF_ENGLAND_HOSTNAMES.has(new URL(`https://${candidate}`).hostname.toLowerCase())) {
-        return false
-      }
-    } catch {
-      return false
-    }
-  }
-
-  return true
-}
-
-function messageLooksLinkShaped(message: string) {
-  const trimmed = message.trim()
-  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return false
-  return (
-    trimmed.startsWith("/") ||
-    trimmed.includes("://") ||
-    schemeLessHostCandidates(trimmed).length > 0
-  )
-}
-
-function containsForeignTrackedRedirectUrl(message: string) {
-  const candidates = [
-    ...(message.match(/https?:\/\/[^\s<>"']+/gi) ?? []),
-    ...schemeLessHostCandidates(message).map((candidate) => `https://${candidate}`),
-  ]
-
-  return candidates.some((candidate) => {
-    try {
-      return FOREIGN_TRACKED_HOSTNAMES.has(new URL(candidate).hostname.toLowerCase())
-    } catch {
-      return false
-    }
-  })
-}
-
-export function extractTrackedPathFromMessage(message: string): string | null {
-  if (!isChurchOfEnglandDomainMessage(message)) return null
-
-  const normalized = message.toLowerCase()
-
-  for (const path of TRACKED_CHURCH_OF_ENGLAND_PATHS_BY_LENGTH) {
-    if (normalized.includes(path.toLowerCase())) return path
-  }
-
-  for (const alias of TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES) {
-    if (normalized.includes(alias.match.toLowerCase())) return alias.canonical
-  }
-
+export function extractTrackedPathFromMessage(_message: string): string | null {
   return null
 }
 
-function nameMatchesTrackedChurchOfEnglandArtwork(name: string | null | undefined) {
-  const normalized = name?.trim().toLowerCase()
-  return Boolean(normalized && TRACKED_CHURCH_OF_ENGLAND_TITLES.has(normalized))
-}
-
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
-  const message = log.txt_message?.trim() ?? ""
-
-  const path = extractTrackedPathFromMessage(message)
-  if (path) {
-    return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.path === path) ?? null
-  }
-
-  if (containsForeignTrackedRedirectUrl(message)) return null
-  if (messageLooksLinkShaped(message) && !isChurchOfEnglandDomainMessage(message)) return null
-
-  const normalizedName = log.text_name?.trim().toLowerCase()
-  if (!normalizedName) return null
-
-  return (
-    TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.title.toLowerCase() === normalizedName) ??
-    null
-  )
+  const canonical = canonicalTmaDemoTagName(log.text_name)
+  if (!canonical) return null
+  return TRACKED_TMA_DEMO_ARTWORKS.find((artwork) => artwork.tagName === canonical) ?? null
 }
 
-/** True when the log belongs to one of the tracked takemearound.church artworks. */
-export function isChurchOfEnglandLog(log: PoiseLog) {
-  if (isTmaDemoTagName(log.text_name)) return false
+/** True when the log belongs to one of the tracked TMA Demo tags. */
+export function isTmaDemoLog(log: PoiseLog) {
   return resolveTrackedArtwork(log) !== null
 }
 
-export function getChurchOfEnglandLogLink(log: PoiseLog) {
+function looksLikeUrlOrPath(message: string) {
+  const trimmed = message.trim()
+  if (!trimmed || trimmed.startsWith("{") || trimmed.startsWith("[")) return false
+  return trimmed.startsWith("/") || trimmed.includes("://")
+}
+
+export function getTmaDemoLogLink(log: PoiseLog) {
+  const message = log.txt_message?.trim() ?? ""
+  if (looksLikeUrlOrPath(message)) return message
   const artwork = resolveTrackedArtwork(log)
-  if (artwork) return getTrackedArtworkUrl(artwork.path)
-  return log.txt_message?.trim() || "-"
+  return artwork?.title || tmaDemoDisplayTitle(log.text_name) || message || "-"
 }
 
 const ANONYMOUS_SEEN_PAIR_MAX_MS = 5000
@@ -211,10 +110,10 @@ function timestampsCloseEnough(left: PoiseLog, right: PoiseLog, maxMs = ANONYMOU
 
 function withTrackedArtworkName(log: PoiseLog, artwork: TrackedArtwork): PoiseLog {
   if (log.text_name?.trim()) return log
-  return { ...log, text_name: artwork.title }
+  return { ...log, text_name: artwork.tagName }
 }
 
-function anonymousSeenNeighborForChurchRedirect(redirect: PoiseLog, byId: Map<number, PoiseLog>) {
+function anonymousSeenNeighborForTmaDemoRedirect(redirect: PoiseLog, byId: Map<number, PoiseLog>) {
   for (const neighborId of [redirect.int_id - 1, redirect.int_id + 1]) {
     const neighbor = byId.get(neighborId)
     if (!neighbor) continue
@@ -225,31 +124,29 @@ function anonymousSeenNeighborForChurchRedirect(redirect: PoiseLog, byId: Map<nu
   return null
 }
 
-/** Church logs plus unnamed SEEN rows Poise writes next to a church REDIRECTED (no tag name/UID). */
-export function getChurchOfEnglandLogs(logs: PoiseLog[]) {
-  const church = logs.filter(isChurchOfEnglandLog)
-  const included = new Set(church.map((log) => log.int_id))
+/** Demo logs plus unnamed SEEN rows Poise writes next to a demo REDIRECTED (no tag name/UID). */
+export function getTmaDemoLogs(logs: PoiseLog[]) {
+  const demoLogs = logs.filter(isTmaDemoLog)
+  const included = new Set(demoLogs.map((log) => log.int_id))
   const byId = new Map(logs.map((log) => [log.int_id, log]))
   const extras: PoiseLog[] = []
 
-  for (const log of church) {
+  for (const log of demoLogs) {
     if (normalizeMessageType(log.txt_message_type) !== "REDIRECTED") continue
     const artwork = resolveTrackedArtwork(log)
     if (!artwork) continue
-    const seen = anonymousSeenNeighborForChurchRedirect(log, byId)
+    const seen = anonymousSeenNeighborForTmaDemoRedirect(log, byId)
     if (!seen || included.has(seen.int_id)) continue
     included.add(seen.int_id)
     extras.push(withTrackedArtworkName(seen, artwork))
   }
 
-  return extras.length ? [...church, ...extras] : church
+  return extras.length ? [...demoLogs, ...extras] : demoLogs
 }
 
 export function getRedirectScans(logs: PoiseLog[]) {
-  return logs.filter(
-    (row) =>
-      row.txt_message_type === "REDIRECTED" &&
-      extractTrackedPathFromMessage(row.txt_message ?? "") !== null
+  return getTmaDemoLogs(logs).filter(
+    (row) => normalizeMessageType(row.txt_message_type) === "REDIRECTED"
   )
 }
 
@@ -258,7 +155,7 @@ export type TrackedArtworkScanGroup = TrackedArtwork & {
   scans: PoiseLog[]
 }
 
-export type ChurchOfEnglandActivityEntry = {
+export type TmaDemoActivityEntry = {
   key: string
   redirect: PoiseLog | null
   seen: PoiseLog[]
@@ -270,11 +167,7 @@ export type ChurchOfEnglandActivityEntry = {
 function getArtworkKey(log: PoiseLog) {
   const artwork = resolveTrackedArtwork(log)
   if (artwork) return artwork.path
-
-  const path = extractTrackedPathFromMessage(log.txt_message ?? "")
-  if (path) return path
-
-  return log.text_name?.trim().toLowerCase() ?? ""
+  return canonicalTmaDemoTagName(log.text_name)?.toLowerCase() ?? log.text_name?.trim().toLowerCase() ?? ""
 }
 
 function normalizeMessageType(value: string | null | undefined) {
@@ -323,12 +216,12 @@ function sortLogsByTimestampDesc(a: PoiseLog, b: PoiseLog) {
   return bTime - aTime
 }
 
-export function buildChurchOfEnglandActivityEntries(logs: PoiseLog[]): ChurchOfEnglandActivityEntry[] {
-  const churchOfEnglandLogs = getChurchOfEnglandLogs(logs)
-  const redirects = churchOfEnglandLogs.filter(
+export function buildTmaDemoActivityEntries(logs: PoiseLog[]): TmaDemoActivityEntry[] {
+  const demoLogs = getTmaDemoLogs(logs)
+  const redirects = demoLogs.filter(
     (row) => normalizeMessageType(row.txt_message_type) === "REDIRECTED"
   )
-  const seenLogs = churchOfEnglandLogs.filter(
+  const seenLogs = demoLogs.filter(
     (row) => normalizeMessageType(row.txt_message_type) === "SEEN"
   )
   const groups = new Map<string, { redirects: PoiseLog[]; seen: PoiseLog[] }>()
@@ -359,8 +252,9 @@ export function buildChurchOfEnglandActivityEntries(logs: PoiseLog[]): ChurchOfE
       redirect,
       seen,
       timestamp: primary?.dtm_timestamp ?? null,
-      artworkTitle: artwork?.title ?? primary?.text_name?.trim() ?? "-",
-      link: primary ? getChurchOfEnglandLogLink(primary) : "-",
+      artworkTitle:
+        artwork?.title ?? tmaDemoDisplayTitle(primary?.text_name) ?? primary?.text_name?.trim() ?? "-",
+      link: primary ? getTmaDemoLogLink(primary) : "-",
     }
   })
 
@@ -375,9 +269,9 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
   const scansByPath = new Map<string, PoiseLog[]>()
 
   for (const scan of getRedirectScans(logs)) {
-    const path = extractTrackedPathFromMessage(scan.txt_message ?? "")
-    if (!path) continue
-    scansByPath.set(path, [...(scansByPath.get(path) ?? []), scan])
+    const artwork = resolveTrackedArtwork(scan)
+    if (!artwork) continue
+    scansByPath.set(artwork.path, [...(scansByPath.get(artwork.path) ?? []), scan])
   }
 
   const sortByTimestampDesc = (a: PoiseLog, b: PoiseLog) => {
@@ -386,11 +280,14 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
     return bTime - aTime
   }
 
-  return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => ({
-    ...artwork,
-    url: getTrackedArtworkUrl(artwork.path),
-    scans: (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc),
-  })).sort((a, b) => b.scans.length - a.scans.length)
+  return TRACKED_TMA_DEMO_ARTWORKS.map((artwork) => {
+    const scans = (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc)
+    return {
+      ...artwork,
+      url: scans[0] ? getTmaDemoLogLink(scans[0]) : artwork.title,
+      scans,
+    }
+  }).sort((a, b) => b.scans.length - a.scans.length)
 }
 
 export function getSeenEntries(logs: PoiseLog[]) {
@@ -688,17 +585,17 @@ function startOfWeekMonday(date: Date) {
 }
 
 function formatDayLabel(date: Date) {
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+  return date.toLocaleDateString(dashboardIntlLocale(), { day: "numeric", month: "short" })
 }
 
 function formatWeekRange(start: Date, end: Date) {
   const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()
-  const startLabel = start.toLocaleDateString("en-GB", {
+  const startLabel = start.toLocaleDateString(dashboardIntlLocale(), {
     day: "numeric",
     month: "short",
     ...(sameMonth ? {} : { year: "numeric" }),
   })
-  const endLabel = end.toLocaleDateString("en-GB", {
+  const endLabel = end.toLocaleDateString(dashboardIntlLocale(), {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -810,7 +707,7 @@ export function buildMonthlySeries(scans: PoiseLog[], monthOffset: number): Time
 
   return {
     series,
-    periodLabel: monthStart.toLocaleDateString("en-GB", { month: "long", year: "numeric" }),
+    periodLabel: monthStart.toLocaleDateString(dashboardIntlLocale(), { month: "long", year: "numeric" }),
     canGoForward: monthOffset > 0,
   }
 }
@@ -865,8 +762,8 @@ function percentChange(current: number, previous: number) {
   return ((current - previous) / previous) * 100
 }
 
-function churchOfEnglandSeenEntries(logs: PoiseLog[]) {
-  return getChurchOfEnglandLogs(logs)
+function tmaDemoSeenEntries(logs: PoiseLog[]) {
+  return getTmaDemoLogs(logs)
     .filter((row) => normalizeMessageType(row.txt_message_type) === "SEEN")
     .map(parseSeenEntry)
     .filter((entry): entry is ParsedSeen => Boolean(entry))
@@ -880,7 +777,8 @@ export function buildOverviewAnalytics(logs: PoiseLog[]) {
   const monthStart = startOfMonth(now)
 
   const scansByTag = scans.reduce<Record<string, number>>((acc, row) => {
-    const label = row.text_name?.trim() || row.txt_message?.trim() || "Unknown"
+    const label =
+      tmaDemoDisplayTitle(row.text_name) || row.text_name?.trim() || row.txt_message?.trim() || "Unknown"
     acc[label] = (acc[label] ?? 0) + 1
     return acc
   }, {})
@@ -902,7 +800,9 @@ export function buildOverviewAnalytics(logs: PoiseLog[]) {
 
   const topTagThisMonth = scans.filter((row) => {
     const date = parseTimestamp(row.dtm_timestamp)
-    return date && date >= monthStart && (row.text_name?.trim() || "Unknown") === topTag[0]
+    const label =
+      tmaDemoDisplayTitle(row.text_name) || row.text_name?.trim() || "Unknown"
+    return date && date >= monthStart && label === topTag[0]
   }).length
 
   return {
@@ -916,7 +816,7 @@ export function buildOverviewAnalytics(logs: PoiseLog[]) {
 }
 
 export function buildAudienceAnalytics(logs: PoiseLog[]) {
-  const seen = churchOfEnglandSeenEntries(logs)
+  const seen = tmaDemoSeenEntries(logs)
   const scans = getRedirectScans(logs)
 
   const deviceCounts: Record<DeviceKind, number> = {
@@ -972,7 +872,10 @@ export function buildAudienceAnalytics(logs: PoiseLog[]) {
   const languageVisitTotal = seen.length
   const hourlyMax = Math.max(...hourlyCounts, 1)
   const weekdayMax = Math.max(...weekdayCounts, 1)
-  const weekdayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const
+  const weekdayLabels: string[] =
+    getDashboardLocale() === "pt-BR"
+      ? ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+      : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
   const toPercent = (count: number, total: number) =>
     total > 0 ? Math.round((count / total) * 100) : 0
@@ -1044,17 +947,17 @@ export function getSarFromLog(log: PoiseLog): string | null {
   return buildActivityVisitDetails(log).sar
 }
 
-type ChurchOfEnglandSarContext = {
+type TmaDemoSarContext = {
   sarByUid: Map<string, string>
   /** SAR from SEEN rows keyed by artwork + second (pairs REDIRECTED when txt_uid is null). */
   sarByScanKey: Map<string, string>
 }
 
-function buildChurchOfEnglandSarContext(logs: PoiseLog[]): ChurchOfEnglandSarContext {
+function buildTmaDemoSarContext(logs: PoiseLog[]): TmaDemoSarContext {
   const sarByUid = new Map<string, string>()
   const sarByScanKey = new Map<string, string>()
 
-  for (const log of getChurchOfEnglandLogs(logs)) {
+  for (const log of getTmaDemoLogs(logs)) {
     if (normalizeMessageType(log.txt_message_type) !== "SEEN") continue
     const sar = getSarFromLog(log)?.trim()
     if (!sar) continue
@@ -1070,7 +973,7 @@ function buildChurchOfEnglandSarContext(logs: PoiseLog[]): ChurchOfEnglandSarCon
   return { sarByUid, sarByScanKey }
 }
 
-function resolveSarForChurchOfEnglandLog(log: PoiseLog, ctx: ChurchOfEnglandSarContext): string | null {
+function resolveSarForTmaDemoLog(log: PoiseLog, ctx: TmaDemoSarContext): string | null {
   const direct = getSarFromLog(log)?.trim()
   if (direct) return direct
 
@@ -1088,12 +991,12 @@ function resolveSarForChurchOfEnglandLog(log: PoiseLog, ctx: ChurchOfEnglandSarC
   return null
 }
 
-/** Distinct SAR values seen on tracked Church of England links (from SEEN cookies, linked to redirects by tag UID). */
-export function listDistinctChurchOfEnglandSars(logs: PoiseLog[]): string[] {
-  const ctx = buildChurchOfEnglandSarContext(logs)
+/** Distinct SAR values seen on tracked TMA Demo tags (from SEEN cookies, linked to redirects by tag UID). */
+export function listDistinctTmaDemoSars(logs: PoiseLog[]): string[] {
+  const ctx = buildTmaDemoSarContext(logs)
   const values = new Set<string>()
-  for (const log of getChurchOfEnglandLogs(logs)) {
-    const sar = resolveSarForChurchOfEnglandLog(log, ctx)
+  for (const log of getTmaDemoLogs(logs)) {
+    const sar = resolveSarForTmaDemoLog(log, ctx)
     if (sar) values.add(sar)
   }
   return [...values].sort((a, b) => a.localeCompare(b))
@@ -1168,14 +1071,14 @@ function formatSarRowMetaSubtitle(country: string | null, language: string | nul
 
 /** Country + language for each SAR (from the newest SEEN row when available). */
 export function buildSarTimelineRowMetaMap(logs: PoiseLog[]): Map<string, SarTimelineRowMeta> {
-  const ctx = buildChurchOfEnglandSarContext(logs)
+  const ctx = buildTmaDemoSarContext(logs)
   const meta = new Map<string, SarTimelineRowMeta>()
 
-  const seenCandidates = getChurchOfEnglandLogs(logs)
+  const seenCandidates = getTmaDemoLogs(logs)
     .filter((log) => (log.txt_message_type ?? "").trim().toUpperCase() === "SEEN")
     .map((log) => ({
       log,
-      sar: resolveSarForChurchOfEnglandLog(log, ctx),
+      sar: resolveSarForTmaDemoLog(log, ctx),
       time: parseLogTimestampGmt(log.dtm_timestamp)?.getTime() ?? 0,
     }))
     .filter((entry): entry is typeof entry & { sar: string } => Boolean(entry.sar))
@@ -1189,9 +1092,9 @@ export function buildSarTimelineRowMetaMap(logs: PoiseLog[]): Map<string, SarTim
     meta.set(sar, { sar, visitorNumber: null, country, language })
   }
 
-  for (const sar of listDistinctChurchOfEnglandSars(logs)) {
+  for (const sar of listDistinctTmaDemoSars(logs)) {
     if (meta.has(sar)) continue
-    const related = getChurchOfEnglandLogsForSar(logs, sar).sort((a, b) => {
+    const related = getTmaDemoLogsForSar(logs, sar).sort((a, b) => {
       const aTime = parseLogTimestampGmt(a.dtm_timestamp)?.getTime() ?? 0
       const bTime = parseLogTimestampGmt(b.dtm_timestamp)?.getTime() ?? 0
       return bTime - aTime
@@ -1219,25 +1122,25 @@ export function formatSarTimelineRowMetaSubtitle(meta: SarTimelineRowMeta) {
   return formatSarRowMetaSubtitle(meta.country, meta.language)
 }
 
-/** All tracked Church of England log rows for one SAR (case-insensitive). */
-export function getChurchOfEnglandLogsForSar(logs: PoiseLog[], sarQuery: string): PoiseLog[] {
+/** All tracked TMA Demo log rows for one SAR (case-insensitive). */
+export function getTmaDemoLogsForSar(logs: PoiseLog[], sarQuery: string): PoiseLog[] {
   const target = sarQuery.trim().toLowerCase()
   if (!target) return []
-  const ctx = buildChurchOfEnglandSarContext(logs)
-  return getChurchOfEnglandLogs(logs).filter((log) => {
-    const sar = resolveSarForChurchOfEnglandLog(log, ctx)
+  const ctx = buildTmaDemoSarContext(logs)
+  return getTmaDemoLogs(logs).filter((log) => {
+    const sar = resolveSarForTmaDemoLog(log, ctx)
     return sar?.toLowerCase() === target
   })
 }
 
-export type SarChurchOfEnglandTimelineEvent = ChurchOfEnglandActivityEntry
+export type SarTmaDemoTimelineEvent = TmaDemoActivityEntry
 
-export function buildSarChurchOfEnglandTimelineEvents(
+export function buildSarTmaDemoTimelineEvents(
   logs: PoiseLog[],
   sarQuery: string
-): ChurchOfEnglandActivityEntry[] {
+): TmaDemoActivityEntry[] {
   if (!sarQuery.trim()) return []
-  return buildChurchOfEnglandActivityEntries(getChurchOfEnglandLogsForSar(logs, sarQuery))
+  return buildTmaDemoActivityEntries(getTmaDemoLogsForSar(logs, sarQuery))
 }
 
 /** Visible window: centre to each edge = this duration (1 hour per half). */
@@ -1331,17 +1234,20 @@ export function formatSarTimelineZoomSpan(
     totalExtentMs != null &&
     sarTimelineIsFullWindow(halfExtentMs, totalExtentMs)
   ) {
-    return "full timeline"
+    return getDashboardLocale() === "pt-BR" ? "linha do tempo completa" : "full timeline"
   }
   const spanMin = Math.round((halfExtentMs * 2) / 60000)
-  if (spanMin <= 5) return "5 min"
-  if (spanMin < 60) return `${spanMin} min`
+  const pt = getDashboardLocale() === "pt-BR"
+  if (spanMin <= 5) return pt ? "5 min" : "5 min"
+  if (spanMin < 60) return pt ? `${spanMin} min` : `${spanMin} min`
   const hours = spanMin / 60
   if (hours >= 48) {
     const days = Math.round(hours / 24)
+    if (pt) return days === 1 ? "1 dia" : `${days} dias`
     return days === 1 ? "1 day" : `${days} days`
   }
   const roundedHours = Math.round(hours * 10) / 10
+  if (pt) return roundedHours === 1 ? "1 hora" : `${roundedHours} horas`
   return roundedHours === 1 ? "1 hour" : `${roundedHours} hours`
 }
 
@@ -1375,7 +1281,7 @@ export type SarTimelinePlot = {
 }
 
 function formatTimelineEdgeLabel(date: Date) {
-  return date.toLocaleString("en-GB", {
+  return date.toLocaleString(dashboardIntlLocale(), {
     day: "numeric",
     month: "short",
     hour: "2-digit",
@@ -1504,7 +1410,7 @@ export function formatSarTimelineViewRange(range: SarTimelineViewportRange): str
   const sameDay =
     range.start.toUTCString().slice(0, 16) === range.end.toUTCString().slice(0, 16)
   const dayFmt = (d: Date) =>
-    d.toLocaleString("en-GB", {
+    d.toLocaleString(dashboardIntlLocale(), {
       weekday: "long",
       day: "numeric",
       month: "short",
@@ -1512,7 +1418,7 @@ export function formatSarTimelineViewRange(range: SarTimelineViewportRange): str
       timeZone: "UTC",
     })
   const timeFmt = (d: Date) =>
-    `${d.toLocaleString("en-GB", {
+    `${d.toLocaleString(dashboardIntlLocale(), {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
@@ -1570,13 +1476,13 @@ function utcAddMonthsMs(epochMs: number, months: number) {
 
 export function formatSarTimelineMonthLabel(date: Date, showYear = false) {
   if (showYear) {
-    return date.toLocaleString("en-GB", {
+    return date.toLocaleString(dashboardIntlLocale(), {
       month: "short",
       year: "numeric",
       timeZone: "UTC",
     })
   }
-  return date.toLocaleString("en-GB", {
+  return date.toLocaleString(dashboardIntlLocale(), {
     month: "short",
     timeZone: "UTC",
   })
@@ -1590,13 +1496,13 @@ export function formatSarTimelineTickLabel(date: Date, includeDate = false) {
     timeZone: "UTC",
   }
   if (includeDate) {
-    return date.toLocaleString("en-GB", {
+    return date.toLocaleString(dashboardIntlLocale(), {
       day: "numeric",
       month: "short",
       ...utc,
     })
   }
-  return date.toLocaleString("en-GB", utc)
+  return date.toLocaleString(dashboardIntlLocale(), utc)
 }
 
 export type SarTimelineGridTick = {
@@ -1723,15 +1629,43 @@ export function buildSarTimelineGridTicks(
   return ticks.sort((a, b) => a.offsetMs - b.offsetMs)
 }
 
+type SarTimelinePlotPointInput = Omit<SarTimelinePlotPoint, "xPercent">
+
+/** One marker per visit: REDIRECTED + SEEN pairs in the same second collapse to SEEN (circle). */
+function collapseVisitTimelinePoints(points: SarTimelinePlotPointInput[]): SarTimelinePlotPointInput[] {
+  const byVisit = new Map<string, SarTimelinePlotPointInput>()
+
+  for (const point of points) {
+    const visitKey = `${point.sar}|${Math.floor(point.timestamp.getTime() / 1000)}`
+    const existing = byVisit.get(visitKey)
+    if (!existing) {
+      byVisit.set(visitKey, point)
+      continue
+    }
+    if (existing.isRedirect && !point.isRedirect) {
+      byVisit.set(visitKey, point)
+      continue
+    }
+    if (!existing.isRedirect && point.isRedirect) {
+      continue
+    }
+    if (point.timestamp.getTime() > existing.timestamp.getTime()) {
+      byVisit.set(visitKey, point)
+    }
+  }
+
+  return [...byVisit.values()]
+}
+
 /** All SAR rows on Y; time on X with now centered (past left, future right). */
 export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
-  const ctx = buildChurchOfEnglandSarContext(logs)
+  const ctx = buildTmaDemoSarContext(logs)
   const now = new Date()
   const nowMs = now.getTime()
-  const rawPoints: Omit<SarTimelinePlotPoint, "xPercent">[] = []
+  const rawPoints: SarTimelinePlotPointInput[] = []
 
-  for (const log of getChurchOfEnglandLogs(logs)) {
-    const sar = resolveSarForChurchOfEnglandLog(log, ctx)
+  for (const log of getTmaDemoLogs(logs)) {
+    const sar = resolveSarForTmaDemoLog(log, ctx)
     if (!sar) continue
     const timestamp = parseLogTimestampGmt(log.dtm_timestamp)
     if (!timestamp) continue
@@ -1743,15 +1677,18 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
       timestamp,
       offsetMs: timestamp.getTime() - nowMs,
       messageType,
-      artworkTitle: artwork?.title ?? log.text_name?.trim() ?? "Unknown",
-      link: getChurchOfEnglandLogLink(log),
+      artworkTitle:
+        artwork?.title ?? tmaDemoDisplayTitle(log.text_name) ?? log.text_name?.trim() ?? "Unknown",
+      link: getTmaDemoLogLink(log),
       isRedirect: messageType.toUpperCase() === "REDIRECTED",
     })
   }
 
   if (rawPoints.length === 0) return null
 
-  const maxAbsOffset = rawPoints.reduce(
+  const collapsedPoints = collapseVisitTimelinePoints(rawPoints)
+
+  const maxAbsOffset = collapsedPoints.reduce(
     (max, point) => Math.max(max, Math.abs(point.offsetMs)),
     0
   )
@@ -1761,11 +1698,11 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
     Math.ceil(maxAbsOffset * 1.05)
   )
 
-  const sars = [...new Set(rawPoints.map((point) => point.sar))].sort((a, b) =>
+  const sars = [...new Set(collapsedPoints.map((point) => point.sar))].sort((a, b) =>
     a.localeCompare(b)
   )
 
-  const points = [...rawPoints].sort(
+  const points = [...collapsedPoints].sort(
     (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
   )
 
@@ -1784,7 +1721,7 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
 }
 
 export function formatNumber(value: number) {
-  return value.toLocaleString("en-GB")
+  return value.toLocaleString(dashboardIntlLocale())
 }
 
 export function formatSignedPercent(value: number) {

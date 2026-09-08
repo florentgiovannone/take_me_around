@@ -1,5 +1,6 @@
 import { useState } from "react"
 import type { SiteScope } from "@tma/config"
+import { useDashboardCopy } from "../hooks/useSiteAnalyticsScope"
 import { formatLogTimestamp, messageTypeClass } from "../utils/dashboardFormatters"
 import {
   buildActivityVisitDetails,
@@ -32,15 +33,16 @@ function DetailField({ label, value }: { label: string; value: string | number |
 }
 
 function VisitDetailsSection({ details }: { details: ActivityVisitDetails }) {
+  const copy = useDashboardCopy()
   return (
     <section className="tma-dashboard-activity-detail-section">
       <div className="tma-dashboard-activity-detail-grid">
-        <DetailField label="Tag UID" value={details.tagUid} />
-        <DetailField label="Device" value={details.device} />
-        <DetailField label="Browser" value={details.browser} />
-        <DetailField label="Operating system" value={details.os} />
-        <DetailField label="Language" value={details.language} />
-        <DetailField label="IP address" value={details.ipAddress} />
+        <DetailField label={copy.tagUid} value={details.tagUid} />
+        <DetailField label={copy.device} value={details.device} />
+        <DetailField label={copy.browser} value={details.browser} />
+        <DetailField label={copy.os} value={details.os} />
+        <DetailField label={copy.language} value={details.language} />
+        <DetailField label={copy.ipAddress} value={details.ipAddress} />
       </div>
       {details.sar && (
         <div className="tma-dashboard-activity-detail-sar">
@@ -50,7 +52,7 @@ function VisitDetailsSection({ details }: { details: ActivityVisitDetails }) {
       )}
       {details.userAgent && (
         <div className="tma-dashboard-activity-detail-user-agent">
-          <span className="tma-dashboard-activity-detail-label">User agent</span>
+          <span className="tma-dashboard-activity-detail-label">{copy.userAgent}</span>
           <p>{details.userAgent}</p>
         </div>
       )}
@@ -91,10 +93,11 @@ function renderDashboardLink(link: string) {
 }
 
 function SeenCell({ seen }: { seen: boolean }) {
+  const copy = useDashboardCopy()
   return (
-    <td data-label="Seen?" className="tma-dashboard-seen-cell">
+    <td data-label={copy.seen} className="tma-dashboard-seen-cell">
       {seen ? (
-        <span className="tma-dashboard-seen-tick" aria-label="Page seen">
+        <span className="tma-dashboard-seen-tick" aria-label={copy.pageSeen}>
           ✓
         </span>
       ) : (
@@ -119,6 +122,7 @@ export default function DashboardActivityTableRow({
   scope,
   showLogId = true,
 }: DashboardActivityTableRowProps) {
+  const copy = useDashboardCopy()
   const [expanded, setExpanded] = useState(false)
   const hasVisitDetails = entry.seen.length > 0
   const messageType = entry.redirect?.txt_message_type ?? entry.seen[0]?.txt_message_type ?? "-"
@@ -128,12 +132,12 @@ export default function DashboardActivityTableRow({
   return (
     <>
       <tr className={expanded ? "is-expanded" : undefined}>
-        {showLogId && <td data-label="Log ID">{logId}</td>}
-        <td data-label="Artwork">{entry.artworkTitle}</td>
-        <td data-label="Time">
+        {showLogId && <td data-label={copy.logId}>{logId}</td>}
+        <td data-label={copy.artwork}>{entry.artworkTitle}</td>
+        <td data-label={copy.time}>
           <TimestampCell value={entry.timestamp} />
         </td>
-        <td data-label="Type">
+        <td data-label={copy.type}>
           <div className="tma-dashboard-activity-type">
             <span className={`tma-dashboard-type-badge ${messageTypeClass(messageType)}`}>
               {messageType}
@@ -143,7 +147,7 @@ export default function DashboardActivityTableRow({
                 type="button"
                 className={`tma-dashboard-activity-expand${expanded ? " is-open" : ""}`}
                 aria-expanded={expanded}
-                aria-label={expanded ? "Hide visit details" : "Show visit details"}
+                aria-label={expanded ? copy.hideVisitDetails : copy.showVisitDetails}
                 onClick={() => setExpanded((open) => !open)}
               >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -161,7 +165,7 @@ export default function DashboardActivityTableRow({
           </div>
         </td>
         <SeenCell seen={hasVisitDetails} />
-        <td data-label="Link" className="tma-dashboard-link-cell">
+        <td data-label={copy.link} className="tma-dashboard-link-cell">
           {renderDashboardLink(entry.link)}
         </td>
       </tr>

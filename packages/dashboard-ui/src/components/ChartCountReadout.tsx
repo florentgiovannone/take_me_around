@@ -1,3 +1,5 @@
+import { useDashboardCopy } from "../hooks/useSiteAnalyticsScope"
+
 type ChartCountReadoutProps = {
   label: string | null
   value: string | null
@@ -11,11 +13,12 @@ export default function ChartCountReadout({
   tapToSelect,
   idleMessage,
 }: ChartCountReadoutProps) {
+  const copy = useDashboardCopy()
   const message =
     label && value
       ? `${label} · ${value}`
       : idleMessage ??
-      (tapToSelect ? "Tap to see tap counts" : "Hover to see tap counts")
+      (tapToSelect ? copy.tapToSee : copy.hoverToSee)
 
   return (
     <p className="tma-analytics-chart-hover-readout" aria-live="polite">
