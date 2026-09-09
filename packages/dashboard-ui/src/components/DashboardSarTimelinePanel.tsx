@@ -1,4 +1,4 @@
-import { type FormEvent, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import AnalyticsStatCard from "./AnalyticsStatCard"
 import DashboardActivityTableRow from "./DashboardActivityTableRow"
 import SarTimelineChart from "./SarTimelineChart"
@@ -7,8 +7,6 @@ import {
   buildSarTimelineEvents,
   buildSarTimelinePlot,
   formatNumber,
-  listDistinctSars,
-  sarTimelineDomainLabel,
   sarTimelineDomainSuffix,
   type PoiseLog,
 } from "@tma/dashboard-scope"
@@ -20,10 +18,8 @@ type DashboardSarTimelinePanelProps = {
 export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimelinePanelProps) {
   const siteScope = useSiteAnalyticsScope()
   const copy = useDashboardCopy()
-  const [sarInput, setSarInput] = useState("")
   const [activeSar, setActiveSar] = useState("")
 
-  const knownSars = useMemo(() => listDistinctSars(logs, siteScope), [logs, siteScope])
   const plot = useMemo(() => buildSarTimelinePlot(logs, siteScope), [logs, siteScope])
 
   const timelineEntries = useMemo(
@@ -36,43 +32,8 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
     [plot]
   )
 
-  const applySar = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setActiveSar(sarInput.trim())
-  }
-
   return (
     <div className="tma-analytics-panel">
-      <section className="tma-analytics-card tma-dashboard-sar-lookup">
-        <h2>{copy.liveSessions}</h2>
-        <p className="tma-dashboard-sar-lookup-hint">
-          {copy.liveSessionsHint(sarTimelineDomainLabel(siteScope))}
-        </p>
-        <form className="tma-dashboard-sar-lookup-form" onSubmit={applySar}>
-          <label htmlFor="sar-lookup-input">{copy.filterEventLog}</label>
-          <input
-            id="sar-lookup-input"
-            type="text"
-            list="sar-known-values"
-            value={sarInput}
-            onChange={(event) => setSarInput(event.target.value)}
-            placeholder={copy.pasteSar}
-            autoComplete="off"
-          />
-          <datalist id="sar-known-values">
-            {knownSars.map((sar) => (
-              <option key={sar} value={sar} />
-            ))}
-          </datalist>
-          <button type="submit">{copy.filterLog}</button>
-        </form>
-        {knownSars.length > 0 && (
-          <p className="tma-dashboard-sar-lookup-meta">
-            {copy.sarsInLoad(knownSars.length)}
-          </p>
-        )}
-      </section>
-
       {!plot && (
         <div className="tma-analytics-card tma-dashboard-status-card">
           <p>{copy.noSarActivity(sarTimelineDomainSuffix(siteScope))}</p>
@@ -128,10 +89,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
               <SarTimelineChart
                 logs={logs}
                 highlightSar={activeSar}
-                onSelectSar={(sar) => {
-                  setActiveSar(sar)
-                  setSarInput(sar)
-                }}
+                onSelectSar={setActiveSar}
               />
             </div>
           </section>
@@ -145,10 +103,7 @@ export default function DashboardSarTimelinePanel({ logs }: DashboardSarTimeline
                 <button
                   type="button"
                   className="tma-analytics-period-btn"
-                  onClick={() => {
-                    setActiveSar("")
-                    setSarInput("")
-                  }}
+                  onClick={() => setActiveSar("")}
                 >
                   {copy.clearFilter}
                 </button>

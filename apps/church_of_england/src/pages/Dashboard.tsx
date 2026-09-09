@@ -6,7 +6,9 @@ import {
   DashboardCountsPanel,
   DashboardOverviewPanel,
   DashboardSarTimelinePanel,
+  DashboardTabsNav,
   SiteScopeProvider,
+  type DashboardTabId,
 } from "@tma/dashboard-ui"
 import { apiBaseUrl, apiNeedsNgrokHeader } from "../apiBaseUrl"
 import { parseApiJson } from "../parseApiJson"
@@ -18,7 +20,7 @@ import "../styles/southwell-dashboard.css"
 
 const POLL_INTERVAL_MS = 5000
 
-type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
+type DashboardTab = DashboardTabId
 
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
@@ -138,55 +140,11 @@ function Dashboard() {
       </header>
 
       <div className="tma-content">
-        <nav className="tma-dashboard-tabs-nav southwell-dashboard-tabs-nav" aria-label="Dashboard views">
-          <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "activity"}
-              className={`tma-dashboard-tab ${activeTab === "activity" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("activity")}
-            >
-              Activity
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "counts"}
-              className={`tma-dashboard-tab ${activeTab === "counts" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("counts")}
-            >
-              Link scan counts
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "overview"}
-              className={`tma-dashboard-tab ${activeTab === "overview" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("overview")}
-            >
-              Overview
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "audience"}
-              className={`tma-dashboard-tab ${activeTab === "audience" ? "is-active" : ""}`}
-              onClick={() => setActiveTab("audience")}
-            >
-              Audience
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "sar"}
-              className={`tma-dashboard-tab tma-dashboard-tab--span-2${activeTab === "sar" ? " is-active" : ""}`}
-              onClick={() => setActiveTab("sar")}
-            >
-              Live sessions
-            </button>
-          </div>
-        </nav>
+        <DashboardTabsNav
+          className="southwell-dashboard-tabs-nav"
+          activeTab={activeTab}
+          onChange={setActiveTab}
+        />
 
         {loading && (
           <div className="tma-analytics-card tma-dashboard-status-card">

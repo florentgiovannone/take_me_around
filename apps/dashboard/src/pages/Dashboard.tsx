@@ -7,8 +7,10 @@ import {
   DashboardCountsPanel,
   DashboardOverviewPanel,
   DashboardSarTimelinePanel,
+  DashboardTabsNav,
   SiteScopeProvider,
   dashboardCopy,
+  type DashboardTabId,
 } from "@tma/dashboard-ui"
 import {
   apiNeedsNgrokHeader,
@@ -94,7 +96,7 @@ function passwordlessOpenError(operatorId: string) {
   return `Could not open ${name}. Set VITE_DASHBOARD_PASSWORD in apps/dashboard/.env to match the API.`
 }
 
-type DashboardTab = "activity" | "counts" | "overview" | "audience" | "sar"
+type DashboardTab = DashboardTabId
 type DashboardView = "analytics" | "settings"
 
 type FetchLogsResult =
@@ -625,55 +627,20 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
 
             {allowedScopes.length > 0 && (
               <>
-                <nav className="tma-dashboard-tabs-nav" aria-label={copy.dashboardViews}>
-                  <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={activeTab === "activity"}
-                      className={`tma-dashboard-tab ${activeTab === "activity" ? "is-active" : ""}`}
-                      onClick={() => setActiveTab("activity")}
-                    >
-                      {copy.activity}
-                    </button>
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={activeTab === "counts"}
-                      className={`tma-dashboard-tab ${activeTab === "counts" ? "is-active" : ""}`}
-                      onClick={() => setActiveTab("counts")}
-                    >
-                      {copy.counts}
-                    </button>
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={activeTab === "overview"}
-                      className={`tma-dashboard-tab ${activeTab === "overview" ? "is-active" : ""}`}
-                      onClick={() => setActiveTab("overview")}
-                    >
-                      {copy.overview}
-                    </button>
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={activeTab === "audience"}
-                      className={`tma-dashboard-tab ${activeTab === "audience" ? "is-active" : ""}`}
-                      onClick={() => setActiveTab("audience")}
-                    >
-                      {copy.audience}
-                    </button>
-                    <button
-                      type="button"
-                      role="tab"
-                      aria-selected={activeTab === "sar"}
-                      className={`tma-dashboard-tab tma-dashboard-tab--span-2${activeTab === "sar" ? " is-active" : ""}`}
-                      onClick={() => setActiveTab("sar")}
-                    >
-                      {copy.liveSessions}
-                    </button>
-                  </div>
-                </nav>
+                <DashboardTabsNav
+                  activeTab={activeTab}
+                  onChange={setActiveTab}
+                  labels={{
+                    activity: copy.activity,
+                    counts: copy.counts,
+                    overview: copy.overview,
+                    audience: copy.audience,
+                    liveSessions: copy.liveSessions,
+                    dashboardViews: copy.dashboardViews,
+                    openMenu: copy.openMenu,
+                    closeMenu: copy.closeMenu,
+                  }}
+                />
 
                 {loading && (
                   <div className="tma-analytics-card tma-dashboard-status-card">

@@ -69,22 +69,82 @@ function tagNameRange(prefix: string, from: number, to: number): string[] {
 }
 
 export const TMA_DEMO_TAG_NAMES = [
-  ...tagNameRange("TK", 1, 7),
-  ...tagNameRange("TS", 1, 7),
-  ...tagNameRange("TSN", 1, 7),
   ...tagNameRange("TTOD", 1, 7),
+  ...tagNameRange("TK", 1, 7),
+  ...tagNameRange("TSN", 1, 7),
 ] as const
 
 export type TmaDemoTagName = (typeof TMA_DEMO_TAG_NAMES)[number]
 
 const TMA_DEMO_TAG_NAME_SET = new Set<string>(TMA_DEMO_TAG_NAMES)
 
+const TMA_DEMO_TAG_PREFIXES = ["TTOD", "TSN", "TK"] as const
+
+function compactTagToken(value: string) {
+  return value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "")
+}
+
+function tagFromPrefixAndSerial(
+  prefix: (typeof TMA_DEMO_TAG_PREFIXES)[number],
+  serial: string
+): TmaDemoTagName | null {
+  const n = Number(serial)
+  if (!Number.isInteger(n) || n < 1 || n > 7) return null
+  const code = `${prefix}${padTagNumber(n)}`
+  return TMA_DEMO_TAG_NAME_SET.has(code) ? (code as TmaDemoTagName) : null
+}
+
+function tagFromCompact(compact: string): TmaDemoTagName | null {
+  if (TMA_DEMO_TAG_NAME_SET.has(compact)) return compact as TmaDemoTagName
+
+  const dendurMatch = compact.match(/^T+TOD(\d{1,3})$/)
+  if (dendurMatch) {
+    const canonical = tagFromPrefixAndSerial("TTOD", dendurMatch[1])
+    if (canonical) return canonical
+  }
+
+  for (const prefix of TMA_DEMO_TAG_PREFIXES) {
+    const match = compact.match(new RegExp(`^${prefix}(\\d{1,3})$`))
+    if (!match) continue
+    const canonical = tagFromPrefixAndSerial(prefix, match[1])
+    if (canonical) return canonical
+  }
+
+  return null
+}
+
+function extractEmbeddedTmaDemoTag(value: string): TmaDemoTagName | null {
+  const upper = value.toUpperCase()
+  const patterns: { prefix: (typeof TMA_DEMO_TAG_PREFIXES)[number]; re: RegExp }[] = [
+    { prefix: "TTOD", re: /(?:^|[^A-Z0-9])T+TOD[\s\-_]*(\d{1,3})(?!\d)/ },
+    { prefix: "TSN", re: /(?:^|[^A-Z0-9])TSN[\s\-_]*(\d{1,3})(?!\d)/ },
+    { prefix: "TK", re: /(?:^|[^A-Z0-9])TK[\s\-_]*(\d{1,3})(?!\d)/ },
+  ]
+
+  for (const { prefix, re } of patterns) {
+    const match = upper.match(re)
+    if (!match) continue
+    const canonical = tagFromPrefixAndSerial(prefix, match[1])
+    if (canonical) return canonical
+  }
+
+  return null
+}
+
 export function canonicalTmaDemoTagName(
   name: string | null | undefined
 ): TmaDemoTagName | null {
-  const normalized = name?.trim().toUpperCase()
-  if (!normalized || !TMA_DEMO_TAG_NAME_SET.has(normalized)) return null
-  return normalized as TmaDemoTagName
+  if (!name?.trim()) return null
+  const trimmed = name.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+
+  const compact = compactTagToken(trimmed)
+  if (compact) {
+    const fromCompact = tagFromCompact(compact)
+    if (fromCompact) return fromCompact
+  }
+
+  return extractEmbeddedTmaDemoTag(trimmed)
 }
 
 export function isTmaDemoTagName(name: string | null | undefined): boolean {
@@ -112,8 +172,7 @@ export function tmaDemoDisplayTitle(name: string | null | undefined): string {
 
   for (const { prefix, label } of labels) {
     if (!canonical.startsWith(prefix)) continue
-    const serial = canonical.slice(prefix.length)
-    return `${label} - ${serial}`
+    return `${label} - ${canonical}`
   }
 
   return canonical

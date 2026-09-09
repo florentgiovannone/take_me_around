@@ -29,6 +29,8 @@ const PAGE_TITLES: Record<string, string> = {
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
   "/dashboard": "Dashboard",
+  "/demodashboard": "TMA Demo Dashboard",
+  "/demo": "TMA Demo Dashboard",
 }
 
 function PageTitleUpdater() {
@@ -122,6 +124,14 @@ function App() {
         <Route
           path="/dashboard"
           element={<ExternalDashboardRedirect path="/dashboard" />}
+        />
+        <Route
+          path="/demodashboard"
+          element={<ExternalDashboardRedirect path="/demodashboard" />}
+        />
+        <Route
+          path="/demo"
+          element={<ExternalDashboardRedirect path="/demodashboard" />}
         />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -19,6 +19,8 @@ export type DashboardCopy = {
   loading: string
   errorPrefix: string
   dashboardViews: string
+  openMenu: string
+  closeMenu: string
   totalEvents: string
   artworks: string
   latestScan: string
@@ -96,12 +98,14 @@ export type DashboardCopy = {
   tapToSee: string
   hoverToSee: string
   liveSessionsHint: (domain: string) => string
+  liveSessionsFilterHint: string
   filterEventLog: string
   pasteSar: string
   filterLog: string
   sarsInLoad: (count: number) => string
   noSarActivity: (domain: string) => string
   sarUsers: string
+  userId: string
   rowsOnTimeline: string
   nfcScans: string
   redirectedOn: (domain: string) => string
@@ -170,6 +174,8 @@ const EN: DashboardCopy = {
   loading: "Loading poise_log entries...",
   errorPrefix: "Error:",
   dashboardViews: "Dashboard views",
+  openMenu: "Open menu",
+  closeMenu: "Close menu",
   totalEvents: "Total Events",
   artworks: "Artworks",
   latestScan: "Latest Scan",
@@ -247,15 +253,17 @@ const EN: DashboardCopy = {
   tapToSee: "Tap to see tap counts",
   hoverToSee: "Hover to see tap counts",
   liveSessionsHint: (domain) =>
-    `Y-axis: each visitor session (SAR cookie when the page loads, otherwise the NFC tag ID). X-axis: time — past on the left, now in the centre, future on the right. Dots are tracked ${domain} events: dot colour shows scan recency (red = latest); square = NFC scan, circle = page visit. Scroll or use the hour buttons to move along the timeline. Click a SAR row to filter the event log below.`,
+    `Y-axis: each visitor session (user ID cookie when the page loads, otherwise the NFC tag ID). X-axis: time — past on the left, now in the centre, future on the right. Dots are tracked ${domain} events: dot colour shows scan recency (red = latest); square = NFC scan, circle = page visit. Scroll or use the hour buttons to move along the timeline.`,
+  liveSessionsFilterHint: "Click a user ID row to filter the event log below.",
   filterEventLog: "Filter event log (optional)",
-  pasteSar: "Paste SAR to filter log",
+  pasteSar: "Paste User ID to filter log",
   filterLog: "Filter log",
   sarsInLoad: (count) =>
-    `${count} SAR${count === 1 ? "" : "s"} in this load`,
+    `${count} User ID${count === 1 ? "" : "s"} in this load`,
   noSarActivity: (domain) =>
-    `No SAR-linked ${domain} activity in this dashboard load yet.`,
-  sarUsers: "SAR users",
+    `No User ID-linked ${domain} activity in this dashboard load yet.`,
+  sarUsers: "User IDs",
+  userId: "User ID",
   rowsOnTimeline: "rows on timeline",
   nfcScans: "NFC Scans",
   redirectedOn: (domain) => `REDIRECTED on ${domain}`,
@@ -265,7 +273,7 @@ const EN: DashboardCopy = {
   eventLog: "Event log —",
   clearFilter: "Clear filter",
   noSarActivityForFilter: (domain) =>
-    `No tracked ${domain} activity for this SAR in the current load.`,
+    `No tracked ${domain} activity for this User ID in the current load.`,
   visibleWindow: "Visible window",
   past: "← Past",
   future: "Future →",
@@ -326,6 +334,8 @@ const PT_BR: DashboardCopy = {
   loading: "Carregando registros...",
   errorPrefix: "Erro:",
   dashboardViews: "Visões do painel",
+  openMenu: "Abrir menu",
+  closeMenu: "Fechar menu",
   totalEvents: "Total de eventos",
   artworks: "Obras",
   latestScan: "Última leitura",
@@ -404,15 +414,17 @@ const PT_BR: DashboardCopy = {
   tapToSee: "Toque para ver os toques",
   hoverToSee: "Passe o cursor para ver os toques",
   liveSessionsHint: (domain) =>
-    `Eixo Y: cada sessão de visitante (cookie SAR quando a página carrega, ou o ID da tag NFC). Eixo X: tempo — passado à esquerda, agora no centro, futuro à direita. Os pontos são eventos rastreados de ${domain}: a cor mostra a recência da leitura (vermelho = mais recente); quadrado = leitura NFC, círculo = visita à página. Role ou use os botões de hora para mover a linha do tempo. Toque em uma linha SAR para filtrar o registro abaixo.`,
+    `Eixo Y: cada sessão de visitante (cookie de ID do usuário quando a página carrega, ou o ID da tag NFC). Eixo X: tempo — passado à esquerda, agora no centro, futuro à direita. Os pontos são eventos rastreados de ${domain}: a cor mostra a recência da leitura (vermelho = mais recente); quadrado = leitura NFC, círculo = visita à página. Role ou use os botões de hora para mover a linha do tempo.`,
+  liveSessionsFilterHint: "Toque em uma linha de ID do usuário para filtrar o registro abaixo.",
   filterEventLog: "Filtrar registro de eventos (opcional)",
-  pasteSar: "Cole o SAR para filtrar o registro",
+  pasteSar: "Cole o ID do usuário para filtrar o registro",
   filterLog: "Filtrar registro",
   sarsInLoad: (count) =>
-    count === 1 ? "1 SAR nesta carga" : `${count} SARs nesta carga`,
+    count === 1 ? "1 ID do usuário nesta carga" : `${count} IDs de usuário nesta carga`,
   noSarActivity: (domain) =>
-    `Ainda não há atividade de ${domain} ligada a SAR nesta carga do painel.`,
-  sarUsers: "Usuários SAR",
+    `Ainda não há atividade de ${domain} ligada a ID do usuário nesta carga do painel.`,
+  sarUsers: "IDs de usuário",
+  userId: "ID do usuário",
   rowsOnTimeline: "linhas na linha do tempo",
   nfcScans: "Leituras NFC",
   redirectedOn: (domain) => `REDIRECTED em ${domain}`,
@@ -422,7 +434,7 @@ const PT_BR: DashboardCopy = {
   eventLog: "Registro de eventos —",
   clearFilter: "Limpar filtro",
   noSarActivityForFilter: (domain) =>
-    `Nenhuma atividade rastreada de ${domain} para este SAR na carga atual.`,
+    `Nenhuma atividade rastreada de ${domain} para este ID do usuário na carga atual.`,
   visibleWindow: "Janela visível",
   past: "← Passado",
   future: "Futuro →",

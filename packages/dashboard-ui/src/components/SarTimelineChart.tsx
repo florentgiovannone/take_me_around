@@ -646,11 +646,17 @@ export default function SarTimelineChart({
                 key={sar}
                 type="button"
                 className={`tma-sar-timeline-y-label${isFocused ? " is-focused" : ""}${isDimmed ? " is-dimmed" : ""}`}
-                style={{ height: ROW_HEIGHT_PX, minHeight: ROW_HEIGHT_PX }}
+                style={{
+                  height: ROW_HEIGHT_PX,
+                  minHeight: ROW_HEIGHT_PX,
+                  cursor: onSelectSar ? undefined : "default",
+                }}
                 title={
                   meta?.visitorNumber ? `${meta.visitorNumber} · ${sar}` : sar
                 }
-                onClick={() => onSelectSar?.(sar)}
+                tabIndex={onSelectSar ? 0 : -1}
+                aria-disabled={!onSelectSar}
+                onClick={onSelectSar ? () => onSelectSar(sar) : undefined}
               >
                 <span className="tma-sar-timeline-y-label-sar">
                   {meta?.visitorNumber ?? truncateSarLabel(sar)}

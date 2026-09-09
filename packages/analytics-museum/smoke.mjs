@@ -14,7 +14,7 @@ const namedSerialPair = [
     int_id: 5992,
     dtm_timestamp: "2026-09-08T09:14:59.319303",
     txt_uid: null,
-    text_name: "TTTOD001",
+    text_name: "The Temple of Dendur",
     txt_message_type: "SEEN",
     txt_message: seenPayload,
   },
@@ -22,7 +22,7 @@ const namedSerialPair = [
     int_id: 5993,
     dtm_timestamp: "2026-09-08T09:14:59.320956",
     txt_uid: null,
-    text_name: "TTTOD001",
+    text_name: "The Temple of Dendur",
     txt_message_type: "REDIRECTED",
     txt_message: "https://takemearound.museum/the-temple-of-dendur",
   },
@@ -33,7 +33,7 @@ const namedSerialPair = [
   assert.equal(museumLogs.length, 2, "pairs named serial SEEN with the museum redirect")
   assert.ok(
     museumLogs.some((log) => log.txt_message_type === "SEEN" && log.int_id === 5992),
-    "includes the TTTOD001 SEEN row"
+    "includes the Temple of Dendur SEEN row"
   )
 }
 

@@ -31,7 +31,7 @@ Edit `src/config/operators.ts` to add or change operators. Each operator has an 
 
 When more than one operator exists, a **profile picker** appears on the login form. The chosen profile is stored in the session.
 
-**TMA Demo** (`/demodashboard`) and **Southwell Minster** (`/dashboard/church-of-england`, and the church site `/dashboard`) open with no login. Other operators on `/` still need the dashboard password.
+**TMA Demo** is at `https://takemearound.gallery/demodashboard` (and `/demo`). **Southwell Minster** (`/dashboard/church-of-england`, and the church site `/dashboard`) opens with no login. Other operators on `/` still need the dashboard password.
 
 Optional build-time default (skips login picker behaviour for restores):
 
@@ -44,7 +44,7 @@ VITE_DASHBOARD_OPERATOR_ID=museum-only
 | Path | Behaviour |
 |------|-----------|
 | `/` | Full dashboard with scope switcher |
-| `/demodashboard` | Standalone **TMA Demo** (no login) |
+| `/demodashboard` | Standalone **TMA Demo** (no login). Public URL: `https://takemearound.gallery/demodashboard` |
 | `/demo` | Redirects to `/demodashboard` |
 | `/dashboard/tma-demo` | Redirects to `/demodashboard` |
 | `/dashboard` | Locked to `.gallery` |

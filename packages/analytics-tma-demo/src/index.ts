@@ -67,7 +67,8 @@ export function extractTrackedPathFromMessage(_message: string): string | null {
 }
 
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
-  const canonical = canonicalTmaDemoTagName(log.text_name)
+  const canonical =
+    canonicalTmaDemoTagName(log.text_name) ?? canonicalTmaDemoTagName(log.txt_message)
   if (!canonical) return null
   return TRACKED_TMA_DEMO_ARTWORKS.find((artwork) => artwork.tagName === canonical) ?? null
 }

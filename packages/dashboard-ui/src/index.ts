@@ -8,6 +8,8 @@ export { default as DashboardAudiencePanel } from "./components/DashboardAudienc
 export { default as DashboardCountsPanel } from "./components/DashboardCountsPanel"
 export { default as DashboardOverviewPanel } from "./components/DashboardOverviewPanel"
 export { default as DashboardSarTimelinePanel } from "./components/DashboardSarTimelinePanel"
+export { default as DashboardTabsNav } from "./components/DashboardTabsNav"
+export type { DashboardTabId, DashboardTabsNavLabels } from "./components/DashboardTabsNav"
 export { default as SarTimelineChart } from "./components/SarTimelineChart"
 
 export {

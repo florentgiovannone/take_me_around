@@ -40,6 +40,9 @@ export default defineConfig(({ mode }) => {
               "[netlify-redirects] Set VITE_API_PROXY_TARGET (or VITE_API_BASE_URL) at build time so /api is proxied."
             )
           }
+          lines.push(`/demodashboard      ${arkinDashboard}/demodashboard     301!`)
+          lines.push(`/demodashboard/*    ${arkinDashboard}/demodashboard/:splat  301!`)
+          lines.push(`/demo               ${arkinDashboard}/demodashboard     301!`)
           lines.push(`/dashboard      ${arkinDashboard}/dashboard     301!`)
           lines.push(`/dashboard/*    ${arkinDashboard}/dashboard/:splat  301!`)
           lines.push("/*    /index.html   200")

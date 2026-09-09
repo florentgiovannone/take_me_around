@@ -46,7 +46,7 @@ function VisitDetailsSection({ details }: { details: ActivityVisitDetails }) {
       </div>
       {details.sar && (
         <div className="tma-dashboard-activity-detail-sar">
-          <span className="tma-dashboard-activity-detail-label">SAR</span>
+          <span className="tma-dashboard-activity-detail-label">{copy.userId}</span>
           <p>{details.sar}</p>
         </div>
       )}

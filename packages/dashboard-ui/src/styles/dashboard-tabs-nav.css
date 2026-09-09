@@ -1,0 +1,180 @@
+.tma-dashboard-menu-bar,
+.tma-dashboard-menu-panel,
+.tma-dashboard-menu-backdrop {
+  display: none;
+}
+
+.tma-dashboard-menu-toggle-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .tma-dashboard-tabs-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    justify-content: stretch;
+    margin-bottom: 1rem;
+  }
+
+  .tma-dashboard-tabs-nav .tma-dashboard-tabs,
+  .tma-dashboard-tabs-nav .tma-dashboard-tabs--wrap {
+    display: none !important;
+  }
+
+  .tma-dashboard-menu-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.2rem 0.35rem 0.2rem 0.15rem;
+    box-sizing: border-box;
+    background: var(--tma-dashboard-tabs-bg, #c5d9ef);
+    border-radius: 14px;
+    box-shadow: 0 8px 22px var(--tma-brand-shadow-soft, rgba(10, 71, 157, 0.08));
+  }
+
+  .tma-dashboard-menu-current {
+    margin: 0;
+    min-width: 0;
+    flex: 1;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--tma-brand, #0a479d);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tma-dashboard-menu-toggle {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--tma-brand, #0a479d);
+    cursor: pointer;
+  }
+
+  .tma-dashboard-menu-toggle:hover,
+  .tma-dashboard-menu-toggle:focus-visible {
+    background: rgba(255, 255, 255, 0.55);
+    outline: none;
+  }
+
+  .tma-dashboard-menu-toggle-bar {
+    display: block;
+    width: 1.2rem;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .tma-dashboard-menu-toggle-bar + .tma-dashboard-menu-toggle-bar {
+    margin-top: 5px;
+  }
+
+  .tma-dashboard-menu-toggle.is-open .tma-dashboard-menu-toggle-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .tma-dashboard-menu-toggle.is-open .tma-dashboard-menu-toggle-bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .tma-dashboard-menu-toggle.is-open .tma-dashboard-menu-toggle-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .tma-dashboard-menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: rgba(6, 44, 97, 0.42);
+    cursor: pointer;
+  }
+
+  .tma-dashboard-menu-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    width: min(20.5rem, 86vw);
+    height: 100dvh;
+    margin: 0;
+    padding: 1.15rem 0.9rem 1.5rem;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: 12px 0 32px rgba(6, 44, 97, 0.18);
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    pointer-events: none;
+  }
+
+  .tma-dashboard-menu-panel.is-open {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .tma-dashboard-menu-heading {
+    margin: 0.35rem 0.5rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #667085;
+  }
+
+  .tma-dashboard-menu-item {
+    display: block;
+    width: 100%;
+    min-height: 2.85rem;
+    padding: 0.7rem 0.9rem;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    color: #2a3340;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .tma-dashboard-menu-item:hover,
+  .tma-dashboard-menu-item:focus-visible {
+    background: var(--tma-brand-tint, #e8f1fa);
+    color: var(--tma-brand, #0a479d);
+    outline: none;
+  }
+
+  .tma-dashboard-menu-item.is-active {
+    background: var(--tma-brand, #0a479d);
+    color: #fff;
+  }
+}

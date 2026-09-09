@@ -170,7 +170,8 @@
   gap: 1.5rem;
 }
 
-.southwell-dashboard .tma-analytics-stats {
+.southwell-dashboard .tma-analytics-stats,
+.southwell-dashboard.tma-dashboard .tma-analytics-stats--3 {
   gap: 1.25rem;
 }
 
@@ -182,7 +183,8 @@
   box-shadow: var(--shadow);
 }
 
-.southwell-dashboard .tma-analytics-stat-card {
+.southwell-dashboard .tma-analytics-stat-card,
+.southwell-dashboard.tma-dashboard .tma-analytics-stats--3 .tma-analytics-stat-card {
   padding: 1.35rem 1.4rem 1.25rem;
 }
 
@@ -278,10 +280,76 @@
   .southwell-dashboard-tabs-nav {
     margin-left: -20px;
     margin-right: -20px;
-    padding: 0 20px;
+    padding: 6px 12px;
   }
 
-  .southwell-dashboard .tma-analytics-stat-card {
+  .southwell-dashboard .tma-dashboard-tabs-nav .tma-dashboard-tabs,
+  .southwell-dashboard .tma-dashboard-tabs-nav .tma-dashboard-tabs--wrap {
+    display: none !important;
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-bar {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    min-height: 2.75rem;
+    padding: 0;
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-current,
+  .southwell-dashboard .tma-dashboard-menu-toggle {
+    color: var(--accent);
+    font-family: Inter, system-ui, sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-current {
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-toggle:hover,
+  .southwell-dashboard .tma-dashboard-menu-toggle:focus-visible {
+    background: rgba(122, 46, 42, 0.08);
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-panel {
+    background: var(--paper);
+    box-shadow: 12px 0 28px rgba(26, 21, 18, 0.16);
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-heading {
+    font-family: Inter, system-ui, sans-serif;
+    color: var(--accent);
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-item {
+    font-family: Inter, system-ui, sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    color: var(--ink);
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-item:hover,
+  .southwell-dashboard .tma-dashboard-menu-item:focus-visible {
+    background: var(--paper-2);
+    color: var(--accent);
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-item.is-active {
+    background: var(--accent);
+    color: #fdf9ef;
+  }
+
+  .southwell-dashboard .tma-dashboard-menu-backdrop {
+    background: rgba(26, 21, 18, 0.45);
+  }
+
+  .southwell-dashboard .tma-analytics-stat-card,
+  .southwell-dashboard.tma-dashboard .tma-analytics-stats--3 .tma-analytics-stat-card {
     padding: 1.15rem 1.2rem 1.1rem;
   }
 

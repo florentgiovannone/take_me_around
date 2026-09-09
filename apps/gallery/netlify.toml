@@ -3,7 +3,9 @@
   publish = "dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/gallery packages"
 
-# /dashboard redirects to https://arkin.takemearound.gallery/dashboard (see vite netlify-redirects plugin).
+# /dashboard redirects to https://arkin.takemearound.gallery/dashboard
+# /demodashboard and /demo redirect to https://arkin.takemearound.gallery/demodashboard
+# (see vite netlify-redirects plugin).
 
 # Build-time env (Site settings → Environment variables → Scopes: Builds only or All):
 #   VITE_API_PROXY_TARGET = https://YOUR-SUBDOMAIN.ngrok-free.app   (recommended)
