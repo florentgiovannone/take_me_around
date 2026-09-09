@@ -1537,6 +1537,9 @@
 .tma-dashboard-activity-details-panel {
   display: grid;
   gap: 0.85rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 0.85rem;
   border: 1px solid #e8edf7;
   border-radius: 12px;
@@ -1600,7 +1603,10 @@
   font-size: 0.78rem;
   line-height: 1.45;
   color: #374151;
+  min-width: 0;
+  overflow-wrap: anywhere;
   word-break: break-word;
+  white-space: normal;
 }
 
 .tma-dashboard-table--activity-modern th:first-child,
@@ -1609,6 +1615,15 @@
   text-align: center;
   color: #8b95a7;
   font-weight: 700;
+}
+
+.tma-dashboard-table--activity-modern .tma-dashboard-activity-details-row td,
+.tma-dashboard-table--activity-modern .tma-dashboard-activity-details-row td:first-child {
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  color: inherit;
+  font-weight: inherit;
 }
 
 .tma-dashboard-link-cards {
@@ -2987,6 +3002,9 @@
 
   .tma-dashboard .tma-dashboard-table--activity-modern tbody tr.tma-dashboard-activity-details-row {
     display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     border: 1px solid #e8edf7;
     border-top: 0;
     border-radius: 0 0 12px 12px;
@@ -2995,10 +3013,17 @@
     background: #f8faff;
   }
 
-  .tma-dashboard .tma-dashboard-table--activity-modern tbody tr.tma-dashboard-activity-details-row td {
+  .tma-dashboard .tma-dashboard-table--activity-modern tbody tr.tma-dashboard-activity-details-row td,
+  .tma-dashboard .tma-dashboard-table--activity-modern tbody tr.tma-dashboard-activity-details-row td:first-child {
     display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 0;
     border: 0;
+    text-align: left;
+    color: inherit;
+    font-weight: inherit;
   }
 
   .tma-dashboard .tma-dashboard-table--activity-modern tbody tr:not(.tma-dashboard-table-empty):not(.tma-dashboard-activity-details-row) td[data-label] {
