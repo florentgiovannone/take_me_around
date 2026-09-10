@@ -47,7 +47,10 @@ assert.equal(canonicalTmaDemoTagName("tk007"), "TK007")
 assert.equal(canonicalTmaDemoTagName("TSN-7"), "TSN007")
 
 assert.equal(canonicalTmaDemoTagName("TS001"), null)
-assert.equal(canonicalTmaDemoTagName("Starry Night 007"), null)
+assert.equal(canonicalTmaDemoTagName("Starry Night 007"), "TSN007")
+assert.equal(canonicalTmaDemoTagName("The Starry Night 007"), "TSN007")
+assert.equal(canonicalTmaDemoTagName("The Starry Night - 007"), "TSN007")
+assert.equal(canonicalTmaDemoTagName("The Starry Night"), null)
 assert.equal(canonicalTmaDemoTagName("The Temple of Dendur"), null)
 assert.equal(canonicalTmaDemoTagName("TK008"), null)
 assert.equal(canonicalTmaDemoTagName("The Kiss"), null)
@@ -99,9 +102,9 @@ const logs = [
 ]
 
 const demoLogs = getTmaDemoLogs(logs)
-assert.equal(demoLogs.length, 2, "keeps the TTOD001 alias pair and drops other names")
+assert.equal(demoLogs.length, 3, "keeps the TTOD001 alias pair and Starry Night 007")
 assert.equal(resolveTrackedArtwork(logs[0])?.tagName, "TTOD001")
 assert.equal(resolveTrackedArtwork(logs[2]), null)
-assert.equal(resolveTrackedArtwork(logs[3]), null)
+assert.equal(resolveTrackedArtwork(logs[3])?.tagName, "TSN007")
 
 console.log("analytics-tma-demo smoke: ok")

@@ -14,7 +14,7 @@ const namedSerialPair = [
     int_id: 5994,
     dtm_timestamp: "2026-09-08T09:18:43.361019",
     txt_uid: null,
-    text_name: "Starry Night 007",
+    text_name: "Mona Lisa 007",
     txt_message_type: "SEEN",
     txt_message: seenPayload,
   },
@@ -22,9 +22,9 @@ const namedSerialPair = [
     int_id: 5995,
     dtm_timestamp: "2026-09-08T09:18:43.362750",
     txt_uid: null,
-    text_name: "Starry Night 007",
+    text_name: "Mona Lisa 007",
     txt_message_type: "REDIRECTED",
-    txt_message: "https://takemearound.gallery/the-starry-night",
+    txt_message: "https://takemearound.gallery/mona-lisa",
   },
 ]
 
@@ -33,7 +33,7 @@ const namedSerialPair = [
   assert.equal(galleryLogs.length, 2, "pairs named serial SEEN with the gallery redirect")
   assert.ok(
     galleryLogs.some((log) => log.txt_message_type === "SEEN" && log.int_id === 5994),
-    "includes the Starry Night 007 SEEN row"
+    "includes the Mona Lisa 007 SEEN row"
   )
 }
 
@@ -42,7 +42,51 @@ const namedSerialPair = [
   assert.equal(entry?.redirect?.int_id, 5995, "activity keeps the gallery redirect")
   assert.equal(entry?.seen.length, 1, "activity attaches the named serial SEEN to the redirect")
   assert.equal(entry?.seen[0]?.int_id, 5994)
-  assert.equal(entry?.artworkTitle, "The Starry Night")
+  assert.equal(entry?.artworkTitle, "Mona Lisa")
+}
+
+{
+  const demoStarryNight = [
+    {
+      int_id: 5997,
+      dtm_timestamp: "2026-09-08T09:18:43.361019",
+      txt_uid: null,
+      text_name: "Starry Night 007",
+      txt_message_type: "SEEN",
+      txt_message: seenPayload,
+    },
+    {
+      int_id: 5998,
+      dtm_timestamp: "2026-09-08T09:18:43.362750",
+      txt_uid: null,
+      text_name: "Starry Night 007",
+      txt_message_type: "REDIRECTED",
+      txt_message: "https://takemearound.gallery/the-starry-night",
+    },
+  ]
+  assert.equal(getGalleryLogs(demoStarryNight).length, 0, "leaves Starry Night 007 to the TMA Demo dashboard")
+}
+
+{
+  const southwellSlate = [
+    {
+      int_id: 6010,
+      dtm_timestamp: "2026-09-08T09:18:43.361019",
+      txt_uid: null,
+      text_name: "Southwell Minster 007",
+      txt_message_type: "SEEN",
+      txt_message: seenPayload,
+    },
+    {
+      int_id: 6011,
+      dtm_timestamp: "2026-09-08T09:18:43.362750",
+      txt_uid: null,
+      text_name: "SM007",
+      txt_message_type: "REDIRECTED",
+      txt_message: "https://takemearound.church/minster_cathedral/Southwell/deans_welcome_message",
+    },
+  ]
+  assert.equal(getGalleryLogs(southwellSlate).length, 0, "leaves SM007 to the Southwell Minster dashboard")
 }
 
 {

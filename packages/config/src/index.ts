@@ -131,6 +131,36 @@ function extractEmbeddedTmaDemoTag(value: string): TmaDemoTagName | null {
   return null
 }
 
+const TMA_DEMO_TITLE_ALIASES: {
+  prefix: (typeof TMA_DEMO_TAG_PREFIXES)[number]
+  titles: string[]
+}[] = [
+  { prefix: "TSN", titles: ["the starry night", "starry night", "a noite estrelada"] },
+  { prefix: "TK", titles: ["the kiss", "o beijo"] },
+  { prefix: "TTOD", titles: ["the temple of dendur", "temple of dendur", "o templo de dendur"] },
+]
+
+function normalizeTitlePhrase(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
+}
+
+function extractTitleAndSerial(value: string): TmaDemoTagName | null {
+  const normalized = normalizeTitlePhrase(value)
+  const match = normalized.match(/^(.*?)(?:\s+)(\d{1,3})$/)
+  if (!match) return null
+
+  const title = match[1].trim()
+  if (!title) return null
+
+  for (const { prefix, titles } of TMA_DEMO_TITLE_ALIASES) {
+    if (!titles.includes(title)) continue
+    const canonical = tagFromPrefixAndSerial(prefix, match[2])
+    if (canonical) return canonical
+  }
+
+  return null
+}
+
 export function canonicalTmaDemoTagName(
   name: string | null | undefined
 ): TmaDemoTagName | null {
@@ -144,7 +174,7 @@ export function canonicalTmaDemoTagName(
     if (fromCompact) return fromCompact
   }
 
-  return extractEmbeddedTmaDemoTag(trimmed)
+  return extractEmbeddedTmaDemoTag(trimmed) ?? extractTitleAndSerial(trimmed)
 }
 
 export function isTmaDemoTagName(name: string | null | undefined): boolean {
@@ -176,6 +206,75 @@ export function tmaDemoDisplayTitle(name: string | null | undefined): string {
   }
 
   return canonical
+}
+
+export const SOUTHWELL_MINSTER_TAG_NAMES = tagNameRange("SM", 1, 7) as const
+
+export type SouthwellMinsterTagName = (typeof SOUTHWELL_MINSTER_TAG_NAMES)[number]
+
+const SOUTHWELL_MINSTER_TAG_NAME_SET = new Set<string>(SOUTHWELL_MINSTER_TAG_NAMES)
+
+function southwellTagFromSerial(serial: string): SouthwellMinsterTagName | null {
+  const n = Number(serial)
+  if (!Number.isInteger(n) || n < 1 || n > 7) return null
+  const code = `SM${padTagNumber(n)}`
+  return SOUTHWELL_MINSTER_TAG_NAME_SET.has(code) ? (code as SouthwellMinsterTagName) : null
+}
+
+function southwellTagFromCompact(compact: string): SouthwellMinsterTagName | null {
+  if (SOUTHWELL_MINSTER_TAG_NAME_SET.has(compact)) return compact as SouthwellMinsterTagName
+  const match = compact.match(/^SM(\d{1,3})$/)
+  if (!match) return null
+  return southwellTagFromSerial(match[1])
+}
+
+function extractEmbeddedSouthwellMinsterTag(value: string): SouthwellMinsterTagName | null {
+  const match = value.toUpperCase().match(/(?:^|[^A-Z0-9])SM[\s\-_]*(\d{1,3})(?!\d)/)
+  if (!match) return null
+  return southwellTagFromSerial(match[1])
+}
+
+const SOUTHWELL_MINSTER_TITLE_ALIASES = ["southwell minster", "southwell"]
+
+function extractSouthwellTitleAndSerial(value: string): SouthwellMinsterTagName | null {
+  const normalized = normalizeTitlePhrase(value)
+  const match = normalized.match(/^(.*?)(?:\s+)(\d{1,3})$/)
+  if (!match) return null
+
+  const title = match[1].trim()
+  if (!title || !SOUTHWELL_MINSTER_TITLE_ALIASES.includes(title)) return null
+  return southwellTagFromSerial(match[2])
+}
+
+export function canonicalSouthwellMinsterTagName(
+  name: string | null | undefined
+): SouthwellMinsterTagName | null {
+  if (!name?.trim()) return null
+  const trimmed = name.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+
+  const compact = compactTagToken(trimmed)
+  if (compact) {
+    const fromCompact = southwellTagFromCompact(compact)
+    if (fromCompact) return fromCompact
+  }
+
+  return extractEmbeddedSouthwellMinsterTag(trimmed) ?? extractSouthwellTitleAndSerial(trimmed)
+}
+
+export function isSouthwellMinsterTagName(name: string | null | undefined): boolean {
+  return canonicalSouthwellMinsterTagName(name) !== null
+}
+
+/** Tags owned by another dashboard (TMA Demo slates or Southwell SM001–007). */
+export function isReservedSiteTagName(name: string | null | undefined): boolean {
+  return isTmaDemoTagName(name) || isSouthwellMinsterTagName(name)
+}
+
+export function southwellMinsterDisplayTitle(name: string | null | undefined): string {
+  const canonical = canonicalSouthwellMinsterTagName(name)
+  if (!canonical) return name?.trim() ?? ""
+  return `Southwell Minster - ${canonical}`
 }
 
 const combinedSitesLabel = PICKABLE_SITE_IDS.map((id) => SITE_META[id].domainLabel).join(

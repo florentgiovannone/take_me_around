@@ -1,4 +1,4 @@
-import { isTmaDemoTagName } from "@tma/config"
+import { isReservedSiteTagName } from "@tma/config"
 
 export type PoiseLog = {
   int_id: number
@@ -154,7 +154,7 @@ export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
 
 /** True when the log belongs to one of the tracked takemearound.arkin artworks. */
 export function isArkinLog(log: PoiseLog) {
-  if (isTmaDemoTagName(log.text_name)) return false
+  if (isReservedSiteTagName(log.text_name)) return false
   return resolveTrackedArtwork(log) !== null
 }
 

@@ -1,4 +1,4 @@
-import { isTmaDemoTagName } from "@tma/config"
+import { isReservedSiteTagName } from "@tma/config"
 
 export type PoiseLog = {
   int_id: number
@@ -129,7 +129,7 @@ export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
 
 /** True when the log belongs to one of the tracked takemearound.gallery artworks. */
 export function isGalleryLog(log: PoiseLog) {
-  if (isTmaDemoTagName(log.text_name)) return false
+  if (isReservedSiteTagName(log.text_name)) return false
   return resolveTrackedArtwork(log) !== null
 }
 
@@ -145,7 +145,7 @@ function isPairableSeenNeighbor(redirect: PoiseLog, neighbor: PoiseLog) {
   if (normalizeMessageType(neighbor.txt_message_type) !== "SEEN") return false
   if (!(neighbor.txt_message ?? "").trim().startsWith("{")) return false
   if (!timestampsCloseEnough(neighbor, redirect)) return false
-  if (isTmaDemoTagName(neighbor.text_name)) return false
+  if (isReservedSiteTagName(neighbor.text_name)) return false
 
   const redirectUid = redirect.txt_uid?.trim()
   const seenUid = neighbor.txt_uid?.trim()

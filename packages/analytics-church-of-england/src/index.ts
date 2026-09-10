@@ -1,4 +1,9 @@
-import { isTmaDemoTagName } from "@tma/config"
+import {
+  SOUTHWELL_MINSTER_TAG_NAMES,
+  canonicalSouthwellMinsterTagName,
+  isTmaDemoTagName,
+  southwellMinsterDisplayTitle,
+} from "@tma/config"
 
 export type PoiseLog = {
   int_id: number
@@ -44,29 +49,34 @@ export type AudienceBreakdownRow = {
   percent: number
 }
 
+const TRACKED_WESTMINSTER_ABBEY = {
+  tagName: undefined as string | undefined,
+  title: "Westminster Abbey",
+  path: "/westminster-abbey",
+}
+
+export const TRACKED_SOUTHWELL_MINSTER_ARTWORKS = SOUTHWELL_MINSTER_TAG_NAMES.map((name) => ({
+  tagName: name,
+  title: southwellMinsterDisplayTitle(name),
+  path: `/southwell/${name}`,
+}))
+
 export const TRACKED_CHURCH_OF_ENGLAND_ARTWORKS = [
-  { title: "Westminster Abbey", path: "/westminster-abbey" },
-  { title: "Southwell Minster", path: "/minster_cathedral/Southwell/deans_welcome_message" },
-] as const
+  TRACKED_WESTMINSTER_ABBEY,
+  ...TRACKED_SOUTHWELL_MINSTER_ARTWORKS,
+]
 
 export type TrackedArtwork = (typeof TRACKED_CHURCH_OF_ENGLAND_ARTWORKS)[number]
 
-const TRACKED_CHURCH_OF_ENGLAND_PATHS = TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => artwork.path)
-const TRACKED_CHURCH_OF_ENGLAND_PATHS_BY_LENGTH = [...TRACKED_CHURCH_OF_ENGLAND_PATHS].sort(
+const SOUTHWELL_MINSTER_PAGE_PATH = "/minster_cathedral/Southwell/deans_welcome_message"
+
+const TRACKED_CHURCH_OF_ENGLAND_URL_PATHS = [TRACKED_WESTMINSTER_ABBEY.path]
+const TRACKED_CHURCH_OF_ENGLAND_PATHS_BY_LENGTH = [...TRACKED_CHURCH_OF_ENGLAND_URL_PATHS].sort(
   (a, b) => b.length - a.length
 )
-const TRACKED_CHURCH_OF_ENGLAND_TITLES = new Set(
-  TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => artwork.title.toLowerCase())
-)
-
-/** Legacy URL variants that should roll up to a canonical tracked path (lowercase match keys). */
-const TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES: { match: string; canonical: string }[] = [
-  { match: "/southwell-minster", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
-  { match: "/southwell_minster/introduction", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
-  { match: "/southwell_minster", canonical: "/minster_cathedral/Southwell/deans_welcome_message" },
-]
 
 export function getTrackedArtworkUrl(path: string) {
+  if (path.startsWith("/southwell/SM")) return `https://takemearound.church${SOUTHWELL_MINSTER_PAGE_PATH}`
   return `https://takemearound.church${path}`
 }
 
@@ -147,19 +157,16 @@ export function extractTrackedPathFromMessage(message: string): string | null {
     if (normalized.includes(path.toLowerCase())) return path
   }
 
-  for (const alias of TRACKED_CHURCH_OF_ENGLAND_PATH_ALIASES) {
-    if (normalized.includes(alias.match.toLowerCase())) return alias.canonical
-  }
-
   return null
 }
 
-function nameMatchesTrackedChurchOfEnglandArtwork(name: string | null | undefined) {
-  const normalized = name?.trim().toLowerCase()
-  return Boolean(normalized && TRACKED_CHURCH_OF_ENGLAND_TITLES.has(normalized))
-}
-
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
+  const southwell =
+    canonicalSouthwellMinsterTagName(log.text_name) ?? canonicalSouthwellMinsterTagName(log.txt_message)
+  if (southwell) {
+    return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.tagName === southwell) ?? null
+  }
+
   const message = log.txt_message?.trim() ?? ""
 
   const path = extractTrackedPathFromMessage(message)
@@ -174,8 +181,9 @@ export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
   if (!normalizedName) return null
 
   return (
-    TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.title.toLowerCase() === normalizedName) ??
-    null
+    TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find(
+      (artwork) => !artwork.tagName && artwork.title.toLowerCase() === normalizedName
+    ) ?? null
   )
 }
 
@@ -186,9 +194,10 @@ export function isChurchOfEnglandLog(log: PoiseLog) {
 }
 
 export function getChurchOfEnglandLogLink(log: PoiseLog) {
+  const message = log.txt_message?.trim() ?? ""
+  if (messageLooksLinkShaped(message)) return message
   const artwork = resolveTrackedArtwork(log)
-  if (artwork) return getTrackedArtworkUrl(artwork.path)
-  return log.txt_message?.trim() || "-"
+  return artwork?.title || southwellMinsterDisplayTitle(log.text_name) || message || "-"
 }
 
 const ANONYMOUS_SEEN_PAIR_MAX_MS = 5000
@@ -211,7 +220,7 @@ function timestampsCloseEnough(left: PoiseLog, right: PoiseLog, maxMs = ANONYMOU
 
 function withTrackedArtworkName(log: PoiseLog, artwork: TrackedArtwork): PoiseLog {
   if (log.text_name?.trim()) return log
-  return { ...log, text_name: artwork.title }
+  return { ...log, text_name: artwork.tagName ?? artwork.title }
 }
 
 function anonymousSeenNeighborForChurchRedirect(redirect: PoiseLog, byId: Map<number, PoiseLog>) {
@@ -246,10 +255,8 @@ export function getChurchOfEnglandLogs(logs: PoiseLog[]) {
 }
 
 export function getRedirectScans(logs: PoiseLog[]) {
-  return logs.filter(
-    (row) =>
-      row.txt_message_type === "REDIRECTED" &&
-      extractTrackedPathFromMessage(row.txt_message ?? "") !== null
+  return getChurchOfEnglandLogs(logs).filter(
+    (row) => normalizeMessageType(row.txt_message_type) === "REDIRECTED"
   )
 }
 
@@ -274,7 +281,11 @@ function getArtworkKey(log: PoiseLog) {
   const path = extractTrackedPathFromMessage(log.txt_message ?? "")
   if (path) return path
 
-  return log.text_name?.trim().toLowerCase() ?? ""
+  return (
+    canonicalSouthwellMinsterTagName(log.text_name)?.toLowerCase() ??
+    log.text_name?.trim().toLowerCase() ??
+    ""
+  )
 }
 
 function normalizeMessageType(value: string | null | undefined) {
@@ -359,7 +370,11 @@ export function buildChurchOfEnglandActivityEntries(logs: PoiseLog[]): ChurchOfE
       redirect,
       seen,
       timestamp: primary?.dtm_timestamp ?? null,
-      artworkTitle: artwork?.title ?? primary?.text_name?.trim() ?? "-",
+      artworkTitle:
+        artwork?.title ??
+        southwellMinsterDisplayTitle(primary?.text_name) ??
+        primary?.text_name?.trim() ??
+        "-",
       link: primary ? getChurchOfEnglandLogLink(primary) : "-",
     }
   })
@@ -375,9 +390,9 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
   const scansByPath = new Map<string, PoiseLog[]>()
 
   for (const scan of getRedirectScans(logs)) {
-    const path = extractTrackedPathFromMessage(scan.txt_message ?? "")
-    if (!path) continue
-    scansByPath.set(path, [...(scansByPath.get(path) ?? []), scan])
+    const artwork = resolveTrackedArtwork(scan)
+    if (!artwork) continue
+    scansByPath.set(artwork.path, [...(scansByPath.get(artwork.path) ?? []), scan])
   }
 
   const sortByTimestampDesc = (a: PoiseLog, b: PoiseLog) => {
@@ -386,11 +401,18 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
     return bTime - aTime
   }
 
-  return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => ({
-    ...artwork,
-    url: getTrackedArtworkUrl(artwork.path),
-    scans: (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc),
-  })).sort((a, b) => b.scans.length - a.scans.length)
+  return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => {
+    const scans = (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc)
+    return {
+      ...artwork,
+      url: artwork.tagName
+        ? scans[0]
+          ? getChurchOfEnglandLogLink(scans[0])
+          : artwork.title
+        : getTrackedArtworkUrl(artwork.path),
+      scans,
+    }
+  }).sort((a, b) => b.scans.length - a.scans.length)
 }
 
 export function getSeenEntries(logs: PoiseLog[]) {
@@ -880,7 +902,12 @@ export function buildOverviewAnalytics(logs: PoiseLog[]) {
   const monthStart = startOfMonth(now)
 
   const scansByTag = scans.reduce<Record<string, number>>((acc, row) => {
-    const label = row.text_name?.trim() || row.txt_message?.trim() || "Unknown"
+    const label =
+      resolveTrackedArtwork(row)?.title ||
+      southwellMinsterDisplayTitle(row.text_name) ||
+      row.text_name?.trim() ||
+      row.txt_message?.trim() ||
+      "Unknown"
     acc[label] = (acc[label] ?? 0) + 1
     return acc
   }, {})
@@ -902,7 +929,12 @@ export function buildOverviewAnalytics(logs: PoiseLog[]) {
 
   const topTagThisMonth = scans.filter((row) => {
     const date = parseTimestamp(row.dtm_timestamp)
-    return date && date >= monthStart && (row.text_name?.trim() || "Unknown") === topTag[0]
+    const label =
+      resolveTrackedArtwork(row)?.title ||
+      southwellMinsterDisplayTitle(row.text_name) ||
+      row.text_name?.trim() ||
+      "Unknown"
+    return date && date >= monthStart && label === topTag[0]
   }).length
 
   return {
@@ -1743,7 +1775,8 @@ export function buildSarTimelinePlot(logs: PoiseLog[]): SarTimelinePlot | null {
       timestamp,
       offsetMs: timestamp.getTime() - nowMs,
       messageType,
-      artworkTitle: artwork?.title ?? log.text_name?.trim() ?? "Unknown",
+      artworkTitle:
+        artwork?.title ?? southwellMinsterDisplayTitle(log.text_name) ?? log.text_name?.trim() ?? "Unknown",
       link: getChurchOfEnglandLogLink(log),
       isRedirect: messageType.toUpperCase() === "REDIRECTED",
     })
