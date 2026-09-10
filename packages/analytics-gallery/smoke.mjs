@@ -64,7 +64,12 @@ const namedSerialPair = [
       txt_message: "https://takemearound.gallery/the-starry-night",
     },
   ]
-  assert.equal(getGalleryLogs(demoStarryNight).length, 0, "leaves Starry Night 007 to the TMA Demo dashboard")
+  const galleryLogs = getGalleryLogs(demoStarryNight)
+  assert.equal(galleryLogs.length, 2, "keeps Starry Night 007 on the gallery dashboard")
+  assert.ok(
+    galleryLogs.some((log) => log.txt_message_type === "SEEN" && log.int_id === 5997),
+    "includes the Starry Night 007 SEEN row"
+  )
 }
 
 {

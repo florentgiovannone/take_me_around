@@ -310,7 +310,7 @@ const EN: DashboardCopy = {
   trackedScansMeta: "tracked TMA Demo scans",
   trackedLinksMeta: (count) => `of ${count} tracked TMA Demo tags`,
   trackedScansAcrossMeta: "across tracked TMA Demo tags",
-  emptyActivity: "No tracked TMA Demo activity found.",
+  emptyActivity: "No TMA Demo slates scanned yet.",
   couldNotOpenDemo:
     "Could not open TMA Demo. Set VITE_DASHBOARD_PASSWORD in apps/dashboard/.env to match the API.",
 }
@@ -471,7 +471,7 @@ const PT_BR: DashboardCopy = {
   trackedScansMeta: "leituras rastreadas do TMA Demo",
   trackedLinksMeta: (count) => `de ${count} tags rastreadas do TMA Demo`,
   trackedScansAcrossMeta: "nas tags rastreadas do TMA Demo",
-  emptyActivity: "Nenhuma atividade rastreada do TMA Demo encontrada.",
+  emptyActivity: "Nenhuma slate do TMA Demo foi lida ainda.",
   couldNotOpenDemo:
     "Não foi possível abrir o TMA Demo. Defina VITE_DASHBOARD_PASSWORD em apps/dashboard/.env para coincidir com a API.",
 }

@@ -162,7 +162,8 @@ function extractTitleAndSerial(value: string): TmaDemoTagName | null {
 }
 
 export function canonicalTmaDemoTagName(
-  name: string | null | undefined
+  name: string | null | undefined,
+  options?: { allowTitleAliases?: boolean }
 ): TmaDemoTagName | null {
   if (!name?.trim()) return null
   const trimmed = name.trim()
@@ -174,11 +175,19 @@ export function canonicalTmaDemoTagName(
     if (fromCompact) return fromCompact
   }
 
-  return extractEmbeddedTmaDemoTag(trimmed) ?? extractTitleAndSerial(trimmed)
+  const embedded = extractEmbeddedTmaDemoTag(trimmed)
+  if (embedded) return embedded
+  if (options?.allowTitleAliases === false) return null
+  return extractTitleAndSerial(trimmed)
 }
 
 export function isTmaDemoTagName(name: string | null | undefined): boolean {
   return canonicalTmaDemoTagName(name) !== null
+}
+
+/** True for TTOD/TK/TSN codes only — not artwork-title aliases like "Starry Night 007". */
+export function isTmaDemoCodeName(name: string | null | undefined): boolean {
+  return canonicalTmaDemoTagName(name, { allowTitleAliases: false }) !== null
 }
 
 const TMA_DEMO_PREFIX_LABELS: { prefix: string; label: string }[] = [
@@ -266,9 +275,9 @@ export function isSouthwellMinsterTagName(name: string | null | undefined): bool
   return canonicalSouthwellMinsterTagName(name) !== null
 }
 
-/** Tags owned by another dashboard (TMA Demo slates or Southwell SM001–007). */
+/** Tags owned by another dashboard (TMA Demo codes or Southwell SM001–007). */
 export function isReservedSiteTagName(name: string | null | undefined): boolean {
-  return isTmaDemoTagName(name) || isSouthwellMinsterTagName(name)
+  return isTmaDemoCodeName(name) || isSouthwellMinsterTagName(name)
 }
 
 export function southwellMinsterDisplayTitle(name: string | null | undefined): string {

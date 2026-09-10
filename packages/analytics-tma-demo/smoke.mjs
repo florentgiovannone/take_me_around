@@ -1,6 +1,11 @@
 import assert from "node:assert/strict"
 
-import { TMA_DEMO_TAG_NAMES, canonicalTmaDemoTagName, tmaDemoDisplayTitle } from "@tma/config"
+import {
+  TMA_DEMO_TAG_NAMES,
+  canonicalTmaDemoTagName,
+  isReservedSiteTagName,
+  tmaDemoDisplayTitle,
+} from "@tma/config"
 import {
   TRACKED_TMA_DEMO_ARTWORKS,
   getTmaDemoLogs,
@@ -50,6 +55,9 @@ assert.equal(canonicalTmaDemoTagName("TS001"), null)
 assert.equal(canonicalTmaDemoTagName("Starry Night 007"), "TSN007")
 assert.equal(canonicalTmaDemoTagName("The Starry Night 007"), "TSN007")
 assert.equal(canonicalTmaDemoTagName("The Starry Night - 007"), "TSN007")
+assert.equal(isReservedSiteTagName("Starry Night 007"), false)
+assert.equal(isReservedSiteTagName("The Starry Night 007"), false)
+assert.equal(isReservedSiteTagName("TSN007"), true)
 assert.equal(canonicalTmaDemoTagName("The Starry Night"), null)
 assert.equal(canonicalTmaDemoTagName("The Temple of Dendur"), null)
 assert.equal(canonicalTmaDemoTagName("TK008"), null)

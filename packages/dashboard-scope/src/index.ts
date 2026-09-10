@@ -14,6 +14,7 @@ import {
   getActiveCombinedSiteIds,
   isActiveCombinedSite,
 } from "./combinedSites"
+import { filterLiveSlateItems, filterLiveSlateLogs } from "./todayFilter"
 
 export type PoiseLog = gallery.PoiseLog
 export type { ActivityVisitDetails } from "@tma/analytics-gallery"
@@ -232,15 +233,36 @@ export function sarTimelineDomainSuffix(scope: SiteScope): string {
   return "selected sites"
 }
 
+function keepLiveSlateLogs(logs: PoiseLog[]): PoiseLog[] {
+  return filterLiveSlateLogs(logs, parseLogTimestampGmt)
+}
+
+function keepTodayActivityEntries(entries: ActivityEntry[]): ActivityEntry[] {
+  return filterLiveSlateItems(entries, (entry) => parseLogTimestampGmt(entry.timestamp))
+}
+
+function keepTodayScanGroups<T extends { scans: PoiseLog[] }>(groups: T[]): T[] {
+  return groups
+    .map((group) => ({
+      ...group,
+      scans: filterLiveSlateItems(group.scans, (scan) =>
+        parseLogTimestampGmt(scan.dtm_timestamp)
+      ),
+    }))
+    .filter((group) => group.scans.length > 0)
+}
+
 export function emptyActivityMessage(scope: SiteScope): string {
   if (scope === "gallery") return "No tracked .gallery activity found."
   if (scope === "arkin") return "No tracked Arkın activity found."
   if (scope === "museum") return "No tracked .museum activity found."
-  if (scope === "church_of_england") return "No tracked Church of England activity found."
+  if (scope === "church_of_england") {
+    return "No Church of England slates scanned yet."
+  }
   if (scope === "tma_demo") {
     return isDemoPortuguese()
-      ? "Nenhuma atividade rastreada do TMA Demo encontrada."
-      : "No tracked TMA Demo activity found."
+      ? "Nenhuma slate do TMA Demo foi lida ainda."
+      : "No TMA Demo slates scanned yet."
   }
   return "No tracked activity found for the selected scope."
 }
@@ -250,9 +272,11 @@ export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): Activi
   if (scope === "arkin") return arkin.buildArkinActivityEntries(logs)
   if (scope === "museum") return museum.buildMuseumActivityEntries(logs)
   if (scope === "church_of_england") {
-    return churchOfEngland.buildChurchOfEnglandActivityEntries(logs)
+    return keepTodayActivityEntries(churchOfEngland.buildChurchOfEnglandActivityEntries(logs))
   }
-  if (scope === "tma_demo") return tmaDemo.buildTmaDemoActivityEntries(logs)
+  if (scope === "tma_demo") {
+    return keepTodayActivityEntries(tmaDemo.buildTmaDemoActivityEntries(logs))
+  }
   const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
     if (siteId === "gallery") return gallery.buildGalleryActivityEntries(logs)
     if (siteId === "museum") return museum.buildMuseumActivityEntries(logs)
@@ -271,9 +295,11 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope
   if (scope === "arkin") return arkin.buildTrackedArtworkScanGroups(logs)
   if (scope === "museum") return museum.buildTrackedArtworkScanGroups(logs)
   if (scope === "church_of_england") {
-    return churchOfEngland.buildTrackedArtworkScanGroups(logs)
+    return keepTodayScanGroups(churchOfEngland.buildTrackedArtworkScanGroups(logs))
   }
-  if (scope === "tma_demo") return tmaDemo.buildTrackedArtworkScanGroups(logs)
+  if (scope === "tma_demo") {
+    return keepTodayScanGroups(tmaDemo.buildTrackedArtworkScanGroups(logs))
+  }
   const groups = []
   for (const siteId of getActiveCombinedSiteIds()) {
     if (siteId === "gallery") {
@@ -389,8 +415,12 @@ export function buildAudienceAnalytics(logs: PoiseLog[], scope: SiteScope): Audi
   if (scope === "gallery") return gallery.buildAudienceAnalytics(logs)
   if (scope === "arkin") return arkin.buildAudienceAnalytics(logs)
   if (scope === "museum") return museum.buildAudienceAnalytics(logs)
-  if (scope === "church_of_england") return churchOfEngland.buildAudienceAnalytics(logs)
-  if (scope === "tma_demo") return tmaDemo.buildAudienceAnalytics(logs) as AudienceAnalytics
+  if (scope === "church_of_england") {
+    return churchOfEngland.buildAudienceAnalytics(keepLiveSlateLogs(logs))
+  }
+  if (scope === "tma_demo") {
+    return tmaDemo.buildAudienceAnalytics(keepLiveSlateLogs(logs)) as AudienceAnalytics
+  }
   const enabled = getActiveCombinedSiteIds()
   const analyticsBySite = {
     gallery: () => gallery.buildAudienceAnalytics(logs),
@@ -494,8 +524,10 @@ export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
   if (scope === "gallery") return gallery.listDistinctGallerySars(logs)
   if (scope === "arkin") return arkin.listDistinctArkinSars(logs)
   if (scope === "museum") return museum.listDistinctMuseumSars(logs)
-  if (scope === "church_of_england") return churchOfEngland.listDistinctChurchOfEnglandSars(logs)
-  if (scope === "tma_demo") return tmaDemo.listDistinctTmaDemoSars(logs)
+  if (scope === "church_of_england") {
+    return churchOfEngland.listDistinctChurchOfEnglandSars(keepLiveSlateLogs(logs))
+  }
+  if (scope === "tma_demo") return tmaDemo.listDistinctTmaDemoSars(keepLiveSlateLogs(logs))
   return [
     ...new Set(
       getActiveCombinedSiteIds().flatMap((siteId) => {
@@ -517,9 +549,11 @@ export function buildSarTimelineEvents(
   if (scope === "arkin") return arkin.buildSarArkinTimelineEvents(logs, sarQuery)
   if (scope === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
   if (scope === "church_of_england") {
-    return churchOfEngland.buildSarChurchOfEnglandTimelineEvents(logs, sarQuery)
+    return churchOfEngland.buildSarChurchOfEnglandTimelineEvents(keepLiveSlateLogs(logs), sarQuery)
   }
-  if (scope === "tma_demo") return tmaDemo.buildSarTmaDemoTimelineEvents(logs, sarQuery)
+  if (scope === "tma_demo") {
+    return tmaDemo.buildSarTmaDemoTimelineEvents(keepLiveSlateLogs(logs), sarQuery)
+  }
   const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
     if (siteId === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
     if (siteId === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
@@ -546,6 +580,9 @@ export function buildSarTimelineRowMetaMap(
   logs: PoiseLog[],
   scope: SiteScope
 ): Map<string, gallery.SarTimelineRowMeta> {
+  if (scope === "church_of_england" || scope === "tma_demo") {
+    logs = keepLiveSlateLogs(logs)
+  }
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
   let meta: Map<string, gallery.SarTimelineRowMeta>
   if (scope === "arkin") {
@@ -599,38 +636,87 @@ function sortPlotSarsByVisitor(
   }
 }
 
+const VISIT_PAIR_WINDOW_MS = 2000
+
+/** One marker per visit: nearby REDIRECTED + SEEN pairs collapse to SEEN (circle). */
+function collapseVisitTimelinePoints<T extends {
+  sar: string
+  timestamp: Date
+  isRedirect: boolean
+}>(points: T[]): T[] {
+  const sorted = [...points].sort((a, b) => {
+    const sarCmp = a.sar.localeCompare(b.sar)
+    if (sarCmp !== 0) return sarCmp
+    return a.timestamp.getTime() - b.timestamp.getTime()
+  })
+
+  const kept: T[] = []
+  for (const point of sorted) {
+    const prev = kept[kept.length - 1]
+    if (
+      prev &&
+      prev.sar === point.sar &&
+      point.timestamp.getTime() - prev.timestamp.getTime() <= VISIT_PAIR_WINDOW_MS
+    ) {
+      if (prev.isRedirect && !point.isRedirect) {
+        kept[kept.length - 1] = point
+        continue
+      }
+      if (!prev.isRedirect && point.isRedirect) {
+        continue
+      }
+      kept[kept.length - 1] = point
+      continue
+    }
+    kept.push(point)
+  }
+  return kept
+}
+
+function collapseSarTimelinePlot(
+  plot: gallery.SarTimelinePlot | null
+): gallery.SarTimelinePlot | null {
+  if (!plot) return null
+  return {
+    ...plot,
+    points: collapseVisitTimelinePoints(plot.points),
+  }
+}
+
 export function buildSarTimelinePlot(
   logs: PoiseLog[],
   scope: SiteScope
 ): gallery.SarTimelinePlot | null {
+  if (scope === "church_of_england" || scope === "tma_demo") {
+    logs = keepLiveSlateLogs(logs)
+  }
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
+  let plot: gallery.SarTimelinePlot | null = null
   if (scope === "gallery") {
-    const plot = gallery.buildSarTimelinePlot(logs)
-    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
+    const next = gallery.buildSarTimelinePlot(logs)
+    plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
+  } else if (scope === "museum") {
+    const next = museum.buildSarTimelinePlot(logs)
+    plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
+  } else if (scope === "arkin") {
+    const next = arkin.buildSarTimelinePlot(logs)
+    plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
+  } else if (scope === "church_of_england") {
+    const next = churchOfEngland.buildSarTimelinePlot(logs)
+    plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
+  } else if (scope === "tma_demo") {
+    const next = tmaDemo.buildSarTimelinePlot(logs)
+    plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
+  } else {
+    const plots = getActiveCombinedSiteIds().map((siteId) => {
+      if (siteId === "gallery") return gallery.buildSarTimelinePlot(logs)
+      if (siteId === "museum") return museum.buildSarTimelinePlot(logs)
+      if (siteId === "arkin") return arkin.buildSarTimelinePlot(logs)
+      return churchOfEngland.buildSarTimelinePlot(logs)
+    })
+    plot = mergeSarTimelinePlots(plots, visitorBySar)
   }
-  if (scope === "museum") {
-    const plot = museum.buildSarTimelinePlot(logs)
-    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
-  }
-  if (scope === "arkin") {
-    const plot = arkin.buildSarTimelinePlot(logs)
-    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
-  }
-  if (scope === "church_of_england") {
-    const plot = churchOfEngland.buildSarTimelinePlot(logs)
-    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
-  }
-  if (scope === "tma_demo") {
-    const plot = tmaDemo.buildSarTimelinePlot(logs)
-    return plot ? sortPlotSarsByVisitor(plot, visitorBySar) : null
-  }
-  const plots = getActiveCombinedSiteIds().map((siteId) => {
-    if (siteId === "gallery") return gallery.buildSarTimelinePlot(logs)
-    if (siteId === "museum") return museum.buildSarTimelinePlot(logs)
-    if (siteId === "arkin") return arkin.buildSarTimelinePlot(logs)
-    return churchOfEngland.buildSarTimelinePlot(logs)
-  })
-  return mergeSarTimelinePlots(plots, visitorBySar)
+  return collapseSarTimelinePlot(plot)
 }
 
 export const sarTimelineCanvasWidthPx = gallery.sarTimelineCanvasWidthPx
