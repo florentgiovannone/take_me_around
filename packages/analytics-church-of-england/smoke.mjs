@@ -7,10 +7,12 @@ import {
 } from "@tma/config"
 import {
   TRACKED_CHURCH_OF_ENGLAND_ARTWORKS,
+  TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS,
   TRACKED_SOUTHWELL_MINSTER_ARTWORKS,
   buildAudienceAnalytics,
   buildChurchOfEnglandActivityEntries,
   buildSarTimelinePlot,
+  buildTrackedArtworkScanGroups,
   getChurchOfEnglandLogs,
   listDistinctChurchOfEnglandSars,
   resolveTrackedArtwork,
@@ -21,6 +23,15 @@ const expectedCodes = ["SM001", "SM002", "SM003", "SM004", "SM005", "SM006", "SM
 assert.deepEqual([...SOUTHWELL_MINSTER_TAG_NAMES], expectedCodes, "Southwell tracks SM001–SM007")
 assert.equal(TRACKED_SOUTHWELL_MINSTER_ARTWORKS.length, 7, "church lists 7 Southwell slates")
 assert.equal(TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.length, 8, "church lists Westminster plus 7 Southwell slates")
+assert.equal(
+  TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.length,
+  7,
+  "link scan counts omit Westminster Abbey"
+)
+assert.ok(
+  TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.every((artwork) => artwork.path !== "/westminster-abbey"),
+  "link scan artworks do not include Westminster Abbey"
+)
 
 for (const code of expectedCodes) {
   assert.equal(canonicalSouthwellMinsterTagName(code), code, `recognises ${code}`)
@@ -98,6 +109,32 @@ assert.equal(
   null,
   "leaves a bare Southwell URL unmapped until an SM slate is present"
 )
+
+{
+  const scanGroups = buildTrackedArtworkScanGroups([
+    {
+      ...baseLog,
+      int_id: 1,
+      text_name: "Westminster Abbey",
+      txt_message_type: "REDIRECTED",
+      txt_message: "https://takemearound.church/westminster-abbey",
+    },
+    {
+      ...baseLog,
+      int_id: 2,
+      text_name: "SM001",
+      txt_message_type: "REDIRECTED",
+      txt_message: "https://takemearound.church/minster_cathedral/Southwell/deans_welcome_message",
+    },
+  ])
+  assert.equal(scanGroups.length, 7, "scan groups list Southwell slates only")
+  assert.ok(
+    scanGroups.every((group) => group.path !== "/westminster-abbey"),
+    "scan groups omit Westminster Abbey even when it has redirects"
+  )
+  const sm001 = scanGroups.find((group) => group.tagName === "SM001")
+  assert.equal(sm001?.scans.length, 1, "Southwell SM001 still appears in scan counts")
+}
 
 const southwellSeenPayload = JSON.stringify({
   REMOTE_ADDR: "1.2.3.4",

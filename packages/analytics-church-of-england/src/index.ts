@@ -66,6 +66,9 @@ export const TRACKED_CHURCH_OF_ENGLAND_ARTWORKS = [
   ...TRACKED_SOUTHWELL_MINSTER_ARTWORKS,
 ]
 
+/** Link scan counts lists Southwell slates only; Westminster Abbey stays tracked for activity. */
+export const TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS = TRACKED_SOUTHWELL_MINSTER_ARTWORKS
+
 export type TrackedArtwork = (typeof TRACKED_CHURCH_OF_ENGLAND_ARTWORKS)[number]
 
 const SOUTHWELL_MINSTER_PAGE_PATH = "/minster_cathedral/Southwell/deans_welcome_message"
@@ -401,7 +404,7 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
     return bTime - aTime
   }
 
-  return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.map((artwork) => {
+  return TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.map((artwork) => {
     const scans = (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc)
     return {
       ...artwork,

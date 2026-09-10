@@ -208,7 +208,7 @@ export function tmaDemoDisplayTitle(name: string | null | undefined): string {
   return canonical
 }
 
-export const SOUTHWELL_MINSTER_TAG_NAMES = tagNameRange("SM", 1, 7) as const
+export const SOUTHWELL_MINSTER_TAG_NAMES = [...tagNameRange("SM", 1, 7)] as const
 
 export type SouthwellMinsterTagName = (typeof SOUTHWELL_MINSTER_TAG_NAMES)[number]
 

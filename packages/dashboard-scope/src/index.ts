@@ -163,14 +163,14 @@ export function trackedArtworkCount(scope: SiteScope): number {
   if (scope === "arkin") return arkin.TRACKED_ARKIN_ARTWORKS.length
   if (scope === "museum") return museum.TRACKED_MUSEUM_ARTWORKS.length
   if (scope === "church_of_england") {
-    return churchOfEngland.TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.length
+    return churchOfEngland.TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.length
   }
   if (scope === "tma_demo") return tmaDemo.TRACKED_TMA_DEMO_ARTWORKS.length
   return getActiveCombinedSiteIds().reduce((count, siteId) => {
     if (siteId === "gallery") return count + gallery.TRACKED_GALLERY_ARTWORKS.length
     if (siteId === "museum") return count + museum.TRACKED_MUSEUM_ARTWORKS.length
     if (siteId === "arkin") return count + arkin.TRACKED_ARKIN_ARTWORKS.length
-    return count + churchOfEngland.TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.length
+    return count + churchOfEngland.TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.length
   }, 0)
 }
 
