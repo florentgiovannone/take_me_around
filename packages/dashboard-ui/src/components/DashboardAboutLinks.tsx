@@ -10,24 +10,27 @@ export default function DashboardAboutLinks() {
 
   return (
     <nav className="tma-dashboard-about-links" aria-label={copy.aboutLinksLabel}>
-      <a
-        className="tma-dashboard-about-link"
-        href={BUSINESS_HREF}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span className="tma-dashboard-about-link-kicker">{copy.aboutBusiness}</span>
-        <span className="tma-dashboard-about-link-host">takemearound.com</span>
-      </a>
-      <a
-        className="tma-dashboard-about-link"
-        href={TECHNOLOGY_HREF}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span className="tma-dashboard-about-link-kicker">{copy.aboutTechnology}</span>
-        <span className="tma-dashboard-about-link-host">poiseinfotech.com</span>
-      </a>
+      <p className="tma-dashboard-about-links-heading">{copy.aboutLinksHeading}</p>
+      <div className="tma-dashboard-about-links-row">
+        <a
+          className="tma-dashboard-about-link"
+          href={BUSINESS_HREF}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="tma-dashboard-about-link-kicker">{copy.aboutBusiness}</span>
+          <span className="tma-dashboard-about-link-host">takemearound.com</span>
+        </a>
+        <a
+          className="tma-dashboard-about-link"
+          href={TECHNOLOGY_HREF}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="tma-dashboard-about-link-kicker">{copy.aboutTechnology}</span>
+          <span className="tma-dashboard-about-link-host">poiseinfotech.com</span>
+        </a>
+      </div>
     </nav>
   )
 }

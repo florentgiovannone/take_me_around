@@ -39,6 +39,10 @@
   color: var(--tma-brand);
 }
 
+.southwell-dashboard .tma-dashboard-about-links-heading {
+  color: var(--tma-brand-dark);
+}
+
 .southwell-dashboard .southwell-dashboard-hero {
   min-height: 48vh;
 }
@@ -70,7 +74,7 @@
 
 .southwell-dashboard-tabs-nav {
   position: sticky;
-  top: 5.75rem;
+  top: 7.5rem;
   z-index: 5;
   width: 100%;
   margin: 0 -40px 1.75rem;

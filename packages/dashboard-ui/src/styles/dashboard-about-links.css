@@ -3,15 +3,32 @@
   top: 0;
   z-index: 30;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 1rem 0.85rem;
+  background: var(--tma-brand, #0a479d);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 22px rgba(10, 20, 40, 0.16);
+}
+
+.tma-dashboard-about-links-heading {
+  margin: 0;
+  text-align: center;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #fff;
+}
+
+.tma-dashboard-about-links-row {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.65rem 0.85rem;
   width: 100%;
-  box-sizing: border-box;
-  padding: 0.7rem 1rem;
-  background: var(--tma-brand, #0a479d);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 22px rgba(10, 20, 40, 0.16);
 }
 
 .tma-dashboard-about-link {

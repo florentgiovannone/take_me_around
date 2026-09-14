@@ -154,6 +154,7 @@ export type DashboardCopy = {
   emptyActivity: string
   couldNotOpenDemo: string
   aboutLinksLabel: string
+  aboutLinksHeading: string
   aboutBusiness: string
   aboutTechnology: string
 }
@@ -317,6 +318,7 @@ const EN: DashboardCopy = {
   couldNotOpenDemo:
     "Could not open TMA Demo. Set VITE_DASHBOARD_PASSWORD in apps/dashboard/.env to match the API.",
   aboutLinksLabel: "About Take Me Around",
+  aboutLinksHeading: "To find out more use these links",
   aboutBusiness: "The business",
   aboutTechnology: "The technology",
 }
@@ -481,6 +483,7 @@ const PT_BR: DashboardCopy = {
   couldNotOpenDemo:
     "Não foi possível abrir o TMA Demo. Defina VITE_DASHBOARD_PASSWORD em apps/dashboard/.env para coincidir com a API.",
   aboutLinksLabel: "Sobre o Take Me Around",
+  aboutLinksHeading: "Para saber mais, use estes links",
   aboutBusiness: "O negócio",
   aboutTechnology: "A tecnologia",
 }
