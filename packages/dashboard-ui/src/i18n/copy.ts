@@ -153,6 +153,9 @@ export type DashboardCopy = {
   trackedScansAcrossMeta: string
   emptyActivity: string
   couldNotOpenDemo: string
+  aboutLinksLabel: string
+  aboutBusiness: string
+  aboutTechnology: string
 }
 
 const EN: DashboardCopy = {
@@ -313,6 +316,9 @@ const EN: DashboardCopy = {
   emptyActivity: "No TMA Demo slates scanned yet.",
   couldNotOpenDemo:
     "Could not open TMA Demo. Set VITE_DASHBOARD_PASSWORD in apps/dashboard/.env to match the API.",
+  aboutLinksLabel: "About Take Me Around",
+  aboutBusiness: "The business",
+  aboutTechnology: "The technology",
 }
 
 const PT_BR: DashboardCopy = {
@@ -474,6 +480,9 @@ const PT_BR: DashboardCopy = {
   emptyActivity: "Nenhuma slate do TMA Demo foi lida ainda.",
   couldNotOpenDemo:
     "Não foi possível abrir o TMA Demo. Defina VITE_DASHBOARD_PASSWORD em apps/dashboard/.env para coincidir com a API.",
+  aboutLinksLabel: "Sobre o Take Me Around",
+  aboutBusiness: "O negócio",
+  aboutTechnology: "A tecnologia",
 }
 
 const COPY: Record<DashboardLocale, DashboardCopy> = {

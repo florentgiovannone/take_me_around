@@ -16,6 +16,29 @@
   min-height: 100vh;
 }
 
+.southwell-dashboard .tma-dashboard-about-links {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  box-shadow: 0 8px 18px var(--tma-brand-shadow);
+}
+
+.southwell-dashboard .tma-dashboard-about-link {
+  background: var(--paper-2);
+  border: 1px solid var(--tma-brand-border);
+  color: var(--tma-brand-dark);
+  box-shadow: none;
+}
+
+.southwell-dashboard .tma-dashboard-about-link:hover,
+.southwell-dashboard .tma-dashboard-about-link:focus-visible {
+  background: #fdf9ef;
+  outline-color: var(--tma-brand-light);
+}
+
+.southwell-dashboard .tma-dashboard-about-link-kicker {
+  color: var(--tma-brand);
+}
+
 .southwell-dashboard .southwell-dashboard-hero {
   min-height: 48vh;
 }
@@ -47,7 +70,7 @@
 
 .southwell-dashboard-tabs-nav {
   position: sticky;
-  top: 0;
+  top: 5.75rem;
   z-index: 5;
   width: 100%;
   margin: 0 -40px 1.75rem;

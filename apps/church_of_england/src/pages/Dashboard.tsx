@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect, useState } from "react"
 import Footer from "../components/Footer"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -131,6 +132,7 @@ function Dashboard() {
 
   return (
     <div className="southwell-minster southwell-dashboard tma-dashboard">
+      <DashboardAboutLinks />
       <header className="hero southwell-dashboard-hero" role="banner" style={heroStyle}>
         <div className="hero-inner">
           <div className="eyebrow">Take Me Around · .church</div>

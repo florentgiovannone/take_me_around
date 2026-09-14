@@ -2,6 +2,7 @@ import { type FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import ScopeSwitcher from "../components/ScopeSwitcher"
 import DashboardSettingsPage from "../components/DashboardSettingsPage"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -452,6 +453,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
     <main
       className={`tma-dashboard tma-main-dashboard${activeScope === "gallery" ? " tma-gallery-page" : ""}`}
     >
+      <DashboardAboutLinks />
       <header
         className={
           fixedScope ? "tma-header" : "tma-header tma-main-dashboard-header"
