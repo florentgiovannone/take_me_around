@@ -25,17 +25,20 @@
 
 .tma-dashboard-about-links-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
-  gap: 0.65rem 0.85rem;
+  align-items: stretch;
+  gap: 0.5rem;
   width: 100%;
+  max-width: 42rem;
 }
 
 .tma-dashboard-about-link {
   display: flex;
+  flex: 1 1 0;
   flex-direction: column;
   align-items: flex-start;
-  min-width: min(100%, 16.5rem);
+  min-width: 0;
   padding: 0.55rem 0.9rem 0.6rem;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.14);
@@ -61,14 +64,34 @@
 }
 
 .tma-dashboard-about-link-host {
-  font-size: 1.05rem;
+  font-size: clamp(0.72rem, 3.2vw, 1.05rem);
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
-@media (min-width: 720px) {
+@media (max-width: 719px) {
+  .tma-dashboard-about-links {
+    padding: 0.55rem 0.65rem 0.65rem;
+    gap: 0.4rem;
+  }
+
+  .tma-dashboard-about-links-heading {
+    font-size: 0.88rem;
+  }
+
+  .tma-dashboard-about-links-row {
+    gap: 0.4rem;
+  }
+
   .tma-dashboard-about-link {
-    min-width: 18rem;
+    padding: 0.42rem 0.5rem 0.48rem;
+    border-radius: 10px;
+  }
+
+  .tma-dashboard-about-link-kicker {
+    font-size: 0.58rem;
+    letter-spacing: 0.05em;
   }
 }
