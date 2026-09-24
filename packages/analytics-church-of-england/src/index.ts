@@ -418,7 +418,7 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
     return bTime - aTime
   }
 
-  const artworks = [...TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS]
+  const artworks: TrackedArtwork[] = [...TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS]
   for (const scans of scansByPath.values()) {
     const artwork = resolveTrackedArtwork(scans[0])
     if (!artwork?.tagName || artworks.some((item) => item.path === artwork.path)) continue
