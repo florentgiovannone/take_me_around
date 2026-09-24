@@ -11,6 +11,7 @@ apps/
   arkin_museum/       → clone of museum (separate Netlify site / domain)
   church_of_england/  → takemearound.church (Westminster Abbey + Southwell Minster)
   i_am_a_safe_pet/   → safe-pet.takemearound.gallery (lost-pet public pages + owner dashboard)
+  fair_future/        → Fair Future Party Makerfield campaign page (illustrative)
   dashboard/          → arkin.takemearound.gallery (combined + per-site analytics)
 packages/
   config/                        Site scope types and labels
@@ -28,9 +29,9 @@ Gallery and museum apps import dashboard UI from `@tma/dashboard-ui` and scope d
 
 ```bash
 npm install
-npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:church-of-england, dev:i-am-a-safe-pet, dev:dashboard
+npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:church-of-england, dev:i-am-a-safe-pet, dev:fair-future, dev:dashboard
 npm run build            # all apps
-npm run build:gallery    # single app (also build:museum, build:church-of-england, build:i-am-a-safe-pet, etc.)
+npm run build:gallery    # single app (also build:museum, build:church-of-england, build:i-am-a-safe-pet, build:fair-future, etc.)
 ```
 
 ## Netlify (one repo, four public sites + dashboard)
