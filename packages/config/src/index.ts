@@ -56,8 +56,17 @@ export const SITE_META: Record<
   },
 }
 
+const MAX_TAG_SERIAL = 999_999
+
 function padTagNumber(value: number) {
-  return String(value).padStart(3, "0")
+  return value < 1000 ? String(value).padStart(3, "0") : String(value)
+}
+
+function serialNumber(serial: string): number | null {
+  if (!/^\d+$/.test(serial)) return null
+  const n = Number(serial)
+  if (!Number.isInteger(n) || n < 1 || n > MAX_TAG_SERIAL) return null
+  return n
 }
 
 function tagNameRange(prefix: string, from: number, to: number): string[] {
@@ -87,24 +96,23 @@ function compactTagToken(value: string) {
 function tagFromPrefixAndSerial(
   prefix: (typeof TMA_DEMO_TAG_PREFIXES)[number],
   serial: string
-): TmaDemoTagName | null {
-  const n = Number(serial)
-  if (!Number.isInteger(n) || n < 1 || n > 7) return null
-  const code = `${prefix}${padTagNumber(n)}`
-  return TMA_DEMO_TAG_NAME_SET.has(code) ? (code as TmaDemoTagName) : null
+): string | null {
+  const n = serialNumber(serial)
+  if (n == null) return null
+  return `${prefix}${padTagNumber(n)}`
 }
 
-function tagFromCompact(compact: string): TmaDemoTagName | null {
-  if (TMA_DEMO_TAG_NAME_SET.has(compact)) return compact as TmaDemoTagName
+function tagFromCompact(compact: string): string | null {
+  if (TMA_DEMO_TAG_NAME_SET.has(compact)) return compact
 
-  const dendurMatch = compact.match(/^T+TOD(\d{1,3})$/)
+  const dendurMatch = compact.match(/^T+TOD(\d{1,6})$/)
   if (dendurMatch) {
     const canonical = tagFromPrefixAndSerial("TTOD", dendurMatch[1])
     if (canonical) return canonical
   }
 
   for (const prefix of TMA_DEMO_TAG_PREFIXES) {
-    const match = compact.match(new RegExp(`^${prefix}(\\d{1,3})$`))
+    const match = compact.match(new RegExp(`^${prefix}(\\d{1,6})$`))
     if (!match) continue
     const canonical = tagFromPrefixAndSerial(prefix, match[1])
     if (canonical) return canonical
@@ -113,12 +121,12 @@ function tagFromCompact(compact: string): TmaDemoTagName | null {
   return null
 }
 
-function extractEmbeddedTmaDemoTag(value: string): TmaDemoTagName | null {
+function extractEmbeddedTmaDemoTag(value: string): string | null {
   const upper = value.toUpperCase()
   const patterns: { prefix: (typeof TMA_DEMO_TAG_PREFIXES)[number]; re: RegExp }[] = [
-    { prefix: "TTOD", re: /(?:^|[^A-Z0-9])T+TOD[\s\-_]*(\d{1,3})(?!\d)/ },
-    { prefix: "TSN", re: /(?:^|[^A-Z0-9])TSN[\s\-_]*(\d{1,3})(?!\d)/ },
-    { prefix: "TK", re: /(?:^|[^A-Z0-9])TK[\s\-_]*(\d{1,3})(?!\d)/ },
+    { prefix: "TTOD", re: /(?:^|[^A-Z0-9])T+TOD[\s\-_]*(\d{1,6})(?!\d)/ },
+    { prefix: "TSN", re: /(?:^|[^A-Z0-9])TSN[\s\-_]*(\d{1,6})(?!\d)/ },
+    { prefix: "TK", re: /(?:^|[^A-Z0-9])TK[\s\-_]*(\d{1,6})(?!\d)/ },
   ]
 
   for (const { prefix, re } of patterns) {
@@ -144,9 +152,9 @@ function normalizeTitlePhrase(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()
 }
 
-function extractTitleAndSerial(value: string): TmaDemoTagName | null {
+function extractTitleAndSerial(value: string): string | null {
   const normalized = normalizeTitlePhrase(value)
-  const match = normalized.match(/^(.*?)(?:\s+)(\d{1,3})$/)
+  const match = normalized.match(/^(.*?)(?:\s+)(\d{1,6})$/)
   if (!match) return null
 
   const title = match[1].trim()
@@ -164,7 +172,7 @@ function extractTitleAndSerial(value: string): TmaDemoTagName | null {
 export function canonicalTmaDemoTagName(
   name: string | null | undefined,
   options?: { allowTitleAliases?: boolean }
-): TmaDemoTagName | null {
+): string | null {
   if (!name?.trim()) return null
   const trimmed = name.trim()
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
@@ -223,31 +231,30 @@ export type SouthwellMinsterTagName = (typeof SOUTHWELL_MINSTER_TAG_NAMES)[numbe
 
 const SOUTHWELL_MINSTER_TAG_NAME_SET = new Set<string>(SOUTHWELL_MINSTER_TAG_NAMES)
 
-function southwellTagFromSerial(serial: string): SouthwellMinsterTagName | null {
-  const n = Number(serial)
-  if (!Number.isInteger(n) || n < 1 || n > 7) return null
-  const code = `SM${padTagNumber(n)}`
-  return SOUTHWELL_MINSTER_TAG_NAME_SET.has(code) ? (code as SouthwellMinsterTagName) : null
+function southwellTagFromSerial(serial: string): string | null {
+  const n = serialNumber(serial)
+  if (n == null) return null
+  return `SM${padTagNumber(n)}`
 }
 
-function southwellTagFromCompact(compact: string): SouthwellMinsterTagName | null {
-  if (SOUTHWELL_MINSTER_TAG_NAME_SET.has(compact)) return compact as SouthwellMinsterTagName
-  const match = compact.match(/^SM(\d{1,3})$/)
+function southwellTagFromCompact(compact: string): string | null {
+  if (SOUTHWELL_MINSTER_TAG_NAME_SET.has(compact)) return compact
+  const match = compact.match(/^SM(\d{1,6})$/)
   if (!match) return null
   return southwellTagFromSerial(match[1])
 }
 
-function extractEmbeddedSouthwellMinsterTag(value: string): SouthwellMinsterTagName | null {
-  const match = value.toUpperCase().match(/(?:^|[^A-Z0-9])SM[\s\-_]*(\d{1,3})(?!\d)/)
+function extractEmbeddedSouthwellMinsterTag(value: string): string | null {
+  const match = value.toUpperCase().match(/(?:^|[^A-Z0-9])SM[\s\-_]*(\d{1,6})(?!\d)/)
   if (!match) return null
   return southwellTagFromSerial(match[1])
 }
 
 const SOUTHWELL_MINSTER_TITLE_ALIASES = ["southwell minster", "southwell"]
 
-function extractSouthwellTitleAndSerial(value: string): SouthwellMinsterTagName | null {
+function extractSouthwellTitleAndSerial(value: string): string | null {
   const normalized = normalizeTitlePhrase(value)
-  const match = normalized.match(/^(.*?)(?:\s+)(\d{1,3})$/)
+  const match = normalized.match(/^(.*?)(?:\s+)(\d{1,6})$/)
   if (!match) return null
 
   const title = match[1].trim()
@@ -257,7 +264,7 @@ function extractSouthwellTitleAndSerial(value: string): SouthwellMinsterTagName 
 
 export function canonicalSouthwellMinsterTagName(
   name: string | null | undefined
-): SouthwellMinsterTagName | null {
+): string | null {
   if (!name?.trim()) return null
   const trimmed = name.trim()
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
@@ -275,7 +282,7 @@ export function isSouthwellMinsterTagName(name: string | null | undefined): bool
   return canonicalSouthwellMinsterTagName(name) !== null
 }
 
-/** Tags owned by another dashboard (TMA Demo codes or Southwell SM001–007). */
+/** Tags owned by demo (TSN/TK/TTOD) or church (Southwell SM) dashboards. */
 export function isReservedSiteTagName(name: string | null | undefined): boolean {
   return isTmaDemoCodeName(name) || isSouthwellMinsterTagName(name)
 }

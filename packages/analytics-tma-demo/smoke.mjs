@@ -8,6 +8,7 @@ import {
 } from "@tma/config"
 import {
   TRACKED_TMA_DEMO_ARTWORKS,
+  buildTrackedArtworkScanGroups,
   getTmaDemoLogs,
   resolveTrackedArtwork,
 } from "./src/index.ts"
@@ -60,7 +61,9 @@ assert.equal(isReservedSiteTagName("The Starry Night 007"), false)
 assert.equal(isReservedSiteTagName("TSN007"), true)
 assert.equal(canonicalTmaDemoTagName("The Starry Night"), null)
 assert.equal(canonicalTmaDemoTagName("The Temple of Dendur"), null)
-assert.equal(canonicalTmaDemoTagName("TK008"), null)
+assert.equal(canonicalTmaDemoTagName("TK008"), "TK008")
+assert.equal(canonicalTmaDemoTagName("TSN20"), "TSN020")
+assert.equal(canonicalTmaDemoTagName("TTOD1000"), "TTOD1000")
 assert.equal(canonicalTmaDemoTagName("The Kiss"), null)
 
 assert.equal(tmaDemoDisplayTitle("TTOD001"), "The Temple of Dendur - TTOD001")
@@ -114,5 +117,27 @@ assert.equal(demoLogs.length, 3, "keeps the TTOD001 alias pair and Starry Night 
 assert.equal(resolveTrackedArtwork(logs[0])?.tagName, "TTOD001")
 assert.equal(resolveTrackedArtwork(logs[2]), null)
 assert.equal(resolveTrackedArtwork(logs[3])?.tagName, "TSN007")
+
+const extra = resolveTrackedArtwork({
+  int_id: 5,
+  dtm_timestamp: "2026-09-08T09:16:00.000000",
+  txt_uid: null,
+  text_name: "TSN20",
+  txt_message_type: "REDIRECTED",
+  txt_message: "https://takemearound.gallery/the-starry-night",
+})
+assert.equal(extra?.tagName, "TSN020")
+const groups = buildTrackedArtworkScanGroups([
+  ...logs,
+  {
+    int_id: 5,
+    dtm_timestamp: "2026-09-08T09:16:00.000000",
+    txt_uid: null,
+    text_name: "TSN20",
+    txt_message_type: "REDIRECTED",
+    txt_message: "https://takemearound.gallery/the-starry-night",
+  },
+])
+assert.equal(groups.some((group) => group.tagName === "TSN020"), true, "lists TSN slates beyond 007")
 
 console.log("analytics-tma-demo smoke: ok")

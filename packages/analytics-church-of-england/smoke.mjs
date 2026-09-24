@@ -44,7 +44,9 @@ assert.equal(canonicalSouthwellMinsterTagName("Southwell Minster - SM001"), "SM0
 assert.equal(canonicalSouthwellMinsterTagName("sm007"), "SM007")
 assert.equal(canonicalSouthwellMinsterTagName("SM-7"), "SM007")
 
-assert.equal(canonicalSouthwellMinsterTagName("SM008"), null)
+assert.equal(canonicalSouthwellMinsterTagName("SM008"), "SM008")
+assert.equal(canonicalSouthwellMinsterTagName("C001"), null)
+assert.equal(canonicalSouthwellMinsterTagName("C020"), null)
 assert.equal(canonicalSouthwellMinsterTagName("Southwell Minster 007"), "SM007")
 assert.equal(canonicalSouthwellMinsterTagName("Southwell 007"), "SM007")
 assert.equal(canonicalSouthwellMinsterTagName("Southwell Minster - 007"), "SM007")
@@ -247,6 +249,20 @@ const anonymousSouthwellPair = [
   ]
   const churchLogs = getChurchOfEnglandLogs(farApart)
   assert.equal(churchLogs.length, 1, "does not pair an unnamed SEEN hours away from the redirect")
+}
+
+{
+  const cSlate = {
+    int_id: 9,
+    dtm_timestamp: "2026-09-08T10:00:00.000000",
+    txt_uid: null,
+    text_name: "C20",
+    txt_message_type: "REDIRECTED",
+    txt_message: "https://takemearound.church/westminster-abbey",
+  }
+  assert.equal(resolveTrackedArtwork(cSlate)?.tagName, undefined)
+  const groups = buildTrackedArtworkScanGroups([cSlate])
+  assert.equal(groups.some((group) => group.tagName === "C020"), false, "ignores slates starting with C")
 }
 
 console.log(`CoE analytics smoke passed (${cases.length} cases + Southwell SM001–SM007 mapping)`)

@@ -66,11 +66,21 @@ export function extractTrackedPathFromMessage(_message: string): string | null {
   return null
 }
 
+function artworkForTmaDemoTag(tagName: string): TrackedArtwork {
+  return (
+    TRACKED_TMA_DEMO_ARTWORKS.find((artwork) => artwork.tagName === tagName) ?? {
+      tagName,
+      title: tmaDemoDisplayTitle(tagName),
+      path: `/demo/${tagName}`,
+    }
+  )
+}
+
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
   const canonical =
     canonicalTmaDemoTagName(log.text_name) ?? canonicalTmaDemoTagName(log.txt_message)
   if (!canonical) return null
-  return TRACKED_TMA_DEMO_ARTWORKS.find((artwork) => artwork.tagName === canonical) ?? null
+  return artworkForTmaDemoTag(canonical)
 }
 
 /** True when the log belongs to one of the tracked TMA Demo tags. */
@@ -281,7 +291,14 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
     return bTime - aTime
   }
 
-  return TRACKED_TMA_DEMO_ARTWORKS.map((artwork) => {
+  const artworks = [...TRACKED_TMA_DEMO_ARTWORKS]
+  for (const scans of scansByPath.values()) {
+    const artwork = resolveTrackedArtwork(scans[0])
+    if (!artwork || artworks.some((item) => item.path === artwork.path)) continue
+    artworks.push(artwork)
+  }
+
+  return artworks.map((artwork) => {
     const scans = (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc)
     return {
       ...artwork,

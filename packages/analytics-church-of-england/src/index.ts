@@ -163,12 +163,26 @@ export function extractTrackedPathFromMessage(message: string): string | null {
   return null
 }
 
+function churchSlateTagName(log: PoiseLog): string | null {
+  return (
+    canonicalSouthwellMinsterTagName(log.text_name) ??
+    canonicalSouthwellMinsterTagName(log.txt_message)
+  )
+}
+
+function artworkForChurchSlate(tagName: string): TrackedArtwork {
+  return (
+    TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.tagName === tagName) ?? {
+      tagName,
+      title: southwellMinsterDisplayTitle(tagName),
+      path: `/southwell/${tagName}`,
+    }
+  )
+}
+
 export function resolveTrackedArtwork(log: PoiseLog): TrackedArtwork | null {
-  const southwell =
-    canonicalSouthwellMinsterTagName(log.text_name) ?? canonicalSouthwellMinsterTagName(log.txt_message)
-  if (southwell) {
-    return TRACKED_CHURCH_OF_ENGLAND_ARTWORKS.find((artwork) => artwork.tagName === southwell) ?? null
-  }
+  const slate = churchSlateTagName(log)
+  if (slate) return artworkForChurchSlate(slate)
 
   const message = log.txt_message?.trim() ?? ""
 
@@ -404,7 +418,14 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[]): TrackedArtworkS
     return bTime - aTime
   }
 
-  return TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.map((artwork) => {
+  const artworks = [...TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS]
+  for (const scans of scansByPath.values()) {
+    const artwork = resolveTrackedArtwork(scans[0])
+    if (!artwork?.tagName || artworks.some((item) => item.path === artwork.path)) continue
+    artworks.push(artwork)
+  }
+
+  return artworks.map((artwork) => {
     const scans = (scansByPath.get(artwork.path) ?? []).sort(sortByTimestampDesc)
     return {
       ...artwork,
