@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@tma/analytics-church-of-england": "*",
+    "@tma/analytics-store-codes": "*",
     "@tma/analytics-tma-demo": "*",
     "@tma/analytics-gallery": "*",
     "@tma/analytics-museum": "*",

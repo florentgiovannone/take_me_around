@@ -86,7 +86,7 @@ function DayBarColumn({
           }${isSelected ? " tma-analytics-bar--hovered" : ""}`}
         style={{
           height,
-          background: `linear-gradient(180deg, hsl(210 ${shade}% 52%) 0%, hsl(210 ${shade + 6}% 36%) 100%)`,
+          background: `linear-gradient(180deg, hsl(var(--tma-chart-hue, 210) ${shade}% 52%) 0%, hsl(var(--tma-chart-hue, 210) ${shade + 6}% 36%) 100%)`,
         }}
       />
     </div>

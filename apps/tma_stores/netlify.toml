@@ -1,4 +1,11 @@
 [build]
   command = "cd \"$(git rev-parse --show-toplevel)\" && npm ci && npm run build -w @tma/app-tma-stores"
   publish = "apps/tma_stores/dist"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/tma_stores"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/tma_stores packages"
+
+# Store dashboards are public (no password field). An edge function attaches
+# X-Dashboard-Password for /api/secure/* so the browser never sees it.
+
+[[edge_functions]]
+  function = "inject-dashboard-password"
+  path = "/api/secure/*"

@@ -11,7 +11,9 @@ export type SiteId = "gallery" | "museum" | "arkin" | "church_of_england"
 
 export type OperatorSiteId = SiteId | "tma_demo"
 
-export type SiteScope = OperatorSiteId | "combined"
+export type StoreDashboardScope = "waitburys" | "charles_peters"
+
+export type SiteScope = OperatorSiteId | "combined" | StoreDashboardScope
 
 export const ALL_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin", "church_of_england"]
 
@@ -299,6 +301,8 @@ const combinedSitesLabel = PICKABLE_SITE_IDS.map((id) => SITE_META[id].domainLab
 
 export function scopeLabel(scope: SiteScope): string {
   if (scope === "combined") return "Combined"
+  if (scope === "waitburys") return "Waitburys"
+  if (scope === "charles_peters") return "Charles Peters"
   return SITE_META[scope].label
 }
 
@@ -306,6 +310,8 @@ export function scopeSubtitle(scope: SiteScope): string {
   if (scope === "combined") {
     return `Live combined activity (${combinedSitesLabel})`
   }
+  if (scope === "waitburys") return "Live Waitburys activity"
+  if (scope === "charles_peters") return "Live Charles Peters activity"
   if (scope === "arkin") {
     return `Live ${SITE_META.arkin.label} activity`
   }
@@ -316,11 +322,15 @@ export function scopeDomainHint(scope: SiteScope): string {
   if (scope === "combined") {
     return PICKABLE_SITE_IDS.map((id) => SITE_META[id].host).join(" + ")
   }
+  if (scope === "waitburys") return "Waitburys"
+  if (scope === "charles_peters") return "Charles Peters"
   return SITE_META[scope].host
 }
 
 export function scopeBadgeLabel(scope: SiteScope): string {
   if (scope === "combined") return "Combined"
+  if (scope === "waitburys") return "Waitburys"
+  if (scope === "charles_peters") return "Charles Peters"
   return SITE_META[scope].domainLabel
 }
 
@@ -329,5 +339,7 @@ export function scopeOptionLabel(scope: SiteScope, _combinedSiteIds: SiteId[] = 
     return "Combined (all dashboards)"
   }
   if (scope === "tma_demo") return SITE_META.tma_demo.label
+  if (scope === "waitburys") return "Waitburys"
+  if (scope === "charles_peters") return "Charles Peters"
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }

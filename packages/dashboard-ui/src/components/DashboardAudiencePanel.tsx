@@ -21,16 +21,16 @@ type ChartSelection = {
 }
 
 const DEVICE_COLORS: Record<DeviceKind, string> = {
-  mobile: "#0a479d",
-  desktop: "#0e57b8",
-  tablet: "#3d7bc4",
+  mobile: "var(--tma-brand, #0a479d)",
+  desktop: "var(--tma-brand-mid, #0e57b8)",
+  tablet: "var(--tma-brand-light, #3d7bc4)",
 }
 
 const BROWSER_COLORS: Record<BrowserKind, string> = {
-  Chrome: "#0a479d",
-  Safari: "#0e57b8",
-  Firefox: "#3d7bc4",
-  Edge: "#062c61",
+  Chrome: "var(--tma-brand, #0a479d)",
+  Safari: "var(--tma-brand-mid, #0e57b8)",
+  Firefox: "var(--tma-brand-light, #3d7bc4)",
+  Edge: "var(--tma-brand-dark, #062c61)",
   Other: "#94a3b8",
 }
 
@@ -43,30 +43,30 @@ function deviceLabels(copy: ReturnType<typeof useDashboardCopy>): Record<DeviceK
 }
 
 const OS_COLORS: Record<string, string> = {
-  iOS: "#0a479d",
-  Android: "#0e57b8",
-  Windows: "#3d7bc4",
-  macOS: "#062c61",
-  "Chrome OS": "#5a8fc4",
-  Linux: "#7aa3d4",
+  iOS: "var(--tma-brand, #0a479d)",
+  Android: "var(--tma-brand-mid, #0e57b8)",
+  Windows: "var(--tma-brand-light, #3d7bc4)",
+  macOS: "var(--tma-brand-dark, #062c61)",
+  "Chrome OS": "var(--tma-palette-4, #5a8fc4)",
+  Linux: "var(--tma-palette-5, #7aa3d4)",
   "Windows Phone": "#94a3b8",
   Other: "#94a3b8",
 }
 
 const BREAKDOWN_PALETTE = [
-  "#0a479d",
-  "#0e57b8",
-  "#3d7bc4",
-  "#062c61",
-  "#5a8fc4",
-  "#7aa3d4",
+  "var(--tma-brand, #0a479d)",
+  "var(--tma-brand-mid, #0e57b8)",
+  "var(--tma-brand-light, #3d7bc4)",
+  "var(--tma-brand-dark, #062c61)",
+  "var(--tma-palette-4, #5a8fc4)",
+  "var(--tma-palette-5, #7aa3d4)",
   "#94a3b8",
 ]
 
 const LANGUAGE_COLORS: Record<string, string> = {
-  English: "#0a479d",
-  French: "#0e57b8",
-  Spanish: "#3d7bc4",
+  English: "var(--tma-brand, #0a479d)",
+  French: "var(--tma-brand-mid, #0e57b8)",
+  Spanish: "var(--tma-brand-light, #3d7bc4)",
 }
 
 function formatHourLabel(hour: number, locale: string) {

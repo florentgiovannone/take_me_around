@@ -56,6 +56,7 @@ export default defineConfig(({ mode }) => {
           "analytics-church-of-england/src/index.ts"
         ),
         "@tma/analytics-tma-demo": path.join(packagesDir, "analytics-tma-demo/src/index.ts"),
+        "@tma/analytics-store-codes": path.join(packagesDir, "analytics-store-codes/src/index.ts"),
         "@tma/dashboard-scope": path.join(packagesDir, "dashboard-scope/src/index.ts"),
         "@tma/dashboard-ui": path.join(packagesDir, "dashboard-ui/src/index.ts"),
       },

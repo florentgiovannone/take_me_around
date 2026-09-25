@@ -4,6 +4,7 @@ import * as museum from "@tma/analytics-museum"
 import * as arkin from "@tma/analytics-arkin"
 import * as churchOfEngland from "@tma/analytics-church-of-england"
 import * as tmaDemo from "@tma/analytics-tma-demo"
+import { charlesPeters, waitburys, type StoreDashboardScope } from "@tma/analytics-store-codes"
 import {
   buildVisitorNumberBySar,
   lookupVisitorNumber,
@@ -15,6 +16,16 @@ import {
   isActiveCombinedSite,
 } from "./combinedSites"
 import { filterLiveSlateItems, filterLiveSlateLogs } from "./todayFilter"
+
+function storeFor(scope: SiteScope) {
+  if (scope === "waitburys") return waitburys
+  if (scope === "charles_peters") return charlesPeters
+  return null
+}
+
+function isStoreScope(scope: SiteScope): scope is StoreDashboardScope {
+  return storeFor(scope) !== null
+}
 
 export type PoiseLog = gallery.PoiseLog
 export type { ActivityVisitDetails } from "@tma/analytics-gallery"
@@ -133,6 +144,8 @@ export function buildActivityVisitDetails(
     details = churchOfEngland.buildActivityVisitDetails(log)
   } else if (scope === "tma_demo") {
     details = tmaDemo.buildActivityVisitDetails(log)
+  } else if (isStoreScope(scope)) {
+    details = storeFor(scope)!.buildActivityVisitDetails(log)
   } else {
     details = gallery.buildActivityVisitDetails(log)
   }
@@ -156,10 +169,11 @@ export function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
   if (scope === "museum") return museum.getMuseumLogs(logs)
   if (scope === "church_of_england") return churchOfEngland.getChurchOfEnglandLogs(logs)
   if (scope === "tma_demo") return tmaDemo.getTmaDemoLogs(logs)
+  if (isStoreScope(scope)) return storeFor(scope)!.getLogs(logs)
   return getCombinedScopedLogs(logs)
 }
 
-export function trackedArtworkCount(scope: SiteScope): number {
+export function trackedArtworkCount(scope: SiteScope, logs: PoiseLog[] = []): number {
   if (scope === "gallery") return gallery.TRACKED_GALLERY_ARTWORKS.length
   if (scope === "arkin") return arkin.TRACKED_ARKIN_ARTWORKS.length
   if (scope === "museum") return museum.TRACKED_MUSEUM_ARTWORKS.length
@@ -167,6 +181,7 @@ export function trackedArtworkCount(scope: SiteScope): number {
     return churchOfEngland.TRACKED_CHURCH_OF_ENGLAND_LINK_SCAN_ARTWORKS.length
   }
   if (scope === "tma_demo") return tmaDemo.TRACKED_TMA_DEMO_ARTWORKS.length
+  if (isStoreScope(scope)) return storeFor(scope)!.countCodes(logs)
   return getActiveCombinedSiteIds().reduce((count, siteId) => {
     if (siteId === "gallery") return count + gallery.TRACKED_GALLERY_ARTWORKS.length
     if (siteId === "museum") return count + museum.TRACKED_MUSEUM_ARTWORKS.length
@@ -183,6 +198,8 @@ export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "tma_demo") {
     return isDemoPortuguese() ? "leituras rastreadas do TMA Demo" : "tracked TMA Demo scans"
   }
+  if (scope === "waitburys") return "tracked Waitburys texts"
+  if (scope === "charles_peters") return "tracked Charles Peters texts"
   return `tracked ${combinedSitesLabel()} scans`
 }
 
@@ -197,6 +214,8 @@ export function trackedLinksMeta(scope: SiteScope): string {
       ? `de ${count} tags rastreadas do TMA Demo`
       : `of ${count} tracked TMA Demo tags`
   }
+  if (scope === "waitburys") return "texts such as W001 and W002"
+  if (scope === "charles_peters") return "texts such as CP001 and CP002"
   return `of ${count} tracked links (all sites)`
 }
 
@@ -210,6 +229,8 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
       ? "nas tags rastreadas do TMA Demo"
       : "across tracked TMA Demo tags"
   }
+  if (scope === "waitburys") return "across Waitburys texts"
+  if (scope === "charles_peters") return "across Charles Peters texts"
   return "across tracked links (all sites)"
 }
 
@@ -219,6 +240,8 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "museum") return "takemearound.museum"
   if (scope === "church_of_england") return "takemearound.church"
   if (scope === "tma_demo") return "TMA Demo"
+  if (scope === "waitburys") return "Waitburys"
+  if (scope === "charles_peters") return "Charles Peters"
   return getActiveCombinedSiteIds()
     .map((id) => SITE_META[id].host)
     .join(" + ")
@@ -230,6 +253,8 @@ export function sarTimelineDomainSuffix(scope: SiteScope): string {
   if (scope === "museum") return ".museum"
   if (scope === "church_of_england") return "Church of England"
   if (scope === "tma_demo") return "TMA Demo"
+  if (scope === "waitburys") return "Waitburys"
+  if (scope === "charles_peters") return "Charles Peters"
   return "selected sites"
 }
 
@@ -264,6 +289,8 @@ export function emptyActivityMessage(scope: SiteScope): string {
       ? "Nenhuma slate do TMA Demo foi lida ainda."
       : "No TMA Demo slates scanned yet."
   }
+  if (scope === "waitburys") return "No Waitburys texts scanned yet."
+  if (scope === "charles_peters") return "No Charles Peters texts scanned yet."
   return "No tracked activity found for the selected scope."
 }
 
@@ -276,6 +303,9 @@ export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): Activi
   }
   if (scope === "tma_demo") {
     return keepTodayActivityEntries(tmaDemo.buildTmaDemoActivityEntries(logs))
+  }
+  if (isStoreScope(scope)) {
+    return keepTodayActivityEntries(storeFor(scope)!.buildActivityEntries(logs))
   }
   const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
     if (siteId === "gallery") return gallery.buildGalleryActivityEntries(logs)
@@ -300,6 +330,9 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope
   if (scope === "tma_demo") {
     return keepTodayScanGroups(tmaDemo.buildTrackedArtworkScanGroups(logs))
   }
+  if (isStoreScope(scope)) {
+    return keepTodayScanGroups(storeFor(scope)!.buildTrackedArtworkScanGroups(logs))
+  }
   const groups = []
   for (const siteId of getActiveCombinedSiteIds()) {
     if (siteId === "gallery") {
@@ -321,6 +354,7 @@ export function buildOverviewAnalytics(logs: PoiseLog[], scope: SiteScope) {
   if (scope === "museum") return museum.buildOverviewAnalytics(logs)
   if (scope === "church_of_england") return churchOfEngland.buildOverviewAnalytics(logs)
   if (scope === "tma_demo") return tmaDemo.buildOverviewAnalytics(logs)
+  if (isStoreScope(scope)) return storeFor(scope)!.buildOverviewAnalytics(keepLiveSlateLogs(logs))
   const g = gallery.buildOverviewAnalytics(logs)
   const m = museum.buildOverviewAnalytics(logs)
   const a = arkin.buildOverviewAnalytics(logs)
@@ -421,6 +455,9 @@ export function buildAudienceAnalytics(logs: PoiseLog[], scope: SiteScope): Audi
   if (scope === "tma_demo") {
     return tmaDemo.buildAudienceAnalytics(keepLiveSlateLogs(logs)) as AudienceAnalytics
   }
+  if (isStoreScope(scope)) {
+    return storeFor(scope)!.buildAudienceAnalytics(keepLiveSlateLogs(logs)) as AudienceAnalytics
+  }
   const enabled = getActiveCombinedSiteIds()
   const analyticsBySite = {
     gallery: () => gallery.buildAudienceAnalytics(logs),
@@ -446,6 +483,9 @@ export function buildWeeklySeries(
   if (scope === "museum") return museum.buildWeeklySeries(logs, weekOffset)
   if (scope === "church_of_england") return churchOfEngland.buildWeeklySeries(logs, weekOffset)
   if (scope === "tma_demo") return tmaDemo.buildWeeklySeries(logs, weekOffset)
+  if (isStoreScope(scope)) {
+    return storeFor(scope)!.buildWeeklySeries(keepLiveSlateLogs(logs), weekOffset)
+  }
   const g = gallery.buildWeeklySeries(logs, weekOffset)
   const m = museum.buildWeeklySeries(logs, weekOffset)
   const a = arkin.buildWeeklySeries(logs, weekOffset)
@@ -483,6 +523,9 @@ export function buildMonthlyCalendarGrid(
     return churchOfEngland.buildMonthlyCalendarGrid(logs, monthOffset)
   }
   if (scope === "tma_demo") return tmaDemo.buildMonthlyCalendarGrid(logs, monthOffset)
+  if (isStoreScope(scope)) {
+    return storeFor(scope)!.buildMonthlyCalendarGrid(keepLiveSlateLogs(logs), monthOffset)
+  }
   const g = gallery.buildMonthlyCalendarGrid(logs, monthOffset)
   const m = museum.buildMonthlyCalendarGrid(logs, monthOffset)
   const a = arkin.buildMonthlyCalendarGrid(logs, monthOffset)
@@ -528,6 +571,7 @@ export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
     return churchOfEngland.listDistinctChurchOfEnglandSars(keepLiveSlateLogs(logs))
   }
   if (scope === "tma_demo") return tmaDemo.listDistinctTmaDemoSars(keepLiveSlateLogs(logs))
+  if (isStoreScope(scope)) return storeFor(scope)!.listDistinctSars(keepLiveSlateLogs(logs))
   return [
     ...new Set(
       getActiveCombinedSiteIds().flatMap((siteId) => {
@@ -553,6 +597,9 @@ export function buildSarTimelineEvents(
   }
   if (scope === "tma_demo") {
     return tmaDemo.buildSarTmaDemoTimelineEvents(keepLiveSlateLogs(logs), sarQuery)
+  }
+  if (isStoreScope(scope)) {
+    return storeFor(scope)!.buildSarTimelineEvents(keepLiveSlateLogs(logs), sarQuery)
   }
   const merged = getActiveCombinedSiteIds().flatMap((siteId) => {
     if (siteId === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
@@ -580,7 +627,7 @@ export function buildSarTimelineRowMetaMap(
   logs: PoiseLog[],
   scope: SiteScope
 ): Map<string, gallery.SarTimelineRowMeta> {
-  if (scope === "church_of_england" || scope === "tma_demo") {
+  if (scope === "church_of_england" || scope === "tma_demo" || isStoreScope(scope)) {
     logs = keepLiveSlateLogs(logs)
   }
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
@@ -593,6 +640,8 @@ export function buildSarTimelineRowMetaMap(
     meta = churchOfEngland.buildSarTimelineRowMetaMap(logs)
   } else if (scope === "tma_demo") {
     meta = tmaDemo.buildSarTimelineRowMetaMap(logs)
+  } else if (isStoreScope(scope)) {
+    meta = storeFor(scope)!.buildSarTimelineRowMetaMap(logs)
   } else if (scope === "gallery") {
     meta = gallery.buildSarTimelineRowMetaMap(logs)
   } else {
@@ -687,7 +736,7 @@ export function buildSarTimelinePlot(
   logs: PoiseLog[],
   scope: SiteScope
 ): gallery.SarTimelinePlot | null {
-  if (scope === "church_of_england" || scope === "tma_demo") {
+  if (scope === "church_of_england" || scope === "tma_demo" || isStoreScope(scope)) {
     logs = keepLiveSlateLogs(logs)
   }
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
@@ -706,6 +755,9 @@ export function buildSarTimelinePlot(
     plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
   } else if (scope === "tma_demo") {
     const next = tmaDemo.buildSarTimelinePlot(logs)
+    plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
+  } else if (isStoreScope(scope)) {
+    const next = storeFor(scope)!.buildSarTimelinePlot(logs)
     plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
   } else {
     const plots = getActiveCombinedSiteIds().map((siteId) => {
