@@ -113,6 +113,24 @@ body {
   color: var(--ink);
 }
 
+.film {
+  padding: 28px 40px 4px;
+}
+
+.film h2 {
+  margin: 0 0 14px;
+  color: var(--navy);
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.film-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--navy);
+}
+
 .contents {
   display: flex;
   flex-wrap: wrap;
@@ -250,6 +268,7 @@ main {
 
   .hero-copy,
   .bio,
+  .film,
   .contents,
   .policy,
   .imprint {

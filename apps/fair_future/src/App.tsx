@@ -106,6 +106,20 @@ export default function App() {
         </p>
       </section>
 
+      <section className="film" aria-labelledby="film-heading">
+        <h2 id="film-heading">Hear from Diane</h2>
+        <video
+          className="film-video"
+          controls
+          playsInline
+          preload="metadata"
+          poster="/diane-hartley-poster.jpg"
+          src="/diane-hartley.mp4"
+        >
+          Your browser does not support this video.
+        </video>
+      </section>
+
       <nav className="contents" aria-label="Manifesto sections">
         {sections.map((section, index) => (
           <a key={section.id} href={`#${section.id}`}>
