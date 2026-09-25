@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @tma/app-gallery && npm run build -w @tma/app-museum && npm run build -w @tma/app-arkin-museum && npm run build -w @tma/app-dashboard && npm run build -w @tma/app-church-of-england && npm run build -w @tma/app-i-am-a-safe-pet && npm run build -w @tma/app-fair-future",
+    "build": "npm run build -w @tma/app-gallery && npm run build -w @tma/app-museum && npm run build -w @tma/app-arkin-museum && npm run build -w @tma/app-dashboard && npm run build -w @tma/app-church-of-england && npm run build -w @tma/app-i-am-a-safe-pet && npm run build -w @tma/app-fair-future && npm run build -w @tma/app-tma-stores",
     "build:gallery": "npm run build -w @tma/app-gallery",
     "build:museum": "npm run build -w @tma/app-museum",
     "build:arkin-museum": "npm run build -w @tma/app-arkin-museum",
@@ -14,6 +14,7 @@
     "build:church-of-england": "npm run build -w @tma/app-church-of-england",
     "build:i-am-a-safe-pet": "npm run build -w @tma/app-i-am-a-safe-pet",
     "build:fair-future": "npm run build -w @tma/app-fair-future",
+    "build:tma-stores": "npm run build -w @tma/app-tma-stores",
     "dev": "node scripts/dev.mjs",
     "test": "node --test scripts/lib/*.test.mjs",
     "dev:gallery": "npm run dev -w @tma/app-gallery",
@@ -22,7 +23,8 @@
     "dev:dashboard": "npm run dev -w @tma/app-dashboard",
     "dev:church-of-england": "npm run dev -w @tma/app-church-of-england",
     "dev:i-am-a-safe-pet": "npm run dev -w @tma/app-i-am-a-safe-pet",
-    "dev:fair-future": "npm run dev -w @tma/app-fair-future"
+    "dev:fair-future": "npm run dev -w @tma/app-fair-future",
+    "dev:tma-stores": "npm run dev -w @tma/app-tma-stores"
   },
   "devDependencies": {
     "@inquirer/prompts": "^8.5.2",
