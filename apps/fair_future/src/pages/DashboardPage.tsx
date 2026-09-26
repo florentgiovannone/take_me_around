@@ -94,7 +94,6 @@ export default function DashboardPage() {
         <div>
           <p className="fair-future-dashboard-kicker">Fair Future Party</p>
           <h1>Dashboard</h1>
-          <p>Tags whose names start with PV</p>
           <Link className="fair-future-dashboard-back" to="/">
             Manifesto
           </Link>

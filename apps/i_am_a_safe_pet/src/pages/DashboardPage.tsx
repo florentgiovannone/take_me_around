@@ -86,7 +86,6 @@ export default function DashboardPage() {
         <div>
           <p className="safe-pet-dashboard-kicker">I Am A Safe Pet</p>
           <h1>Dashboard</h1>
-          <p>Tags whose names start with Pet Tag</p>
           <Link className="safe-pet-dashboard-back" to="/">
             Home
           </Link>
