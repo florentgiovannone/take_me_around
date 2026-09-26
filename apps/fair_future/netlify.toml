@@ -1,4 +1,14 @@
 [build]
   command = "cd \"$(git rev-parse --show-toplevel)\" && npm ci && npm run build -w @tma/app-fair-future"
   publish = "apps/fair_future/dist"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/fair_future"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/fair_future packages"
+
+# The dashboard is public (no password field). An edge function attaches
+# X-Dashboard-Password for /api/secure/* so the browser never sees it.
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
+
+[[edge_functions]]
+  function = "inject-dashboard-password"
+  path = "/api/secure/*"

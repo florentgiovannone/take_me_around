@@ -1,0 +1,88 @@
+.fair-future-dashboard {
+  --tma-chart-hue: 193;
+  --tma-brand: #0a213f;
+  --tma-brand-dark: #061628;
+  --tma-brand-mid: #11b5df;
+  --tma-brand-light: #7ed4ee;
+  --tma-brand-tint: #e6f6fb;
+  --tma-brand-tint-alt: #f4f7f8;
+  --tma-dashboard-tabs-bg: #d5eef6;
+  --tma-brand-border: #d5eef6;
+  --tma-brand-shadow: rgba(10, 33, 63, 0.18);
+  --tma-brand-shadow-soft: rgba(10, 33, 63, 0.08);
+  --tma-brand-shadow-focus: rgba(17, 181, 223, 0.45);
+  --tma-palette-4: #0a213f;
+  --tma-palette-5: #11b5df;
+  min-height: 100vh;
+  background: #f4f7f8;
+  font-family: "Work Sans", "Segoe UI", sans-serif;
+}
+
+.fair-future-dashboard-header {
+  height: auto;
+  min-height: 220px;
+  padding: 48px 24px;
+  text-align: center;
+  background: radial-gradient(circle at center, #11b5df 0%, #0a213f 100%);
+}
+
+.fair-future-dashboard-header h1,
+.fair-future-dashboard-header p {
+  margin: 0;
+}
+
+.fair-future-dashboard-header h1 {
+  margin-top: 8px;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1;
+}
+
+.fair-future-dashboard-kicker {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fair-future-dashboard-back {
+  display: inline-block;
+  margin-top: 16px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fair-future-dashboard .tma-dashboard-table thead th,
+.fair-future-dashboard .tma-dashboard-scan-link,
+.fair-future-dashboard .tma-dashboard-nested-table th,
+.fair-future-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.fair-future-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.fair-future-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: var(--tma-brand);
+}
+
+.fair-future-dashboard .tma-dashboard-table thead th,
+.fair-future-dashboard .tma-dashboard-nested-table th {
+  background: var(--tma-brand-tint-alt);
+}
+
+.fair-future-dashboard .tma-dashboard-scan-count,
+.fair-future-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: var(--tma-brand-mid);
+}
+
+.fair-future-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: var(--tma-brand);
+  border-bottom-color: var(--tma-brand);
+}
+
+.fair-future-dashboard .tma-sar-timeline-marker.is-active,
+.fair-future-dashboard .tma-sar-timeline-marker:hover,
+.fair-future-dashboard .tma-sar-timeline-marker:focus-visible {
+  outline-color: var(--tma-brand-mid);
+}
+
+.fair-future-dashboard .tma-sar-timeline-center-btn {
+  background: var(--tma-brand);
+  border-color: var(--tma-brand);
+}

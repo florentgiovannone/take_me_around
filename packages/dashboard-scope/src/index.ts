@@ -4,7 +4,7 @@ import * as museum from "@tma/analytics-museum"
 import * as arkin from "@tma/analytics-arkin"
 import * as churchOfEngland from "@tma/analytics-church-of-england"
 import * as tmaDemo from "@tma/analytics-tma-demo"
-import { charlesPeters, waitburys, type StoreDashboardScope } from "@tma/analytics-store-codes"
+import { storeAnalytics, type StoreDashboardScope } from "@tma/analytics-store-codes"
 import {
   buildVisitorNumberBySar,
   lookupVisitorNumber,
@@ -18,8 +18,14 @@ import {
 import { filterLiveSlateItems, filterLiveSlateLogs } from "./todayFilter"
 
 function storeFor(scope: SiteScope) {
-  if (scope === "waitburys") return waitburys
-  if (scope === "charles_peters") return charlesPeters
+  if (
+    scope === "waitburys" ||
+    scope === "charles_peters" ||
+    scope === "fair_future" ||
+    scope === "i_am_a_safe_pet"
+  ) {
+    return storeAnalytics(scope)
+  }
   return null
 }
 
@@ -200,6 +206,8 @@ export function trackedScansMeta(scope: SiteScope): string {
   }
   if (scope === "waitburys") return "tracked Waitburys texts"
   if (scope === "charles_peters") return "tracked Charles Peters texts"
+  if (scope === "fair_future") return "tracked Fair Future tags"
+  if (scope === "i_am_a_safe_pet") return "tracked I Am A Safe Pet tags"
   return `tracked ${combinedSitesLabel()} scans`
 }
 
@@ -216,6 +224,8 @@ export function trackedLinksMeta(scope: SiteScope): string {
   }
   if (scope === "waitburys") return "texts such as W001 and W002"
   if (scope === "charles_peters") return "texts such as CP001 and CP002"
+  if (scope === "fair_future") return "tags such as PV001 and PV002"
+  if (scope === "i_am_a_safe_pet") return "tags starting with Pet Tag"
   return `of ${count} tracked links (all sites)`
 }
 
@@ -231,6 +241,8 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
   }
   if (scope === "waitburys") return "across Waitburys texts"
   if (scope === "charles_peters") return "across Charles Peters texts"
+  if (scope === "fair_future") return "across Fair Future tags"
+  if (scope === "i_am_a_safe_pet") return "across I Am A Safe Pet tags"
   return "across tracked links (all sites)"
 }
 
@@ -242,6 +254,8 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "tma_demo") return "TMA Demo"
   if (scope === "waitburys") return "Waitburys"
   if (scope === "charles_peters") return "Charles Peters"
+  if (scope === "fair_future") return "Fair Future"
+  if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   return getActiveCombinedSiteIds()
     .map((id) => SITE_META[id].host)
     .join(" + ")
@@ -255,6 +269,8 @@ export function sarTimelineDomainSuffix(scope: SiteScope): string {
   if (scope === "tma_demo") return "TMA Demo"
   if (scope === "waitburys") return "Waitburys"
   if (scope === "charles_peters") return "Charles Peters"
+  if (scope === "fair_future") return "Fair Future"
+  if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   return "selected sites"
 }
 
@@ -291,6 +307,8 @@ export function emptyActivityMessage(scope: SiteScope): string {
   }
   if (scope === "waitburys") return "No Waitburys texts scanned yet."
   if (scope === "charles_peters") return "No Charles Peters texts scanned yet."
+  if (scope === "fair_future") return "No Fair Future tags scanned yet."
+  if (scope === "i_am_a_safe_pet") return "No Pet Tag scans yet."
   return "No tracked activity found for the selected scope."
 }
 

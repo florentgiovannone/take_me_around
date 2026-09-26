@@ -1,13 +1,19 @@
 import * as tmaDemo from "@tma/analytics-tma-demo"
 
 export type PoiseLog = tmaDemo.PoiseLog
-export type StoreDashboardScope = "waitburys" | "charles_peters"
+export type StoreDashboardScope =
+  | "waitburys"
+  | "charles_peters"
+  | "fair_future"
+  | "i_am_a_safe_pet"
 
-type StorePrefix = "W" | "CP"
+type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet">
+type StorePrefix = "W" | "CP" | "PV"
 
-const PREFIX: Record<StoreDashboardScope, StorePrefix> = {
+const PREFIX: Record<CodeScope, StorePrefix> = {
   waitburys: "W",
   charles_peters: "CP",
+  fair_future: "PV",
 }
 
 const MAX_SERIAL = 999_999
@@ -26,8 +32,20 @@ function padSerial(value: number) {
 }
 
 function canonicalCode(prefix: StorePrefix, value: string | null | undefined): string | null {
-  if (!value) return null
-  const match = value
+  if (!value?.trim()) return null
+  const trimmed = value.trim()
+  if (prefix === "PV") {
+    if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+    if (!trimmed.toUpperCase().startsWith("PV")) return null
+    const compact = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, "")
+    const serialMatch = compact.match(/^PV(\d{1,6})$/)
+    if (!serialMatch) return null
+    const serial = Number(serialMatch[1])
+    if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
+    return `PV${padSerial(serial)}`
+  }
+
+  const match = trimmed
     .toUpperCase()
     .match(new RegExp(`(?:^|[^A-Z0-9])${prefix}(\\d{1,6})(?!\\d)`))
   if (!match) return null
@@ -36,8 +54,14 @@ function canonicalCode(prefix: StorePrefix, value: string | null | undefined): s
   return `${prefix}${padSerial(serial)}`
 }
 
-function codeFromLog(prefix: StorePrefix, log: PoiseLog) {
-  return canonicalCode(prefix, log.text_name) ?? canonicalCode(prefix, log.txt_message)
+/** Tag names that start with "Pet Tag", such as "Pet Tag 1". */
+export function canonicalPetTagName(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null
+  const trimmed = value.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+  const match = /^pet tag(?![a-z0-9])/i.exec(trimmed)
+  if (!match) return null
+  return `Pet Tag${trimmed.slice(match[0].length)}`
 }
 
 function messageType(log: PoiseLog) {
@@ -52,17 +76,44 @@ function artworkFor(code: string): StoreArtwork {
   return { tagName: code, title: code, path: `/${code}` }
 }
 
-function linkFor(log: PoiseLog, code: string) {
+const PV_CARD_REDIRECT = "https://poise.vote"
+
+/** Card redirect for PV tags. Scan logs sometimes store a tracking URL instead. */
+function publicPvLink(message: string) {
+  if (!/^https?:\/\//i.test(message)) return PV_CARD_REDIRECT
+  try {
+    const url = new URL(message)
+    if (
+      url.hostname === "poise.vote" ||
+      url.hostname === "www.poise.vote" ||
+      url.hostname === "requestabet.abeta.co.uk"
+    ) {
+      return PV_CARD_REDIRECT
+    }
+    return `${url.origin}${url.pathname}`
+  } catch {
+    return PV_CARD_REDIRECT
+  }
+}
+
+function linkFor(log: PoiseLog, code: string, prefix?: StorePrefix | null) {
   const message = log.txt_message?.trim() ?? ""
+  if (prefix === "PV") return publicPvLink(message)
   if (message.startsWith("/") || message.includes("://")) return message
   return code
 }
 
 function createAnalytics(scope: StoreDashboardScope) {
-  const prefix = PREFIX[scope]
+  const prefix = scope === "i_am_a_safe_pet" ? null : PREFIX[scope]
+
+  function codeFromLog(log: PoiseLog) {
+    if (prefix === null) return canonicalPetTagName(log.text_name)
+    if (prefix === "PV") return canonicalCode(prefix, log.text_name)
+    return canonicalCode(prefix, log.text_name) ?? canonicalCode(prefix, log.txt_message)
+  }
 
   function matchingLogs(logs: PoiseLog[]) {
-    return logs.filter((log) => codeFromLog(prefix, log) !== null)
+    return logs.filter((log) => codeFromLog(log) !== null)
   }
 
   function getLogs(logs: PoiseLog[]) {
@@ -74,11 +125,11 @@ function createAnalytics(scope: StoreDashboardScope) {
       if (messageType(redirect) !== "REDIRECTED") continue
       const redirectMs = timestampMs(redirect)
       if (!redirectMs) continue
-      const code = codeFromLog(prefix, redirect)
+      const code = codeFromLog(redirect)
       if (!code) continue
       for (const neighbor of logs) {
         if (included.has(neighbor.int_id) || messageType(neighbor) !== "SEEN") continue
-        if (codeFromLog(prefix, neighbor)) continue
+        if (neighbor.text_name?.trim() || codeFromLog(neighbor)) continue
         const neighborMs = timestampMs(neighbor)
         if (!neighborMs || Math.abs(neighborMs - redirectMs) > SEEN_NEIGHBOR_MS) continue
         included.add(neighbor.int_id)
@@ -98,7 +149,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     const groups = new Map<string, { redirects: PoiseLog[]; seen: PoiseLog[] }>()
 
     for (const log of rows) {
-      const code = codeFromLog(prefix, log) ?? "Unknown"
+      const code = codeFromLog(log) ?? "Unknown"
       const bucket = `${code}|${log.txt_uid?.trim() || "anon"}|${(log.dtm_timestamp ?? "").slice(0, 19)}`
       const group = groups.get(bucket) ?? { redirects: [], seen: [] }
       if (messageType(log) === "REDIRECTED") group.redirects.push(log)
@@ -111,14 +162,14 @@ function createAnalytics(scope: StoreDashboardScope) {
         const redirect = [...group.redirects].sort((a, b) => timestampMs(b) - timestampMs(a))[0] ?? null
         const seen = [...group.seen].sort((a, b) => timestampMs(b) - timestampMs(a))
         const primary = redirect ?? seen[0]
-        const code = primary ? (codeFromLog(prefix, primary) ?? primary.text_name?.trim() ?? "-") : "-"
+        const code = primary ? (codeFromLog(primary) ?? primary.text_name?.trim() ?? "-") : "-"
         return {
           key: redirect ? `redirect-${redirect.int_id}` : `seen-${seen[0]?.int_id ?? "unknown"}`,
           redirect,
           seen,
           timestamp: primary?.dtm_timestamp ?? null,
           artworkTitle: code,
-          link: primary ? linkFor(primary, code) : "-",
+          link: primary ? linkFor(primary, code, prefix) : "-",
         }
       })
       .sort((a, b) => timestampMs({ dtm_timestamp: b.timestamp } as PoiseLog) - timestampMs({ dtm_timestamp: a.timestamp } as PoiseLog))
@@ -127,7 +178,7 @@ function createAnalytics(scope: StoreDashboardScope) {
   function buildTrackedArtworkScanGroups(logs: PoiseLog[]) {
     const scansByCode = new Map<string, PoiseLog[]>()
     for (const scan of getRedirectScans(logs)) {
-      const code = codeFromLog(prefix, scan)
+      const code = codeFromLog(scan)
       if (!code) continue
       scansByCode.set(code, [...(scansByCode.get(code) ?? []), scan])
     }
@@ -138,7 +189,7 @@ function createAnalytics(scope: StoreDashboardScope) {
         const artwork = artworkFor(code)
         return {
           ...artwork,
-          url: linkFor(ordered[0], code),
+          url: linkFor(ordered[0], code, prefix),
           scans: ordered,
         }
       })
@@ -151,7 +202,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     const week = 7 * 24 * 60 * 60 * 1000
     const counts = new Map<string, number>()
     for (const scan of scans) {
-      const code = codeFromLog(prefix, scan) ?? "Unknown"
+      const code = codeFromLog(scan) ?? "Unknown"
       counts.set(code, (counts.get(code) ?? 0) + 1)
     }
     const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
@@ -167,7 +218,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     const weeklyChange =
       previousWeek === 0 ? (thisWeek > 0 ? 100 : 0) : ((thisWeek - previousWeek) / previousWeek) * 100
     const topTagMonthCount = scans.filter(
-      (scan) => timestampMs(scan) >= monthStart.getTime() && (codeFromLog(prefix, scan) ?? "Unknown") === top[0]
+      (scan) => timestampMs(scan) >= monthStart.getTime() && (codeFromLog(scan) ?? "Unknown") === top[0]
     ).length
 
     return {
@@ -270,7 +321,7 @@ function createAnalytics(scope: StoreDashboardScope) {
       const sar = tmaDemo.buildActivityVisitDetails(log).sar
       const timestamp = tmaDemo.parseLogTimestampGmt(log.dtm_timestamp)
       if (!sar || !timestamp) continue
-      const code = codeFromLog(prefix, log) ?? log.text_name?.trim() ?? "Unknown"
+      const code = codeFromLog(log) ?? log.text_name?.trim() ?? "Unknown"
       points.push({
         logId: log.int_id,
         sar,
@@ -278,7 +329,7 @@ function createAnalytics(scope: StoreDashboardScope) {
         offsetMs: timestamp.getTime() - now.getTime(),
         messageType: (log.txt_message_type ?? "-").trim(),
         artworkTitle: code,
-        link: linkFor(log, code),
+        link: linkFor(log, code, prefix),
         isRedirect: messageType(log) === "REDIRECTED",
       })
     }
@@ -323,7 +374,7 @@ function createAnalytics(scope: StoreDashboardScope) {
 
   return {
     scope,
-    prefix,
+    prefix: prefix ?? "Pet Tag",
     getLogs,
     buildActivityEntries,
     buildTrackedArtworkScanGroups,
@@ -348,7 +399,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     countCodes(logs: PoiseLog[]) {
       return new Set(
         getRedirectScans(logs)
-          .map((log) => codeFromLog(prefix, log))
+          .map((log) => codeFromLog(log))
           .filter((code): code is string => Boolean(code))
       ).size
     },
@@ -357,11 +408,21 @@ function createAnalytics(scope: StoreDashboardScope) {
 
 export const waitburys = createAnalytics("waitburys")
 export const charlesPeters = createAnalytics("charles_peters")
+export const fairFuture = createAnalytics("fair_future")
+export const safePet = createAnalytics("i_am_a_safe_pet")
+
+const ANALYTICS = {
+  waitburys,
+  charles_peters: charlesPeters,
+  fair_future: fairFuture,
+  i_am_a_safe_pet: safePet,
+} as const
 
 export function storeAnalytics(scope: StoreDashboardScope) {
-  return scope === "waitburys" ? waitburys : charlesPeters
+  return ANALYTICS[scope]
 }
 
 export function isStoreCode(scope: StoreDashboardScope, value: string | null | undefined) {
+  if (scope === "i_am_a_safe_pet") return canonicalPetTagName(value) !== null
   return canonicalCode(PREFIX[scope], value) !== null
 }

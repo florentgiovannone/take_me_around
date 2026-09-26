@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { Link, Route, Routes, useLocation } from "react-router-dom"
+import DashboardPage from "./pages/DashboardPage"
 import HomePage from "./pages/HomePage"
 import NotFoundPage from "./pages/NotFoundPage"
 import OwnerDashboardPage from "./pages/OwnerDashboardPage"
@@ -12,6 +13,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/": PRODUCT,
   "/allpages": "All Pages",
   "/owner": "Owner dashboard",
+  "/dashboard": "Dashboard",
   "/privacy-policy": "Privacy Policy",
 }
 
@@ -52,6 +54,9 @@ function AllPages() {
           <Link to="/owner">Owner dashboard</Link>
         </li>
         <li>
+          <Link to="/dashboard">Scan dashboard</Link>
+        </li>
+        <li>
           <Link to="/privacy-policy">Privacy policy</Link>
         </li>
       </ul>
@@ -67,6 +72,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/pet/:publicId" element={<PublicPetPage />} />
         <Route path="/owner" element={<OwnerDashboardPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/allpages" element={<AllPages />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -1,4 +1,6 @@
+import { Route, Routes } from "react-router-dom"
 import portrait from "./assets/diane-hartley.jpg"
+import DashboardPage from "./pages/DashboardPage"
 
 const sections = [
   {
@@ -76,7 +78,7 @@ const sections = [
   },
 ]
 
-export default function App() {
+function CampaignPage() {
   return (
     <div className="page">
       <header className="hero">
@@ -175,5 +177,14 @@ export default function App() {
         </p>
       </footer>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<CampaignPage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
+    </Routes>
   )
 }

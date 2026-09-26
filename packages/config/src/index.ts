@@ -11,7 +11,11 @@ export type SiteId = "gallery" | "museum" | "arkin" | "church_of_england"
 
 export type OperatorSiteId = SiteId | "tma_demo"
 
-export type StoreDashboardScope = "waitburys" | "charles_peters"
+export type StoreDashboardScope =
+  | "waitburys"
+  | "charles_peters"
+  | "fair_future"
+  | "i_am_a_safe_pet"
 
 export type SiteScope = OperatorSiteId | "combined" | StoreDashboardScope
 
@@ -303,6 +307,8 @@ export function scopeLabel(scope: SiteScope): string {
   if (scope === "combined") return "Combined"
   if (scope === "waitburys") return "Waitburys"
   if (scope === "charles_peters") return "Charles Peters"
+  if (scope === "fair_future") return "Fair Future"
+  if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   return SITE_META[scope].label
 }
 
@@ -312,6 +318,8 @@ export function scopeSubtitle(scope: SiteScope): string {
   }
   if (scope === "waitburys") return "Live Waitburys activity"
   if (scope === "charles_peters") return "Live Charles Peters activity"
+  if (scope === "fair_future") return "Live Fair Future activity"
+  if (scope === "i_am_a_safe_pet") return "Live I Am A Safe Pet activity"
   if (scope === "arkin") {
     return `Live ${SITE_META.arkin.label} activity`
   }
@@ -324,6 +332,8 @@ export function scopeDomainHint(scope: SiteScope): string {
   }
   if (scope === "waitburys") return "Waitburys"
   if (scope === "charles_peters") return "Charles Peters"
+  if (scope === "fair_future") return "Fair Future"
+  if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   return SITE_META[scope].host
 }
 
@@ -331,6 +341,8 @@ export function scopeBadgeLabel(scope: SiteScope): string {
   if (scope === "combined") return "Combined"
   if (scope === "waitburys") return "Waitburys"
   if (scope === "charles_peters") return "Charles Peters"
+  if (scope === "fair_future") return "Fair Future"
+  if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   return SITE_META[scope].domainLabel
 }
 
@@ -341,5 +353,7 @@ export function scopeOptionLabel(scope: SiteScope, _combinedSiteIds: SiteId[] = 
   if (scope === "tma_demo") return SITE_META.tma_demo.label
   if (scope === "waitburys") return "Waitburys"
   if (scope === "charles_peters") return "Charles Peters"
+  if (scope === "fair_future") return "Fair Future"
+  if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }

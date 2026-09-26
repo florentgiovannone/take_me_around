@@ -1,0 +1,89 @@
+.safe-pet-dashboard {
+  --tma-chart-hue: 214;
+  --tma-brand: #0a479d;
+  --tma-brand-dark: #062c61;
+  --tma-brand-mid: #0e57b8;
+  --tma-brand-light: #3d7bc4;
+  --tma-brand-tint: #e8f1fa;
+  --tma-brand-tint-alt: #eef4fb;
+  --tma-dashboard-tabs-bg: #c5d9ef;
+  --tma-brand-border: #c5d9ef;
+  --tma-brand-shadow: rgba(10, 71, 157, 0.18);
+  --tma-brand-shadow-soft: rgba(10, 71, 157, 0.08);
+  --tma-brand-shadow-focus: rgba(10, 71, 157, 0.35);
+  --tma-palette-4: #0a479d;
+  --tma-palette-5: #0e57b8;
+  min-height: 100vh;
+  background: #f4f6fb;
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+.safe-pet-dashboard-header {
+  height: auto;
+  min-height: 220px;
+  padding: 48px 24px;
+  text-align: center;
+  background: radial-gradient(circle at center, #3d7bc4 0%, #0a479d 55%, #062c61 100%);
+}
+
+.safe-pet-dashboard-header h1,
+.safe-pet-dashboard-header p {
+  margin: 0;
+}
+
+.safe-pet-dashboard-header h1 {
+  margin-top: 8px;
+  font-family: "Montserrat", "Segoe UI", sans-serif;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1;
+}
+
+.safe-pet-dashboard-kicker {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.safe-pet-dashboard-back {
+  display: inline-block;
+  margin-top: 16px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.safe-pet-dashboard .tma-dashboard-table thead th,
+.safe-pet-dashboard .tma-dashboard-scan-link,
+.safe-pet-dashboard .tma-dashboard-nested-table th,
+.safe-pet-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.safe-pet-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.safe-pet-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: var(--tma-brand);
+}
+
+.safe-pet-dashboard .tma-dashboard-table thead th,
+.safe-pet-dashboard .tma-dashboard-nested-table th {
+  background: var(--tma-brand-tint-alt);
+}
+
+.safe-pet-dashboard .tma-dashboard-scan-count,
+.safe-pet-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: var(--tma-brand-mid);
+}
+
+.safe-pet-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: var(--tma-brand);
+  border-bottom-color: var(--tma-brand);
+}
+
+.safe-pet-dashboard .tma-sar-timeline-marker.is-active,
+.safe-pet-dashboard .tma-sar-timeline-marker:hover,
+.safe-pet-dashboard .tma-sar-timeline-marker:focus-visible {
+  outline-color: var(--tma-brand-mid);
+}
+
+.safe-pet-dashboard .tma-sar-timeline-center-btn {
+  background: var(--tma-brand);
+  border-color: var(--tma-brand);
+}
