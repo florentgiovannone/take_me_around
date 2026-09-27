@@ -1,0 +1,95 @@
+.yesterday-forever-dashboard {
+  --tma-chart-hue: 36;
+  --tma-brand: #1c1612;
+  --tma-brand-dark: #120e0b;
+  --tma-brand-mid: #c4a574;
+  --tma-brand-light: #e4d2b0;
+  --tma-brand-tint: #f6f1e8;
+  --tma-brand-tint-alt: #fbf8f3;
+  --tma-dashboard-tabs-bg: #efe6d8;
+  --tma-brand-border: #e6dccb;
+  --tma-brand-shadow: rgba(28, 22, 18, 0.18);
+  --tma-brand-shadow-soft: rgba(28, 22, 18, 0.08);
+  --tma-brand-shadow-focus: rgba(196, 165, 116, 0.45);
+  --tma-palette-4: #1c1612;
+  --tma-palette-5: #c4a574;
+  min-height: 100vh;
+  background: #f6f1e8;
+  color: #1c1612;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.yesterday-forever-dashboard-header {
+  height: auto;
+  min-height: 220px;
+  padding: 48px 24px;
+  text-align: center;
+  background: #1c1612;
+  color: #f4efe6;
+}
+
+.yesterday-forever-dashboard-header h1,
+.yesterday-forever-dashboard-header p {
+  margin: 0;
+  color: #f4efe6;
+}
+
+.yesterday-forever-dashboard-header h1 {
+  margin-top: 8px;
+  font-weight: 400;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1;
+}
+
+.yesterday-forever-dashboard-kicker {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #c4a574;
+}
+
+.yesterday-forever-dashboard-back {
+  display: inline-block;
+  margin-top: 16px;
+  color: #f4efe6;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-table thead th,
+.yesterday-forever-dashboard .tma-dashboard-scan-link,
+.yesterday-forever-dashboard .tma-dashboard-nested-table th,
+.yesterday-forever-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.yesterday-forever-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.yesterday-forever-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: var(--tma-brand);
+}
+
+.yesterday-forever-dashboard .tma-dashboard-table thead th,
+.yesterday-forever-dashboard .tma-dashboard-nested-table th {
+  background: var(--tma-brand-tint-alt);
+}
+
+.yesterday-forever-dashboard .tma-dashboard-scan-count,
+.yesterday-forever-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: var(--tma-brand-mid);
+}
+
+.yesterday-forever-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: var(--tma-brand);
+  border-bottom-color: var(--tma-brand);
+}
+
+.yesterday-forever-dashboard .tma-sar-timeline-marker.is-active,
+.yesterday-forever-dashboard .tma-sar-timeline-marker:hover,
+.yesterday-forever-dashboard .tma-sar-timeline-marker:focus-visible {
+  outline-color: var(--tma-brand-mid);
+}
+
+.yesterday-forever-dashboard .tma-sar-timeline-center-btn {
+  background: var(--tma-brand);
+  border-color: var(--tma-brand);
+}

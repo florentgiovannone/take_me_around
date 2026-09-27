@@ -1,0 +1,89 @@
+[
+    {
+        "name": "Breakfast",
+        "items": [
+            {
+                "id": "b1",
+                "name": "Flat white",
+                "price": 3.6,
+                "description": "Speciality coffee for the morning counter.",
+                "quantity": 0
+            },
+            {
+                "id": "b2",
+                "name": "Cappuccino",
+                "price": 3.7,
+                "description": "Speciality coffee, served from 7am.",
+                "quantity": 0
+            },
+            {
+                "id": "b3",
+                "name": "Turmeric latte",
+                "price": 4.2,
+                "description": "Warm turmeric latte from the coffee bar.",
+                "quantity": 0
+            },
+            {
+                "id": "b4",
+                "name": "Breakfast bap",
+                "price": 6.5,
+                "description": "Bacon and egg on fresh bakery bread.",
+                "quantity": 0
+            },
+            {
+                "id": "b5",
+                "name": "Bakery sweet",
+                "price": 3.8,
+                "description": "A sweet treat from the bakery counter.",
+                "quantity": 0
+            }
+        ]
+    },
+    {
+        "name": "Lunch",
+        "items": [
+            {
+                "id": "l1",
+                "name": "Chipotle Chicken",
+                "price": 10.95,
+                "description": "Marinated chipotle chicken, homemade chilli mayo, homemade coriander pesto, roasted red peppers, pickled cucumber and cheddar on ciabatta.",
+                "quantity": 0
+            },
+            {
+                "id": "l2",
+                "name": "Pastrami and Mozzarella",
+                "price": 9.5,
+                "description": "Pastrami, homemade mustard mayo, tomato, mozzarella, gherkins and rocket on focaccia.",
+                "quantity": 0
+            },
+            {
+                "id": "l3",
+                "name": "Prosciutto & Burrata",
+                "price": 11.5,
+                "description": "Prosciutto, burrata, homemade coriander pesto, tomatoes and rocket on focaccia.",
+                "quantity": 0
+            },
+            {
+                "id": "l4",
+                "name": "Kale Caesar salad",
+                "price": 8.5,
+                "description": "Crisp kale, homemade croutons, Caesar dressing and parmesan.",
+                "quantity": 0
+            },
+            {
+                "id": "l5",
+                "name": "Broccoli slaw",
+                "price": 7.5,
+                "description": "Raw broccoli, red onion, dried cranberries and sunflower seeds in a homemade dressing.",
+                "quantity": 0
+            },
+            {
+                "id": "l6",
+                "name": "Quinoa and squash salad",
+                "price": 8.5,
+                "description": "Red quinoa, squash and feta with a maple chilli dressing.",
+                "quantity": 0
+            }
+        ]
+    }
+]

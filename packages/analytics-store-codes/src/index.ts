@@ -6,14 +6,18 @@ export type StoreDashboardScope =
   | "charles_peters"
   | "fair_future"
   | "i_am_a_safe_pet"
+  | "choose_and_order"
+  | "yesterday_forever"
 
 type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet">
-type StorePrefix = "W" | "CP" | "PV"
+type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF"
 
 const PREFIX: Record<CodeScope, StorePrefix> = {
   waitburys: "W",
   charles_peters: "CP",
   fair_future: "PV",
+  choose_and_order: "CO",
+  yesterday_forever: "YF",
 }
 
 const MAX_SERIAL = 999_999
@@ -31,9 +35,67 @@ function padSerial(value: number) {
   return value < 1000 ? String(value).padStart(3, "0") : String(value)
 }
 
+/** Choose and Order tags are named CAO001, CAO002, and so on. */
+export function canonicalChooseAndOrderTagName(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null
+  const trimmed = value.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+  if (!trimmed.toUpperCase().startsWith("CAO")) return null
+  const compact = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, "")
+  const match = compact.match(/^CAO(\d{1,6})$/)
+  if (!match) return null
+  const serial = Number(match[1])
+  if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
+  return `CAO${padSerial(serial)}`
+}
+
+/** Yesterday Forever tags are named YF001, YF002, and so on. */
+export function canonicalYesterdayForeverTagName(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null
+  const trimmed = value.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+  if (!trimmed.toUpperCase().startsWith("YF")) return null
+  const compact = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, "")
+  const match = compact.match(/^YF(\d{1,6})$/)
+  if (!match) return null
+  const serial = Number(match[1])
+  if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
+  return `YF${padSerial(serial)}`
+}
+
+/** Scans whose redirect lands on the mme-betty page. */
+export function canonicalMmeBettyScan(value: string | null | undefined): string | null {
+  const trimmed = value?.trim() ?? ""
+  if (!trimmed || trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+  try {
+    const url = new URL(trimmed)
+    const segments = decodeURIComponent(url.pathname).toLowerCase().split("/")
+    if (segments.includes("mme-betty")) return "mme-betty"
+  } catch {
+    if (/(^|\/)mme-betty(\/|$|\?)/i.test(trimmed)) return "mme-betty"
+  }
+  return null
+}
+
+export function chooseAndOrderCode(log: {
+  text_name?: string | null
+  txt_message?: string | null
+}): string | null {
+  const fromName = canonicalChooseAndOrderTagName(log.text_name)
+  if (fromName) return fromName
+  if (!canonicalMmeBettyScan(log.txt_message)) {
+    return log.text_name?.trim().toLowerCase() === "mme-betty" ? "mme-betty" : null
+  }
+  const name = log.text_name?.trim()
+  if (name && !name.startsWith("{") && !name.startsWith("[")) return name
+  return "mme-betty"
+}
+
 function canonicalCode(prefix: StorePrefix, value: string | null | undefined): string | null {
   if (!value?.trim()) return null
   const trimmed = value.trim()
+  if (prefix === "CO") return canonicalChooseAndOrderTagName(trimmed)
+  if (prefix === "YF") return canonicalYesterdayForeverTagName(trimmed)
   if (prefix === "PV") {
     if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
     if (!trimmed.toUpperCase().startsWith("PV")) return null
@@ -108,7 +170,8 @@ function createAnalytics(scope: StoreDashboardScope) {
 
   function codeFromLog(log: PoiseLog) {
     if (prefix === null) return canonicalPetTagName(log.text_name)
-    if (prefix === "PV") return canonicalCode(prefix, log.text_name)
+    if (prefix === "CO") return chooseAndOrderCode(log)
+    if (prefix === "PV" || prefix === "YF") return canonicalCode(prefix, log.text_name)
     return canonicalCode(prefix, log.text_name) ?? canonicalCode(prefix, log.txt_message)
   }
 
@@ -410,12 +473,16 @@ export const waitburys = createAnalytics("waitburys")
 export const charlesPeters = createAnalytics("charles_peters")
 export const fairFuture = createAnalytics("fair_future")
 export const safePet = createAnalytics("i_am_a_safe_pet")
+export const chooseAndOrder = createAnalytics("choose_and_order")
+export const yesterdayForever = createAnalytics("yesterday_forever")
 
 const ANALYTICS = {
   waitburys,
   charles_peters: charlesPeters,
   fair_future: fairFuture,
   i_am_a_safe_pet: safePet,
+  choose_and_order: chooseAndOrder,
+  yesterday_forever: yesterdayForever,
 } as const
 
 export function storeAnalytics(scope: StoreDashboardScope) {

@@ -1,0 +1,108 @@
+:root {
+  --buddy-cream: #F6F1E6;
+  --buddy-olive: #6B7344;
+  --buddy-olive-dark: #3F462C;
+}
+
+body {
+  background-color: var(--buddy-cream);
+  color: var(--buddy-olive-dark);
+  font-family: "Source Sans 3", "Helvetica Neue", sans-serif;
+}
+
+h1, h2, h3, .title {
+  font-family: Fraunces, Georgia, serif;
+}
+
+.buddy-footer,
+.buddy-footer a,
+.buddy-footer .title,
+.buddy-footer strong,
+.buddy-footer .has-text-light {
+  color: #3F462C !important;
+}
+
+.navbar-item .buddy-logo {
+  max-height: none;
+  height: 120px;
+  width: 120px;
+}
+
+@media (max-width: 1023px) {
+  .buddy-nav-brand {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    width: 100%;
+    align-items: center;
+  }
+
+  .navbar-burger.buddy-nav-burger {
+    justify-self: start;
+    margin-inline-start: 0.25rem !important;
+    width: 3.25rem;
+    height: 3.25rem;
+    color: #F6F1E6;
+  }
+
+  .buddy-nav-logo-link {
+    justify-self: center;
+  }
+
+  .buddy-nav-cart {
+    justify-self: end;
+    margin-right: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .field.is-grouped.buddy-social-links {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ID-specific scroll padding for navigation targets */
+#about {
+  scroll-margin-top: 160px;
+}
+
+#menus {
+  scroll-margin-top: 185px;
+}
+
+#contact {
+  scroll-margin-top: 160px;
+}
+
+
+
+/* Custom smooth scrolling with slower duration */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Alternative: Even slower scrolling using CSS transition */
+html, body {
+  scroll-behavior: smooth;
+}
+
+/* For even smoother/slower scrolling, you can use this approach */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .tabs.is-toggle li.is-active a {
+    background-color: #6B7344 !important;
+    color: #F6F1E6 !important;
+  }
+  .tabs.is-toggle li.is-active a {
+    border-color: #F6F1E6 !important;
+  }
+  
+}

@@ -13,6 +13,8 @@ apps/
   i_am_a_safe_pet/   → safe-pet.takemearound.gallery (lost-pet public pages + owner dashboard)
   fair_future/        → Fair Future Party Makerfield campaign page (illustrative)
   tma_stores/         → TMA Stores (Charles Peter and Waitburys)
+  choose_and_order/   → Choose and Order (Buddy's Deli breakfast and lunch)
+  yesterday_forever/  → Yesterday Forever
   dashboard/          → arkin.takemearound.gallery (combined + per-site analytics)
 packages/
   config/                        Site scope types and labels
@@ -30,12 +32,12 @@ Gallery and museum apps import dashboard UI from `@tma/dashboard-ui` and scope d
 
 ```bash
 npm install
-npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:church-of-england, dev:i-am-a-safe-pet, dev:fair-future, dev:tma-stores, dev:dashboard
+npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:church-of-england, dev:i-am-a-safe-pet, dev:fair-future, dev:tma-stores, dev:choose-and-order, dev:yesterday-forever, dev:dashboard
 npm run build            # all apps
-npm run build:gallery    # single app (also build:museum, build:church-of-england, build:i-am-a-safe-pet, build:fair-future, build:tma-stores, etc.)
+npm run build:gallery    # single app (also build:museum, build:church-of-england, build:i-am-a-safe-pet, build:fair-future, build:tma-stores, build:choose-and-order, build:yesterday-forever, etc.)
 ```
 
-## Netlify (one repo, four public sites + dashboard)
+## Netlify (one repo, public sites + dashboard)
 
 Set **Base directory** per site (or leave Base empty and set **Package directory** — see Church of England note):
 
@@ -47,6 +49,8 @@ Set **Base directory** per site (or leave Base empty and set **Package directory
 | Church of England | *(empty)* + Package directory `apps/church_of_england` | `apps/church_of_england/dist` |
 | I Am A Safe Pet | *(empty)* + Package directory `apps/i_am_a_safe_pet` | `apps/i_am_a_safe_pet/dist` |
 | TMA Stores | *(empty)* + Package directory `apps/tma_stores` | `apps/tma_stores/dist` |
+| Choose and Order | *(empty)* + Package directory `apps/choose_and_order` | `apps/choose_and_order/dist` |
+| Yesterday Forever | *(empty)* + Package directory `apps/yesterday_forever` | `apps/yesterday_forever/dist` |
 | Arkin dashboard | `apps/dashboard` | `dist` |
 
 Most apps’ `netlify.toml` run `cd ../.. && npm ci && npm run build -w @tma/app-*` with Base = `apps/<app>`. CoE installs from the git root and publishes `apps/church_of_england/dist` so it works when Netlify’s cwd is the repo root. Path-based `ignore` skips deploys when unrelated folders change.

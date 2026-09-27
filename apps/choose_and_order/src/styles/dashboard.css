@@ -1,0 +1,95 @@
+.choose-order-dashboard {
+  --tma-chart-hue: 72;
+  --tma-brand: #3f462c;
+  --tma-brand-dark: #2c321e;
+  --tma-brand-mid: #6b7344;
+  --tma-brand-light: #c5c9a4;
+  --tma-brand-tint: #f6f1e6;
+  --tma-brand-tint-alt: #fbf8f1;
+  --tma-dashboard-tabs-bg: #ece7d8;
+  --tma-brand-border: #e4dece;
+  --tma-brand-shadow: rgba(63, 70, 44, 0.18);
+  --tma-brand-shadow-soft: rgba(63, 70, 44, 0.08);
+  --tma-brand-shadow-focus: rgba(107, 115, 68, 0.45);
+  --tma-palette-4: #3f462c;
+  --tma-palette-5: #6b7344;
+  min-height: 100vh;
+  background: #f6f1e6;
+  color: #3f462c;
+  font-family: "Source Sans 3", "Helvetica Neue", sans-serif;
+}
+
+.choose-order-dashboard h1 {
+  font-family: Fraunces, Georgia, serif;
+}
+
+.choose-order-dashboard-header {
+  height: auto;
+  min-height: 220px;
+  padding: 48px 24px;
+  text-align: center;
+  background: #3f462c;
+  color: #f6f1e6;
+}
+
+.choose-order-dashboard-header h1,
+.choose-order-dashboard-header p {
+  margin: 0;
+  color: #f6f1e6;
+}
+
+.choose-order-dashboard-header h1 {
+  margin-top: 8px;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1;
+}
+
+.choose-order-dashboard-kicker {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.choose-order-dashboard-back {
+  display: inline-block;
+  margin-top: 16px;
+  color: #f6f1e6;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.choose-order-dashboard .tma-dashboard-table thead th,
+.choose-order-dashboard .tma-dashboard-scan-link,
+.choose-order-dashboard .tma-dashboard-nested-table th,
+.choose-order-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.choose-order-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.choose-order-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: var(--tma-brand);
+}
+
+.choose-order-dashboard .tma-dashboard-table thead th,
+.choose-order-dashboard .tma-dashboard-nested-table th {
+  background: var(--tma-brand-tint-alt);
+}
+
+.choose-order-dashboard .tma-dashboard-scan-count,
+.choose-order-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: var(--tma-brand-mid);
+}
+
+.choose-order-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: var(--tma-brand);
+  border-bottom-color: var(--tma-brand);
+}
+
+.choose-order-dashboard .tma-sar-timeline-marker.is-active,
+.choose-order-dashboard .tma-sar-timeline-marker:hover,
+.choose-order-dashboard .tma-sar-timeline-marker:focus-visible {
+  outline-color: var(--tma-brand-mid);
+}
+
+.choose-order-dashboard .tma-sar-timeline-center-btn {
+  background: var(--tma-brand);
+  border-color: var(--tma-brand);
+}
