@@ -49,5 +49,30 @@ export function useDashboardLocale(): DashboardLocale {
 }
 
 export function useDashboardCopy(): DashboardCopy {
-  return useContext(SiteScopeContext).copy
+  const { scope, locale, copy } = useContext(SiteScopeContext)
+  return useMemo(() => {
+    const portuguese = locale === "pt-BR"
+    if (scope === "waitburys" || scope === "charles_peters") {
+      return {
+        ...copy,
+        artworks: portuguese ? "Artigos" : "Articles",
+        artwork: portuguese ? "Artigo" : "Article",
+      }
+    }
+    if (scope === "church_of_england") {
+      return {
+        ...copy,
+        artworks: portuguese ? "Objetos" : "Objects",
+        artwork: portuguese ? "Objeto" : "Object",
+      }
+    }
+    if (scope === "choose_and_order") {
+      return {
+        ...copy,
+        artworks: "POS tags",
+        artwork: "POS tag",
+      }
+    }
+    return copy
+  }, [scope, locale, copy])
 }
