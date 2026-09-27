@@ -73,6 +73,13 @@ export function useDashboardCopy(): DashboardCopy {
         artwork: "POS tag",
       }
     }
+    if (scope === "yesterday_forever") {
+      return {
+        ...copy,
+        artworks: portuguese ? "Fotos" : "Photos",
+        artwork: portuguese ? "Foto" : "Photo",
+      }
+    }
     return copy
   }, [scope, locale, copy])
 }
