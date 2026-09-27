@@ -80,6 +80,13 @@ export function useDashboardCopy(): DashboardCopy {
         artwork: portuguese ? "Foto" : "Photo",
       }
     }
+    if (scope === "fair_future") {
+      return {
+        ...copy,
+        artworks: portuguese ? "Folhetos" : "Leaflets",
+        artwork: portuguese ? "Folheto" : "Leaflet",
+      }
+    }
     return copy
   }, [scope, locale, copy])
 }
