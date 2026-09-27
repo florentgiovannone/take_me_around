@@ -102,8 +102,8 @@ function App() {
                   <Route path="/" element={<Navigate to="/buddysdeli" replace />} />
                   <Route path="/byddysdeli" element={<Navigate to="/buddysdeli" replace />} />
                   <Route path="/byddysdeli/order-now" element={<Navigate to="/buddysdeli/order-now" replace />} />
-                  <Route path="/mme-betty" element={<Navigate to="/buddysdeli" replace />} />
-                  <Route path="/mme-betty/order-now" element={<Navigate to="/buddysdeli/order-now" replace />} />
+                  <Route path="/mme-betty" element={<Home />} />
+                  <Route path="/mme-betty/order-now" element={<OrderNow handleAddToCart={handleAddToCart} />} />
                   <Route path="/buddysdeli" element={<Home />} />
                   <Route path="/buddysdeli/order-now" element={<OrderNow handleAddToCart={handleAddToCart} />} />
                 </Routes>

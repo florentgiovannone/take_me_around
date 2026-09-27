@@ -1,6 +1,6 @@
 [
-    { "name": "About", "href": "/buddysdeli#about", "current": false, "id": "about", "scroll": true },
-    { "name": "Menus", "href": "/buddysdeli#menus", "current": false, "id": "menus", "scroll": true },
-    { "name": "Contact", "href": "/buddysdeli#contact", "current": false, "id": "contact", "scroll": true },
-    { "name": "Order Now", "href": "/buddysdeli/order-now", "current": false, "id": "order-now", "scroll": false }
+    { "name": "About", "href": "#about", "current": false, "id": "about", "scroll": true },
+    { "name": "Menus", "href": "#menus", "current": false, "id": "menus", "scroll": true },
+    { "name": "Contact", "href": "#contact", "current": false, "id": "contact", "scroll": true },
+    { "name": "Order Now", "href": "/order-now", "current": false, "id": "order-now", "scroll": false }
 ]

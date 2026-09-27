@@ -1,10 +1,12 @@
 import BrandLogo from "./BrandLogo"
 import { useState } from 'react'
 import navigation from '../Assets/Json/navigation.json'
+import { restaurantHref, useRestaurantBase } from '../restaurantPath'
 
 export default function Nav({ cart, handleRemoveAllFromCart, handleRemoveFromCart, handleAddToCart, cartCount, cartTotal, cartTotalPrice }: { cart: any[], handleRemoveAllFromCart: (item: any) => void, handleRemoveFromCart: (item: any) => void, handleAddToCart: (item: any) => void, cartCount: boolean, cartTotal: number, cartTotalPrice: number }) {
     const [isActive, setIsActive] = useState(false)
     const [isCartOpen, setIsCartOpen] = useState(false)
+    const restaurantBase = useRestaurantBase()
 
 
     const handleCartClick = () => {
@@ -44,7 +46,7 @@ export default function Nav({ cart, handleRemoveAllFromCart, handleRemoveFromCar
                             <span aria-hidden="true"></span>
                             <span aria-hidden="true"></span>
                         </a>
-                        <a className="navbar-item buddy-nav-logo-link" href="/buddysdeli" style={{ padding: '0.5rem', height: '100%', display: 'flex', alignItems: 'center' }}>
+                        <a className="navbar-item buddy-nav-logo-link" href={restaurantBase} style={{ padding: '0.5rem', height: '100%', display: 'flex', alignItems: 'center' }}>
                             <BrandLogo size={120} />
                         </a>
                         <p className="control is-hidden-desktop buddy-nav-cart" style={{ position: 'relative' }}>
@@ -86,7 +88,7 @@ export default function Nav({ cart, handleRemoveAllFromCart, handleRemoveFromCar
                             {navigation.map((item) => (
                                 <a
                                     key={item.name}
-                                    href={item.href}
+                                    href={restaurantHref(restaurantBase, item.href)}
                                     className="navbar-item has-text-light px-6 py-5 is-size-4-mobile is-size-6-tablet has-text-centered-mobile"
                                     style={{
                                         borderBottom: '1px solid rgba(255,255,255,0.1)',

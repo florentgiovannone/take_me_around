@@ -68,8 +68,6 @@ export default defineConfig(({ mode }) => {
           const lines = [
             "/byddysdeli    /buddysdeli    301",
             "/byddysdeli/*  /buddysdeli/:splat  301",
-            "/mme-betty     /buddysdeli    301",
-            "/mme-betty/*   /buddysdeli/:splat  301",
             "/dashborad     /dashboard     301",
             "/buddysdeli/dashboard  /dashboard  301",
             "/              /buddysdeli    301",

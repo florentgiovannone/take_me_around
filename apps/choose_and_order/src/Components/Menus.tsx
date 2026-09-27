@@ -1,6 +1,8 @@
 import menus from "../Assets/Json/menus.json"
+import { useRestaurantBase } from "../restaurantPath"
 
 export default function Menus() {
+    const restaurantBase = useRestaurantBase()
     return (
         <section
             id="menus"
@@ -49,7 +51,7 @@ export default function Menus() {
                             border: "none",
                         }}
                         onClick={() => {
-                            window.location.href = "/buddysdeli/order-now"
+                            window.location.href = `${restaurantBase}/order-now`
                         }}
                     >
                         Order Now

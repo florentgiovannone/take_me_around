@@ -1,5 +1,6 @@
 import BrandLogo from "./BrandLogo"
 import navigation from '../Assets/Json/navigation.json'
+import { restaurantHref, useRestaurantBase } from '../restaurantPath'
 
 
 // Contact information
@@ -11,6 +12,8 @@ const contactInfo = [
 
 // Footer component
 export default function Footer() {
+    const restaurantBase = useRestaurantBase()
+
     return (
         <footer
             className="footer buddy-footer"
@@ -27,7 +30,7 @@ export default function Footer() {
                     {/* Logo and Description */}
                     <div className="column is-12-mobile is-6-tablet is-4-desktop">
                         <div className="has-text-centered-mobile has-text-left-tablet">
-                            <a href="/buddysdeli">
+                            <a href={restaurantBase}>
                                 <BrandLogo size={88} />
                             </a>
                             <p className="has-text-light is-size-6 mt-3">
@@ -45,7 +48,7 @@ export default function Footer() {
                                 {navigation.map((item) => (
                                     <li key={item.name} className="mb-2">
                                         <a
-                                            href={item.href}
+                                            href={restaurantHref(restaurantBase, item.href)}
                                             className="has-text-light is-size-6 has-text-weight-normal"
                                             style={{ textDecoration: 'none' }}
                                         >
