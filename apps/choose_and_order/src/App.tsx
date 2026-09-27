@@ -4,6 +4,7 @@ import Nav from "./Components/Nav";
 import Footer from "./Components/Footer";
 import OrderNow from "./Components/OrderNow";
 import DashboardPage from "./pages/DashboardPage";
+import MmeBettySite from "./mmeBetty/MmeBettySite";
 import { useState } from "react";
 
 function App() {
@@ -84,6 +85,20 @@ function App() {
         <Route path="/dashborad" element={<Navigate to="/dashboard" replace />} />
         <Route path="/buddysdeli/dashboard" element={<Navigate to="/dashboard" replace />} />
         <Route
+          path="/mme-betty/*"
+          element={
+            <MmeBettySite
+              cart={cart}
+              handleRemoveFromCart={handleRemoveFromCart}
+              handleAddToCart={handleAddToCart}
+              handleRemoveAllFromCart={handleRemoveAllFromCart}
+              cartCount={cartCount}
+              cartTotal={cartTotal}
+              cartTotalPrice={cartTotalPrice}
+            />
+          }
+        />
+        <Route
           path="/*"
           element={
             <div style={{
@@ -102,8 +117,6 @@ function App() {
                   <Route path="/" element={<Navigate to="/buddysdeli" replace />} />
                   <Route path="/byddysdeli" element={<Navigate to="/buddysdeli" replace />} />
                   <Route path="/byddysdeli/order-now" element={<Navigate to="/buddysdeli/order-now" replace />} />
-                  <Route path="/mme-betty" element={<Home />} />
-                  <Route path="/mme-betty/order-now" element={<OrderNow handleAddToCart={handleAddToCart} />} />
                   <Route path="/buddysdeli" element={<Home />} />
                   <Route path="/buddysdeli/order-now" element={<OrderNow handleAddToCart={handleAddToCart} />} />
                 </Routes>

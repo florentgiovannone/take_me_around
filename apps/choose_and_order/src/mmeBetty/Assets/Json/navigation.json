@@ -1,0 +1,6 @@
+[
+    { "name": "About", "href": "/mme-betty#about", "current": false, "id": "about", "scroll": true },
+    { "name": "Menus", "href": "/mme-betty#menus", "current": false, "id": "menus", "scroll": true },
+    { "name": "Reservation", "href": "/mme-betty#reservation", "current": false, "id": "reservation", "scroll": true },
+    { "name": "Order Now", "href": "/mme-betty/order-now", "current": false, "id": "order-now", "scroll": false }
+]

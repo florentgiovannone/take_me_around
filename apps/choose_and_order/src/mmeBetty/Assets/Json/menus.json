@@ -1,0 +1,203 @@
+[
+    {
+        "name": "Breakfast",
+        "items": [
+            {
+                "id": "b1",
+                "name": "Breakfast 1",
+                "price": 10,
+                "description": "Description 1",
+                "quantity": 0
+            },
+            {
+                "id": "b2",
+                "name": "Breakfast 2",
+                "price": 10,
+                "description": "Description 2",
+                "quantity": 0
+            },
+            {
+                "id": "b3",
+                "name": "Breakfast 3",
+                "price": 10,
+                "description": "Description 3",
+                "quantity": 0
+            },
+            {
+                "id": "b4",
+                "name": "Breakfast 4",
+                "price": 10,
+                "description": "Description 4",
+                "quantity": 0
+            },
+            {
+                "id": "b5",
+                "name": "Breakfast 5",
+                "price": 10,
+                "description": "Description 5",
+                "quantity": 0
+            }
+        ]
+    },  
+    {
+        "name": "Lunch",
+        "items": [
+            {
+                "id": "l1",
+                "name": "Lunch 1",
+                "price": 10,
+                "description": "Description 1",
+                "quantity": 0
+            },
+            {
+                "id": "l2",
+                "name": "Lunch 2",
+                "price": 10,
+                "description": "Description 2",
+                "quantity": 0
+            },
+            {
+                "id": "l3",
+                "name": "Lunch 3",
+                "price": 10,
+                "description": "Description 3",
+                "quantity": 0
+            },
+            {
+                "id": "l4",
+                "name": "Lunch 4",
+                "price": 10,
+                "description": "Description 4",
+                "quantity": 0
+            },
+            {
+                "id": "l5",
+                "name": "Lunch 5",
+                "price": 10,
+                "description": "Description 5",
+                "quantity": 0
+            }
+        ]
+    },
+    {
+        "name": "Dinner",
+        "items": [
+            {
+                "id": "d1",
+                "name": "Dinner 1",
+                "price": 10,
+                "description": "Description 1",
+                "quantity": 0
+            },
+            {
+                "id": "d2",
+                "name": "Dinner 2",
+                "price": 10,
+                "description": "Description 2",
+                "quantity": 0
+            },
+            {
+                "id": "d3",
+                "name": "Dinner 3",
+                "price": 10,
+                "description": "Description 3",
+                "quantity": 0
+            },
+            {
+                "id": "d4",
+                "name": "Dinner 4",
+                "price": 10,
+                "description": "Description 4",
+                "quantity": 0
+            },
+            {
+                "id": "d5",
+                "name": "Dinner 5",
+                "price": 10,
+                "description": "Description 5",
+                "quantity": 0
+            }
+        ]
+    },
+    {
+        "name": "Dessert",
+        "items": [
+            {
+                "id": "de1",
+                "name": "Dessert 1",
+                "price": 10,
+                "description": "Description 1",
+                "quantity": 0
+            },
+            {
+                "id": "de2",
+                "name": "Dessert 2",
+                "price": 10,
+                "description": "Description 2",
+                "quantity": 0
+            },
+            {
+                "id": "de3",
+                "name": "Dessert 3",
+                "price": 10,
+                "description": "Description 3",
+                "quantity": 0
+            },
+            {
+                "id": "de4",
+                "name": "Dessert 4",
+                "price": 10,
+                "description": "Description 4",
+                "quantity": 0
+            },
+            {
+                "id": "de5",
+                "name": "Dessert 5",
+                "price": 10,
+                "description": "Description 5",
+                "quantity": 0
+            }
+        ]
+    },
+    {
+        "name": "Drinks",
+        "items": [
+            {
+                "id": "dr1",
+                "name": "Drink 1",
+                "price": 10,
+                "description": "Description 1",
+                "quantity": 0
+            },
+            {
+                "id": "dr2",
+                "name": "Drink 2",
+                "price": 10,
+                "description": "Description 2",
+                "quantity": 0
+            },
+            {
+                "id": "dr3",
+                "name": "Drink 3",
+                "price": 10,
+                "description": "Description 3",
+                "quantity": 0
+            },
+            
+            {
+                "id": "dr4",
+                "name": "Drink 4",
+                "price": 10,
+                "description": "Description 4",
+                "quantity": 0
+            },
+            {
+                "id": "dr5",
+                "name": "Drink 5",
+                "price": 10,
+                "description": "Description 5",
+                "quantity": 0
+            }
+        ]
+    }
+]

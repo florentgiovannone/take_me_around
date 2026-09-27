@@ -7,4 +7,4 @@ npm run dev:choose-and-order
 npm run build:choose-and-order
 ```
 
-`/` redirects to `/buddysdeli`. `/mme-betty` is a separate restaurant route with its own order page at `/mme-betty/order-now`.
+`/` redirects to `/buddysdeli`. `/mme-betty` is the original Bistro Mme Betty site, with its order page at `/mme-betty/order-now`.
