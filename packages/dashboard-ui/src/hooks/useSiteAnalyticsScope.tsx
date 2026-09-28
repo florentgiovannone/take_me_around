@@ -62,8 +62,8 @@ export function useDashboardCopy(): DashboardCopy {
     if (scope === "church_of_england") {
       return {
         ...copy,
-        artworks: portuguese ? "Objetos" : "Objects",
-        artwork: portuguese ? "Objeto" : "Object",
+        artworks: portuguese ? "POIs da igreja" : "Church POIs",
+        artwork: portuguese ? "POI da igreja" : "Church POI",
       }
     }
     if (scope === "choose_and_order") {
