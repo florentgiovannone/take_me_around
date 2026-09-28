@@ -3,6 +3,11 @@
   publish = "dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/dashboard packages"
 
+# The password value is also the public CSS class prefix, so the scanner
+# matches class names. The dashboard pages never receive the password.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
+
 # Custom domain: arkin.takemearound.gallery (primary dashboard host).
 # Legacy dashboards on takemearound.gallery/dashboard and takemearound.museum/dashboard
 # redirect to this site (see gallery/museum Netlify _redirects).

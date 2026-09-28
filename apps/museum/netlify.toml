@@ -3,6 +3,11 @@
   publish = "dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/museum packages"
 
+# The password value is also the public CSS class prefix, so the scanner
+# matches class names across the repo.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
+
 # /dashboard redirects to https://arkin.takemearound.gallery/dashboard/museum (vite netlify-redirects plugin).
 
 # Required for the dashboard on takemearound.museum (set in Netlify UI, then redeploy):

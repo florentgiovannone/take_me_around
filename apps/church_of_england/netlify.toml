@@ -7,6 +7,11 @@
   publish = "apps/church_of_england/dist"
   ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/church_of_england packages"
 
+# The password value is also the public CSS class prefix, so the scanner
+# matches class names. The church pages never receive the password.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
+
 # /dashboard is a public in-app analytics view (no password). An edge function
 # attaches X-Dashboard-Password for /api/secure/* so the browser never sees it.
 # Vite also writes dist/_redirects with /api/* proxy + /* → /index.html.
