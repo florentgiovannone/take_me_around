@@ -18,6 +18,7 @@ export type StoreDashboardScope =
   | "i_am_a_safe_pet"
   | "choose_and_order"
   | "yesterday_forever"
+  | "frieze_gallery"
 
 export type SiteScope = OperatorSiteId | "combined" | StoreDashboardScope
 
@@ -313,6 +314,7 @@ export function scopeLabel(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
+  if (scope === "frieze_gallery") return "Frieze Gallery"
   return SITE_META[scope].label
 }
 
@@ -326,6 +328,7 @@ export function scopeSubtitle(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "Live I Am A Safe Pet activity"
   if (scope === "choose_and_order") return "Live Choose and Order activity"
   if (scope === "yesterday_forever") return "Live Yesterday Forever activity"
+  if (scope === "frieze_gallery") return "Live Frieze Gallery activity"
   if (scope === "arkin") {
     return `Live ${SITE_META.arkin.label} activity`
   }
@@ -342,6 +345,7 @@ export function scopeDomainHint(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
+  if (scope === "frieze_gallery") return "Frieze Gallery"
   return SITE_META[scope].host
 }
 
@@ -353,6 +357,7 @@ export function scopeBadgeLabel(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
+  if (scope === "frieze_gallery") return "Frieze Gallery"
   return SITE_META[scope].domainLabel
 }
 
@@ -367,5 +372,6 @@ export function scopeOptionLabel(scope: SiteScope, _combinedSiteIds: SiteId[] = 
   if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
+  if (scope === "frieze_gallery") return "Frieze Gallery"
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }

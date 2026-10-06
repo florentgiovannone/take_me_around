@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w @tma/app-gallery && npm run build -w @tma/app-museum && npm run build -w @tma/app-arkin-museum && npm run build -w @tma/app-dashboard && npm run build -w @tma/app-church-of-england && npm run build -w @tma/app-i-am-a-safe-pet && npm run build -w @tma/app-fair-future && npm run build -w @tma/app-tma-stores && npm run build -w @tma/app-choose-and-order && npm run build -w @tma/app-yesterday-forever",
+    "build": "npm run build -w @tma/app-gallery && npm run build -w @tma/app-museum && npm run build -w @tma/app-arkin-museum && npm run build -w @tma/app-dashboard && npm run build -w @tma/app-church-of-england && npm run build -w @tma/app-i-am-a-safe-pet && npm run build -w @tma/app-fair-future && npm run build -w @tma/app-tma-stores && npm run build -w @tma/app-choose-and-order && npm run build -w @tma/app-yesterday-forever && npm run build -w @tma/app-frieze-gallery",
     "build:gallery": "npm run build -w @tma/app-gallery",
     "build:museum": "npm run build -w @tma/app-museum",
     "build:arkin-museum": "npm run build -w @tma/app-arkin-museum",
@@ -17,6 +17,7 @@
     "build:tma-stores": "npm run build -w @tma/app-tma-stores",
     "build:choose-and-order": "npm run build -w @tma/app-choose-and-order",
     "build:yesterday-forever": "npm run build -w @tma/app-yesterday-forever",
+    "build:frieze-gallery": "npm run build -w @tma/app-frieze-gallery",
     "dev": "node scripts/dev.mjs",
     "test": "node --test scripts/lib/*.test.mjs",
     "dev:gallery": "npm run dev -w @tma/app-gallery",
@@ -28,7 +29,8 @@
     "dev:fair-future": "npm run dev -w @tma/app-fair-future",
     "dev:tma-stores": "npm run dev -w @tma/app-tma-stores",
     "dev:choose-and-order": "npm run dev -w @tma/app-choose-and-order",
-    "dev:yesterday-forever": "npm run dev -w @tma/app-yesterday-forever"
+    "dev:yesterday-forever": "npm run dev -w @tma/app-yesterday-forever",
+    "dev:frieze-gallery": "npm run dev -w @tma/app-frieze-gallery"
   },
   "devDependencies": {
     "@inquirer/prompts": "^8.5.2",

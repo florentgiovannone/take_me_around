@@ -24,7 +24,8 @@ function storeFor(scope: SiteScope) {
     scope === "fair_future" ||
     scope === "i_am_a_safe_pet" ||
     scope === "choose_and_order" ||
-    scope === "yesterday_forever"
+    scope === "yesterday_forever" ||
+    scope === "frieze_gallery"
   ) {
     return storeAnalytics(scope)
   }
@@ -212,6 +213,7 @@ export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "tracked I Am A Safe Pet tags"
   if (scope === "choose_and_order") return "tracked Choose and Order tags"
   if (scope === "yesterday_forever") return "tracked Yesterday Forever tags"
+  if (scope === "frieze_gallery") return "tracked Frieze Gallery tags"
   return `tracked ${combinedSitesLabel()} scans`
 }
 
@@ -232,6 +234,7 @@ export function trackedLinksMeta(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "tags starting with Pet Tag"
   if (scope === "choose_and_order") return "CAO tags and mme-betty scans"
   if (scope === "yesterday_forever") return "tags such as YF001 and YF002"
+  if (scope === "frieze_gallery") return "tags such as FG001 and FG002"
   return `of ${count} tracked links (all sites)`
 }
 
@@ -251,6 +254,7 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "across I Am A Safe Pet tags"
   if (scope === "choose_and_order") return "across Choose and Order tags"
   if (scope === "yesterday_forever") return "across Yesterday Forever tags"
+  if (scope === "frieze_gallery") return "across Frieze Gallery tags"
   return "across tracked links (all sites)"
 }
 
@@ -266,6 +270,7 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
+  if (scope === "frieze_gallery") return "Frieze Gallery"
   return getActiveCombinedSiteIds()
     .map((id) => SITE_META[id].host)
     .join(" + ")
@@ -283,6 +288,7 @@ export function sarTimelineDomainSuffix(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "I Am A Safe Pet"
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
+  if (scope === "frieze_gallery") return "Frieze Gallery"
   return "selected sites"
 }
 
@@ -323,6 +329,7 @@ export function emptyActivityMessage(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "No Pet Tag scans yet."
   if (scope === "choose_and_order") return "No Choose and Order tags scanned yet."
   if (scope === "yesterday_forever") return "No Yesterday Forever tags scanned yet."
+  if (scope === "frieze_gallery") return "No Frieze Gallery tags scanned yet."
   return "No tracked activity found for the selected scope."
 }
 

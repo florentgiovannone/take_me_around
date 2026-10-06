@@ -8,9 +8,10 @@ export type StoreDashboardScope =
   | "i_am_a_safe_pet"
   | "choose_and_order"
   | "yesterday_forever"
+  | "frieze_gallery"
 
 type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet">
-type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF"
+type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF" | "FG"
 
 const PREFIX: Record<CodeScope, StorePrefix> = {
   waitburys: "W",
@@ -18,6 +19,7 @@ const PREFIX: Record<CodeScope, StorePrefix> = {
   fair_future: "PV",
   choose_and_order: "CO",
   yesterday_forever: "YF",
+  frieze_gallery: "FG",
 }
 
 const MAX_SERIAL = 999_999
@@ -63,6 +65,20 @@ export function canonicalYesterdayForeverTagName(value: string | null | undefine
   return `YF${padSerial(serial)}`
 }
 
+/** Frieze Gallery tags are named FG001, FG002, and so on. */
+export function canonicalFriezeGalleryTagName(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null
+  const trimmed = value.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+  if (!trimmed.toUpperCase().startsWith("FG")) return null
+  const compact = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, "")
+  const match = compact.match(/^FG(\d{1,6})$/)
+  if (!match) return null
+  const serial = Number(match[1])
+  if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
+  return `FG${padSerial(serial)}`
+}
+
 /** Scans whose redirect lands on the mme-betty page. */
 export function canonicalMmeBettyScan(value: string | null | undefined): string | null {
   const trimmed = value?.trim() ?? ""
@@ -96,6 +112,7 @@ function canonicalCode(prefix: StorePrefix, value: string | null | undefined): s
   const trimmed = value.trim()
   if (prefix === "CO") return canonicalChooseAndOrderTagName(trimmed)
   if (prefix === "YF") return canonicalYesterdayForeverTagName(trimmed)
+  if (prefix === "FG") return canonicalFriezeGalleryTagName(trimmed)
   if (prefix === "PV") {
     if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
     if (!trimmed.toUpperCase().startsWith("PV")) return null
@@ -171,7 +188,7 @@ function createAnalytics(scope: StoreDashboardScope) {
   function codeFromLog(log: PoiseLog) {
     if (prefix === null) return canonicalPetTagName(log.text_name)
     if (prefix === "CO") return chooseAndOrderCode(log)
-    if (prefix === "PV" || prefix === "YF") return canonicalCode(prefix, log.text_name)
+    if (prefix === "PV" || prefix === "YF" || prefix === "FG") return canonicalCode(prefix, log.text_name)
     return canonicalCode(prefix, log.text_name) ?? canonicalCode(prefix, log.txt_message)
   }
 
@@ -475,6 +492,7 @@ export const fairFuture = createAnalytics("fair_future")
 export const safePet = createAnalytics("i_am_a_safe_pet")
 export const chooseAndOrder = createAnalytics("choose_and_order")
 export const yesterdayForever = createAnalytics("yesterday_forever")
+export const friezeGallery = createAnalytics("frieze_gallery")
 
 const ANALYTICS = {
   waitburys,
@@ -483,6 +501,7 @@ const ANALYTICS = {
   i_am_a_safe_pet: safePet,
   choose_and_order: chooseAndOrder,
   yesterday_forever: yesterdayForever,
+  frieze_gallery: friezeGallery,
 } as const
 
 export function storeAnalytics(scope: StoreDashboardScope) {

@@ -15,6 +15,7 @@ apps/
   tma_stores/         → TMA Stores (Charles Peter and Waitburys)
   choose_and_order/   → Choose and Order (Buddy's Deli breakfast and lunch)
   yesterday_forever/  → Yesterday Forever
+  friezegallery/      → Frieze Gallery
   dashboard/          → arkin.takemearound.gallery (combined + per-site analytics)
 packages/
   config/                        Site scope types and labels
@@ -32,9 +33,9 @@ Gallery and museum apps import dashboard UI from `@tma/dashboard-ui` and scope d
 
 ```bash
 npm install
-npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:church-of-england, dev:i-am-a-safe-pet, dev:fair-future, dev:tma-stores, dev:choose-and-order, dev:yesterday-forever, dev:dashboard
+npm run dev:gallery      # or dev:museum, dev:arkin-museum, dev:church-of-england, dev:i-am-a-safe-pet, dev:fair-future, dev:tma-stores, dev:choose-and-order, dev:yesterday-forever, dev:frieze-gallery, dev:dashboard
 npm run build            # all apps
-npm run build:gallery    # single app (also build:museum, build:church-of-england, build:i-am-a-safe-pet, build:fair-future, build:tma-stores, build:choose-and-order, build:yesterday-forever, etc.)
+npm run build:gallery    # single app (also build:museum, build:church-of-england, build:i-am-a-safe-pet, build:fair-future, build:tma-stores, build:choose-and-order, build:yesterday-forever, build:frieze-gallery, etc.)
 ```
 
 ## Netlify (one repo, public sites + dashboard)
@@ -51,6 +52,7 @@ Set **Base directory** per site (or leave Base empty and set **Package directory
 | TMA Stores | *(empty)* + Package directory `apps/tma_stores` | `apps/tma_stores/dist` |
 | Choose and Order | *(empty)* + Package directory `apps/choose_and_order` | `apps/choose_and_order/dist` |
 | Yesterday Forever | *(empty)* + Package directory `apps/yesterday_forever` | `apps/yesterday_forever/dist` |
+| Frieze Gallery | *(empty)* + Package directory `apps/friezegallery` | `apps/friezegallery/dist` |
 | Arkin dashboard | `apps/dashboard` | `dist` |
 
 Most apps’ `netlify.toml` run `cd ../.. && npm ci && npm run build -w @tma/app-*` with Base = `apps/<app>`. CoE installs from the git root and publishes `apps/church_of_england/dist` so it works when Netlify’s cwd is the repo root. Path-based `ignore` skips deploys when unrelated folders change.

@@ -1,0 +1,90 @@
+.frieze-gallery-dashboard {
+  --tma-chart-hue: 0;
+  --tma-brand: #111111;
+  --tma-brand-dark: #000000;
+  --tma-brand-mid: #111111;
+  --tma-brand-light: #d4d4d4;
+  --tma-brand-tint: #f5f5f5;
+  --tma-brand-tint-alt: #fafafa;
+  --tma-dashboard-tabs-bg: #f3f3f3;
+  --tma-brand-border: #e6e6e6;
+  --tma-brand-shadow: rgba(17, 17, 17, 0.16);
+  --tma-brand-shadow-soft: rgba(17, 17, 17, 0.06);
+  --tma-brand-shadow-focus: rgba(17, 17, 17, 0.28);
+  --tma-palette-4: #111111;
+  --tma-palette-5: #6e6e6e;
+  min-height: 100vh;
+  background: #ffffff;
+  color: #111111;
+  font-family: Newsreader, Georgia, serif;
+}
+
+.frieze-gallery-dashboard-header {
+  height: auto;
+  min-height: 220px;
+  padding: 48px 24px;
+  text-align: center;
+  background: #111111;
+  color: #ffffff;
+}
+
+.frieze-gallery-dashboard-header h1,
+.frieze-gallery-dashboard-header p {
+  margin: 0;
+  color: #ffffff;
+}
+
+.frieze-gallery-dashboard-header h1 {
+  margin-top: 8px;
+  font-family: Newsreader, Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1;
+}
+
+.frieze-gallery-dashboard-header .frieze-gallery-dashboard-kicker {
+  width: 168px;
+  margin: 0 auto 12px;
+  color: #ffffff;
+}
+
+.frieze-gallery-dashboard-kicker svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.frieze-gallery-dashboard .tma-dashboard-table thead th,
+.frieze-gallery-dashboard .tma-dashboard-scan-link,
+.frieze-gallery-dashboard .tma-dashboard-nested-table th,
+.frieze-gallery-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.frieze-gallery-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.frieze-gallery-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: var(--tma-brand);
+}
+
+.frieze-gallery-dashboard .tma-dashboard-table thead th,
+.frieze-gallery-dashboard .tma-dashboard-nested-table th {
+  background: var(--tma-brand-tint-alt);
+}
+
+.frieze-gallery-dashboard .tma-dashboard-scan-count,
+.frieze-gallery-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: var(--tma-brand-mid);
+}
+
+.frieze-gallery-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: var(--tma-brand);
+  border-bottom-color: var(--tma-brand);
+}
+
+.frieze-gallery-dashboard .tma-sar-timeline-marker.is-active,
+.frieze-gallery-dashboard .tma-sar-timeline-marker:hover,
+.frieze-gallery-dashboard .tma-sar-timeline-marker:focus-visible {
+  outline-color: var(--tma-brand-mid);
+}
+
+.frieze-gallery-dashboard .tma-sar-timeline-center-btn {
+  background: var(--tma-brand);
+  border-color: var(--tma-brand);
+}

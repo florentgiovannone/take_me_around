@@ -2976,7 +2976,11 @@
     align-items: flex-start;
   }
 
-  .tma-dashboard .tma-dashboard-table--activity-modern {
+  .tma-dashboard .tma-dashboard-table--activity-modern,
+  .tma-dashboard .tma-dashboard-table--activity-modern tbody,
+  .tma-dashboard .tma-dashboard-table--counts,
+  .tma-dashboard .tma-dashboard-table--counts tbody {
+    display: block;
     min-width: 0;
     width: 100%;
   }
@@ -2987,6 +2991,8 @@
 
   .tma-dashboard .tma-dashboard-table--activity-modern tbody tr:not(.tma-dashboard-table-empty):not(.tma-dashboard-activity-details-row) {
     display: block;
+    width: 100%;
+    box-sizing: border-box;
     border: 1px solid #e8edf7;
     border-radius: 12px;
     margin-bottom: 0.85rem;
@@ -3028,10 +3034,15 @@
 
   .tma-dashboard .tma-dashboard-table--activity-modern tbody tr:not(.tma-dashboard-table-empty):not(.tma-dashboard-activity-details-row) td[data-label] {
     display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     border-bottom: 1px solid #f0f3fa;
     padding: 0.45rem 0;
     font-size: 0.8125rem;
-    word-break: break-word;
+    text-align: left;
+    word-break: normal;
+    overflow-wrap: anywhere;
   }
 
   .tma-dashboard .tma-dashboard-table--activity-modern tbody tr:not(.tma-dashboard-table-empty):not(.tma-dashboard-activity-details-row) td[data-label]:last-child {
