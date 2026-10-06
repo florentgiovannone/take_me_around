@@ -16,7 +16,12 @@
   min-height: 100vh;
   background: #ffffff;
   color: #111111;
-  font-family: Newsreader, Georgia, serif;
+  font-family: "Sina Nova", Georgia, "Times New Roman", serif;
+}
+
+.frieze-gallery-dashboard .tma-sar-timeline-y-label,
+.frieze-gallery-dashboard .tma-sar-timeline-y-label-meta {
+  font-family: "Sina Nova", Georgia, "Times New Roman", serif;
 }
 
 .frieze-gallery-dashboard-header {
@@ -36,7 +41,7 @@
 
 .frieze-gallery-dashboard-header h1 {
   margin-top: 8px;
-  font-family: Newsreader, Georgia, serif;
+  font-family: "Sina Nova", Georgia, "Times New Roman", serif;
   font-weight: 500;
   font-size: clamp(36px, 5vw, 52px);
   line-height: 1;
