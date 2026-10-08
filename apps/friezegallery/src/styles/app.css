@@ -217,7 +217,7 @@ p {
 }
 
 .article h1 {
-  max-width: 14ch;
+  max-width: 16ch;
 }
 
 .article .tma-audio-player {
@@ -228,110 +228,30 @@ p {
 }
 
 .piece {
-  position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
-  margin-top: 1.75rem;
-  overflow: hidden;
+  max-width: 680px;
+  margin: 1.75rem 0 0;
 }
 
-.piece--compact {
-  aspect-ratio: 1;
-  width: 160px;
+.piece img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.piece-extra {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 680px;
+  margin-top: 0.75rem;
+}
+
+.piece-extra .piece {
   margin-top: 0;
 }
 
-.piece--the-listening-room {
-  background: #16120d;
-}
-
-.piece-ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border: 1px solid rgba(214, 176, 109, 0.75);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.piece--salt-latitude {
-  background: #d7cfc3;
-}
-
-.piece-band {
-  position: absolute;
-  left: 0;
-  right: 0;
-}
-
-.piece-band--sky {
-  top: 0;
-  height: 42%;
-  background: #efe8dc;
-}
-
-.piece-band--foam {
-  top: 42%;
-  height: 8%;
-  background: #f7f4ee;
-}
-
-.piece-band--water {
-  top: 50%;
-  height: 18%;
-  background: #b7c3c6;
-}
-
-.piece-band--slab {
-  top: 68%;
-  bottom: 0;
-  background: #8d8680;
-}
-
-.piece-tide {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 67%;
-  height: 1px;
-  background: #f4f1ea;
-}
-
-.piece--index-of-unsent-letters {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
-  padding: 0.8rem;
-  background: #f3efe7;
-}
-
-.piece--compact.piece--index-of-unsent-letters {
-  gap: 0.3rem;
-  padding: 0.4rem;
-}
-
-.piece-slip {
-  display: flex;
-  align-items: flex-end;
-  min-height: 4.5rem;
-  padding: 0.45rem;
-  background: #fffdf8;
-  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.08);
-}
-
-.piece--compact .piece-slip {
-  min-height: 0;
-  padding: 0.25rem;
-}
-
-.piece-slip em {
-  font-family: "Sina Nova", Georgia, "Times New Roman", serif;
-  font-size: 0.95rem;
-  font-style: italic;
-}
-
-.piece--compact .piece-slip em {
-  font-size: 0.65rem;
+.details a {
+  color: inherit;
 }
 
 .caption,
@@ -340,9 +260,102 @@ p {
   font-size: 0.85rem;
 }
 
+.details {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+}
+
+.details div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 1rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid #e6e6e6;
+}
+
+.details dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.details dd {
+  margin: 0;
+}
+
+.bid {
+  max-width: 22rem;
+  margin-top: 1.5rem;
+}
+
+.bid-button,
+.bid-form button {
+  padding: 0.85rem 1.4rem;
+  border: 0;
+  background: #111111;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.bid-button:hover,
+.bid-form button:hover {
+  background: #2a2a2a;
+}
+
+.bid-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bid-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  border-bottom: 1px solid #111111;
+}
+
+.bid-amount input {
+  flex: 1;
+  width: 100%;
+  padding: 0.7rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.bid-amount input:focus {
+  outline: 2px solid #111111;
+  outline-offset: 4px;
+}
+
+.bid-form button {
+  margin-top: 1rem;
+}
+
+.bid-thanks {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
 .essay {
   max-width: 38rem;
   margin-top: 2rem;
+}
+
+.essay h2 {
+  margin: 0 0 0.85rem;
+  font-size: 1.15rem;
+  letter-spacing: 0;
+  line-height: 1.2;
 }
 
 .standfirst {
@@ -511,6 +524,8 @@ p {
 }
 
 .check-in-form button:focus-visible,
+.bid-button:focus-visible,
+.bid-form button:focus-visible,
 .site-nav a:focus-visible,
 .work-row:focus-visible,
 .text-button:focus-visible {
@@ -523,9 +538,9 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .piece--compact {
-    width: 100%;
-    aspect-ratio: 16 / 9;
+  .details div {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
   }
 
   .site-header,
