@@ -9,7 +9,7 @@ export default function NotFoundPage() {
       <main className="legal">
         <h1>This page is not in the gallery.</h1>
         <p>
-          <Link to="/">Return to check-in</Link>
+          <Link to="/check-in">Return to check-in</Link>
         </p>
       </main>
       <SiteFooter />

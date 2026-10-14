@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { Route, Routes, useLocation } from "react-router-dom"
 import { artworkBySlug } from "./artworks"
-import RequireCheckIn from "./components/RequireCheckIn"
 import AllPagesPage from "./pages/AllPagesPage"
 import ArtworkPage from "./pages/ArtworkPage"
 import CheckInPage from "./pages/CheckInPage"
@@ -17,7 +16,7 @@ function PageTitle() {
     const slug = pathname.startsWith("/works/") ? pathname.slice("/works/".length) : undefined
     const artwork = artworkBySlug(slug)
     const titles: Record<string, string> = {
-      "/": "Check in",
+      "/check-in": "Check in",
       "/terms": "Terms",
       "/privacy": "Privacy",
       "/dashboard": "Dashboard",
@@ -35,19 +34,12 @@ export default function App() {
     <>
       <PageTitle />
       <Routes>
-        <Route path="/" element={<CheckInPage />} />
+        <Route path="/check-in" element={<CheckInPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/allpages" element={<AllPagesPage />} />
-        <Route
-          path="/works/:slug"
-          element={
-            <RequireCheckIn>
-              <ArtworkPage />
-            </RequireCheckIn>
-          }
-        />
+        <Route path="/works/:slug" element={<ArtworkPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

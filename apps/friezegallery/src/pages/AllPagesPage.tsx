@@ -4,7 +4,7 @@ import SiteFooter from "../components/SiteFooter"
 import SiteHeader from "../components/SiteHeader"
 
 const pages = [
-  { to: "/", label: "Check-in" },
+  { to: "/check-in", label: "Check-in" },
   ...artworks.map((artwork) => ({
     to: `/works/${artwork.slug}`,
     label: artwork.title,

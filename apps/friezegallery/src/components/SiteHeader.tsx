@@ -8,7 +8,7 @@ export default function SiteHeader() {
 
   return (
     <header className="site-header">
-      <Link className="wordmark" to="/" aria-label="Frieze">
+      <Link className="wordmark" to="/check-in" aria-label="Frieze">
         <FriezeLogo />
       </Link>
       {checkedIn && (
@@ -18,7 +18,7 @@ export default function SiteHeader() {
             className="text-button"
             onClick={() => {
               clearCheckIn()
-              navigate("/")
+              navigate("/check-in")
             }}
           >
             End visit
