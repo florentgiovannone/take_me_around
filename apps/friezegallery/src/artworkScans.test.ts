@@ -20,11 +20,11 @@ Object.assign(globalThis, {
 })
 
 describe("artwork scans", () => {
-  it("logs a scan with an FG text name", () => {
-    logArtworkScan("FG001", "/works/the-listening-room")
+  it("logs a scan with a Frieze text name", () => {
+    logArtworkScan("FO001", "/works/overcast")
     const [scan] = readArtworkScans()
-    expect(scan.text_name).toBe("FG001")
-    expect(scan.txt_message).toBe("/works/the-listening-room")
+    expect(scan.text_name).toBe("FO001")
+    expect(scan.txt_message).toBe("/works/overcast")
     expect(scan.txt_message_type).toBe("REDIRECTED")
   })
 })

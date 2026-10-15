@@ -10,8 +10,8 @@ export type StoreDashboardScope =
   | "yesterday_forever"
   | "frieze_gallery"
 
-type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet">
-type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF" | "FG"
+type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet" | "frieze_gallery">
+type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF"
 
 const PREFIX: Record<CodeScope, StorePrefix> = {
   waitburys: "W",
@@ -19,8 +19,10 @@ const PREFIX: Record<CodeScope, StorePrefix> = {
   fair_future: "PV",
   choose_and_order: "CO",
   yesterday_forever: "YF",
-  frieze_gallery: "FG",
 }
+
+/** Longest first so FSFT and FSWIF are not read as a shorter prefix. */
+const FRIEZE_GALLERY_TAG_PREFIXES = ["FSWIF", "FSFT", "FCI", "FO", "FD"] as const
 
 const MAX_SERIAL = 999_999
 const SEEN_NEIGHBOR_MS = 5000
@@ -65,18 +67,19 @@ export function canonicalYesterdayForeverTagName(value: string | null | undefine
   return `YF${padSerial(serial)}`
 }
 
-/** Frieze Gallery tags are named FG001, FG002, and so on. */
+/** Frieze Gallery tags are named FD001, FCI001, FO001, FSFT001, FSWIF001, and so on. */
 export function canonicalFriezeGalleryTagName(value: string | null | undefined): string | null {
   if (!value?.trim()) return null
   const trimmed = value.trim()
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
-  if (!trimmed.toUpperCase().startsWith("FG")) return null
   const compact = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, "")
-  const match = compact.match(/^FG(\d{1,6})$/)
+  const prefix = FRIEZE_GALLERY_TAG_PREFIXES.find((item) => compact.startsWith(item))
+  if (!prefix) return null
+  const match = compact.match(new RegExp(`^${prefix}(\\d{1,6})$`))
   if (!match) return null
   const serial = Number(match[1])
   if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
-  return `FG${padSerial(serial)}`
+  return `${prefix}${padSerial(serial)}`
 }
 
 /** Scans whose redirect lands on the mme-betty page. */
@@ -112,7 +115,6 @@ function canonicalCode(prefix: StorePrefix, value: string | null | undefined): s
   const trimmed = value.trim()
   if (prefix === "CO") return canonicalChooseAndOrderTagName(trimmed)
   if (prefix === "YF") return canonicalYesterdayForeverTagName(trimmed)
-  if (prefix === "FG") return canonicalFriezeGalleryTagName(trimmed)
   if (prefix === "PV") {
     if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
     if (!trimmed.toUpperCase().startsWith("PV")) return null
@@ -183,12 +185,14 @@ function linkFor(log: PoiseLog, code: string, prefix?: StorePrefix | null) {
 }
 
 function createAnalytics(scope: StoreDashboardScope) {
-  const prefix = scope === "i_am_a_safe_pet" ? null : PREFIX[scope]
+  const prefix: StorePrefix | null =
+    scope === "i_am_a_safe_pet" || scope === "frieze_gallery" ? null : PREFIX[scope]
 
   function codeFromLog(log: PoiseLog) {
+    if (scope === "frieze_gallery") return canonicalFriezeGalleryTagName(log.text_name)
     if (prefix === null) return canonicalPetTagName(log.text_name)
     if (prefix === "CO") return chooseAndOrderCode(log)
-    if (prefix === "PV" || prefix === "YF" || prefix === "FG") return canonicalCode(prefix, log.text_name)
+    if (prefix === "PV" || prefix === "YF") return canonicalCode(prefix, log.text_name)
     return canonicalCode(prefix, log.text_name) ?? canonicalCode(prefix, log.txt_message)
   }
 
@@ -454,7 +458,7 @@ function createAnalytics(scope: StoreDashboardScope) {
 
   return {
     scope,
-    prefix: prefix ?? "Pet Tag",
+    prefix: scope === "frieze_gallery" ? "FD" : (prefix ?? "Pet Tag"),
     getLogs,
     buildActivityEntries,
     buildTrackedArtworkScanGroups,
@@ -510,5 +514,6 @@ export function storeAnalytics(scope: StoreDashboardScope) {
 
 export function isStoreCode(scope: StoreDashboardScope, value: string | null | undefined) {
   if (scope === "i_am_a_safe_pet") return canonicalPetTagName(value) !== null
+  if (scope === "frieze_gallery") return canonicalFriezeGalleryTagName(value) !== null
   return canonicalCode(PREFIX[scope], value) !== null
 }

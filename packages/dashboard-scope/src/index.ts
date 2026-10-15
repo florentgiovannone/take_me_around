@@ -234,7 +234,7 @@ export function trackedLinksMeta(scope: SiteScope): string {
   if (scope === "i_am_a_safe_pet") return "tags starting with Pet Tag"
   if (scope === "choose_and_order") return "CAO tags and mme-betty scans"
   if (scope === "yesterday_forever") return "tags such as YF001 and YF002"
-  if (scope === "frieze_gallery") return "tags such as FG001 and FG002"
+  if (scope === "frieze_gallery") return "tags such as FD001, FCI001, FO001, FSFT001, and FSWIF001"
   return `of ${count} tracked links (all sites)`
 }
 

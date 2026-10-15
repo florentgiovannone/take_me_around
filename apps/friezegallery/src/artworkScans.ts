@@ -1,3 +1,4 @@
+import { canonicalFriezeGalleryTagName } from "@tma/analytics-store-codes"
 import type { PoiseLog } from "@tma/dashboard-scope"
 
 const STORAGE_KEY = "frieze-gallery-artwork-scans"
@@ -10,7 +11,7 @@ export function readArtworkScans(): PoiseLog[] {
     if (!raw) return []
     const parsed = JSON.parse(raw) as PoiseLog[]
     if (!Array.isArray(parsed)) return []
-    return parsed.filter((log) => typeof log?.text_name === "string" && log.text_name.startsWith("FG"))
+    return parsed.filter((log) => canonicalFriezeGalleryTagName(log?.text_name) !== null)
   } catch {
     return []
   }
