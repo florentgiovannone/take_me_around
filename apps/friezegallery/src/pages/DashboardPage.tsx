@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import { useUiCopy } from "../i18n/locale"
+import { fill } from "../i18n/uiCopy"
 import {
   DashboardActivityPanel,
   DashboardAudiencePanel,
@@ -19,27 +21,20 @@ const POLL_INTERVAL_MS = 5000
 
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
-  | { ok: false; message: string }
+  | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status"; status?: number }
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
   const response = await fetch("/api/secure/items")
-  if (response.status === 401) {
-    return { ok: false, message: "Dashboard API access was denied." }
-  }
-  if (response.status === 503) {
-    return { ok: false, message: "Dashboard is not configured." }
-  }
-  if (!response.ok) {
-    return { ok: false, message: `Request failed with status ${response.status}` }
-  }
+  if (response.status === 401) return { ok: false, code: "denied" }
+  if (response.status === 503) return { ok: false, code: "unconfigured" }
+  if (!response.ok) return { ok: false, code: "status", status: response.status }
   const data = (await response.json()) as PoiseLog[]
-  if (!Array.isArray(data)) {
-    return { ok: false, message: "Dashboard API returned an unexpected response." }
-  }
+  if (!Array.isArray(data)) return { ok: false, code: "unexpected" }
   return { ok: true, data }
 }
 
 export default function DashboardPage() {
+  const copy = useUiCopy()
   const [logs, setLogs] = useState<PoiseLog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -55,18 +50,28 @@ export default function DashboardPage() {
       const result = await fetchDashboardLogs()
       if (!result.ok) {
         setLogs((current) => mergeArtworkScans(showLoading ? [] : current))
-        if (showLoading) setError(result.message)
+        if (showLoading) {
+          const message =
+            result.code === "denied"
+              ? copy.dashboardDenied
+              : result.code === "unconfigured"
+                ? copy.dashboardUnconfigured
+                : result.code === "unexpected"
+                  ? copy.dashboardUnexpected
+                  : fill(copy.dashboardStatus, { status: String(result.status ?? "") })
+          setError(message)
+        }
         setReady(true)
         return
       }
       setLogs(mergeArtworkScans(result.data))
       setReady(true)
       setError(null)
-    } catch (err) {
+    } catch {
       setLogs((current) => mergeArtworkScans(showLoading ? [] : current))
       setReady(true)
       if (showLoading) {
-        setError(err instanceof Error ? err.message : "Failed to load items")
+        setError(copy.dashboardFailed)
       }
     } finally {
       if (showLoading) setLoading(false)
@@ -75,11 +80,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const previousTitle = document.title
-    document.title = "Frieze Gallery Dashboard"
+    document.title = `${copy.dashboard} | Frieze Gallery`
     return () => {
       document.title = previousTitle
     }
-  }, [])
+  }, [copy.dashboard])
 
   useEffect(() => {
     void loadLogs(true)
@@ -100,17 +105,19 @@ export default function DashboardPage() {
           <p className="frieze-gallery-dashboard-kicker">
             <FriezeLogo />
           </p>
-          <h1>Dashboard</h1>
+          <h1>{copy.dashboard}</h1>
         </div>
       </header>
       <div className="tma-content">
         <DashboardTabsNav activeTab={activeTab} onChange={setActiveTab} />
         {loading && (
           <div className="tma-analytics-card tma-dashboard-status-card">
-            <p>Loading activity...</p>
+            <p>{copy.loadingActivity}</p>
           </div>
         )}
-        {error && logs.length === 0 && <p className="tma-dashboard-error">Error: {error}</p>}
+        {error && logs.length === 0 && (
+          <p className="tma-dashboard-error">{fill(copy.errorPrefix, { message: error })}</p>
+        )}
         <SiteScopeProvider scope="frieze_gallery">
           {!loading && (logs.length > 0 || !error) && activeTab === "activity" && (
             <DashboardActivityPanel logs={logs} />

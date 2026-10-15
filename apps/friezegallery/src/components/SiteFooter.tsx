@@ -1,14 +1,16 @@
-import { Link } from "react-router-dom"
+import { LocaleLink, useUiCopy } from "../i18n/locale"
 
 export default function SiteFooter() {
+  const copy = useUiCopy()
+
   return (
     <footer className="site-footer">
       <p>
-        <Link to="/terms">Terms</Link>
+        <LocaleLink to="/terms">{copy.terms}</LocaleLink>
         <span aria-hidden="true"> · </span>
-        <Link to="/privacy">Privacy</Link>
+        <LocaleLink to="/privacy">{copy.privacy}</LocaleLink>
       </p>
-      <p>Frieze Gallery is a demonstration site, independent of Frieze.</p>
+      <p>{copy.footerNote}</p>
     </footer>
   )
 }

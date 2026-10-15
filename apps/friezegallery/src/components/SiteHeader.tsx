@@ -1,14 +1,17 @@
 import { Link, useNavigate } from "react-router-dom"
 import { clearCheckIn, isCheckedIn } from "../checkIn"
+import { useLocalizedPath, useUiCopy } from "../i18n/locale"
 import FriezeLogo from "./FriezeLogo"
 
 export default function SiteHeader() {
+  const copy = useUiCopy()
+  const path = useLocalizedPath()
   const navigate = useNavigate()
   const checkedIn = isCheckedIn()
 
   return (
     <header className="site-header">
-      <Link className="wordmark" to="/check-in" aria-label="Frieze">
+      <Link className="wordmark" to={path("/check-in")} aria-label="Frieze">
         <FriezeLogo />
       </Link>
       {checkedIn && (
@@ -18,10 +21,10 @@ export default function SiteHeader() {
             className="text-button"
             onClick={() => {
               clearCheckIn()
-              navigate("/check-in")
+              navigate(path("/check-in"))
             }}
           >
-            End visit
+            {copy.endVisit}
           </button>
         </nav>
       )}

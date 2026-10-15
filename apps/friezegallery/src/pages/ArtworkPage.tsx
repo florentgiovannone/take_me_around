@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { logArtworkScan } from "../artworkScans"
 import { artworkBySlug } from "../artworks"
 import ArtworkFigure from "../components/ArtworkFigure"
@@ -7,15 +7,22 @@ import AudioPlayer from "../components/AudioPlayer"
 import BidButton, { currencyForPrice } from "../components/BidButton"
 import SiteFooter from "../components/SiteFooter"
 import SiteHeader from "../components/SiteHeader"
+import { artworkAudioSrc } from "../audioScript"
+import { localizeArtwork } from "../i18n/artworkCopy"
+import { LocaleLink, useLocale, useUiCopy } from "../i18n/locale"
+import { fill, formatPrice, priceLabel } from "../i18n/uiCopy"
 
 export default function ArtworkPage() {
   const { slug } = useParams()
-  const artwork = artworkBySlug(slug)
+  const source = artworkBySlug(slug)
+  const locale = useLocale()
+  const copy = useUiCopy()
+  const artwork = source ? localizeArtwork(source, locale) : undefined
 
   useEffect(() => {
-    if (!artwork) return
-    logArtworkScan(artwork.textName, `/works/${artwork.slug}`)
-  }, [artwork])
+    if (!source) return
+    logArtworkScan(source.textName, `/works/${source.slug}`)
+  }, [source])
 
   return (
     <div className="shell">
@@ -25,8 +32,12 @@ export default function ArtworkPage() {
           <>
             <p className="kicker">{artwork.kicker}</p>
             <h1>{artwork.title}</h1>
-            <p className="byline">By {artwork.artist}</p>
-            <AudioPlayer src={artwork.audioSrc} />
+            <p className="byline">{fill(copy.byline, { artist: artwork.artist })}</p>
+            <AudioPlayer
+              src={artworkAudioSrc(artwork.audioSrc, locale)}
+              fallbackSrc={artwork.audioSrc}
+              unsupported={copy.audioUnsupported}
+            />
             <ArtworkFigure src={artwork.imageSrc} alt={artwork.imageAlt} />
             {artwork.extraImages.length > 0 && (
               <div className="piece-extra">
@@ -36,54 +47,59 @@ export default function ArtworkPage() {
               </div>
             )}
             <p className="caption">
-              {artwork.artist}, {artwork.title}, {artwork.year}. Presented by {artwork.gallery}.
+              {fill(copy.caption, {
+                artist: artwork.artist,
+                title: artwork.title,
+                year: artwork.year,
+                gallery: artwork.gallery,
+              })}
             </p>
             <dl className="details">
               <div>
-                <dt>Year</dt>
+                <dt>{copy.year}</dt>
                 <dd>{artwork.year}</dd>
               </div>
               <div>
-                <dt>Medium</dt>
+                <dt>{copy.medium}</dt>
                 <dd>{artwork.medium}</dd>
               </div>
               <div>
-                <dt>Dimensions</dt>
+                <dt>{copy.dimensions}</dt>
                 <dd>{artwork.dimensions}</dd>
               </div>
               <div>
-                <dt>Gallery</dt>
+                <dt>{copy.gallery}</dt>
                 <dd>
                   <a href={artwork.website}>{artwork.gallery}</a>
                 </dd>
               </div>
               {artwork.inventory && (
                 <div>
-                  <dt>Inventory</dt>
+                  <dt>{copy.inventory}</dt>
                   <dd>{artwork.inventory}</dd>
                 </div>
               )}
               <div>
-                <dt>Section</dt>
+                <dt>{copy.section}</dt>
                 <dd>{artwork.section}</dd>
               </div>
               <div>
-                <dt>Fair</dt>
+                <dt>{copy.fair}</dt>
                 <dd>{artwork.fair}</dd>
               </div>
               {artwork.price && (
                 <div>
-                  <dt>{artwork.price.startsWith("Under") ? "Price range" : "Price"}</dt>
-                  <dd>{artwork.price}</dd>
+                  <dt>{priceLabel(artwork.price, copy)}</dt>
+                  <dd>{formatPrice(artwork.price, copy)}</dd>
                 </div>
               )}
               <div>
-                <dt>Status</dt>
-                <dd>{artwork.onView ? `${artwork.status} · On view` : artwork.status}</dd>
+                <dt>{copy.status}</dt>
+                <dd>{artwork.onView ? `${artwork.status} · ${copy.onView}` : artwork.status}</dd>
               </div>
               {artwork.document && (
                 <div>
-                  <dt>Document</dt>
+                  <dt>{copy.document}</dt>
                   <dd>
                     <a href={artwork.document.href}>{artwork.document.label}</a>
                   </dd>
@@ -91,10 +107,10 @@ export default function ArtworkPage() {
               )}
             </dl>
             <div className="bid">
-              <BidButton key={artwork.slug} currency={currencyForPrice(artwork.price)} />
+              <BidButton key={artwork.slug} originalCurrency={currencyForPrice(artwork.price)} />
             </div>
             <div className="essay">
-              <h2>About The Work</h2>
+              <h2>{copy.aboutTheWork}</h2>
               {artwork.standfirst ? <p className="standfirst">{artwork.standfirst}</p> : null}
               {artwork.paragraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
@@ -103,9 +119,9 @@ export default function ArtworkPage() {
           </>
         ) : (
           <>
-            <h1>This work is not on view.</h1>
+            <h1>{copy.workNotOnView}</h1>
             <p>
-              <Link to="/allpages">See all pages</Link>
+              <LocaleLink to="/allpages">{copy.seeAllPages}</LocaleLink>
             </p>
           </>
         )}

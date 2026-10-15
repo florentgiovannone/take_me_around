@@ -8,7 +8,9 @@ export type CheckInInput = {
 
 export type CheckInField = "email" | "terms" | "privacy"
 
-export type CheckInErrors = Partial<Record<CheckInField, string>>
+export type CheckInErrorCode = "required" | "invalid"
+
+export type CheckInErrors = Partial<Record<CheckInField, CheckInErrorCode>>
 
 export type CheckInResult = { ok: true } | { ok: false; errors: CheckInErrors }
 
@@ -21,10 +23,10 @@ export function validateCheckIn(input: CheckInInput): CheckInResult {
   const errors: CheckInErrors = {}
   const email = input.email.trim()
 
-  if (!email) errors.email = "Enter your email address."
-  else if (!isValidEmail(email)) errors.email = "Enter a valid email address."
-  if (!input.acceptedTerms) errors.terms = "Accept the terms to continue."
-  if (!input.acceptedPrivacy) errors.privacy = "Accept the privacy notice to continue."
+  if (!email) errors.email = "required"
+  else if (!isValidEmail(email)) errors.email = "invalid"
+  if (!input.acceptedTerms) errors.terms = "required"
+  if (!input.acceptedPrivacy) errors.privacy = "required"
 
   if (errors.email || errors.terms || errors.privacy) return { ok: false, errors }
   return { ok: true }

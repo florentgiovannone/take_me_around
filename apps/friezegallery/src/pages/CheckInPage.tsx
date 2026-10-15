@@ -1,14 +1,27 @@
 import { FormEvent, useState } from "react"
-import { Link } from "react-router-dom"
 import { isCheckedIn, markCheckedIn, validateCheckIn, type CheckInErrors } from "../checkIn"
 import FriezeLogo from "../components/FriezeLogo"
+import { LocaleLink, useUiCopy } from "../i18n/locale"
+import type { UiCopy } from "../i18n/uiCopy"
+
+function errorText(errors: CheckInErrors, field: keyof CheckInErrors, copy: UiCopy): string | undefined {
+  const code = errors[field]
+  if (!code) return undefined
+  if (field === "email") return code === "invalid" ? copy.emailInvalid : copy.emailRequired
+  if (field === "terms") return copy.termsRequired
+  return copy.privacyRequired
+}
 
 export default function CheckInPage() {
+  const copy = useUiCopy()
   const [email, setEmail] = useState("")
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(false)
   const [errors, setErrors] = useState<CheckInErrors>({})
   const [submitted, setSubmitted] = useState(isCheckedIn)
+  const emailError = errorText(errors, "email", copy)
+  const termsError = errorText(errors, "terms", copy)
+  const privacyError = errorText(errors, "privacy", copy)
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -31,20 +44,18 @@ export default function CheckInPage() {
       <main className="check-in-main">
         {submitted ? (
           <>
-            <p className="kicker">Visitor check-in</p>
-            <h1>Thank you.</h1>
-            <p className="deck">Your email address has been received.</p>
+            <p className="kicker">{copy.visitorCheckIn}</p>
+            <h1>{copy.thankYou}</h1>
+            <p className="deck">{copy.emailReceived}</p>
           </>
         ) : (
           <>
-            <p className="kicker">Visitor check-in</p>
-            <h1>Welcome to the gallery.</h1>
-            <p className="deck">
-              Leave an email address and accept the terms and the privacy notice.
-            </p>
+            <p className="kicker">{copy.visitorCheckIn}</p>
+            <h1>{copy.welcome}</h1>
+            <p className="deck">{copy.checkInDeck}</p>
             <form className="check-in-form" onSubmit={onSubmit} noValidate>
               <div className="field">
-                <label htmlFor="email">Email address</label>
+                <label htmlFor="email">{copy.emailAddress}</label>
                 <input
                   id="email"
                   name="email"
@@ -52,13 +63,13 @@ export default function CheckInPage() {
                   inputMode="email"
                   autoComplete="email"
                   value={email}
-                  aria-invalid={errors.email ? true : undefined}
-                  aria-describedby={errors.email ? "email-error" : undefined}
+                  aria-invalid={emailError ? true : undefined}
+                  aria-describedby={emailError ? "email-error" : undefined}
                   onChange={(event) => setEmail(event.target.value)}
                 />
-                {errors.email && (
+                {emailError && (
                   <p id="email-error" className="field-error" role="alert">
-                    {errors.email}
+                    {emailError}
                   </p>
                 )}
               </div>
@@ -69,17 +80,17 @@ export default function CheckInPage() {
                     name="terms"
                     type="checkbox"
                     checked={acceptedTerms}
-                    aria-invalid={errors.terms ? true : undefined}
-                    aria-describedby={errors.terms ? "terms-error" : undefined}
+                    aria-invalid={termsError ? true : undefined}
+                    aria-describedby={termsError ? "terms-error" : undefined}
                     onChange={(event) => setAcceptedTerms(event.target.checked)}
                   />
                   <label htmlFor="terms">
-                    I agree to the <Link to="/terms">terms and conditions</Link>.
+                    {copy.agreeTermsLead}<LocaleLink to="/terms">{copy.agreeTermsLink}</LocaleLink>{copy.agreeTermsTail}
                   </label>
                 </div>
-                {errors.terms && (
+                {termsError && (
                   <p id="terms-error" className="field-error" role="alert">
-                    {errors.terms}
+                    {termsError}
                   </p>
                 )}
                 <div className="check">
@@ -88,21 +99,21 @@ export default function CheckInPage() {
                     name="privacy"
                     type="checkbox"
                     checked={acceptedPrivacy}
-                    aria-invalid={errors.privacy ? true : undefined}
-                    aria-describedby={errors.privacy ? "privacy-error" : undefined}
+                    aria-invalid={privacyError ? true : undefined}
+                    aria-describedby={privacyError ? "privacy-error" : undefined}
                     onChange={(event) => setAcceptedPrivacy(event.target.checked)}
                   />
                   <label htmlFor="privacy">
-                    I agree to the <Link to="/privacy">privacy notice</Link>.
+                    {copy.agreePrivacyLead}<LocaleLink to="/privacy">{copy.agreePrivacyLink}</LocaleLink>{copy.agreePrivacyTail}
                   </label>
                 </div>
-                {errors.privacy && (
+                {privacyError && (
                   <p id="privacy-error" className="field-error" role="alert">
-                    {errors.privacy}
+                    {privacyError}
                   </p>
                 )}
               </div>
-              <button type="submit">Check in</button>
+              <button type="submit">{copy.checkInButton}</button>
             </form>
           </>
         )}

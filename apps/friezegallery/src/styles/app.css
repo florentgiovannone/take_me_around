@@ -153,6 +153,14 @@ p {
   text-transform: uppercase;
 }
 
+html[lang="ja"] .kicker,
+html[lang="zh"] .kicker,
+html[lang="ko"] .kicker,
+html[lang="ar"] .kicker {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .kicker a {
   text-decoration: none;
 }
@@ -307,9 +315,16 @@ p {
   background: #2a2a2a;
 }
 
+.bid-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+}
+
 .bid-form label {
   display: block;
-  margin-bottom: 0.4rem;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;
