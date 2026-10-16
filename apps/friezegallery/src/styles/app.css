@@ -454,7 +454,7 @@ html[lang="ar"] .kicker {
 
 .check-in-main .deck {
   margin-top: 1rem;
-  font-size: 1.05rem;
+  font-size: 1.26rem;
 }
 
 .check-in-form {
@@ -529,8 +529,11 @@ html[lang="ar"] .kicker {
   border: 0;
   background: #111111;
   color: #ffffff;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 1.14rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
   cursor: pointer;
 }
 
