@@ -888,3 +888,9 @@ export const sarTimelineOffsetBoundsForScroll = gallery.sarTimelineOffsetBoundsF
 export type SarTimelineOffsetBounds = gallery.SarTimelineOffsetBounds
 
 export { setActiveCombinedSiteIds, getActiveCombinedSiteIds } from "./combinedSites"
+
+export {
+  BIRMINGHAM_CONFERENCE_ARTWORKS,
+  matchBirminghamConferenceArtwork,
+  type BirminghamConferenceArtwork,
+} from "./birminghamConference"
