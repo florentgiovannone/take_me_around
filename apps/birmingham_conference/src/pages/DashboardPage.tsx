@@ -59,7 +59,7 @@ export default function DashboardPage() {
     if (showLoading) setLoading(true)
     const result = await fetchDashboardLogs()
     if (!result.ok) {
-      setLogs(mergeArtworkScans([]))
+      setLogs((current) => mergeArtworkScans(showLoading ? [] : current))
       setReady(true)
       if (showLoading) setError(errorMessage(result))
       if (showLoading) setLoading(false)
