@@ -6,10 +6,12 @@ import * as churchOfEngland from "@tma/analytics-church-of-england"
 import * as tmaDemo from "@tma/analytics-tma-demo"
 import { storeAnalytics } from "@tma/analytics-store-codes"
 import { getActiveCombinedSiteIds } from "./combinedSites"
+import { birminghamSarFromLog, getBirminghamConferenceLogs } from "./birminghamConference"
 
 type PoiseLog = gallery.PoiseLog & { visitor_number?: string | null }
 
 function getSarForLog(log: PoiseLog, scope: SiteScope): string | null {
+  if (scope === "birmingham_conference") return birminghamSarFromLog(log)
   if (scope === "arkin") return arkin.getSarFromLog(log)
   if (scope === "museum") return museum.getSarFromLog(log)
   if (scope === "church_of_england") return churchOfEngland.getSarFromLog(log)
@@ -36,6 +38,7 @@ function getSarForLog(log: PoiseLog, scope: SiteScope): string | null {
 }
 
 function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
+  if (scope === "birmingham_conference") return getBirminghamConferenceLogs(logs)
   if (scope === "gallery") return gallery.getGalleryLogs(logs)
   if (scope === "arkin") return arkin.getArkinLogs(logs)
   if (scope === "museum") return museum.getMuseumLogs(logs)
