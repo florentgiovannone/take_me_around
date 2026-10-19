@@ -6,6 +6,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@tma/analytics-church-of-england": "*",
     "@tma/analytics-store-codes": "*",
@@ -14,5 +17,8 @@
     "@tma/analytics-museum": "*",
     "@tma/analytics-arkin": "*",
     "@tma/config": "*"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }
