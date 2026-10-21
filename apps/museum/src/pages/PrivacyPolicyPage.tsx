@@ -1,9 +1,11 @@
+import { BrandHeader } from "@tma/brand"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 
 export default function PrivacyPolicyPage() {
   return (
     <>
+      <BrandHeader />
       <main className="tma-gallery-page">
         <header className="tma-header">
           <div className="tma-header-inner">

@@ -1,3 +1,4 @@
+import { BrandHeader } from "@tma/brand"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import { useEffect, useState } from "react"
@@ -18,6 +19,7 @@ export default function UnderlyingTechnologyPage() {
 
   return (
     <>
+      <BrandHeader />
       <main className="tma-gallery-page">
         <header className="tma-header tma-underlying-header">
           <div className="tma-header-inner">

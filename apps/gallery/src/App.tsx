@@ -1,3 +1,4 @@
+import { BrandHeader } from "@tma/brand"
 import { Link, Route, Routes, useLocation } from "react-router-dom"
 import EdmondDeBelamyPage from "./pages/EdmondDeBelamyPage"
 import GalleryNouvionPage from "./pages/GalleryNouvionPage"
@@ -49,7 +50,9 @@ function PageTitleUpdater() {
 
 function AllPage() {
   return (
-    <main style={{ margin: "0 auto", maxWidth: 900, padding: "2rem 1rem" }}>
+    <>
+      <BrandHeader />
+      <main style={{ margin: "0 auto", maxWidth: 900, padding: "2rem 1rem" }}>
       <h1>Take Me Around</h1>
       <p>Open the gallery page from the link below.</p>
       <p>
@@ -85,12 +88,15 @@ function AllPage() {
         <Link to="/contact">Go to Contact page</Link>
       </p>
     </main>
+    </>
   )
 }
 
 function HomePage() {
   return (
-    <div className="tma-home-shell">
+    <>
+      <BrandHeader />
+      <div className="tma-home-shell">
       <main className="tma-home-main">
         <div className="tma-home-intro">The Home Of</div>
         <h1 className="tma-home-title">Take Me Around</h1>
@@ -100,6 +106,7 @@ function HomePage() {
         <div>© 2026 Take Me Around</div>
       </footer>
     </div>
+    </>
   )
 }
 
