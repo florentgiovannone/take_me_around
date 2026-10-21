@@ -1,0 +1,1 @@
+export { isBrandedDashboardPath } from "./isBrandedDashboardPath"
