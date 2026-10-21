@@ -12,6 +12,7 @@ import ContactPage from "./pages/ContactPage"
 import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
 import NotFoundPage from "./pages/NotFoundPage"
 import "./styles/style.css"
+import "@tma/brand/brand.css"
 import { useEffect } from "react"
 
 const PAGE_TITLES: Record<string, string> = {

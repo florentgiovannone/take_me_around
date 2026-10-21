@@ -39,6 +39,7 @@
     "audio:sections:kiss": "node scripts/generate-section-audio.mjs --work the-kiss"
   },
   "dependencies": {
+    "@tma/brand": "*",
     "@tma/dashboard-scope": "*",
     "@tma/dashboard-ui": "*",
     "react": "^19.2.5",

@@ -1,3 +1,5 @@
+import { useSearchParams } from "react-router-dom"
+import { ArtworkFrame } from "@tma/brand"
 import Footer from "../components/Footer"
 import "../styles/style.css"
 import AudioPlayer from "../components/AudioPlayer"
@@ -6,7 +8,6 @@ import {
   detectSuttonHooHelmetLocale,
   resolveSuttonHooHelmetCopy,
 } from "../utils/suttonHooHelmetLocale"
-import { useSearchParams } from "react-router-dom"
 
 const ARTWORK_SLUG = "sutton-hoo-helmet"
 
@@ -18,45 +19,22 @@ export default function SuttonHooHelmetPage() {
 
   return (
     <>
-      <main className="tma-gallery-page">
-        <header className="tma-header">
-          <div className="tma-header-inner">
-            <h1 className="tma-page-title">{copy.title}</h1>
-            <p className="tma-page-subtitle">{copy.subtitle}</p>
-          </div>
-        </header>
-
-        <a href="/underlying-technology" className="tma-banner-link">
-          <p className="tma-banner-text">
-            <strong>{copy.bannerTop}</strong>
-          </p>
-        </a>
-
-        <div className="tma-content">
-          {audioSrc ? <AudioPlayer src={audioSrc} /> : null}
-          <img
-            src={ARTWORK_IMAGES[ARTWORK_SLUG]!}
-            alt={copy.imageAlt}
-            className="tma-painting-image"
-          />
-
-          <h2>{copy.aboutHelmetHeading}</h2>
-          {copy.aboutHelmetParagraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
-
-          <h2>{copy.aboutAngloSaxonsHeading}</h2>
-          {copy.aboutAngloSaxonsParagraphs.map((paragraph) => (
-            <p key={paragraph.slice(0, 48)}>{paragraph}</p>
-          ))}
-        </div>
-
-        <a href="/underlying-technology" className="tma-banner-link">
-          <p className="tma-banner-text">
-            <strong>{copy.bannerBottom}</strong>
-          </p>
-        </a>
-      </main>
+      <ArtworkFrame
+        title={copy.title}
+        subtitle={copy.subtitle}
+        bannerTop={copy.bannerTop}
+        bannerBottom={copy.bannerBottom}
+        imageSrc={ARTWORK_IMAGES[ARTWORK_SLUG]!}
+        imageAlt={copy.imageAlt}
+        audio={audioSrc ? <AudioPlayer src={audioSrc} /> : undefined}
+        sections={[
+          { heading: copy.aboutHelmetHeading, paragraphs: copy.aboutHelmetParagraphs },
+          {
+            heading: copy.aboutAngloSaxonsHeading,
+            paragraphs: copy.aboutAngloSaxonsParagraphs,
+          },
+        ]}
+      />
       <Footer />
     </>
   )
