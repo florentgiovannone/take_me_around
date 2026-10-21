@@ -1,0 +1,131 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+@import "./tokens.css";
+
+body {
+  background: var(--tma-cream);
+  color: var(--tma-ink);
+  font-family: var(--tma-font-ui);
+}
+
+.tma-brand-bar {
+  display: flex;
+  align-items: center;
+  padding: 18px 28px;
+  background: var(--tma-paper);
+}
+
+.tma-brand-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--tma-navy);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+}
+
+.tma-brand-word span,
+.tma-brand-mark {
+  color: var(--tma-gold);
+}
+
+.tma-brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.tma-brand-page {
+  background: var(--tma-cream);
+  color: var(--tma-ink);
+  font-family: var(--tma-font-ui);
+}
+
+.tma-brand-hero {
+  background: var(--tma-navy);
+  color: var(--tma-hero-title);
+  padding: 64px 32px 56px;
+  text-align: center;
+}
+
+.tma-brand-hero h1 {
+  margin: 0;
+  color: var(--tma-hero-title);
+  font-family: var(--tma-font-title);
+  font-size: 52px;
+  font-weight: 460;
+  letter-spacing: -0.02em;
+}
+
+.tma-brand-hero p {
+  margin: 12px 0 0;
+  color: var(--tma-hero-subtitle);
+  font-size: 16px;
+}
+
+.tma-brand-column {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 28px 32px 40px;
+}
+
+.tma-brand-banner {
+  display: block;
+  margin: 0 0 22px;
+  padding: 16px 18px;
+  border-radius: 999px;
+  background: var(--tma-navy);
+  color: var(--tma-hero-title);
+  text-align: center;
+  text-decoration: none;
+}
+
+.tma-brand-image {
+  display: block;
+  width: min(100%, 640px);
+  height: auto;
+  margin: 0 auto 28px;
+  background: #fff;
+  padding: 12px;
+}
+
+.tma-brand-column h2,
+.tma-page-title,
+.tma-home-title,
+.tma-not-found-code {
+  font-family: var(--tma-font-title);
+  font-weight: 560;
+}
+
+.tma-brand-column h2 {
+  margin: 28px 0 8px;
+  color: var(--tma-navy);
+  font-size: 28px;
+}
+
+.tma-brand-column p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+}
+
+.tma-header {
+  background: var(--tma-navy);
+  color: var(--tma-hero-title);
+}
+
+.tma-home-shell,
+.tma-not-found-shell,
+.tma-gallery-page,
+.tma-content,
+.tma-footer {
+  font-family: var(--tma-font-ui);
+}
+
+.tma-home-shell {
+  background: var(--tma-cream);
+  color: var(--tma-navy);
+}
+
+.tma-footer a {
+  color: var(--tma-gold);
+}
