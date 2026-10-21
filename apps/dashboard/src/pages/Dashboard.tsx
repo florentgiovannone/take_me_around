@@ -1,4 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useRef, useState } from "react"
+import { useLocation } from "react-router-dom"
+import { isBrandedDashboardPath } from "@tma/brand"
 import ScopeSwitcher from "../components/ScopeSwitcher"
 import DashboardSettingsPage from "../components/DashboardSettingsPage"
 import {
@@ -162,6 +164,7 @@ type DashboardProps = {
 }
 
 function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
+  const branded = isBrandedDashboardPath(useLocation().pathname)
   const passwordRef = useRef("")
   const [logs, setLogs] = useState<PoiseLog[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -451,7 +454,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
 
   return (
     <main
-      className={`tma-dashboard tma-main-dashboard${activeScope === "gallery" ? " tma-gallery-page" : ""}`}
+      className={`tma-dashboard tma-main-dashboard${activeScope === "gallery" ? " tma-gallery-page" : ""}${branded ? " tma-brand" : ""}`}
     >
       <DashboardAboutLinks />
       <header

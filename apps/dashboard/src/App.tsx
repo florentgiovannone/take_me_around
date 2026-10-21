@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import Dashboard from "./pages/Dashboard"
 import { TMA_DEMO_OPERATOR_ID } from "./config/operators"
 import "./styles/style.css"
+import "@tma/brand/dashboard.css"
 
 function App() {
   return (

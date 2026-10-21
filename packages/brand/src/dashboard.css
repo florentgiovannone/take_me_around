@@ -1,0 +1,47 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+@import "./tokens.css";
+
+.tma-brand {
+  background: var(--tma-cream);
+  color: var(--tma-ink);
+  font-family: var(--tma-font-ui);
+}
+
+.tma-brand .tma-header {
+  background: var(--tma-navy);
+  color: var(--tma-hero-title);
+}
+
+.tma-brand .tma-page-title,
+.tma-brand .tma-main-dashboard-title {
+  color: var(--tma-hero-title);
+  font-family: var(--tma-font-title);
+  font-weight: 460;
+}
+
+.tma-brand .tma-page-subtitle,
+.tma-brand .tma-main-dashboard-eyebrow {
+  color: var(--tma-hero-subtitle);
+}
+
+.tma-brand .tma-analytics-card,
+.tma-brand .tma-analytics-stat-card {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.tma-brand .tma-analytics-stat-label,
+.tma-brand .tma-analytics-card-header {
+  color: var(--tma-gold);
+  font-family: var(--tma-font-ui);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tma-brand .tma-analytics-stat-value {
+  color: var(--tma-navy);
+  font-family: var(--tma-font-title);
+  font-weight: 560;
+}
