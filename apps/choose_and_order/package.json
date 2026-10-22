@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@tma/brand": "*",
     "@tma/dashboard-scope": "*",
     "@tma/dashboard-ui": "*",
     "bulma": "^1.0.4",

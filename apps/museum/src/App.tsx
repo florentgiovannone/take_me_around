@@ -7,10 +7,11 @@ import LewisChessmenPage from "./pages/LewisChessmenPage"
 import RoyalGameOfUrPage from "./pages/RoyalGameOfUrPage"
 import RosettaStonePage from "./pages/RosettaStonePage"
 import TempleOfDendurPage from "./pages/TempleOfDendurPage"
+import GoldenBoysPage from "./pages/GoldenBoysPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
 import ContactPage from "./pages/ContactPage"
-import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
+import Dashboard from "./pages/Dashboard"
 import NotFoundPage from "./pages/NotFoundPage"
 import "./styles/style.css"
 import "@tma/brand/brand.css"
@@ -26,6 +27,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/the-royal-game-of-ur": "The Royal Game of Ur",
   "/the-sutton-hoo-helmet": "The Sutton Hoo helmet",
   "/the-temple-of-dendur": "The Temple of Dendur",
+  "/the-golden-boys": "The Golden Boys",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -74,6 +76,9 @@ function AllPage() {
         <Link to="/the-temple-of-dendur">Go to The Temple of Dendur page</Link>
       </p>
       <p>
+        <Link to="/the-golden-boys">Go to The Golden Boys page</Link>
+      </p>
+      <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
       </p>
       <p>
@@ -81,6 +86,9 @@ function AllPage() {
       </p>
       <p>
         <Link to="/contact">Go to Contact page</Link>
+      </p>
+      <p>
+        <Link to="/dashboard">Go to Dashboard page</Link>
       </p>
     </main>
     </>
@@ -90,7 +98,7 @@ function AllPage() {
 function HomePage() {
   return (
     <>
-      <BrandHeader />
+      <BrandHeader homeHref="https://takemearound.com/" />
       <div className="tma-home-shell">
       <main className="tma-home-main">
         <div className="tma-home-intro">The Home Of</div>
@@ -120,12 +128,10 @@ function App() {
         <Route path="/the-royal-game-of-ur" element={<RoyalGameOfUrPage />} />
         <Route path="/the-sutton-hoo-helmet" element={<SuttonHooHelmetPage />} />
         <Route path="/the-temple-of-dendur" element={<TempleOfDendurPage />} />
+        <Route path="/the-golden-boys" element={<GoldenBoysPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route
-          path="/dashboard"
-          element={<ExternalDashboardRedirect path="/dashboard/museum" />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

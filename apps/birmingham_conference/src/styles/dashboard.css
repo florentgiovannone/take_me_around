@@ -1,3 +1,191 @@
+.tma-brand.tma-dashboard {
+  --tma-brand: #0e2347;
+  --tma-brand-dark: #09182f;
+  --tma-brand-mid: #16315f;
+  --tma-brand-light: #24508f;
+  --tma-brand-tint: #f4f0e8;
+  --tma-brand-tint-alt: #fbf9f6;
+  --tma-dashboard-tabs-bg: #efe7da;
+  --tma-brand-border: #efe7da;
+  --tma-brand-shadow: rgba(14, 35, 71, 0.16);
+  --tma-brand-shadow-soft: rgba(14, 35, 71, 0.08);
+  --tma-brand-shadow-focus: rgba(176, 137, 88, 0.35);
+  min-height: 100vh;
+  background: #f4f0e8;
+  color: #243044;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  padding-bottom: 5.5rem;
+}
+
+.tma-brand.tma-dashboard.birmingham-contact-is-open {
+  padding-bottom: 0;
+}
+
+.tma-brand .birmingham-contact-open {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  width: min(calc(100% - 2rem), 420px);
+  margin: 0;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.25rem;
+  background: #0e2347;
+  color: #f4f0e8;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tma-brand .birmingham-contact-open:hover {
+  background: #16315f;
+}
+
+.birmingham-contact-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tma-brand .birmingham-contact {
+  margin-top: 1.5rem;
+}
+
+.tma-brand .birmingham-contact-close {
+  flex-shrink: 0;
+  border: 1px solid #0e2347;
+  background: transparent;
+  color: #0e2347;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tma-brand .birmingham-contact-close:hover {
+  background: #f4f0e8;
+}
+
+.tma-brand .tma-dashboard-about-links {
+  background: #f4f0e8;
+  border-bottom: 1px solid #efe7da;
+  box-shadow: none;
+}
+
+.tma-brand .tma-dashboard-about-links-heading {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tma-brand .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #0e2347;
+}
+
+.tma-brand .tma-dashboard-about-link:hover,
+.tma-brand .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #b08958;
+}
+
+.tma-brand .tma-dashboard-about-link-kicker {
+  color: #b08958;
+}
+
+.tma-brand .tma-dashboard-about-link-host {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.tma-brand.tma-dashboard .tma-header {
+  height: auto;
+  min-height: 0;
+  background: #0e2347;
+  color: #f7f3ea;
+}
+
+.tma-brand .tma-page-title.tma-main-dashboard-title {
+  color: #f7f3ea;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 460;
+}
+
+.tma-brand .tma-main-dashboard-eyebrow,
+.tma-brand .tma-page-subtitle.tma-main-dashboard-subtitle {
+  color: #d7c4a4;
+}
+
+.tma-brand .tma-analytics-card h2 {
+  margin: 0;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.tma-brand .birmingham-contact-form label {
+  color: #b08958;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tma-brand .birmingham-contact-form input,
+.tma-brand .birmingham-contact-form textarea {
+  border: 1px solid #efe7da;
+  border-radius: 12px;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.tma-brand .birmingham-contact-form input:focus,
+.tma-brand .birmingham-contact-form textarea:focus {
+  outline: none;
+  border-color: #b08958;
+  box-shadow: 0 0 0 3px rgba(176, 137, 88, 0.28);
+}
+
+.tma-brand .birmingham-contact-form button {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  background: #0e2347;
+  color: #f4f0e8;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tma-brand .birmingham-contact-form button:hover {
+  background: #16315f;
+}
+
 .birmingham-contact-form {
   display: grid;
   gap: 0.75rem;

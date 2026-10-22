@@ -28,36 +28,18 @@ function ProductOffer() {
         <span> / Men / Jackets</span>
       </p>
       <div className="product-layout">
-        <img className="product-photo" src={jacket} alt="Barbour Ashby waxed cotton field jacket in olive" />
+        <div className="charles-gallery">
+          <img className="product-photo" src={jacket} alt="Barbour Ashby waxed cotton field jacket in olive" />
+        </div>
         <div className="product-copy">
           <p className="brand">Barbour</p>
           <h1>Ashby Waxed Cotton Field Jacket</h1>
-          <p className="unit">Olive ({pounds(JACKET_PRICE)})</p>
           <p className="price">{pounds(JACKET_PRICE)}</p>
-          <label className="mango-option scarf-option">
-            <img
-              src={scarf}
-              alt="Ralph Lauren wool blend reversible grid check scarf in blue navy"
-            />
-            <input
-              type="checkbox"
-              checked={scarfAdded}
-              onChange={(event) => setScarfAdded(event.target.checked)}
-            />
-            <span className="mango-copy">
-              Add scarf
-              <span className="scarf-brand">Ralph Lauren</span>
-              <span className="scarf-model">
-                Wool Blend Reversible Grid Check Scarf, Blue Navy
-              </span>
-              <span className="deal-price">
-                <strong>{pounds(OFFER_TOTAL)}</strong>
-                <s className="was-price">{pounds(originalPrice)}</s>
-              </span>
-            </span>
-          </label>
-          <p className="total">
-            Total <strong>{pounds(total)}</strong>
+          <p className="charles-meta">
+            <span>Colour</span> Olive
+          </p>
+          <p className="charles-size-label">
+            Size <strong>{size}</strong>
           </p>
           <div className="sizes" role="group" aria-label="Size">
             {SIZES.map((option) => (
@@ -92,16 +74,58 @@ function ProductOffer() {
             <button
               type="button"
               className="add-to-basket"
-              onClick={() => add(scarfAdded ? quantity * 2 : quantity)}
+              onClick={() =>
+                add({
+                  lines: [
+                    { name: "Ashby Waxed Cotton Field Jacket", quantity },
+                    ...(scarfAdded
+                      ? [{ name: "Wool Blend Reversible Grid Check Scarf", quantity }]
+                      : []),
+                  ],
+                  amount: total * quantity,
+                })
+              }
             >
               Add to basket
             </button>
           </div>
-          <p className="offer">This is your offer for today Mr Marks</p>
+          <section className="charles-offer" aria-label="Your offer">
+            <p className="charles-offer-kicker">Your offer</p>
+            <p className="offer">This is your offer for today Mr Marks</p>
+            <label className="mango-option scarf-option">
+              <img
+                src={scarf}
+                alt="Ralph Lauren wool blend reversible grid check scarf in blue navy"
+              />
+              <input
+                type="checkbox"
+                checked={scarfAdded}
+                onChange={(event) => setScarfAdded(event.target.checked)}
+              />
+              <span className="mango-copy">
+                Add scarf
+                <span className="scarf-brand">Ralph Lauren</span>
+                <span className="scarf-model">
+                  Wool Blend Reversible Grid Check Scarf, Blue Navy
+                </span>
+                <span className="deal-price">
+                  <strong>{pounds(OFFER_TOTAL)}</strong>
+                  <s className="was-price">{pounds(originalPrice)}</s>
+                </span>
+              </span>
+            </label>
+            <p className="total">
+              Total <strong>{pounds(total)}</strong>
+            </p>
+          </section>
+          <ul className="charles-services">
+            <li>Free standard delivery on orders over £50</li>
+            <li>Free returns within 35 days</li>
+          </ul>
         </div>
       </div>
       <section className="description" aria-labelledby="description-heading">
-        <h2 id="description-heading">Product Description</h2>
+        <h2 id="description-heading">Product information</h2>
         <p>
           Heritage brand Barbour reworks their traditional Bedale design with
           this waxed-cotton Ashby jacket, with a contemporary silhouette and

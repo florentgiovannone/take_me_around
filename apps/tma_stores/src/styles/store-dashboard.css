@@ -36,14 +36,15 @@
 
 .store-dashboard-header {
   height: auto;
-  min-height: 180px;
-  padding: 48px 24px;
+  min-height: 0;
+  padding: 1.75rem 1.25rem 1.5rem;
   text-align: center;
-  background: radial-gradient(circle at center, #5c8a3e 0%, #2f531f 100%);
+  background: #2f531f;
+  color: #fff;
 }
 
 .store-dashboard--charles_peters .store-dashboard-header {
-  background: radial-gradient(circle at center, #3a3a3a 0%, #111111 100%);
+  background: #1a1a1a;
 }
 
 .store-dashboard-header h1,
@@ -52,22 +53,103 @@
 }
 
 .store-dashboard-kicker {
-  letter-spacing: 0.08em;
+  margin: 0 0 0.85rem;
+  color: #d7e4cc;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 12px;
+}
+
+.store-dashboard--charles_peters .store-dashboard-kicker {
+  color: #c4a574;
 }
 
 .store-dashboard-logo {
   display: block;
-  width: 220px;
+  width: 180px;
   height: auto;
-  margin: 14px auto 0;
+  margin: 0 auto;
   background: none;
 }
 
 .store-dashboard--charles_peters .store-dashboard-logo {
-  width: 340px;
-  margin-top: 18px;
+  width: 280px;
+}
+
+.store-dashboard-back {
+  display: inline-block;
+  margin-top: 16px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.store-dashboard-back:hover {
+  text-decoration: underline;
+}
+
+.store-dashboard .tma-dashboard-about-links {
+  background: #f6f7f4;
+  border-bottom: 1px solid #d7e4cc;
+  box-shadow: none;
+}
+
+.store-dashboard .tma-dashboard-about-links-heading {
+  color: #3f6b2c;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.store-dashboard .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #d7e4cc;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #2f531f;
+}
+
+.store-dashboard .tma-dashboard-about-link:hover,
+.store-dashboard .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #3f6b2c;
+}
+
+.store-dashboard .tma-dashboard-about-link-kicker {
+  color: #3f6b2c;
+  font-weight: 600;
+}
+
+.store-dashboard .tma-dashboard-about-link-host {
+  color: #2f531f;
+  font-weight: 600;
+}
+
+.store-dashboard--charles_peters .tma-dashboard-about-links {
+  background: #f8f6f2;
+  border-bottom-color: #e6dccb;
+}
+
+.store-dashboard--charles_peters .tma-dashboard-about-links-heading,
+.store-dashboard--charles_peters .tma-dashboard-about-link-kicker {
+  color: #8c6a3d;
+}
+
+.store-dashboard--charles_peters .tma-dashboard-about-link {
+  border-color: #e6dccb;
+  color: #1a1a1a;
+}
+
+.store-dashboard--charles_peters .tma-dashboard-about-link:hover,
+.store-dashboard--charles_peters .tma-dashboard-about-link:focus-visible {
+  outline-color: #8c6a3d;
+}
+
+.store-dashboard--charles_peters .tma-dashboard-about-link-host {
+  color: #1a1a1a;
 }
 
 .store-dashboard .tma-dashboard-table thead th,

@@ -7,10 +7,12 @@ import QingmingFestivalPage from "./pages/QingmingFestivalPage"
 import StarryNightPage from "./pages/StarryNightPage"
 import TwoFridasPage from "./pages/TwoFridasPage"
 import TheKissPage from "./pages/TheKissPage"
+import StarOfBethlehemPage from "./pages/StarOfBethlehemPage"
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage"
 import UnderlyingTechnologyPage from "./pages/UnderlyingTechnologyPage"
 import ContactPage from "./pages/ContactPage"
 import ExternalDashboardRedirect from "./components/ExternalDashboardRedirect"
+import Dashboard from "./pages/Dashboard"
 import NotFoundPage from "./pages/NotFoundPage"
 
 import "./styles/style.css"
@@ -27,6 +29,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/the-starry-night": "The Starry Night",
   "/the-two-fridas": "The Two Fridas",
   "/the-kiss": "The Kiss",
+  "/the-star-of-bethlehem": "The Star of Bethlehem",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
   "/privacy-policy": "Privacy Policy",
@@ -79,6 +82,9 @@ function AllPage() {
         <Link to="/the-kiss">Go to The Kiss page</Link>
       </p>
       <p>
+        <Link to="/the-star-of-bethlehem">Go to The Star of Bethlehem page</Link>
+      </p>
+      <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
       </p>
       <p>
@@ -86,6 +92,9 @@ function AllPage() {
       </p>
       <p>
         <Link to="/contact">Go to Contact page</Link>
+      </p>
+      <p>
+        <Link to="/dashboard">Go to Dashboard page</Link>
       </p>
     </main>
     </>
@@ -95,7 +104,7 @@ function AllPage() {
 function HomePage() {
   return (
     <>
-      <BrandHeader />
+      <BrandHeader homeHref="https://takemearound.com/" />
       <div className="tma-home-shell">
       <main className="tma-home-main">
         <div className="tma-home-intro">The Home Of</div>
@@ -127,12 +136,10 @@ function App() {
         <Route path="/the-starry-night" element={<StarryNightPage />} />
         <Route path="/the-two-fridas" element={<TwoFridasPage />} />
         <Route path="/the-kiss" element={<TheKissPage />} />
+        <Route path="/the-star-of-bethlehem" element={<StarOfBethlehemPage />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route
-          path="/dashboard"
-          element={<ExternalDashboardRedirect path="/dashboard" />}
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route
           path="/demodashboard"
           element={<ExternalDashboardRedirect path="/demodashboard" />}

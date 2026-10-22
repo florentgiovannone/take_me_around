@@ -11,6 +11,82 @@
   --arkin-frame: #fbf8f1;
 }
 
+.arkin-index {
+  min-height: 100vh;
+  background: var(--arkin-paper);
+  color: var(--arkin-ink);
+}
+
+.arkin-index-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.75rem 1.5rem 3.5rem;
+}
+
+.arkin-index-title {
+  margin: 0 0 0.6rem;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  line-height: 1.05;
+  color: var(--arkin-ink);
+}
+
+.arkin-index-lede {
+  margin: 0 0 2.5rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.95rem;
+  color: var(--arkin-muted);
+}
+
+.arkin-index-section {
+  margin: 0 0 2.5rem;
+}
+
+.arkin-index-section h2 {
+  margin: 0 0 0.75rem;
+  font-family: "Inter", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--arkin-accent);
+}
+
+.arkin-index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--arkin-rule);
+}
+
+.arkin-index-list a {
+  display: block;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--arkin-rule);
+  color: var(--arkin-ink);
+  text-decoration: none;
+}
+
+.arkin-index-list a:hover .arkin-index-french {
+  color: var(--arkin-accent);
+}
+
+.arkin-index-french {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.45rem;
+  line-height: 1.2;
+}
+
+.arkin-index-english {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.82rem;
+  color: var(--arkin-muted);
+}
+
 /* Site header — non-artwork pages */
 .arkin-site-header {
   position: sticky;
@@ -347,6 +423,27 @@
 .arkin-exhibition-page--artwork .tma-footer-home-link:hover {
   color: var(--arkin-accent);
   border-bottom-color: var(--arkin-accent);
+}
+
+.arkin-exhibition-page .tma-not-found-eyebrow {
+  color: var(--arkin-accent);
+}
+
+.arkin-exhibition-page .tma-not-found-code {
+  color: var(--arkin-ink);
+  text-shadow: none;
+}
+
+.arkin-exhibition-page .tma-not-found-code-accent {
+  color: var(--arkin-accent);
+}
+
+.arkin-exhibition-page .tma-not-found-message {
+  color: var(--arkin-ink-soft);
+}
+
+.arkin-exhibition-page.tma-not-found-shell .tma-footer {
+  padding: 2rem 1.25rem 2.5rem;
 }
 
 /* Legacy non-exhibition exhibition page shell */

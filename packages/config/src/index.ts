@@ -34,6 +34,18 @@ export const ALL_DASHBOARD_SITE_IDS: OperatorSiteId[] = [
   "tma_demo",
 ]
 
+/** Project dashboards shown in the main switcher, outside the combined view. */
+export const PROJECT_DASHBOARD_SCOPES = [
+  "birmingham_conference",
+  "choose_and_order",
+  "fair_future",
+  "frieze_gallery",
+  "i_am_a_safe_pet",
+  "yesterday_forever",
+  "waitburys",
+  "charles_peters",
+] as const satisfies readonly SiteScope[]
+
 export const SITE_META: Record<
   OperatorSiteId,
   { label: string; domainLabel: string; host: string }

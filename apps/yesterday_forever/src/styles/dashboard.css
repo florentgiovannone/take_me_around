@@ -21,8 +21,8 @@
 
 .yesterday-forever-dashboard-header {
   height: auto;
-  min-height: 220px;
-  padding: 48px 24px;
+  min-height: 0;
+  padding: 1.75rem 1.25rem 1.5rem;
   text-align: center;
   background: #1c1612;
   color: #f4efe6;
@@ -42,12 +42,54 @@
 }
 
 .yesterday-forever-dashboard-kicker {
-  letter-spacing: 0.16em;
+  margin: 0 0 0.35rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-family: "Segoe UI", sans-serif;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 600;
   color: #c4a574;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-about-links {
+  background: #f6f1e8;
+  border-bottom: 1px solid #e6dccb;
+  box-shadow: none;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-about-links-heading {
+  color: #c4a574;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #e6dccb;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #1c1612;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-about-link:hover,
+.yesterday-forever-dashboard .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #c4a574;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-about-link-kicker {
+  color: #c4a574;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+.yesterday-forever-dashboard .tma-dashboard-about-link-host {
+  color: #1c1612;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 560;
 }
 
 .yesterday-forever-dashboard-back {

@@ -1,0 +1,26 @@
+const TECHNOLOGY_BANNER_TOP =
+  "When you have explored the page below, please click on this banner to find out about the unique underlying technology that enables this solution, and the multiple benefits it offers an exhibition curator, museum, and gallery."
+
+const TECHNOLOGY_BANNER_BOTTOM =
+  "Click this banner to discover more about technology used to create this page."
+
+export const STAR_OF_BETHLEHEM = {
+  title: "The Star of Bethlehem",
+  subtitle: "1887–1891 by Edward Burne-Jones",
+  bannerTop: TECHNOLOGY_BANNER_TOP,
+  bannerBottom: TECHNOLOGY_BANNER_BOTTOM,
+  imageSrc:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Edward_Burne-Jones_-_The_Star_of_Bethlehem_-_Google_Art_Project.jpg",
+  imageAlt: "Edward Burne-Jones, The Star of Bethlehem, watercolour.",
+  aboutWorkHeading: "About the work",
+  aboutWorkParagraphs: [
+    "Edward Burne-Jones painted The Star of Bethlehem in watercolour and bodycolour between 1887 and 1891. The Corporation of Birmingham commissioned it in 1887 for the new Museum and Art Gallery, and the gallery purchased it in 1891. It remains in the collection of Birmingham Museums. Painted across ten joined sheets of paper, it is widely described as the largest watercolour of the nineteenth century.",
+    "The subject is the Adoration of the Magi. Mary sits with the child in a woodland clearing. The three kings come forward with their gifts, and an angel holds the star that has brought them. Burne-Jones gives the robes, the wings, the flowers, and the star the same even, decorative care he used in stained glass.",
+    "The design also exists as a tapestry, The Adoration of the Magi. In 1886 Exeter College, Oxford, asked William Morris for a hanging for the college chapel, and Morris asked Burne-Jones to design an Adoration. The first weaving was finished in 1890. The Birmingham watercolour is the large painted version of that design, made for the city where the artist was born.",
+  ],
+  aboutArtistHeading: "About the artist",
+  aboutArtistParagraphs: [
+    "Edward Burne-Jones was born in Birmingham on 28 August 1833 and died in London on 17 June 1898. He was christened Edward Coley Burne Jones and later wrote the surname as Burne-Jones. From King Edward’s School he went to Exeter College, Oxford, meaning to enter the church, and there he met William Morris. Dante Gabriel Rossetti turned him towards painting. He spent the rest of his life on myth, legend, and biblical subjects, and he became a central figure of the later Pre-Raphaelite circle.",
+    "With Morris he designed for the firm that became Morris & Co., above all stained glass and tapestry, and also tiles and furniture. The glass carried his figures into churches across Britain. He was created a baronet in 1894. In 1885 the Royal Birmingham Society of Artists made him its honorary president, and two years later his native city commissioned The Star of Bethlehem.",
+  ],
+} as const

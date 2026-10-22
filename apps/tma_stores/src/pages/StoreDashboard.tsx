@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -38,11 +40,13 @@ const STORES = {
     scope: "waitburys" as const,
     title: "Waitburys",
     logo: waitburysLogo,
+    shopHref: "/waitburys",
   },
   charles_peters: {
     scope: "charles_peters" as const,
     title: "Charles Peters",
     logo: charlesLogo,
+    shopHref: "/charlespeters",
   },
 }
 
@@ -91,12 +95,16 @@ export default function StoreDashboard({ store }: { store: keyof typeof STORES }
 
   return (
     <div className={`tma-dashboard store-dashboard store-dashboard--${store}`}>
+      <DashboardAboutLinks />
       <header className="tma-header store-dashboard-header">
-        <div>
+        <div className="tma-header-inner">
           <p className="store-dashboard-kicker">Take Me Around.stores</p>
           <h1>
             <img className="store-dashboard-logo" src={config.logo} alt={config.title} />
           </h1>
+          <Link className="store-dashboard-back" to={config.shopHref}>
+            Shop
+          </Link>
         </div>
       </header>
       <div className="tma-content">

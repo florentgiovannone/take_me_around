@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -81,11 +82,13 @@ export default function DashboardPage() {
   }, [ready])
 
   return (
-    <div className="tma-dashboard safe-pet-dashboard">
-      <header className="tma-header safe-pet-dashboard-header">
-        <div>
-          <p className="safe-pet-dashboard-kicker">I Am A Safe Pet</p>
-          <h1>Dashboard</h1>
+    <div className="tma-dashboard tma-main-dashboard safe-pet-dashboard">
+      <DashboardAboutLinks />
+      <header className="tma-header tma-main-dashboard-header safe-pet-dashboard-header">
+        <div className="tma-header-inner tma-main-dashboard-header-inner">
+          <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
+          <h1 className="tma-page-title tma-main-dashboard-title">I Am A Safe Pet</h1>
+          <p className="tma-page-subtitle tma-main-dashboard-subtitle">Live I Am A Safe Pet activity</p>
           <Link className="safe-pet-dashboard-back" to="/">
             Home
           </Link>

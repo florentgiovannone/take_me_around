@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -90,10 +91,11 @@ export default function DashboardPage() {
 
   return (
     <div className="tma-dashboard yesterday-forever-dashboard">
+      <DashboardAboutLinks />
       <header className="tma-header yesterday-forever-dashboard-header">
-        <div>
-          <p className="yesterday-forever-dashboard-kicker">Yesterday Forever</p>
-          <h1>Dashboard</h1>
+        <div className="tma-header-inner">
+          <p className="yesterday-forever-dashboard-kicker">Take Me Around · Analytics</p>
+          <h1>Yesterday Forever</h1>
           <Link className="yesterday-forever-dashboard-back" to="/">
             Film
           </Link>

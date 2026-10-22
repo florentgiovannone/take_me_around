@@ -1,9 +1,4 @@
-import westminsterAbbeyImage from "./images/westminster-abbey-placeholder.svg"
 import type { ArtworkPageLocale } from "../../utils/artworkPageLocale"
-
-export const STOP_IMAGES: Record<string, string> = {
-  "westminster-abbey": westminsterAbbeyImage,
-}
 
 const sectionAudioModules = import.meta.glob("./audio/**/*.mp3", {
   eager: true,

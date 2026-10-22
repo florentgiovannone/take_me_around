@@ -17,14 +17,6 @@ export default defineConfig(({ mode }) => {
     .trim()
     .replace(/\/$/, "")
   const apiTarget = proxyBase || "http://127.0.0.1:5050"
-  const arkinDashboard =
-    (
-      process.env.VITE_ARKIN_DASHBOARD_URL ||
-      fileEnv.VITE_ARKIN_DASHBOARD_URL ||
-      "https://arkin.takemearound.gallery"
-    )
-      .trim()
-      .replace(/\/$/, "")
 
   return {
     plugins: [
@@ -40,12 +32,6 @@ export default defineConfig(({ mode }) => {
               "[netlify-redirects] Set VITE_API_PROXY_TARGET (or VITE_API_BASE_URL) at build time so /api is proxied."
             )
           }
-          lines.push(
-            `/dashboard      ${arkinDashboard}/dashboard/museum     301!`
-          )
-          lines.push(
-            `/dashboard/*    ${arkinDashboard}/dashboard/museum/:splat  301!`
-          )
           lines.push("/*    /index.html   200")
           const out = path.resolve(process.cwd(), "dist", "_redirects")
           fs.mkdirSync(path.dirname(out), { recursive: true })

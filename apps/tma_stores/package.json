@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tma/brand": "*",
     "@tma/dashboard-scope": "*",
     "@tma/dashboard-ui": "*",
     "react": "^19.2.5",

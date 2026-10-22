@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+
+.tma-brand-bar {
+  display: flex;
+  align-items: center;
+  padding: 18px 28px;
+  background: #fbf9f6;
+}
+
+.tma-brand-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+}
+
+.tma-brand-word span,
+.tma-brand-mark {
+  color: #b08958;
+}
+
+.tma-brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.tma-home-shell {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f4f0e8;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  overflow: hidden;
+}
+
+.tma-home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 10%;
+  animation: tma-home-fade-in 2s ease-out;
+}
+
+.tma-home-intro {
+  font-weight: 200;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: 10px;
+  margin-bottom: 15px;
+  opacity: 0.7;
+}
+
+.tma-home-title {
+  margin: 0;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+  font-size: clamp(2.5rem, 10vw, 5.5rem);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  line-height: 0.9;
+}
+
+.tma-home-divider {
+  width: 60px;
+  height: 1px;
+  background-color: #fff;
+  margin: 40px 0;
+  opacity: 0.3;
+}
+
+.tma-home-footer {
+  padding: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+@keyframes tma-home-fade-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .tma-home-footer {
+    padding: 40px 20px;
+  }
+}
+
+.choose-order-allpages {
+  min-height: 100vh;
+  background: #f4f0e8;
+  color: #243044;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.choose-order-allpages main {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 2rem 1rem 3rem;
+}
+
+.choose-order-allpages h1 {
+  margin: 0 0 0.75rem;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 2.5rem;
+  font-weight: 560;
+  line-height: 1.2;
+}
+
+.choose-order-allpages p {
+  margin: 16px 0;
+  line-height: normal;
+}
+
+.choose-order-allpages main a,
+.choose-order-allpages main a:hover {
+  color: #0e2347;
+  text-decoration: underline;
+}

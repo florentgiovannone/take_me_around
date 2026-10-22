@@ -1,0 +1,190 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+
+.gallery-dashboard {
+  --tma-chart-hue: 28;
+  --tma-brand: #0e2347;
+  --tma-brand-dark: #09182f;
+  --tma-brand-mid: #16315f;
+  --tma-brand-light: #24508f;
+  --tma-brand-tint: #f4f0e8;
+  --tma-brand-tint-alt: #fbf9f6;
+  --tma-dashboard-tabs-bg: #efe7da;
+  --tma-brand-border: #efe7da;
+  --tma-brand-shadow: rgba(14, 35, 71, 0.16);
+  --tma-brand-shadow-soft: rgba(14, 35, 71, 0.08);
+  --tma-brand-shadow-focus: rgba(176, 137, 88, 0.35);
+  --tma-palette-4: #0e2347;
+  --tma-palette-5: #b08958;
+  min-height: 100vh;
+  background: #f4f0e8;
+  color: #243044;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.gallery-dashboard .tma-header {
+  height: auto;
+  min-height: 0;
+  padding: 1.75rem 1.25rem 1.5rem;
+  text-align: center;
+  background: #0e2347;
+  color: #f7f3ea;
+}
+
+.gallery-dashboard .tma-main-dashboard-eyebrow {
+  margin: 0 0 0.35rem;
+  padding: 0;
+  color: #d7c4a4;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gallery-dashboard .tma-page-title.tma-main-dashboard-title {
+  margin: 0;
+  color: #f7f3ea;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 460;
+}
+
+.gallery-dashboard .tma-page-subtitle.tma-main-dashboard-subtitle {
+  margin: 0.35rem 0 0;
+  color: #d7c4a4;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.gallery-dashboard-back {
+  display: inline-block;
+  margin-top: 16px;
+  color: #f7f3ea;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gallery-dashboard .tma-dashboard-about-links {
+  background: #f4f0e8;
+  border-bottom: 1px solid #efe7da;
+  box-shadow: none;
+}
+
+.gallery-dashboard .tma-dashboard-about-links-heading {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gallery-dashboard .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #0e2347;
+}
+
+.gallery-dashboard .tma-dashboard-about-link:hover,
+.gallery-dashboard .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #b08958;
+}
+
+.gallery-dashboard .tma-dashboard-about-link-kicker {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.gallery-dashboard .tma-dashboard-about-link-host {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.gallery-dashboard .tma-analytics-card,
+.gallery-dashboard .tma-analytics-stat-card {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.gallery-dashboard .tma-analytics-stat-label {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.gallery-dashboard .tma-analytics-stat-value {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.gallery-dashboard .tma-analytics-card h2 {
+  margin: 0;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.gallery-dashboard .tma-dashboard-table thead th,
+.gallery-dashboard .tma-dashboard-scan-link,
+.gallery-dashboard .tma-dashboard-nested-table th,
+.gallery-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.gallery-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.gallery-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: var(--tma-brand);
+}
+
+.gallery-dashboard .tma-dashboard-table thead th,
+.gallery-dashboard .tma-dashboard-nested-table th {
+  background: var(--tma-brand-tint-alt);
+}
+
+.gallery-dashboard .tma-dashboard-scan-count,
+.gallery-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: var(--tma-brand-mid);
+}
+
+.gallery-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: var(--tma-brand);
+  border-bottom-color: var(--tma-brand);
+}
+
+.gallery-dashboard .tma-sar-timeline-marker.is-active,
+.gallery-dashboard .tma-sar-timeline-marker:hover,
+.gallery-dashboard .tma-sar-timeline-marker:focus-visible {
+  outline-color: var(--tma-brand-mid);
+}
+
+.gallery-dashboard .tma-sar-timeline-center-btn {
+  background: var(--tma-brand);
+  border-color: var(--tma-brand);
+}
+
+.gallery-dashboard .tma-dashboard-auth {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+}
+
+.gallery-dashboard .tma-dashboard-auth label,
+.gallery-dashboard .tma-dashboard-auth button {
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.gallery-dashboard .tma-dashboard-auth button {
+  background: #0e2347;
+  color: #f7f3ea;
+}
+
+.gallery-dashboard-back:hover {
+  color: #d7c4a4;
+}

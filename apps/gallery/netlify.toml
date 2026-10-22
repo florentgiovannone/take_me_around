@@ -8,7 +8,7 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
 
-# /dashboard redirects to https://arkin.takemearound.gallery/dashboard
+# /dashboard is the in-app .gallery analytics page.
 # /demodashboard and /demo redirect to https://arkin.takemearound.gallery/demodashboard
 # (see vite netlify-redirects plugin).
 

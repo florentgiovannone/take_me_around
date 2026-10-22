@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./brand.css": "./src/brand.css",
+    "./info-page.css": "./src/info-page.css",
     "./dashboard.css": "./src/dashboard.css"
   },
   "scripts": {

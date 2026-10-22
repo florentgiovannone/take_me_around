@@ -1,56 +1,134 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+
 .safe-pet-dashboard {
-  --tma-chart-hue: 214;
-  --tma-brand: #0a479d;
-  --tma-brand-dark: #062c61;
-  --tma-brand-mid: #0e57b8;
-  --tma-brand-light: #3d7bc4;
-  --tma-brand-tint: #e8f1fa;
-  --tma-brand-tint-alt: #eef4fb;
-  --tma-dashboard-tabs-bg: #c5d9ef;
-  --tma-brand-border: #c5d9ef;
-  --tma-brand-shadow: rgba(10, 71, 157, 0.18);
-  --tma-brand-shadow-soft: rgba(10, 71, 157, 0.08);
-  --tma-brand-shadow-focus: rgba(10, 71, 157, 0.35);
-  --tma-palette-4: #0a479d;
-  --tma-palette-5: #0e57b8;
+  --tma-chart-hue: 28;
+  --tma-brand: #0e2347;
+  --tma-brand-dark: #09182f;
+  --tma-brand-mid: #16315f;
+  --tma-brand-light: #24508f;
+  --tma-brand-tint: #f4f0e8;
+  --tma-brand-tint-alt: #fbf9f6;
+  --tma-dashboard-tabs-bg: #efe7da;
+  --tma-brand-border: #efe7da;
+  --tma-brand-shadow: rgba(14, 35, 71, 0.16);
+  --tma-brand-shadow-soft: rgba(14, 35, 71, 0.08);
+  --tma-brand-shadow-focus: rgba(176, 137, 88, 0.35);
+  --tma-palette-4: #0e2347;
+  --tma-palette-5: #b08958;
   min-height: 100vh;
-  background: #f4f6fb;
-  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  background: #f4f0e8;
+  color: #243044;
+  font-family: "Outfit", "Avenir Next", sans-serif;
 }
 
-.safe-pet-dashboard-header {
+.safe-pet-dashboard .tma-header {
   height: auto;
-  min-height: 220px;
-  padding: 48px 24px;
+  min-height: 0;
+  padding: 1.75rem 1.25rem 1.5rem;
   text-align: center;
-  background: radial-gradient(circle at center, #3d7bc4 0%, #0a479d 55%, #062c61 100%);
+  background: #0e2347;
+  color: #f7f3ea;
 }
 
-.safe-pet-dashboard-header h1,
-.safe-pet-dashboard-header p {
-  margin: 0;
-}
-
-.safe-pet-dashboard-header h1 {
-  margin-top: 8px;
-  font-family: "Montserrat", "Segoe UI", sans-serif;
-  font-size: clamp(36px, 5vw, 52px);
-  line-height: 1;
-}
-
-.safe-pet-dashboard-kicker {
-  letter-spacing: 0.08em;
+.safe-pet-dashboard .tma-main-dashboard-eyebrow {
+  margin: 0 0 0.35rem;
+  padding: 0;
+  color: #d7c4a4;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 700;
+}
+
+.safe-pet-dashboard .tma-page-title.tma-main-dashboard-title {
+  margin: 0;
+  color: #f7f3ea;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 460;
+}
+
+.safe-pet-dashboard .tma-page-subtitle.tma-main-dashboard-subtitle {
+  margin: 0.35rem 0 0;
+  color: #d7c4a4;
+  font-family: "Outfit", "Avenir Next", sans-serif;
 }
 
 .safe-pet-dashboard-back {
   display: inline-block;
   margin-top: 16px;
-  color: #fff;
+  color: #f7f3ea;
+  font-family: "Outfit", "Avenir Next", sans-serif;
   font-size: 14px;
   font-weight: 600;
+}
+
+.safe-pet-dashboard .tma-dashboard-about-links {
+  background: #f4f0e8;
+  border-bottom: 1px solid #efe7da;
+  box-shadow: none;
+}
+
+.safe-pet-dashboard .tma-dashboard-about-links-heading {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.safe-pet-dashboard .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #0e2347;
+}
+
+.safe-pet-dashboard .tma-dashboard-about-link:hover,
+.safe-pet-dashboard .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #b08958;
+}
+
+.safe-pet-dashboard .tma-dashboard-about-link-kicker {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.safe-pet-dashboard .tma-dashboard-about-link-host {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.safe-pet-dashboard .tma-analytics-card,
+.safe-pet-dashboard .tma-analytics-stat-card {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.safe-pet-dashboard .tma-analytics-stat-label {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.safe-pet-dashboard .tma-analytics-stat-value {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.safe-pet-dashboard .tma-analytics-card h2 {
+  margin: 0;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
 }
 
 .safe-pet-dashboard .tma-dashboard-table thead th,

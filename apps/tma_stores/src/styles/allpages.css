@@ -1,0 +1,63 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+
+.tma-stores-allpages .tma-brand-bar {
+  display: flex;
+  align-items: center;
+  padding: 18px 28px;
+  background: #fbf9f6;
+}
+
+.tma-stores-allpages .tma-brand-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+}
+
+.tma-stores-allpages .tma-brand-word span,
+.tma-stores-allpages .tma-brand-mark {
+  color: #b08958;
+}
+
+.tma-stores-allpages .tma-brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.tma-stores-allpages {
+  min-height: 100vh;
+  background: #f4f0e8;
+  color: #243044;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-stores-allpages main {
+  margin: 0 auto;
+  max-width: 900px;
+  padding: 2rem 1rem 3rem;
+}
+
+.tma-stores-allpages h1 {
+  margin: 0 0 0.75rem;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 2.5rem;
+  font-weight: 560;
+  line-height: 1.2;
+}
+
+.tma-stores-allpages p {
+  margin: 16px 0;
+  line-height: normal;
+}
+
+.tma-stores-allpages main a,
+.tma-stores-allpages main a:hover {
+  color: #0e2347;
+  text-decoration: underline;
+}

@@ -21,8 +21,10 @@ import {
   formatDashboardFetchError,
 } from "../apiBaseUrl"
 import {
+  enabledCoreSiteIds,
   getStoredEnabledSites,
   scopesForEnabledSites,
+  type EnabledDashboardSite,
 } from "../config/dashboardSites"
 import {
   allowedScopesForOperator,
@@ -191,11 +193,14 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
   )
   const [loading, setLoading] = useState(passwordlessSurface)
   const [dashboardView, setDashboardView] = useState<DashboardView>("analytics")
-  const [enabledSites, setEnabledSites] = useState<SiteId[]>(() => getStoredEnabledSites())
+  const [enabledSites, setEnabledSites] = useState<EnabledDashboardSite[]>(() =>
+    getStoredEnabledSites()
+  )
 
   const standaloneDemo = Boolean(fixedOperatorId)
   const showOperatorPickerOnLogin = OPERATORS.length > 1 && !fixedScope && !standaloneDemo
-  const showSettings = !fixedScope && !standaloneDemo && (!operator || operator.sites.length > 1)
+  const showSettings =
+    isAuthorized && !fixedScope && !standaloneDemo && (!operator || operator.sites.length > 1)
   const phoneLocale = useMemo<DashboardLocale>(() => {
     if (typeof window === "undefined") return "en"
     return detectDashboardLocale(new URLSearchParams(window.location.search))
@@ -221,7 +226,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
     const allDashboards = Boolean(
       operator && operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
     )
-    setActiveCombinedSiteIds(allDashboards ? ALL_SITE_IDS : enabledSites)
+    setActiveCombinedSiteIds(allDashboards ? ALL_SITE_IDS : enabledCoreSiteIds(enabledSites))
   }, [enabledSites, operator])
 
   const allowedScopes = useMemo(() => {
@@ -413,12 +418,12 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
     setDashboardView("analytics")
   }
 
-  const handleEnabledSitesSave = (sites: SiteId[]) => {
+  const handleEnabledSitesSave = (sites: EnabledDashboardSite[]) => {
     setEnabledSites(sites)
     const allDashboards = Boolean(
       operator && operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
     )
-    setActiveCombinedSiteIds(allDashboards ? ALL_SITE_IDS : sites)
+    setActiveCombinedSiteIds(allDashboards ? ALL_SITE_IDS : enabledCoreSiteIds(sites))
     setActiveScope((current) => {
       const scopes = operator
         ? allowedScopesForOperator(operator, sites, fixedScope)
@@ -616,7 +621,7 @@ function Dashboard({ fixedScope, fixedOperatorId }: DashboardProps) {
                   combinedSiteIds={
                     operator && operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
                       ? ALL_SITE_IDS
-                      : enabledSites
+                      : enabledCoreSiteIds(enabledSites)
                   }
                 />
               </div>

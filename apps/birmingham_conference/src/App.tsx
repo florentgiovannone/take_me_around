@@ -1,17 +1,19 @@
 import { useEffect } from "react"
-import { Route, Routes, useLocation } from "react-router-dom"
+import { Link, Route, Routes, useLocation } from "react-router-dom"
+import { BrandHeader } from "@tma/brand"
 import { BIRMINGHAM_CONFERENCE_ARTWORKS } from "@tma/dashboard-scope"
-import ArtworkPage from "./pages/ArtworkPage"
 import DashboardPage from "./pages/DashboardPage"
 import IndexPage from "./pages/IndexPage"
 import NotFoundPage from "./pages/NotFoundPage"
+import "./styles/home.css"
 
 function PageTitle() {
   const { pathname } = useLocation()
   useEffect(() => {
     const artwork = BIRMINGHAM_CONFERENCE_ARTWORKS.find((item) => item.path === pathname)
     const titles: Record<string, string> = {
-      "/": "Birmingham Conference",
+      "/": "Take Me Around",
+      "/allpages": "All Pages",
       "/dashboard": "Dashboard",
     }
     const page = artwork?.title ?? titles[pathname]
@@ -20,14 +22,48 @@ function PageTitle() {
   return null
 }
 
+function ExternalRedirect({ href }: { href: string }) {
+  useEffect(() => {
+    window.location.replace(href)
+  }, [href])
+  return null
+}
+
+function AllPages() {
+  return (
+    <div className="birmingham-allpages">
+      <BrandHeader />
+      <main>
+        <h1>Take Me Around</h1>
+        <p>Open a Birmingham Conference page from the links below.</p>
+        {BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => (
+          <p key={artwork.slug}>
+            <a href={artwork.url}>Go to {artwork.title} page</a>
+          </p>
+        ))}
+        <p>
+          <Link to="/dashboard">Go to Dashboard page</Link>
+        </p>
+      </main>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <>
       <PageTitle />
       <Routes>
         <Route path="/" element={<IndexPage />} />
+        <Route path="/allpages" element={<AllPages />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/:slug" element={<ArtworkPage />} />
+        {BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => (
+          <Route
+            key={artwork.path}
+            path={artwork.path}
+            element={<ExternalRedirect href={artwork.url} />}
+          />
+        ))}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

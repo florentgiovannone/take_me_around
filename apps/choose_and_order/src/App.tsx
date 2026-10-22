@@ -4,6 +4,8 @@ import Nav from "./Components/Nav";
 import Footer from "./Components/Footer";
 import OrderNow from "./Components/OrderNow";
 import DashboardPage from "./pages/DashboardPage";
+import AllPagesPage from "./pages/AllPagesPage";
+import TakeMeAroundHome from "./pages/TakeMeAroundHome";
 import MmeBettySite from "./mmeBetty/MmeBettySite";
 import { useState } from "react";
 
@@ -81,6 +83,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<TakeMeAroundHome />} />
+        <Route path="/allpages" element={<AllPagesPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/dashborad" element={<Navigate to="/dashboard" replace />} />
         <Route path="/buddysdeli/dashboard" element={<Navigate to="/dashboard" replace />} />
@@ -114,11 +118,10 @@ function App() {
                 backgroundColor: '#F6F1E6'
               }}>
                 <Routes>
-                  <Route path="/" element={<Navigate to="/buddysdeli" replace />} />
-                  <Route path="/byddysdeli" element={<Navigate to="/buddysdeli" replace />} />
-                  <Route path="/byddysdeli/order-now" element={<Navigate to="/buddysdeli/order-now" replace />} />
                   <Route path="/buddysdeli" element={<Home />} />
                   <Route path="/buddysdeli/order-now" element={<OrderNow handleAddToCart={handleAddToCart} />} />
+                  <Route path="/byddysdeli" element={<Navigate to="/buddysdeli" replace />} />
+                  <Route path="/byddysdeli/order-now" element={<Navigate to="/buddysdeli/order-now" replace />} />
                 </Routes>
               </main>
               <Footer />

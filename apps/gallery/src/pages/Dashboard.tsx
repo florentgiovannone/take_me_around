@@ -1,6 +1,8 @@
 import { type FormEvent, useEffect, useRef, useState } from "react"
+import { Link } from "react-router-dom"
 import Footer from "../components/Footer"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -13,6 +15,7 @@ import { apiBaseUrl, apiNeedsNgrokHeader } from "../apiBaseUrl"
 import { parseApiJson } from "../parseApiJson"
 import type { PoiseLog } from "@tma/dashboard-scope"
 import "../styles/style.css"
+import "../styles/dashboard.css"
 
 const DASHBOARD_PASSWORD_KEY = "tma-dashboard-password"
 const POLL_INTERVAL_MS = 5000
@@ -172,8 +175,9 @@ function Dashboard() {
 
   return (
     <>
-      <main className="tma-gallery-page tma-dashboard">
-        <header className="tma-header">
+      <main className="tma-dashboard tma-main-dashboard gallery-dashboard">
+        <DashboardAboutLinks />
+        <header className="tma-header tma-main-dashboard-header gallery-dashboard-header">
           {isAuthorized && (
             <button
               type="button"
@@ -183,9 +187,13 @@ function Dashboard() {
               Log out
             </button>
           )}
-          <div className="tma-header-inner">
-            <h1 className="tma-page-title">Dashboard</h1>
-            <p className="tma-page-subtitle">Live .gallery activity</p>
+          <div className="tma-header-inner tma-main-dashboard-header-inner">
+            <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
+            <h1 className="tma-page-title tma-main-dashboard-title">Gallery</h1>
+            <p className="tma-page-subtitle tma-main-dashboard-subtitle">Live .gallery activity</p>
+            <Link className="gallery-dashboard-back" to="/">
+              Home
+            </Link>
           </div>
         </header>
 

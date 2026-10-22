@@ -1,21 +1,14 @@
 import { BrandHeader } from "@tma/brand"
-import Footer from "../components/Footer"
-import "../styles/style.css"
+import "../../../../packages/brand/src/info-page.css"
 
 export default function PrivacyPolicyPage() {
   return (
-    <>
+    <div className="tma-info-page">
       <BrandHeader />
-      <main className="tma-gallery-page">
-        <header className="tma-header">
-          <div className="tma-header-inner">
-            <h1 className="tma-page-title">Privacy Policy</h1>
-            <p className="tma-page-subtitle">Effective date: 15 May 2025</p>
-          </div>
-        </header>
+      <main>
+        <h1>Privacy Policy</h1>
+        <p className="lede">Effective date: 15 May 2025</p>
 
-        <div className="tma-content">
-          
 
           <p>
             Take Me Around Ltd (&quot;us&quot;, &quot;we&quot;, or &quot;our&quot;) operates the www.takemearound.com website
@@ -243,9 +236,14 @@ export default function PrivacyPolicyPage() {
             <li>By email: [email protected]</li>
             <li>By phone number: 020 4617 6112</li>
           </ul>
-        </div>
       </main>
-      <Footer />
-    </>
+      <footer className="tma-info-footer">
+        <p>
+          <a href="mailto:support@takemearound.com">support@takemearound.com</a>
+        </p>
+        <p>Take Me Around Ltd. Parkgate House, 33a Pratt Street, NW1 0BG</p>
+        <p>© 2026 Take Me Around</p>
+      </footer>
+    </div>
   )
 }

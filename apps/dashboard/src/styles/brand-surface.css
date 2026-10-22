@@ -1,0 +1,194 @@
+.tma-brand .tma-dashboard-about-links {
+  background: #f4f0e8;
+  border-bottom: 1px solid #efe7da;
+  box-shadow: none;
+}
+
+.tma-brand .tma-dashboard-about-links-heading {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tma-brand .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #0e2347;
+}
+
+.tma-brand .tma-dashboard-about-link:hover,
+.tma-brand .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #b08958;
+}
+
+.tma-brand .tma-dashboard-about-link-kicker {
+  color: #b08958;
+}
+
+.tma-brand .tma-dashboard-about-link-host {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.tma-brand .tma-dashboard-auth {
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  box-shadow: none;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-brand .tma-dashboard-auth label {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tma-brand .tma-dashboard-auth input,
+.tma-brand .tma-dashboard-auth select {
+  border: 1px solid #efe7da;
+  border-radius: 12px;
+  background: #fbf9f6;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-brand .tma-dashboard-auth input:focus,
+.tma-brand .tma-dashboard-auth select:focus {
+  border-color: #b08958;
+  box-shadow: 0 0 0 3px rgba(176, 137, 88, 0.35);
+}
+
+.tma-brand .tma-dashboard-auth button {
+  border: 0;
+  border-radius: 999px;
+  background: #0e2347;
+  color: #f7f3ea;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.tma-brand .tma-dashboard-auth button:hover {
+  background: #09182f;
+  box-shadow: none;
+}
+
+.tma-brand .tma-scope-switcher {
+  gap: 0.65rem 0.85rem;
+  padding: 0.45rem 0.5rem 0.45rem 1rem;
+  border: 1px solid #efe7da;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.tma-brand .tma-scope-switcher-label {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.tma-brand .tma-scope-switcher-value {
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-weight: 600;
+}
+
+.tma-brand .tma-scope-switcher-select {
+  min-width: min(100%, 18rem);
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 2.2rem 0.55rem 0.85rem;
+  background: #fbf9f6
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230e2347' d='M1.4 1.4 6 6l4.6-4.6'/%3E%3C/svg%3E")
+    no-repeat right 0.85rem center;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-weight: 600;
+}
+
+.tma-brand .tma-scope-switcher-select:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(176, 137, 88, 0.35);
+}
+
+.tma-brand .tma-dashboard-menu-bar {
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: none;
+}
+
+.tma-brand .tma-dashboard-menu-current,
+.tma-brand .tma-dashboard-menu-toggle {
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-brand .tma-dashboard-menu-toggle:hover,
+.tma-brand .tma-dashboard-menu-toggle:focus-visible {
+  background: #f4f0e8;
+}
+
+.tma-brand .tma-dashboard-menu-backdrop {
+  background: rgba(14, 35, 71, 0.42);
+}
+
+.tma-brand .tma-dashboard-menu-panel {
+  background: #fbf9f6;
+  box-shadow: 12px 0 32px rgba(14, 35, 71, 0.12);
+}
+
+.tma-brand .tma-dashboard-menu-heading {
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  letter-spacing: 0.14em;
+}
+
+.tma-brand .tma-dashboard-menu-item {
+  border-radius: 18px;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-brand .tma-dashboard-menu-item:hover,
+.tma-brand .tma-dashboard-menu-item:focus-visible {
+  background: #f4f0e8;
+  color: #0e2347;
+}
+
+.tma-brand .tma-dashboard-menu-item.is-active {
+  background: #0e2347;
+  color: #f7f3ea;
+}
+
+.tma-brand .tma-dashboard-tabs {
+  background: #efe7da;
+}
+
+.tma-brand .tma-dashboard-tab {
+  color: #5c6570;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-brand .tma-dashboard-tab:hover:not(.is-active),
+.tma-brand .tma-dashboard-tab.is-active {
+  color: #0e2347;
+}
+
+.tma-brand .tma-dashboard-tab.is-active {
+  background: #fff;
+  box-shadow: none;
+}

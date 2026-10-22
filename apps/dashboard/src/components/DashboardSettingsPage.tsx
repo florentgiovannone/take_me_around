@@ -1,11 +1,35 @@
 import { useEffect, useState } from "react"
-import { ALL_SITE_IDS, PICKABLE_SITE_IDS, SITE_META, type SiteId } from "@tma/config"
-import { normalizeEnabledSites, storeEnabledSites } from "../config/dashboardSites"
+import {
+  ALL_SITE_IDS,
+  PICKABLE_SITE_IDS,
+  PROJECT_DASHBOARD_SCOPES,
+  SITE_META,
+  scopeDomainHint,
+  scopeLabel,
+  type SiteId,
+  type SiteScope,
+} from "@tma/config"
+import {
+  normalizeEnabledSites,
+  SETTINGS_SITE_IDS,
+  storeEnabledSites,
+  type EnabledDashboardSite,
+} from "../config/dashboardSites"
 
 type DashboardSettingsPageProps = {
-  enabledSites: SiteId[]
-  onSave: (sites: SiteId[]) => void
+  enabledSites: EnabledDashboardSite[]
+  onSave: (sites: EnabledDashboardSite[]) => void
   onBack: () => void
+}
+
+function siteCopy(siteId: EnabledDashboardSite): { label: string; detail: string } {
+  if ((ALL_SITE_IDS as readonly string[]).includes(siteId)) {
+    const meta = SITE_META[siteId as SiteId]
+    return { label: meta.label, detail: meta.host }
+  }
+  const label = scopeLabel(siteId as SiteScope)
+  const detail = scopeDomainHint(siteId as SiteScope)
+  return { label, detail: detail === label ? "" : detail }
 }
 
 function SiteToggle({
@@ -47,7 +71,7 @@ export default function DashboardSettingsPage({
     setDraftSites(enabledSites)
   }, [enabledSites])
 
-  const toggleSite = (siteId: SiteId) => {
+  const toggleSite = (siteId: EnabledDashboardSite) => {
     setDraftSites((current) => {
       const isEnabled = current.includes(siteId)
       if (isEnabled && current.length === 1) {
@@ -61,7 +85,7 @@ export default function DashboardSettingsPage({
   }
 
   const handleReset = () => {
-    setDraftSites(normalizeEnabledSites(PICKABLE_SITE_IDS))
+    setDraftSites(normalizeEnabledSites([...PICKABLE_SITE_IDS, ...PROJECT_DASHBOARD_SCOPES]))
   }
 
   const handleSave = () => {
@@ -86,8 +110,8 @@ export default function DashboardSettingsPage({
       </div>
 
       <div className="tma-dashboard-settings-list" role="group" aria-label="Enabled dashboard sites">
-        {ALL_SITE_IDS.map((siteId) => {
-          const meta = SITE_META[siteId]
+        {SETTINGS_SITE_IDS.map((siteId) => {
+          const copy = siteCopy(siteId)
           const checked = draftSites.includes(siteId)
           const isLastEnabled = checked && draftSites.length === 1
           return (
@@ -96,14 +120,14 @@ export default function DashboardSettingsPage({
               className={`tma-dashboard-settings-item${checked ? " is-enabled" : ""}`}
             >
               <div className="tma-dashboard-settings-item-copy">
-                <strong>{meta.label}</strong>
-                <span>{meta.host}</span>
+                <strong>{copy.label}</strong>
+                {copy.detail ? <span>{copy.detail}</span> : null}
               </div>
               <SiteToggle
                 checked={checked}
                 disabled={isLastEnabled}
                 onChange={() => toggleSite(siteId)}
-                label={meta.label}
+                label={copy.label}
               />
             </div>
           )

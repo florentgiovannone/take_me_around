@@ -70,7 +70,15 @@ function ProductOffer() {
               <button
                 type="button"
                 className="add-to-basket"
-                onClick={() => add(mangoAdded ? quantity * 2 : quantity)}
+                onClick={() =>
+                  add({
+                    lines: [
+                      { name: "Watermelon", quantity },
+                      ...(mangoAdded ? [{ name: "Mango", quantity }] : []),
+                    ],
+                    amount: total * quantity,
+                  })
+                }
               >
                 Add to basket
               </button>

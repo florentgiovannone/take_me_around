@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, type ReactNode } from "react"
 import { Link } from "react-router-dom"
 import logo from "../assets/waitburys-logo.png"
+import BasketButton, { addBasketLines, type BasketAddition, type BasketLine } from "./BasketButton"
 import StoreFooter from "./StoreFooter"
 
 const BasketContext = createContext<{
   count: number
-  add: (quantity: number) => void
+  add: (addition: BasketAddition) => void
 } | null>(null)
 
 export function useBasket() {
@@ -46,11 +47,19 @@ function BasketMark() {
 }
 
 export default function WaitburysLayout({ children }: { children: ReactNode }) {
-  const [count, setCount] = useState(0)
+  const [lines, setLines] = useState<BasketLine[]>([])
+  const [total, setTotal] = useState(0)
+  const count = lines.reduce((sum, line) => sum + line.quantity, 0)
 
   return (
     <BasketContext.Provider
-      value={{ count, add: (quantity) => setCount((value) => value + quantity) }}
+      value={{
+        count,
+        add: (addition) => {
+          setLines((current) => addBasketLines(current, addition.lines))
+          setTotal((value) => value + addition.amount)
+        },
+      }}
     >
       <div className="waitburys">
         <header className="waitburys-header">
@@ -69,10 +78,9 @@ export default function WaitburysLayout({ children }: { children: ReactNode }) {
               </li>
             ))}
           </ul>
-          <span className="basket" aria-label={count > 0 ? `Basket, ${count} items` : "Basket"}>
+          <BasketButton lines={lines} total={total}>
             <BasketMark />
-            {count > 0 ? <span className="basket-count">{count}</span> : null}
-          </span>
+          </BasketButton>
         </header>
         {children}
         <StoreFooter name="Waitburys" />

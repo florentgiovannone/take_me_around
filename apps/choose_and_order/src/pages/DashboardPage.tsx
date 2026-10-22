@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -12,6 +13,7 @@ import {
 } from "@tma/dashboard-ui"
 import type { PoiseLog } from "@tma/dashboard-scope"
 import "../../../dashboard/src/styles/style.css"
+import "@tma/brand/dashboard.css"
 import "../styles/dashboard.css"
 
 const POLL_INTERVAL_MS = 5000
@@ -89,11 +91,13 @@ export default function DashboardPage() {
   }, [ready])
 
   return (
-    <div className="tma-dashboard choose-order-dashboard">
-      <header className="tma-header choose-order-dashboard-header">
-        <div>
-          <p className="choose-order-dashboard-kicker">Buddy's Deli</p>
-          <h1>Choose and Order</h1>
+    <div className="tma-dashboard tma-main-dashboard tma-brand choose-order-dashboard">
+      <DashboardAboutLinks />
+      <header className="tma-header tma-main-dashboard-header choose-order-dashboard-header">
+        <div className="tma-header-inner tma-main-dashboard-header-inner">
+          <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
+          <h1 className="tma-page-title tma-main-dashboard-title">Choose and Order</h1>
+          <p className="tma-page-subtitle tma-main-dashboard-subtitle">Live Buddy's Deli activity</p>
           <Link className="choose-order-dashboard-back" to="/buddysdeli">
             Menu
           </Link>

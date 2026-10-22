@@ -37,7 +37,7 @@ const star = {
 }
 
 describe("birmingham_conference scope", () => {
-  it("is labelled and excluded from the main switcher", () => {
+  it("is labelled and stays out of the combined dashboards", () => {
     expect(scopeLabel("birmingham_conference")).toBe("Birmingham Conference")
     expect(scopeSubtitle("birmingham_conference")).toBe("Live Birmingham Conference activity")
     expect(scopeDomainHint("birmingham_conference")).toBe(

@@ -1,5 +1,5 @@
-import Footer from "../components/Footer"
-import "../styles/style.css"
+import { BrandHeader } from "@tma/brand"
+import "../../../../packages/brand/src/info-page.css"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -17,31 +17,12 @@ export default function UnderlyingTechnologyPage() {
   }, [])
 
   return (
-    <>
-      <main className="tma-gallery-page">
-        <header className="tma-header tma-underlying-header">
-          <div className="tma-header-inner">
-            <h1 className="tma-page-title">Underlying Technology</h1>
-            <p className="tma-page-subtitle">Overview of the Genie Tag.</p>
-          </div>
-        </header>
+    <div className="tma-info-page">
+      <BrandHeader />
+      <main>
+        <h1>Underlying Technology</h1>
+        <p className="lede">Overview of the Genie Tag</p>
 
-        <a
-          href="/underlying-technology"
-          className="tma-banner-link"
-        >
-          <p className="tma-banner-text">
-            <strong>
-              When you have explored the page below, please click on this banner to find out about the unique
-              underlying technology that enables this solution, and the multiple benefits it offers an exhibition
-              curator, museum, and gallery.
-            </strong>
-          </p>
-        </a>
-
-        <div className="tma-content">
-
-          <h2>Overview of the Genie Tag.</h2>
           <p>
             The Genie is a unique, patent pending, NFC technology designed to provide friction-free access and
             &apos;absolute proof of presence&apos; when accessing point-of-information services.
@@ -83,19 +64,22 @@ export default function UnderlyingTechnologyPage() {
           <p>Poise Infotech Limited</p>
 
           <p>*subject to relevant privacy permission regulations.</p>
-        </div>
 
         {showBackButton && (
-          <div className="tma-underlying-back-wrap">
-            <button type="button" className="tma-underlying-back-button" onClick={() => navigate(-1)}>
+          <div className="tma-info-back">
+            <button type="button" onClick={() => navigate(-1)}>
               Go back
             </button>
           </div>
         )}
-
-
       </main>
-      <Footer />
-    </>
+      <footer className="tma-info-footer">
+        <p>
+          <a href="mailto:support@takemearound.com">support@takemearound.com</a>
+        </p>
+        <p>Take Me Around Ltd. Parkgate House, 33a Pratt Street, NW1 0BG</p>
+        <p>© 2026 Take Me Around</p>
+      </footer>
+    </div>
   )
 }

@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+
+.tma-brand-bar {
+  display: flex;
+  align-items: center;
+  padding: 18px 28px;
+  background: #fbf9f6;
+}
+
+.tma-brand-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-decoration: none;
+}
+
+.tma-brand-word span,
+.tma-brand-mark {
+  color: #b08958;
+}
+
+.tma-brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.tma-home-shell {
+  background: #f4f0e8;
+  color: #0e2347;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.tma-home-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}

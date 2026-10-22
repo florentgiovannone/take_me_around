@@ -8,7 +8,7 @@
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
 
-# /dashboard redirects to https://arkin.takemearound.gallery/dashboard/museum (vite netlify-redirects plugin).
+# /dashboard is the in-app .museum analytics page.
 
 # Required for the dashboard on takemearound.museum (set in Netlify UI, then redeploy):
 #   VITE_API_PROXY_TARGET = https://YOUR-NGROK-OR-API-HOST.ngrok-free.app

@@ -70,7 +70,6 @@ export default defineConfig(({ mode }) => {
             "/byddysdeli/*  /buddysdeli/:splat  301",
             "/dashborad     /dashboard     301",
             "/buddysdeli/dashboard  /dashboard  301",
-            "/              /buddysdeli    301",
           ]
           if (proxyBase) {
             lines.push(`/api/*  ${proxyBase}/api/:splat  200`)

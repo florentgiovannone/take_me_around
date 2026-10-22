@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,460;9..144,560&family=Outfit:wght@400;500;600&display=swap");
+
 .fair-future-dashboard {
   --tma-chart-hue: 193;
   --tma-brand: #0a213f;
@@ -18,38 +20,114 @@
   font-family: "Work Sans", "Segoe UI", sans-serif;
 }
 
-.fair-future-dashboard-header {
+.fair-future-dashboard .tma-header {
   height: auto;
-  min-height: 220px;
-  padding: 48px 24px;
+  min-height: 0;
+  padding: 1.75rem 1.25rem 1.5rem;
   text-align: center;
-  background: radial-gradient(circle at center, #11b5df 0%, #0a213f 100%);
+  background: #0a213f;
+  color: #fff;
 }
 
-.fair-future-dashboard-header h1,
-.fair-future-dashboard-header p {
-  margin: 0;
-}
-
-.fair-future-dashboard-header h1 {
-  margin-top: 8px;
-  font-size: clamp(36px, 5vw, 52px);
-  line-height: 1;
-}
-
-.fair-future-dashboard-kicker {
-  letter-spacing: 0.08em;
+.fair-future-dashboard .tma-main-dashboard-eyebrow {
+  margin: 0 0 0.35rem;
+  padding: 0;
+  color: #7ed4ee;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 700;
+}
+
+.fair-future-dashboard .tma-page-title.tma-main-dashboard-title {
+  margin: 0;
+  color: #fff;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 460;
+}
+
+.fair-future-dashboard .tma-page-subtitle.tma-main-dashboard-subtitle {
+  margin: 0.35rem 0 0;
+  color: #7ed4ee;
+  font-family: "Outfit", "Avenir Next", sans-serif;
 }
 
 .fair-future-dashboard-back {
   display: inline-block;
   margin-top: 16px;
-  color: #fff;
+  color: #e6f6fb;
+  font-family: "Outfit", "Avenir Next", sans-serif;
   font-size: 14px;
   font-weight: 600;
+}
+
+.fair-future-dashboard .tma-dashboard-about-links {
+  background: #f4f7f8;
+  border-bottom: 1px solid #d5eef6;
+  box-shadow: none;
+}
+
+.fair-future-dashboard .tma-dashboard-about-links-heading {
+  color: #11b5df;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.fair-future-dashboard .tma-dashboard-about-link {
+  background: #fff;
+  border: 1px solid #d5eef6;
+  border-radius: 18px;
+  box-shadow: none;
+  color: #0a213f;
+}
+
+.fair-future-dashboard .tma-dashboard-about-link:hover,
+.fair-future-dashboard .tma-dashboard-about-link:focus-visible {
+  background: #fff;
+  outline-color: #11b5df;
+}
+
+.fair-future-dashboard .tma-dashboard-about-link-kicker {
+  color: #11b5df;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.fair-future-dashboard .tma-dashboard-about-link-host {
+  color: #0a213f;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.fair-future-dashboard .tma-analytics-card,
+.fair-future-dashboard .tma-analytics-stat-card {
+  background: #fff;
+  border: 1px solid #d5eef6;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.fair-future-dashboard .tma-analytics-stat-label {
+  color: #11b5df;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.fair-future-dashboard .tma-analytics-stat-value {
+  color: #0a213f;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+}
+
+.fair-future-dashboard .tma-analytics-card h2 {
+  margin: 0;
+  color: #0a213f;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
 }
 
 .fair-future-dashboard .tma-dashboard-table thead th,

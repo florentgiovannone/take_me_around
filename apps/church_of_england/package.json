@@ -13,6 +13,7 @@
     "translate:southwell": "node scripts/translate-southwell.mjs"
   },
   "dependencies": {
+    "@tma/brand": "*",
     "@tma/dashboard-scope": "*",
     "@tma/dashboard-ui": "*",
     "react": "^19.2.5",

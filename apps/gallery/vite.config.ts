@@ -43,8 +43,6 @@ export default defineConfig(({ mode }) => {
           lines.push(`/demodashboard      ${arkinDashboard}/demodashboard     301!`)
           lines.push(`/demodashboard/*    ${arkinDashboard}/demodashboard/:splat  301!`)
           lines.push(`/demo               ${arkinDashboard}/demodashboard     301!`)
-          lines.push(`/dashboard      ${arkinDashboard}/dashboard     301!`)
-          lines.push(`/dashboard/*    ${arkinDashboard}/dashboard/:splat  301!`)
           lines.push("/*    /index.html   200")
           const out = path.resolve(process.cwd(), "dist", "_redirects")
           fs.mkdirSync(path.dirname(out), { recursive: true })

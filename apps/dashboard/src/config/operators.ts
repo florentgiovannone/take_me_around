@@ -1,10 +1,10 @@
 import {
   ALL_DASHBOARD_SITE_IDS,
+  PROJECT_DASHBOARD_SCOPES,
   type OperatorSiteId,
-  type SiteId,
   type SiteScope,
 } from "@tma/config"
-import { scopesForEnabledSites } from "./dashboardSites"
+import { scopesForEnabledSites, type EnabledDashboardSite } from "./dashboardSites"
 
 export type OperatorProfile = {
   id: string
@@ -55,16 +55,24 @@ export function getOperatorById(id: string): OperatorProfile | undefined {
   return OPERATORS.find((operator) => operator.id === id)
 }
 
-export function siteScopesForOperator(operator: OperatorProfile): SiteScope[] {
-  if (operator.sites.length > 1) {
-    return ["combined", ...operator.sites]
-  }
-  return [...operator.sites]
+export function siteScopesForOperator(
+  operator: OperatorProfile,
+  enabledSites?: readonly EnabledDashboardSite[]
+): SiteScope[] {
+  const mainDashboard = operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length
+  const core = enabledSites
+    ? operator.sites.filter((site) => site === "tma_demo" || enabledSites.includes(site))
+    : [...operator.sites]
+  const projects = mainDashboard
+    ? PROJECT_DASHBOARD_SCOPES.filter((scope) => !enabledSites || enabledSites.includes(scope))
+    : []
+  const scopes: SiteScope[] = [...core, ...projects]
+  return scopes.length > 1 ? ["combined", ...scopes] : scopes
 }
 
 export function allowedScopesForOperator(
   operator: OperatorProfile,
-  enabledSites: SiteId[],
+  enabledSites: readonly EnabledDashboardSite[],
   fixedScope?: OperatorSiteId
 ): SiteScope[] {
   if (fixedScope) {
@@ -74,7 +82,7 @@ export function allowedScopesForOperator(
     return [...operator.sites]
   }
   if (operator.sites.length >= ALL_DASHBOARD_SITE_IDS.length) {
-    return siteScopesForOperator(operator)
+    return siteScopesForOperator(operator, enabledSites)
   }
   return scopesForEnabledSites(enabledSites)
 }
@@ -92,18 +100,19 @@ export function clearOperatorSession() {
   sessionStorage.removeItem(SCOPE_SESSION_KEY)
 }
 
+const STORED_SCOPES = new Set<string>([
+  "gallery",
+  "museum",
+  "arkin",
+  "church_of_england",
+  "tma_demo",
+  "combined",
+  ...PROJECT_DASHBOARD_SCOPES,
+])
+
 export function getStoredScope(): SiteScope | null {
   const raw = sessionStorage.getItem(SCOPE_SESSION_KEY)
-  if (
-    raw === "gallery" ||
-    raw === "museum" ||
-    raw === "arkin" ||
-    raw === "church_of_england" ||
-    raw === "tma_demo" ||
-    raw === "combined"
-  ) {
-    return raw
-  }
+  if (raw && STORED_SCOPES.has(raw)) return raw as SiteScope
   return null
 }
 

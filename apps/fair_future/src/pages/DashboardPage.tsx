@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
+  DashboardAboutLinks,
   DashboardActivityPanel,
   DashboardAudiencePanel,
   DashboardCountsPanel,
@@ -89,11 +90,13 @@ export default function DashboardPage() {
   }, [ready])
 
   return (
-    <div className="tma-dashboard fair-future-dashboard">
-      <header className="tma-header fair-future-dashboard-header">
-        <div>
-          <p className="fair-future-dashboard-kicker">Fair Future Party</p>
-          <h1>Dashboard</h1>
+    <div className="tma-dashboard tma-main-dashboard fair-future-dashboard">
+      <DashboardAboutLinks />
+      <header className="tma-header tma-main-dashboard-header fair-future-dashboard-header">
+        <div className="tma-header-inner tma-main-dashboard-header-inner">
+          <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
+          <h1 className="tma-page-title tma-main-dashboard-title">Fair Future</h1>
+          <p className="tma-page-subtitle tma-main-dashboard-subtitle">Live Fair Future activity</p>
           <Link className="fair-future-dashboard-back" to="/">
             Manifesto
           </Link>
