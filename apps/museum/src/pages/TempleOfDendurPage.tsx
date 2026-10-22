@@ -1,5 +1,6 @@
+import type { CSSProperties } from "react"
 import { useSearchParams } from "react-router-dom"
-import { ArtworkFrame } from "@tma/brand"
+import { ArtworkTextSize, BrandHeader, useArtworkTextScale } from "@tma/brand"
 import Footer from "../components/Footer"
 import SectionAudio from "../components/SectionAudio"
 import templeImage from "../assets/museum/images/temple-of-dendur.jpg"
@@ -8,6 +9,7 @@ import {
   resolveTempleOfDendurCopy,
 } from "../utils/templeOfDendurLocale"
 import "../styles/style.css"
+import "../styles/the-temple-of-dendur.css"
 
 const WORK_SLUG = "the-temple-of-dendur"
 
@@ -15,59 +17,90 @@ export default function TempleOfDendurPage() {
   const [searchParams] = useSearchParams()
   const locale = detectTempleOfDendurLocale(searchParams)
   const copy = resolveTempleOfDendurCopy(locale)
-  const looking = copy.sections.find((section) => section.visitLabel && section.visitBody)
+  const { scale, choose } = useArtworkTextScale()
 
   return (
     <>
-      <ArtworkFrame
-        title={copy.title}
-        subtitle={copy.subtitle}
-        bannerTop={copy.banner}
-        bannerBottom={copy.banner}
-        imageSrc={templeImage}
-        imageAlt={copy.imageAlt}
-        audio={
-          <>
-            <SectionAudio workSlug={WORK_SLUG} sectionId="intro" locale={locale} />
-            {copy.sections.map((section) => (
-              <SectionAudio
-                key={section.id}
-                workSlug={WORK_SLUG}
-                sectionId={section.id}
-                locale={locale}
-              />
+      <BrandHeader />
+      <div className="the-temple-of-dendur" style={{ "--tma-type-scale": scale } as CSSProperties}>
+        <article className="page">
+          <div className="eyebrow">
+            {copy.eyebrowParts.map((part, index) => (
+              <span key={part}>
+                {index > 0 ? <span className="dot">✦</span> : null}
+                {part}
+              </span>
             ))}
-          </>
-        }
-        sections={[
-          {
-            heading: copy.eyebrowParts.join(" · "),
-            paragraphs: [
-              copy.figcaption,
-              copy.credit,
-              ...copy.facts.map((fact) => `${fact.k}: ${fact.v}`),
-              copy.lede,
-            ],
-          },
-          ...copy.sections.map((section) => ({
-            heading: section.heading,
-            paragraphs: [
-              ...section.paragraphs,
-              ...(section.motifs ?? []).map((motif) => {
-                const label = /[.!?…]$/.test(motif.label.trim())
-                  ? motif.label
-                  : `${motif.label}.`
-                return `${label} ${motif.text}`
-              }),
-              ...(section.afterNote ? [section.afterNote] : []),
-            ],
-          })),
-          ...(looking
-            ? [{ heading: looking.visitLabel ?? "", paragraphs: [looking.visitBody ?? ""] }]
-            : []),
-          { heading: copy.colophonLeft, paragraphs: [copy.colophonRight] },
-        ]}
-      />
+          </div>
+
+          <h1>{copy.title}</h1>
+          <div className="subtitle">{copy.subtitle}</div>
+
+          <ArtworkTextSize scale={scale} onChange={choose} />
+
+          <a className="tma-brand-banner" href="/underlying-technology">
+            {copy.banner}
+          </a>
+
+          <figure className="plate">
+            <div className="frame">
+              <img src={templeImage} alt={copy.imageAlt} />
+            </div>
+            <figcaption>
+              <span>{copy.figcaption}</span>
+              <span className="credit">{copy.credit}</span>
+            </figcaption>
+          </figure>
+
+          <div className="facts">
+            {copy.facts.map((fact) => (
+              <div key={fact.k}>
+                <span className="k">{fact.k}</span>
+                <span className="v">{fact.v}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="essay">
+            <SectionAudio workSlug={WORK_SLUG} sectionId="intro" locale={locale} />
+            <p className="lede">{copy.lede}</p>
+
+            {copy.sections.map((section) => (
+              <div key={section.id}>
+                <SectionAudio workSlug={WORK_SLUG} sectionId={section.id} locale={locale} />
+                <h2>{section.heading}</h2>
+                {section.paragraphs.map((paragraph) => (
+                  <p key={paragraph.slice(0, 48)}>{paragraph}</p>
+                ))}
+                {section.motifs ? (
+                  <ul className="motifs">
+                    {section.motifs.map((motif) => (
+                      <li key={motif.label}>
+                        <strong>{motif.label}</strong> {motif.text}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                {section.afterNote ? <p>{section.afterNote}</p> : null}
+                {section.visitBody ? (
+                  <div className="visit">
+                    {section.visitLabel ? <strong>{section.visitLabel}</strong> : null}{" "}
+                    {section.visitBody}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+
+          <footer className="colophon">
+            <span>{copy.colophonLeft}</span>
+            <span>{copy.colophonRight}</span>
+          </footer>
+          <a className="tma-brand-banner" href="/underlying-technology">
+            {copy.banner}
+          </a>
+        </article>
+      </div>
       <Footer />
     </>
   )

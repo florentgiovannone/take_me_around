@@ -1,0 +1,345 @@
+.the-temple-of-dendur,
+.the-temple-of-dendur *,
+.the-temple-of-dendur *::before,
+.the-temple-of-dendur *::after {
+  box-sizing: border-box;
+}
+
+.the-temple-of-dendur {
+  margin: 0;
+  padding: 0 0 40px;
+  background: #f4f0e8;
+  color: #243044;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+}
+
+.the-temple-of-dendur .tma-brand-banner {
+  width: min(calc(100% - 64px), 836px);
+  margin: 28px auto;
+}
+
+.the-temple-of-dendur .page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  position: relative;
+}
+
+.the-temple-of-dendur .page::before {
+  content: none;
+}
+
+.the-temple-of-dendur .eyebrow,
+.the-temple-of-dendur h1,
+.the-temple-of-dendur .subtitle {
+  background: #0e2347;
+  text-align: center;
+}
+
+.the-temple-of-dendur .eyebrow {
+  margin: 0;
+  padding: 64px 32px 0;
+  color: #d7c4a4;
+  font-size: calc(0.72rem * var(--tma-type-scale));
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.the-temple-of-dendur .eyebrow .dot {
+  display: inline-block;
+  margin: 0 0.55rem;
+  color: #b08958;
+  opacity: 1;
+}
+
+.the-temple-of-dendur h1 {
+  margin: 0;
+  padding: 12px 32px 0;
+  color: #f7f3ea;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(calc(2.4rem * var(--tma-type-scale)), calc(5vw * var(--tma-type-scale)), calc(3.25rem * var(--tma-type-scale)));
+  font-weight: 460;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.the-temple-of-dendur h1 em {
+  color: #f7f3ea;
+  font-style: italic;
+}
+
+.the-temple-of-dendur .subtitle {
+  margin: 0;
+  padding: 12px 32px 56px;
+  color: #d7c4a4;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: calc(16px * var(--tma-type-scale));
+  font-style: normal;
+}
+
+.the-temple-of-dendur figure.plate,
+.the-temple-of-dendur .facts,
+.the-temple-of-dendur .essay,
+.the-temple-of-dendur footer.colophon {
+  width: min(100%, 900px);
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 32px;
+  padding-left: 32px;
+}
+
+.the-temple-of-dendur figure.plate {
+  margin-top: 28px;
+  margin-bottom: 28px;
+  padding-top: 0;
+  padding-bottom: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.the-temple-of-dendur figure.plate .frame {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px;
+  overflow: hidden;
+  background: #fff;
+  aspect-ratio: 1;
+}
+
+.the-temple-of-dendur figure.plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.the-temple-of-dendur figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 640px;
+  margin: 12px auto 0;
+  color: #243044;
+  font-size: calc(0.95rem * var(--tma-type-scale));
+  font-style: normal;
+  line-height: 1.5;
+}
+
+.the-temple-of-dendur figcaption span {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.the-temple-of-dendur figcaption .credit {
+  font-style: normal;
+  letter-spacing: 0.03em;
+  text-align: right;
+}
+
+.the-temple-of-dendur .facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+  background: transparent;
+  border: 0;
+}
+
+.the-temple-of-dendur .facts div {
+  padding: 14px 16px;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  background: #fff;
+  font-size: calc(0.95rem * var(--tma-type-scale));
+}
+
+.the-temple-of-dendur .facts .k {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #b08958;
+  font-size: calc(0.72rem * var(--tma-type-scale));
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.the-temple-of-dendur .facts .v {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: calc(1.15rem * var(--tma-type-scale));
+  font-weight: 560;
+}
+
+.the-temple-of-dendur audio.tma-section-audio {
+  display: block;
+  width: 100%;
+  margin: 28px 0 12px;
+}
+
+.the-temple-of-dendur .lede {
+  margin: 0 0 12px;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: calc(1.35rem * var(--tma-type-scale));
+  font-weight: 460;
+  line-height: 1.45;
+}
+
+.the-temple-of-dendur .lede::first-letter {
+  float: none;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  text-shadow: none;
+}
+
+.the-temple-of-dendur h2 {
+  margin: 0 0 8px;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: calc(28px * var(--tma-type-scale));
+  font-weight: 560;
+  letter-spacing: 0;
+}
+
+.the-temple-of-dendur h2::before {
+  content: none;
+}
+
+.the-temple-of-dendur p {
+  margin: 0 0 12px;
+  color: #243044;
+  font-size: calc(16px * var(--tma-type-scale));
+  line-height: 1.6;
+}
+
+.the-temple-of-dendur blockquote {
+  margin: 22px 0;
+  padding: 0 0 0 16px;
+  border-left: 2px solid #b08958;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: calc(1.2rem * var(--tma-type-scale));
+  font-style: italic;
+  font-weight: 460;
+  line-height: 1.45;
+}
+
+.the-temple-of-dendur blockquote cite {
+  display: block;
+  margin-top: 8px;
+  color: #b08958;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: calc(0.72rem * var(--tma-type-scale));
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.the-temple-of-dendur ul.motifs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.the-temple-of-dendur ul.motifs li {
+  position: relative;
+  padding: 14px 16px 14px 16px;
+  border: 1px solid #efe7da;
+  border-radius: 18px;
+  background: #fff;
+  font-size: calc(16px * var(--tma-type-scale));
+  line-height: 1.5;
+}
+
+.the-temple-of-dendur ul.motifs li::before {
+  content: none;
+}
+
+.the-temple-of-dendur ul.motifs strong {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: calc(1.05rem * var(--tma-type-scale));
+  font-weight: 560;
+}
+
+.the-temple-of-dendur .visit {
+  margin: 22px 0 0;
+  padding: 16px 18px;
+  border: 1px solid #efe7da;
+  border-left: 3px solid #b08958;
+  border-radius: 18px;
+  background: #fff;
+  color: #243044;
+  font-size: calc(16px * var(--tma-type-scale));
+  line-height: 1.6;
+}
+
+.the-temple-of-dendur .visit strong {
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: calc(1.15rem * var(--tma-type-scale));
+  font-weight: 560;
+}
+
+.the-temple-of-dendur footer.colophon {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid #efe7da;
+  color: #b08958;
+  font-size: calc(0.72rem * var(--tma-type-scale));
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .the-temple-of-dendur .tma-brand-banner {
+    width: min(calc(100% - 40px), 836px);
+  }
+
+  .the-temple-of-dendur .eyebrow {
+    padding: 40px 20px 0;
+  }
+
+  .the-temple-of-dendur h1,
+  .the-temple-of-dendur .subtitle {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .the-temple-of-dendur figure.plate,
+  .the-temple-of-dendur .facts,
+  .the-temple-of-dendur .essay,
+  .the-temple-of-dendur footer.colophon {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .the-temple-of-dendur .facts,
+  .the-temple-of-dendur ul.motifs {
+    grid-template-columns: 1fr;
+  }
+
+  .the-temple-of-dendur figcaption {
+    flex-direction: column;
+  }
+
+  .the-temple-of-dendur figcaption .credit {
+    text-align: left;
+  }
+}

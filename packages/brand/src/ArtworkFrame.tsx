@@ -1,4 +1,5 @@
-import type { ReactNode } from "react"
+import type { CSSProperties, ReactNode } from "react"
+import { ArtworkTextSize, useArtworkTextScale } from "./ArtworkTextSize"
 import { BrandHeader } from "./BrandHeader"
 
 export type ArtworkSection = {
@@ -8,6 +9,7 @@ export type ArtworkSection = {
 
 export function ArtworkFrame({
   title,
+  detail,
   subtitle,
   bannerTop,
   bannerBottom,
@@ -18,6 +20,7 @@ export function ArtworkFrame({
   sections,
 }: {
   title: string
+  detail?: string
   subtitle: string
   bannerTop?: string
   bannerBottom?: string
@@ -27,14 +30,21 @@ export function ArtworkFrame({
   imageAlt: string
   sections: readonly ArtworkSection[]
 }) {
+  const { scale, choose } = useArtworkTextScale()
+
   return (
-    <main className="tma-brand-page">
+    <main
+      className="tma-brand-page"
+      style={{ "--tma-type-scale": scale } as CSSProperties}
+    >
       <BrandHeader />
       <header className="tma-brand-hero">
         <h1>{title}</h1>
+        {detail ? <p className="tma-brand-hero-detail">{detail}</p> : null}
         <p>{subtitle}</p>
       </header>
       <div className="tma-brand-column">
+        <ArtworkTextSize scale={scale} onChange={choose} />
         {bannerTop ? (
           <a className="tma-brand-banner" href={bannerHref}>
             {bannerTop}

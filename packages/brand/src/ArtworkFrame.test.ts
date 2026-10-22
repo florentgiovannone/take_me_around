@@ -41,6 +41,27 @@ describe("ArtworkFrame", () => {
     expect(html).toContain("A portrait on poplar.")
     expect(html).toContain("About the artist.")
     expect(html).toContain("Born near Vinci.")
+    expect(html).toContain("Text size")
+    expect(html).toContain('aria-label="Medium text"')
+    expect(html).toContain('aria-pressed="true"')
+  })
+
+  it("renders an optional line under the title", () => {
+    const html = renderToStaticMarkup(
+      <ArtworkFrame
+        title="The Golden Boys"
+        detail="Boulton, Watt and Murdoch"
+        subtitle="1956 by William Bloye"
+        imageSrc="/golden-boys.jpg"
+        imageAlt="The Golden Boys"
+        sections={[{ heading: "About the work", paragraphs: ["A gilded bronze group."] }]}
+      />
+    )
+    expect(html).toContain("The Golden Boys")
+    expect(html).toContain("Boulton, Watt and Murdoch")
+    expect(html).toContain("1956 by William Bloye")
+    expect(html.indexOf("The Golden Boys")).toBeLessThan(html.indexOf("Boulton, Watt and Murdoch"))
+    expect(html.indexOf("Boulton, Watt and Murdoch")).toBeLessThan(html.indexOf("1956 by William Bloye"))
   })
 
   it("omits an empty audio slot and an empty banner", () => {

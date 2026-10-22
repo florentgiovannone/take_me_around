@@ -35,6 +35,12 @@ body {
   height: 28px;
 }
 
+.tma-brand-page,
+.the-kiss,
+.the-temple-of-dendur {
+  --tma-type-scale: 1.5;
+}
+
 .tma-brand-page {
   background: var(--tma-cream);
   color: var(--tma-ink);
@@ -52,15 +58,27 @@ body {
   margin: 0;
   color: var(--tma-hero-title);
   font-family: var(--tma-font-title);
-  font-size: 52px;
+  font-size: calc(52px * var(--tma-type-scale));
   font-weight: 460;
   letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.tma-brand-hero p.tma-brand-hero-detail {
+  margin: 10px 0 0;
+  color: var(--tma-hero-subtitle);
+  font-family: var(--tma-font-title);
+  font-size: calc(28px * var(--tma-type-scale));
+  font-weight: 460;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
 .tma-brand-hero p {
   margin: 12px 0 0;
   color: var(--tma-hero-subtitle);
-  font-size: 16px;
+  font-size: calc(16px * var(--tma-type-scale));
+  line-height: 1.4;
 }
 
 .tma-brand-column {
@@ -72,10 +90,12 @@ body {
 .tma-brand-banner {
   display: block;
   margin: 0 0 22px;
-  padding: 16px 18px;
-  border-radius: 999px;
+  padding: 24px 28px;
+  border-radius: 28px;
   background: var(--tma-navy);
   color: var(--tma-hero-title);
+  font-size: calc(16px * var(--tma-type-scale));
+  line-height: 1.4;
   text-align: center;
   text-decoration: none;
 }
@@ -100,12 +120,76 @@ body {
 .tma-brand-column h2 {
   margin: 28px 0 8px;
   color: var(--tma-navy);
-  font-size: 28px;
+  font-size: calc(28px * var(--tma-type-scale));
+  line-height: 1.15;
 }
 
 .tma-brand-column p {
   margin: 0 0 12px;
+  font-size: calc(16px * var(--tma-type-scale));
   line-height: 1.6;
+}
+
+.tma-text-size {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+
+.tma-text-size-label {
+  margin-right: auto;
+  color: var(--tma-gold);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tma-text-size-option {
+  width: 44px;
+  height: 44px;
+  border: 1px solid #efe7da;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--tma-navy);
+  font-family: var(--tma-font-title);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tma-text-size-option-small {
+  font-size: 16px;
+}
+
+.tma-text-size-option-medium {
+  font-size: 21px;
+}
+
+.tma-text-size-option-large {
+  font-size: 28px;
+}
+
+.tma-text-size-option[aria-pressed="true"] {
+  border-color: var(--tma-navy);
+  background: var(--tma-navy);
+  color: var(--tma-hero-title);
+}
+
+.the-kiss .tma-text-size,
+.the-temple-of-dendur .tma-text-size {
+  width: min(100%, 900px);
+  margin: 22px auto 0;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .the-kiss .tma-text-size,
+  .the-temple-of-dendur .tma-text-size {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
 }
 
 .tma-header {
