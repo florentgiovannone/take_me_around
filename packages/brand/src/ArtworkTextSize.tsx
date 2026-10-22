@@ -16,7 +16,7 @@ function readArtworkTextScale() {
 }
 
 export function useArtworkTextScale() {
-  const [scale, setScale] = useState(readArtworkTextScale)
+  const [scale, setScale] = useState<number>(readArtworkTextScale)
 
   function choose(next: number) {
     setScale(next)
