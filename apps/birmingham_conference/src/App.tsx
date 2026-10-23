@@ -5,6 +5,7 @@ import { BIRMINGHAM_CONFERENCE_ARTWORKS } from "@tma/dashboard-scope"
 import DashboardPage from "./pages/DashboardPage"
 import IndexPage from "./pages/IndexPage"
 import NotFoundPage from "./pages/NotFoundPage"
+import RegisterInterestPage from "./pages/RegisterInterestPage"
 import "./styles/home.css"
 
 function PageTitle() {
@@ -15,6 +16,7 @@ function PageTitle() {
       "/": "Take Me Around",
       "/allpages": "All Pages",
       "/dashboard": "Dashboard",
+      "/register-interest": "Register interest",
     }
     const page = artwork?.title ?? titles[pathname]
     document.title = page ? `${page} | Birmingham Conference` : "Page not found | Birmingham Conference"
@@ -44,6 +46,9 @@ function AllPages() {
         <p>
           <Link to="/dashboard">Go to Dashboard page</Link>
         </p>
+        <p>
+          <Link to="/register-interest">Go to Register interest page</Link>
+        </p>
       </main>
     </div>
   )
@@ -57,6 +62,7 @@ export default function App() {
         <Route path="/" element={<IndexPage />} />
         <Route path="/allpages" element={<AllPages />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/register-interest" element={<RegisterInterestPage />} />
         {BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => (
           <Route
             key={artwork.path}
