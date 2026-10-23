@@ -143,7 +143,7 @@ export default function RegisterInterestPage() {
           <p className="birmingham-interest-thanks">{REGISTRATION_UNAVAILABLE}</p>
         ) : loaded && visible.length === 0 ? (
           <p className="birmingham-interest-thanks">{NO_ARTWORKS_AVAILABLE}</p>
-        ) : (
+        ) : loaded ? (
           <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
             <label>
               Name
@@ -215,7 +215,7 @@ export default function RegisterInterestPage() {
               Register interest
             </button>
           </form>
-        )}
+        ) : null}
       </main>
     </div>
   )
