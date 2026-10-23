@@ -9,6 +9,7 @@ export type InterestRegistration = {
   town: string
   country: string
   artworkSlug: string
+  consent: boolean
 }
 
 export type InterestFormErrors = {
@@ -20,6 +21,7 @@ export type InterestFormErrors = {
   town?: string
   country?: string
   artworkSlug?: string
+  consent?: string
 }
 
 export type InterestFormResult =
@@ -27,20 +29,44 @@ export type InterestFormResult =
   | { ok: false; errors: InterestFormErrors }
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
+const LIMITS = {
+  name: 100,
+  surname: 100,
+  email: 254,
+  company: 200,
+  position: 200,
+  town: 100,
+  country: 100,
+} as const
+const BLANK = {
+  name: "Enter your name.",
+  surname: "Enter your surname.",
+  email: "Enter a valid email.",
+  company: "Enter your company.",
+  position: "Enter your position.",
+  town: "Enter the town.",
+  country: "Enter the country.",
+} as const
 const ARTWORK_SLUGS = new Set<string>(
   BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => artwork.slug)
 )
 
 export function submitInterestRegistration(values: InterestRegistration): InterestFormResult {
   const errors: InterestFormErrors = {}
-  if (!values.name.trim()) errors.name = "Enter your name."
-  if (!values.surname.trim()) errors.surname = "Enter your surname."
-  if (!EMAIL.test(values.email.trim())) errors.email = "Enter a valid email."
-  if (!values.company.trim()) errors.company = "Enter your company."
-  if (!values.position.trim()) errors.position = "Enter your position."
-  if (!values.town.trim()) errors.town = "Enter the town."
-  if (!values.country.trim()) errors.country = "Enter the country."
+  for (const field of Object.keys(LIMITS) as (keyof typeof LIMITS)[]) {
+    const text = values[field].trim()
+    const limit = LIMITS[field]
+    if (text.length > limit) {
+      errors[field] = `Use ${limit} characters or fewer.`
+      continue
+    }
+    if (field === "email") {
+      if (!EMAIL.test(text)) errors.email = BLANK.email
+      continue
+    }
+    if (!text) errors[field] = BLANK[field]
+  }
   if (!ARTWORK_SLUGS.has(values.artworkSlug)) errors.artworkSlug = "Choose an artwork."
+  if (values.consent !== true) errors.consent = "Confirm that we may store these details."
   return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true }
 }

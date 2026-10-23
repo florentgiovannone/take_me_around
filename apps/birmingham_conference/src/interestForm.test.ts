@@ -10,6 +10,7 @@ const valid: InterestRegistration = {
   town: "Birmingham",
   country: "United Kingdom",
   artworkSlug: "the-star-of-bethlehem",
+  consent: true,
 }
 
 describe("submitInterestRegistration", () => {
@@ -55,6 +56,20 @@ describe("submitInterestRegistration", () => {
     })
   })
 
+  it("rejects a missing consent checkbox", () => {
+    expect(submitInterestRegistration({ ...valid, consent: false })).toEqual({
+      ok: false,
+      errors: { consent: "Confirm that we may store these details." },
+    })
+  })
+
+  it("rejects a name over 100 characters", () => {
+    expect(submitInterestRegistration({ ...valid, name: "a".repeat(101) })).toEqual({
+      ok: false,
+      errors: { name: "Use 100 characters or fewer." },
+    })
+  })
+
   it("returns every field error when the registration is empty", () => {
     expect(
       submitInterestRegistration({
@@ -66,6 +81,7 @@ describe("submitInterestRegistration", () => {
         town: "",
         country: "",
         artworkSlug: "",
+        consent: false,
       })
     ).toEqual({
       ok: false,
@@ -78,6 +94,7 @@ describe("submitInterestRegistration", () => {
         town: "Enter the town.",
         country: "Enter the country.",
         artworkSlug: "Choose an artwork.",
+        consent: "Confirm that we may store these details.",
       },
     })
   })

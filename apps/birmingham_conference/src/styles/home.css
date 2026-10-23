@@ -149,3 +149,9 @@
   color: #0e2347;
   font-size: 1.05rem;
 }
+
+.birmingham-interest-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
