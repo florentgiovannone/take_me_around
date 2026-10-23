@@ -1,10 +1,12 @@
 import { useEffect, useState, type FormEvent } from "react"
 import { BrandHeader } from "@tma/brand"
 import {
+  registrationPayload,
   submitInterestRegistration,
   type InterestFormErrors,
   type InterestRegistration,
 } from "../interestForm"
+import { COUNTRIES, flagEmoji } from "../countries"
 import {
   NO_ARTWORKS_AVAILABLE,
   REGISTRATION_UNAVAILABLE,
@@ -22,7 +24,9 @@ const EMPTY_FORM: InterestRegistration = {
   company: "",
   position: "",
   town: "",
-  country: "",
+  country: "United Kingdom",
+  phoneCountry: "GB",
+  phoneNumber: "",
   artworkSlug: "",
   consent: false,
 }
@@ -34,7 +38,6 @@ export default function RegisterInterestPage() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [fieldErrors, setFieldErrors] = useState<InterestFormErrors>({})
   const [artworks, setArtworks] = useState<StockedArtwork[]>([])
-  const [privacyContact, setPrivacyContact] = useState("")
   const [loadFailed, setLoadFailed] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [notice, setNotice] = useState("")
@@ -53,10 +56,8 @@ export default function RegisterInterestPage() {
       if (!response.ok) throw new Error("artwork list failed")
       const body = (await response.json()) as {
         artworks: StockedArtwork[]
-        privacyContact: string
       }
       setArtworks(body.artworks)
-      setPrivacyContact(body.privacyContact)
       setLoadFailed(false)
       return body.artworks
     } catch {
@@ -70,6 +71,14 @@ export default function RegisterInterestPage() {
   useEffect(() => {
     void loadArtworks()
   }, [])
+
+  function startNextRegistration() {
+    setForm(EMPTY_FORM)
+    setFieldErrors({})
+    setNotice("")
+    setSent(false)
+    void loadArtworks()
+  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -93,7 +102,7 @@ export default function RegisterInterestPage() {
       const response = await fetch(`${baseUrl}/api/registrations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(registrationPayload(form)),
       })
       const body = (await response.json()) as {
         ok: boolean
@@ -138,7 +147,12 @@ export default function RegisterInterestPage() {
       <main>
         <h1>Register interest</h1>
         {sent ? (
-          <p className="birmingham-interest-thanks">{notice}</p>
+          <div className="birmingham-interest-thanks-panel">
+            <p className="birmingham-interest-thanks">{notice}</p>
+            <button type="button" className="birmingham-interest-next" onClick={startNextRegistration}>
+              Next registration
+            </button>
+          </div>
         ) : loadFailed ? (
           <p className="birmingham-interest-thanks">{REGISTRATION_UNAVAILABLE}</p>
         ) : loaded && visible.length === 0 ? (
@@ -146,42 +160,77 @@ export default function RegisterInterestPage() {
         ) : loaded ? (
           <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
             <label>
-              Name
+              <span className="req">Name</span>
               <input type="text" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
               {fieldErrors.name && <span className="birmingham-interest-error">{fieldErrors.name}</span>}
             </label>
             <label>
-              Surname
+              <span className="req">Surname</span>
               <input type="text" value={form.surname} onChange={(event) => setForm({ ...form, surname: event.target.value })} />
               {fieldErrors.surname && <span className="birmingham-interest-error">{fieldErrors.surname}</span>}
             </label>
             <label>
-              Email address
+              <span className="req">Email address</span>
               <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
               {fieldErrors.email && <span className="birmingham-interest-error">{fieldErrors.email}</span>}
             </label>
             <label>
-              Company
+              <span className="req">Company</span>
               <input type="text" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
               {fieldErrors.company && <span className="birmingham-interest-error">{fieldErrors.company}</span>}
             </label>
             <label>
-              Position
+              <span className="req">Position</span>
               <input type="text" value={form.position} onChange={(event) => setForm({ ...form, position: event.target.value })} />
               {fieldErrors.position && <span className="birmingham-interest-error">{fieldErrors.position}</span>}
             </label>
             <label>
-              Town
+              <span className="req">Town</span>
               <input type="text" value={form.town} onChange={(event) => setForm({ ...form, town: event.target.value })} />
               {fieldErrors.town && <span className="birmingham-interest-error">{fieldErrors.town}</span>}
             </label>
             <label>
-              Country
-              <input type="text" value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })} />
+              <span className="req">Country</span>
+              <select value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })}>
+                <option value="">Choose a country</option>
+                {COUNTRIES.map((country) => (
+                  <option key={country.code} value={country.name}>
+                    {flagEmoji(country.code)} {country.name}
+                  </option>
+                ))}
+              </select>
               {fieldErrors.country && <span className="birmingham-interest-error">{fieldErrors.country}</span>}
             </label>
+            <fieldset className="birmingham-interest-phone">
+              <legend>Phone number (optional)</legend>
+              <label>
+                Country code
+                <select
+                  value={form.phoneCountry}
+                  onChange={(event) => setForm({ ...form, phoneCountry: event.target.value })}
+                >
+                  {COUNTRIES.map((country) => (
+                    <option key={country.code} value={country.code}>
+                      {flagEmoji(country.code)} {country.dial}
+                    </option>
+                  ))}
+                </select>
+                {fieldErrors.phoneCountry && <span className="birmingham-interest-error">{fieldErrors.phoneCountry}</span>}
+              </label>
+              <label>
+                Number
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel-national"
+                  value={form.phoneNumber}
+                  onChange={(event) => setForm({ ...form, phoneNumber: event.target.value })}
+                />
+                {fieldErrors.phoneNumber && <span className="birmingham-interest-error">{fieldErrors.phoneNumber}</span>}
+              </label>
+            </fieldset>
             <fieldset>
-              <legend>Artwork desired</legend>
+              <legend className="req">Artwork desired</legend>
               <div className="birmingham-interest-options">
                 {visible.map((artwork) => (
                   <label key={artwork.slug}>
@@ -206,10 +255,9 @@ export default function RegisterInterestPage() {
                 checked={form.consent}
                 onChange={(event) => setForm({ ...form, consent: event.target.checked })}
               />
-              {CONSENT_LABEL}
+              <span className="req">{CONSENT_LABEL}</span>
             </label>
             {fieldErrors.consent && <span className="birmingham-interest-error">{fieldErrors.consent}</span>}
-            {privacyContact && <p>To access or delete your details, email {privacyContact}.</p>}
             {notice && <p className="birmingham-interest-error">{notice}</p>}
             <button type="submit" disabled={submitting}>
               Register interest

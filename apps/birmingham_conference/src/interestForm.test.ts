@@ -9,6 +9,8 @@ const valid: InterestRegistration = {
   position: "Curator",
   town: "Birmingham",
   country: "United Kingdom",
+  phoneCountry: "GB",
+  phoneNumber: "7700 900123",
   artworkSlug: "the-star-of-bethlehem",
   consent: true,
 }
@@ -37,7 +39,7 @@ describe("submitInterestRegistration", () => {
     })
     expect(submitInterestRegistration({ ...valid, country: "" })).toEqual({
       ok: false,
-      errors: { country: "Enter the country." },
+      errors: { country: "Choose a country." },
     })
   })
 
@@ -80,6 +82,8 @@ describe("submitInterestRegistration", () => {
         position: "",
         town: "",
         country: "",
+        phoneCountry: "",
+        phoneNumber: "",
         artworkSlug: "",
         consent: false,
       })
@@ -92,7 +96,7 @@ describe("submitInterestRegistration", () => {
         company: "Enter your company.",
         position: "Enter your position.",
         town: "Enter the town.",
-        country: "Enter the country.",
+        country: "Choose a country.",
         artworkSlug: "Choose an artwork.",
         consent: "Confirm that we may store these details.",
       },
@@ -100,7 +104,7 @@ describe("submitInterestRegistration", () => {
   })
 
   it("accepts a complete registration for each conference artwork", () => {
-    expect(submitInterestRegistration(valid)).toEqual({ ok: true })
+    expect(submitInterestRegistration({ ...valid, phoneNumber: "" })).toEqual({ ok: true })
     expect(
       submitInterestRegistration({ ...valid, artworkSlug: "the-golden-boys" })
     ).toEqual({ ok: true })
