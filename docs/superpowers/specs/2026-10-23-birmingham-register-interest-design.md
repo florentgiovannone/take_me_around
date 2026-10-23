@@ -32,11 +32,10 @@ Shown in this order. Every field is required.
 | 1 | Name | Text | Enter your name. |
 | 2 | Surname | Text | Enter your surname. |
 | 3 | Email address | Email | Enter a valid email. |
-| 4 | Position | Text | Enter your position. |
-| 5 | Company | Text | Enter your company. |
-| 6 | Town of company | Text | Enter the town. |
-| 7 | Country | Text | Enter the country. |
-| 8 | Artwork desired | One of the two artworks | Choose an artwork. |
+| 4 | Company | Text | Enter your company. |
+| 5 | Position | Text | Enter your position. |
+| 6 | Country | Text | Enter the country. |
+| 7 | Artwork desired | One of the two artworks | Choose an artwork. |
 
 Blank checks use the trimmed value. Email must match a simple `local@domain.tld` pattern, the same kind of check as `validateContactForm`. Several fields can fail together. Each error is shown under its field.
 
@@ -54,7 +53,7 @@ After a successful submit, the form is replaced by: “Thank you. Your interest 
 
 Input:
 
-- `name`, `surname`, `email`, `position`, `company`, `town`, `country` as strings
+- `name`, `surname`, `email`, `company`, `position`, `country` as strings
 - `artworkSlug`: `the-star-of-bethlehem` or `the-golden-boys`, or empty when nothing is chosen
 
 Result:
@@ -77,7 +76,7 @@ apps/birmingham_conference/
 
 ## Tests
 
-`interestForm.test.ts` rejects a blank name, surname, position, company, town, and country; a missing artwork; and an invalid email. It accepts a complete registration for each artwork slug.
+`interestForm.test.ts` rejects a blank name, surname, company, position, and country; a missing artwork; and an invalid email. It accepts a complete registration for each artwork slug.
 
 Browser check after implementation: open `/register-interest`, submit empty, correct the errors, submit a valid registration, and confirm the thank-you message. Confirm `/`, `/allpages`, and `/dashboard` still open.
 

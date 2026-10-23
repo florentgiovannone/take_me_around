@@ -5,15 +5,14 @@ const valid: InterestRegistration = {
   name: "Ada",
   surname: "Lovelace",
   email: "ada@example.com",
-  position: "Curator",
   company: "Analytical Engines",
-  town: "Birmingham",
+  position: "Curator",
   country: "United Kingdom",
   artworkSlug: "the-star-of-bethlehem",
 }
 
 describe("submitInterestRegistration", () => {
-  it("rejects a blank name, surname, position, company, town, and country", () => {
+  it("rejects a blank name, surname, company, position, and country", () => {
     expect(submitInterestRegistration({ ...valid, name: "  " })).toEqual({
       ok: false,
       errors: { name: "Enter your name." },
@@ -22,17 +21,13 @@ describe("submitInterestRegistration", () => {
       ok: false,
       errors: { surname: "Enter your surname." },
     })
-    expect(submitInterestRegistration({ ...valid, position: " " })).toEqual({
-      ok: false,
-      errors: { position: "Enter your position." },
-    })
     expect(submitInterestRegistration({ ...valid, company: "" })).toEqual({
       ok: false,
       errors: { company: "Enter your company." },
     })
-    expect(submitInterestRegistration({ ...valid, town: "  " })).toEqual({
+    expect(submitInterestRegistration({ ...valid, position: " " })).toEqual({
       ok: false,
-      errors: { town: "Enter the town." },
+      errors: { position: "Enter your position." },
     })
     expect(submitInterestRegistration({ ...valid, country: "" })).toEqual({
       ok: false,
@@ -61,9 +56,8 @@ describe("submitInterestRegistration", () => {
         name: "",
         surname: "",
         email: "",
-        position: "",
         company: "",
-        town: "",
+        position: "",
         country: "",
         artworkSlug: "",
       })
@@ -73,9 +67,8 @@ describe("submitInterestRegistration", () => {
         name: "Enter your name.",
         surname: "Enter your surname.",
         email: "Enter a valid email.",
-        position: "Enter your position.",
         company: "Enter your company.",
-        town: "Enter the town.",
+        position: "Enter your position.",
         country: "Enter the country.",
         artworkSlug: "Choose an artwork.",
       },

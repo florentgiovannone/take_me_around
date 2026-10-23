@@ -11,9 +11,8 @@ const EMPTY_FORM: InterestRegistration = {
   name: "",
   surname: "",
   email: "",
-  position: "",
   company: "",
-  town: "",
+  position: "",
   country: "",
   artworkSlug: "",
 }
@@ -76,17 +75,6 @@ export default function RegisterInterestPage() {
               )}
             </label>
             <label>
-              Position
-              <input
-                type="text"
-                value={form.position}
-                onChange={(event) => setForm({ ...form, position: event.target.value })}
-              />
-              {fieldErrors.position && (
-                <span className="birmingham-interest-error">{fieldErrors.position}</span>
-              )}
-            </label>
-            <label>
               Company
               <input
                 type="text"
@@ -98,13 +86,15 @@ export default function RegisterInterestPage() {
               )}
             </label>
             <label>
-              Town of company
+              Position
               <input
                 type="text"
-                value={form.town}
-                onChange={(event) => setForm({ ...form, town: event.target.value })}
+                value={form.position}
+                onChange={(event) => setForm({ ...form, position: event.target.value })}
               />
-              {fieldErrors.town && <span className="birmingham-interest-error">{fieldErrors.town}</span>}
+              {fieldErrors.position && (
+                <span className="birmingham-interest-error">{fieldErrors.position}</span>
+              )}
             </label>
             <label>
               Country
