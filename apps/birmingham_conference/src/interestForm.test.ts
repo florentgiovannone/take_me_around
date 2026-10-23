@@ -7,12 +7,13 @@ const valid: InterestRegistration = {
   email: "ada@example.com",
   company: "Analytical Engines",
   position: "Curator",
+  town: "Birmingham",
   country: "United Kingdom",
   artworkSlug: "the-star-of-bethlehem",
 }
 
 describe("submitInterestRegistration", () => {
-  it("rejects a blank name, surname, company, position, and country", () => {
+  it("rejects a blank name, surname, company, position, town, and country", () => {
     expect(submitInterestRegistration({ ...valid, name: "  " })).toEqual({
       ok: false,
       errors: { name: "Enter your name." },
@@ -28,6 +29,10 @@ describe("submitInterestRegistration", () => {
     expect(submitInterestRegistration({ ...valid, position: " " })).toEqual({
       ok: false,
       errors: { position: "Enter your position." },
+    })
+    expect(submitInterestRegistration({ ...valid, town: "  " })).toEqual({
+      ok: false,
+      errors: { town: "Enter the town." },
     })
     expect(submitInterestRegistration({ ...valid, country: "" })).toEqual({
       ok: false,
@@ -58,6 +63,7 @@ describe("submitInterestRegistration", () => {
         email: "",
         company: "",
         position: "",
+        town: "",
         country: "",
         artworkSlug: "",
       })
@@ -69,6 +75,7 @@ describe("submitInterestRegistration", () => {
         email: "Enter a valid email.",
         company: "Enter your company.",
         position: "Enter your position.",
+        town: "Enter the town.",
         country: "Enter the country.",
         artworkSlug: "Choose an artwork.",
       },

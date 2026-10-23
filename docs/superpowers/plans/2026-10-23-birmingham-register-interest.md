@@ -18,8 +18,8 @@
 - Header: `BrandHeader` with `homeHref="https://takemearound.com/"`
 - Page colors: cream background `#f4f0e8`, navy type `#0e2347`, Fraunces headings, Outfit body
 - Artwork slugs: `the-star-of-bethlehem`, `the-golden-boys`, labels from `BIRMINGHAM_CONFERENCE_ARTWORKS`
-- Field order: Name, Surname, Email address, Company, Position, Country, Artwork desired
-- Error copy: `Enter your name.` `Enter your surname.` `Enter a valid email.` `Enter your company.` `Enter your position.` `Enter the country.` `Choose an artwork.`
+- Field order: Name, Surname, Email address, Company, Position, Town, Country, Artwork desired
+- Error copy: `Enter your name.` `Enter your surname.` `Enter a valid email.` `Enter your company.` `Enter your position.` `Enter the town.` `Enter the country.` `Choose an artwork.`
 - Email check: `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` on the trimmed value. Other text fields fail when trim is empty.
 - `submitInterestRegistration` performs no network request, email, or stock change
 - Do not edit `contactForm.ts` or `DashboardPage.tsx`

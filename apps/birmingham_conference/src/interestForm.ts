@@ -6,6 +6,7 @@ export type InterestRegistration = {
   email: string
   company: string
   position: string
+  town: string
   country: string
   artworkSlug: string
 }
@@ -16,6 +17,7 @@ export type InterestFormErrors = {
   email?: string
   company?: string
   position?: string
+  town?: string
   country?: string
   artworkSlug?: string
 }
@@ -37,6 +39,7 @@ export function submitInterestRegistration(values: InterestRegistration): Intere
   if (!EMAIL.test(values.email.trim())) errors.email = "Enter a valid email."
   if (!values.company.trim()) errors.company = "Enter your company."
   if (!values.position.trim()) errors.position = "Enter your position."
+  if (!values.town.trim()) errors.town = "Enter the town."
   if (!values.country.trim()) errors.country = "Enter the country."
   if (!ARTWORK_SLUGS.has(values.artworkSlug)) errors.artworkSlug = "Choose an artwork."
   return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true }

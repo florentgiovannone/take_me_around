@@ -34,8 +34,9 @@ Shown in this order. Every field is required.
 | 3 | Email address | Email | Enter a valid email. |
 | 4 | Company | Text | Enter your company. |
 | 5 | Position | Text | Enter your position. |
-| 6 | Country | Text | Enter the country. |
-| 7 | Artwork desired | One of the two artworks | Choose an artwork. |
+| 6 | Town | Text | Enter the town. |
+| 7 | Country | Text | Enter the country. |
+| 8 | Artwork desired | One of the two artworks | Choose an artwork. |
 
 Blank checks use the trimmed value. Email must match a simple `local@domain.tld` pattern, the same kind of check as `validateContactForm`. Several fields can fail together. Each error is shown under its field.
 
@@ -45,7 +46,7 @@ Artwork values are the existing slugs `the-star-of-bethlehem` and `the-golden-bo
 
 Uses the Birmingham cream background (`#f4f0e8`), navy type, Fraunces headings, Outfit body, and `BrandHeader` with `homeHref="https://takemearound.com/"`, matching the home page. Heading: “Register interest”. Submit button label: “Register interest”.
 
-After a successful submit, the form is replaced by: “Thank you. Your interest is registered.”
+After a successful submit, the form is replaced by: “Thank you. Your interest is registered. Please check your inbox and confirm your email address.”
 
 ## Submit boundary
 
@@ -53,7 +54,7 @@ After a successful submit, the form is replaced by: “Thank you. Your interest 
 
 Input:
 
-- `name`, `surname`, `email`, `company`, `position`, `country` as strings
+- `name`, `surname`, `email`, `company`, `position`, `town`, `country` as strings
 - `artworkSlug`: `the-star-of-bethlehem` or `the-golden-boys`, or empty when nothing is chosen
 
 Result:
@@ -76,7 +77,7 @@ apps/birmingham_conference/
 
 ## Tests
 
-`interestForm.test.ts` rejects a blank name, surname, company, position, and country; a missing artwork; and an invalid email. It accepts a complete registration for each artwork slug.
+`interestForm.test.ts` rejects a blank name, surname, company, position, town, and country; a missing artwork; and an invalid email. It accepts a complete registration for each artwork slug.
 
 Browser check after implementation: open `/register-interest`, submit empty, correct the errors, submit a valid registration, and confirm the thank-you message. Confirm `/`, `/allpages`, and `/dashboard` still open.
 

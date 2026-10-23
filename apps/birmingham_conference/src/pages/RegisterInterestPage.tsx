@@ -13,6 +13,7 @@ const EMPTY_FORM: InterestRegistration = {
   email: "",
   company: "",
   position: "",
+  town: "",
   country: "",
   artworkSlug: "",
 }
@@ -40,7 +41,10 @@ export default function RegisterInterestPage() {
       <main>
         <h1>Register interest</h1>
         {sent ? (
-          <p className="birmingham-interest-thanks">Thank you. Your interest is registered.</p>
+          <p className="birmingham-interest-thanks">
+            Thank you. Your interest is registered. Please check your inbox and confirm your email
+            address.
+          </p>
         ) : (
           <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
             <label>
@@ -95,6 +99,15 @@ export default function RegisterInterestPage() {
               {fieldErrors.position && (
                 <span className="birmingham-interest-error">{fieldErrors.position}</span>
               )}
+            </label>
+            <label>
+              Town
+              <input
+                type="text"
+                value={form.town}
+                onChange={(event) => setForm({ ...form, town: event.target.value })}
+              />
+              {fieldErrors.town && <span className="birmingham-interest-error">{fieldErrors.town}</span>}
             </label>
             <label>
               Country
