@@ -3,6 +3,8 @@ export const CHECK_INBOX =
 
 export const REGISTRATION_UNAVAILABLE = "Registration is unavailable."
 
+export const NO_ARTWORKS_AVAILABLE = "No artworks are available right now."
+
 export type StockedArtwork = {
   slug: string
   title: string
@@ -10,9 +12,32 @@ export type StockedArtwork = {
   available: boolean
 }
 
-export function registrationBaseUrl(): string {
-  const configured = import.meta.env.VITE_BIRMINGHAM_REGISTRATION_URL as string | undefined
-  return (configured || "http://127.0.0.1:5051").replace(/\/$/, "")
+export function resolveRegistrationBaseUrl(
+  configured: string | undefined,
+  dev: boolean
+): string | null {
+  const trimmed = (configured ?? "").trim().replace(/\/$/, "")
+  if (trimmed === "") {
+    return dev ? "http://127.0.0.1:5051" : null
+  }
+  let url: URL
+  try {
+    url = new URL(trimmed)
+  } catch {
+    return null
+  }
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    return null
+  }
+  const path = url.pathname.replace(/\/$/, "")
+  return path && path !== "/" ? `${url.origin}${path}` : url.origin
+}
+
+export function registrationBaseUrl(): string | null {
+  return resolveRegistrationBaseUrl(
+    import.meta.env.VITE_BIRMINGHAM_REGISTRATION_URL as string | undefined,
+    import.meta.env.DEV
+  )
 }
 
 export function artworksToShow<T extends { available: boolean; stock: number }>(artworks: T[]): T[] {

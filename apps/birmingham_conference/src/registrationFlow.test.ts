@@ -1,11 +1,44 @@
 import { describe, expect, it } from "vitest"
 import {
   CHECK_INBOX,
+  NO_ARTWORKS_AVAILABLE,
   REGISTRATION_UNAVAILABLE,
   artworkSlugAfterReload,
   artworksToShow,
   outcomeFromResponse,
+  resolveRegistrationBaseUrl,
 } from "./registrationFlow"
+
+describe("resolveRegistrationBaseUrl", () => {
+  it("uses localhost when blank in dev", () => {
+    expect(resolveRegistrationBaseUrl(undefined, true)).toBe("http://127.0.0.1:5051")
+    expect(resolveRegistrationBaseUrl("  ", true)).toBe("http://127.0.0.1:5051")
+  })
+
+  it("returns null when blank outside dev", () => {
+    expect(resolveRegistrationBaseUrl(undefined, false)).toBeNull()
+    expect(resolveRegistrationBaseUrl("", false)).toBeNull()
+  })
+
+  it("normalizes absolute http and https URLs", () => {
+    expect(resolveRegistrationBaseUrl("http://127.0.0.1:5051/", true)).toBe("http://127.0.0.1:5051")
+    expect(resolveRegistrationBaseUrl("https://register.example/", false)).toBe(
+      "https://register.example"
+    )
+  })
+
+  it("rejects relative and non-http URLs", () => {
+    expect(resolveRegistrationBaseUrl("/", false)).toBeNull()
+    expect(resolveRegistrationBaseUrl("api", false)).toBeNull()
+    expect(resolveRegistrationBaseUrl("ftp://example.com", false)).toBeNull()
+  })
+})
+
+describe("NO_ARTWORKS_AVAILABLE", () => {
+  it("uses the expected copy", () => {
+    expect(NO_ARTWORKS_AVAILABLE).toBe("No artworks are available right now.")
+  })
+})
 
 describe("artworksToShow", () => {
   it("hides an artwork whose stock is zero", () => {

@@ -6,6 +6,7 @@ import {
   type InterestRegistration,
 } from "../interestForm"
 import {
+  NO_ARTWORKS_AVAILABLE,
   REGISTRATION_UNAVAILABLE,
   artworkSlugAfterReload,
   artworksToShow,
@@ -35,12 +36,20 @@ export default function RegisterInterestPage() {
   const [artworks, setArtworks] = useState<StockedArtwork[]>([])
   const [privacyContact, setPrivacyContact] = useState("")
   const [loadFailed, setLoadFailed] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   const [notice, setNotice] = useState("")
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   async function loadArtworks(): Promise<StockedArtwork[] | null> {
+    const baseUrl = registrationBaseUrl()
+    if (!baseUrl) {
+      setLoadFailed(true)
+      setLoaded(true)
+      return null
+    }
     try {
-      const response = await fetch(`${registrationBaseUrl()}/api/artworks`)
+      const response = await fetch(`${baseUrl}/api/artworks`)
       if (!response.ok) throw new Error("artwork list failed")
       const body = (await response.json()) as {
         artworks: StockedArtwork[]
@@ -53,6 +62,8 @@ export default function RegisterInterestPage() {
     } catch {
       setLoadFailed(true)
       return null
+    } finally {
+      setLoaded(true)
     }
   }
 
@@ -62,6 +73,7 @@ export default function RegisterInterestPage() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (submitting) return
     const result = submitInterestRegistration(form)
     if (!result.ok) {
       setNotice("")
@@ -69,9 +81,16 @@ export default function RegisterInterestPage() {
       setSent(false)
       return
     }
+    const baseUrl = registrationBaseUrl()
+    if (!baseUrl) {
+      setNotice(REGISTRATION_UNAVAILABLE)
+      return
+    }
     setFieldErrors({})
+    setSubmitting(true)
+    setNotice("")
     try {
-      const response = await fetch(`${registrationBaseUrl()}/api/registrations`, {
+      const response = await fetch(`${baseUrl}/api/registrations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -106,6 +125,8 @@ export default function RegisterInterestPage() {
     } catch {
       setSent(false)
       setNotice(REGISTRATION_UNAVAILABLE)
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -120,6 +141,8 @@ export default function RegisterInterestPage() {
           <p className="birmingham-interest-thanks">{notice}</p>
         ) : loadFailed ? (
           <p className="birmingham-interest-thanks">{REGISTRATION_UNAVAILABLE}</p>
+        ) : loaded && visible.length === 0 ? (
+          <p className="birmingham-interest-thanks">{NO_ARTWORKS_AVAILABLE}</p>
         ) : (
           <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
             <label>
@@ -188,7 +211,9 @@ export default function RegisterInterestPage() {
             {fieldErrors.consent && <span className="birmingham-interest-error">{fieldErrors.consent}</span>}
             {privacyContact && <p>To access or delete your details, email {privacyContact}.</p>}
             {notice && <p className="birmingham-interest-error">{notice}</p>}
-            <button type="submit">Register interest</button>
+            <button type="submit" disabled={submitting}>
+              Register interest
+            </button>
           </form>
         )}
       </main>
