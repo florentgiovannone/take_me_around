@@ -7,6 +7,7 @@ import {
 } from "../interestForm"
 import {
   REGISTRATION_UNAVAILABLE,
+  artworkSlugAfterReload,
   artworksToShow,
   outcomeFromResponse,
   registrationBaseUrl,
@@ -37,7 +38,7 @@ export default function RegisterInterestPage() {
   const [notice, setNotice] = useState("")
   const [sent, setSent] = useState(false)
 
-  async function loadArtworks(): Promise<void> {
+  async function loadArtworks(): Promise<StockedArtwork[] | null> {
     try {
       const response = await fetch(`${registrationBaseUrl()}/api/artworks`)
       if (!response.ok) throw new Error("artwork list failed")
@@ -48,8 +49,10 @@ export default function RegisterInterestPage() {
       setArtworks(body.artworks)
       setPrivacyContact(body.privacyContact)
       setLoadFailed(false)
+      return body.artworks
     } catch {
       setLoadFailed(true)
+      return null
     }
   }
 
@@ -61,33 +64,49 @@ export default function RegisterInterestPage() {
     event.preventDefault()
     const result = submitInterestRegistration(form)
     if (!result.ok) {
+      setNotice("")
       setFieldErrors(result.errors)
       setSent(false)
       return
     }
-    const response = await fetch(`${registrationBaseUrl()}/api/registrations`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    })
-    const body = (await response.json()) as {
-      ok: boolean
-      error?: string
-      message?: string
-      errors?: Record<string, string>
-    }
-    const outcome = outcomeFromResponse(response.status, body)
-    if (outcome.type === "sent") {
-      setSent(true)
+    setFieldErrors({})
+    try {
+      const response = await fetch(`${registrationBaseUrl()}/api/registrations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      })
+      const body = (await response.json()) as {
+        ok: boolean
+        error?: string
+        message?: string
+        errors?: Record<string, string>
+      }
+      const outcome = outcomeFromResponse(response.status, body)
+      if (outcome.type === "sent") {
+        setSent(true)
+        setNotice(outcome.message)
+        return
+      }
+      if (outcome.type === "fields") {
+        setNotice("")
+        setFieldErrors(outcome.errors)
+        return
+      }
+      if (outcome.type === "reload") {
+        const reloaded = await loadArtworks()
+        if (reloaded) {
+          setForm((current) => ({
+            ...current,
+            artworkSlug: artworkSlugAfterReload(current.artworkSlug, reloaded),
+          }))
+        }
+      }
       setNotice(outcome.message)
-      return
+    } catch {
+      setSent(false)
+      setNotice(REGISTRATION_UNAVAILABLE)
     }
-    if (outcome.type === "fields") {
-      setFieldErrors(outcome.errors)
-      return
-    }
-    if (outcome.type === "reload") await loadArtworks()
-    setNotice(outcome.message)
   }
 
   const visible = artworksToShow(artworks)

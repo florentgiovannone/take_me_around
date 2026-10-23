@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   CHECK_INBOX,
   REGISTRATION_UNAVAILABLE,
+  artworkSlugAfterReload,
   artworksToShow,
   outcomeFromResponse,
 } from "./registrationFlow"
@@ -14,6 +15,26 @@ describe("artworksToShow", () => {
         { slug: "the-golden-boys", title: "The Golden Boys", stock: 2, available: true },
       ]).map((artwork) => artwork.slug)
     ).toEqual(["the-golden-boys"])
+  })
+})
+
+describe("artworkSlugAfterReload", () => {
+  const list = [
+    { slug: "the-star-of-bethlehem", title: "The Star of Bethlehem", stock: 0, available: false },
+    { slug: "the-golden-boys", title: "The Golden Boys", stock: 2, available: true },
+  ]
+
+  it("clears a slug whose artwork is unavailable or out of stock", () => {
+    expect(artworkSlugAfterReload("the-star-of-bethlehem", list)).toBe("")
+    expect(
+      artworkSlugAfterReload("the-golden-boys", [
+        { slug: "the-golden-boys", title: "The Golden Boys", stock: 0, available: true },
+      ])
+    ).toBe("")
+  })
+
+  it("keeps a slug that is still available", () => {
+    expect(artworkSlugAfterReload("the-golden-boys", list)).toBe("the-golden-boys")
   })
 })
 

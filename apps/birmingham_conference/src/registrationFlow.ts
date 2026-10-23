@@ -19,6 +19,11 @@ export function artworksToShow<T extends { available: boolean; stock: number }>(
   return artworks.filter((artwork) => artwork.available && artwork.stock > 0)
 }
 
+export function artworkSlugAfterReload(slug: string, artworks: StockedArtwork[]): string {
+  if (!slug) return ""
+  return artworksToShow(artworks).some((artwork) => artwork.slug === slug) ? slug : ""
+}
+
 export type SubmitOutcome =
   | { type: "sent"; message: string }
   | { type: "reload"; message: string }
