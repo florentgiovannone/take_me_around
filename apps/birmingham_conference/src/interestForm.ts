@@ -35,7 +35,7 @@ export type InterestFormResult =
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_DIGITS = /^[0-9]{4,15}$/
-const COUNTRY_NAMES = new Set(COUNTRIES.map((country) => country.name))
+const COUNTRY_NAMES = new Set<string>(COUNTRIES.map((country) => country.name))
 const LIMITS = {
   name: 100,
   surname: 100,
