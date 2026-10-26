@@ -213,3 +213,139 @@ body {
 .tma-footer a {
   color: var(--tma-gold);
 }
+
+.tma-audio-pill-anchor {
+  display: block;
+  width: 100%;
+  margin: 0 auto 22px;
+}
+
+.tma-audio-pill-anchor > audio.tma-audio-player {
+  display: none;
+}
+
+.tma-navy-pill {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px 12px 12px;
+  border-radius: 999px;
+  background: var(--tma-navy);
+  color: var(--tma-hero-title);
+  font-family: var(--tma-font-ui);
+  box-sizing: border-box;
+}
+
+.tma-navy-pill--floating {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 50;
+  width: min(720px, calc(100% - 32px));
+  transform: translateX(-50%);
+  box-shadow: 0 12px 28px rgba(14, 35, 71, 0.28);
+}
+
+.tma-navy-pill-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--tma-hero-title);
+  color: var(--tma-navy);
+  cursor: pointer;
+}
+
+.tma-navy-pill-btn:focus-visible {
+  outline: 2px solid var(--tma-gold);
+  outline-offset: 2px;
+}
+
+.tma-navy-pill-play {
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8px 0 8px 13px;
+  border-color: transparent transparent transparent currentColor;
+  margin-left: 3px;
+}
+
+.tma-navy-pill-pause {
+  display: inline-flex;
+  gap: 4px;
+  width: 12px;
+  height: 14px;
+}
+
+.tma-navy-pill-pause::before,
+.tma-navy-pill-pause::after {
+  content: "";
+  flex: 1;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.tma-navy-pill-mid {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tma-navy-pill-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.tma-navy-pill-kicker {
+  color: var(--tma-hero-subtitle);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tma-navy-pill-time {
+  color: var(--tma-hero-subtitle);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tma-navy-pill-track {
+  position: relative;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(247, 243, 234, 0.25);
+}
+
+.tma-navy-pill-fill {
+  display: block;
+  width: var(--tma-pill-progress, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tma-gold);
+  pointer-events: none;
+}
+
+.tma-navy-pill-range {
+  position: absolute;
+  inset: -8px 0;
+  width: 100%;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.tma-navy-pill-range:disabled {
+  cursor: default;
+}
