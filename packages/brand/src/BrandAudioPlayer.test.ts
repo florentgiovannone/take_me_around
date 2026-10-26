@@ -1,9 +1,10 @@
 import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import {
   BrandAudioPlayer,
   formatAudioTime,
+  pauseOtherAudioPlayers,
   shouldShowFloatingAudioPill,
 } from "./BrandAudioPlayer"
 
@@ -15,6 +16,20 @@ describe("formatAudioTime", () => {
     expect(formatAudioTime(Number.NaN)).toBe("--:--")
     expect(formatAudioTime(Number.POSITIVE_INFINITY)).toBe("--:--")
     expect(formatAudioTime(-5)).toBe("--:--")
+  })
+})
+
+describe("pauseOtherAudioPlayers", () => {
+  it("pauses other playing nodes but leaves the active node and already-paused nodes untouched", () => {
+    const active = { paused: false, pause: () => {} }
+    const playingOther = { paused: false, pause: vi.fn() }
+    const pausedOther = { paused: true, pause: vi.fn() }
+    const noPauseFn = { paused: false }
+
+    pauseOtherAudioPlayers(active, [active, playingOther, pausedOther, noPauseFn])
+
+    expect(playingOther.pause).toHaveBeenCalledOnce()
+    expect(pausedOther.pause).not.toHaveBeenCalled()
   })
 })
 
@@ -37,6 +52,8 @@ describe("BrandAudioPlayer", () => {
     expect(html).toContain("0:00 / --:--")
     expect(html).toContain('aria-label="Play audio"')
     expect(html).toContain('aria-label="Seek audio"')
+    expect(html).toContain('aria-valuetext="0:00 / --:--"')
+    expect(html).toContain('step="1"')
     expect(html).toContain('class="tma-audio-player tma-section-audio"')
     expect(html).toContain('src="/audio/the-kiss.mp3"')
   })

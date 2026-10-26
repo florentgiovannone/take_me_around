@@ -18,6 +18,17 @@ export function shouldShowFloatingAudioPill({
   return hasStarted && !isInView
 }
 
+export function pauseOtherAudioPlayers(
+  activeEl: unknown,
+  nodes: Iterable<{ paused?: boolean; pause?: () => void }>
+): void {
+  for (const node of nodes) {
+    if (node !== activeEl && node && !node.paused && typeof node.pause === "function") {
+      node.pause()
+    }
+  }
+}
+
 type PillControlsProps = {
   label: string
   isPlaying: boolean
@@ -84,7 +95,8 @@ function PillControls({
             aria-label="Seek audio"
             min={0}
             max={Number.isFinite(duration) && duration > 0 ? duration : 0}
-            step={0.1}
+            step={1}
+            aria-valuetext={timeText}
             value={Number.isFinite(currentTime) ? currentTime : 0}
             disabled={!Number.isFinite(duration) || duration <= 0}
             onChange={onSeek}
@@ -124,10 +136,13 @@ export function BrandAudioPlayer({
     const onPlay = () => {
       setIsPlaying(true)
       setHasStarted(true)
-      document.querySelectorAll("audio.tma-audio-player").forEach((node) => {
-        if (!(node instanceof HTMLAudioElement)) return
-        if (node !== el && !node.paused) node.pause()
-      })
+      pauseOtherAudioPlayers(
+        el,
+        document.querySelectorAll("audio.tma-audio-player") as Iterable<{
+          paused?: boolean
+          pause?: () => void
+        }>
+      )
     }
 
     const onPause = () => {
@@ -213,7 +228,7 @@ export function BrandAudioPlayer({
     const el = audioRef.current
     if (!el) return
     if (el.paused) {
-      void el.play()
+      void el.play().catch(() => {})
     } else {
       el.pause()
     }

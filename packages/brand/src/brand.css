@@ -327,6 +327,11 @@ body {
   background: rgba(247, 243, 234, 0.25);
 }
 
+.tma-navy-pill-track:focus-within {
+  outline: 2px solid var(--tma-gold);
+  outline-offset: 4px;
+}
+
 .tma-navy-pill-fill {
   display: block;
   width: var(--tma-pill-progress, 0%);
