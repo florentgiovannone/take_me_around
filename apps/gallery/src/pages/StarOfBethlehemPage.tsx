@@ -1,10 +1,22 @@
+import { useSearchParams } from "react-router-dom"
 import { ArtworkFrame } from "@tma/brand"
 import Footer from "../components/Footer"
-import { STAR_OF_BETHLEHEM } from "../data/starOfBethlehem"
+import AudioPlayer from "../components/AudioPlayer"
+import { getArtworkAudio } from "../assets/gallery"
+import {
+  detectStarOfBethlehemLocale,
+  resolveStarOfBethlehemCopy,
+} from "../utils/starOfBethlehemLocale"
 import "../styles/style.css"
 
+const ARTWORK_SLUG = "star-of-bethlehem"
+
 export default function StarOfBethlehemPage() {
-  const copy = STAR_OF_BETHLEHEM
+  const [searchParams] = useSearchParams()
+  const locale = detectStarOfBethlehemLocale(searchParams)
+  const copy = resolveStarOfBethlehemCopy(locale)
+  const audioSrc = getArtworkAudio(ARTWORK_SLUG, locale)
+
   return (
     <>
       <ArtworkFrame
@@ -14,6 +26,7 @@ export default function StarOfBethlehemPage() {
         bannerBottom={copy.bannerBottom}
         imageSrc={copy.imageSrc}
         imageAlt={copy.imageAlt}
+        audio={audioSrc ? <AudioPlayer src={audioSrc} /> : undefined}
         sections={[
           { heading: copy.aboutWorkHeading, paragraphs: copy.aboutWorkParagraphs },
           { heading: copy.aboutArtistHeading, paragraphs: copy.aboutArtistParagraphs },

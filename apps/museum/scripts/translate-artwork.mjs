@@ -76,9 +76,11 @@ function rebuildCopy(source, keys, translated, sections) {
   const map = Object.fromEntries(keys.map((key, index) => [key, translated[index]]))
   const next = {
     title: source.title,
+    ...(source.detail ? { detail: source.detail } : {}),
     subtitle: map.subtitle ?? source.subtitle,
     bannerTop: map.bannerTop ?? source.bannerTop,
     bannerBottom: map.bannerBottom ?? source.bannerBottom,
+    ...(source.imageSrc ? { imageSrc: source.imageSrc } : {}),
     imageAlt: map.imageAlt ?? source.imageAlt,
   }
 

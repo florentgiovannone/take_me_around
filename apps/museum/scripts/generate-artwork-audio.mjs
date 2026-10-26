@@ -40,20 +40,33 @@ if (!artwork) {
 }
 
 const appRoot = artwork.app === "gallery" ? galleryRoot : museumRoot
+const enVoiceId = process.env.ELEVENLABS_VOICE_ID
 
-const LOCALES = ARTWORK_LOCALE_TARGETS.map((entry) => ({
-  code: entry.locale,
-  copyFile: `${artwork.dataBase}.${entry.locale}.ts`,
-  voiceId:
-    process.env[entry.envVoiceKey] ??
-    entry.voiceId ??
-    (entry.locale === "tr" ? process.env.ELEVENLABS_VOICE_ID : undefined),
-  voiceLabel: entry.label,
-  languageCode: entry.languageCode,
-}))
+const LOCALES = [
+  {
+    code: "en",
+    copyFile: `${artwork.dataBase}.en.json`,
+    voiceId: enVoiceId,
+    voiceLabel: "English",
+    languageCode: "en",
+  },
+  ...ARTWORK_LOCALE_TARGETS.map((entry) => ({
+    code: entry.locale,
+    copyFile: `${artwork.dataBase}.${entry.locale}.ts`,
+    voiceId:
+      process.env[entry.envVoiceKey] ??
+      entry.voiceId ??
+      (entry.locale === "tr" ? process.env.ELEVENLABS_VOICE_ID : undefined),
+    voiceLabel: entry.label,
+    languageCode: entry.languageCode,
+  })),
+]
 
 function parseLocaleCopy(filePath) {
   const source = readFileSync(filePath, "utf8")
+  if (filePath.endsWith(".json")) {
+    return JSON.parse(source)
+  }
   const match = source.match(/=\s*(\{[\s\S]*\})\s*$/)
   if (!match) {
     throw new Error(`Could not parse locale copy at ${filePath}`)

@@ -131,6 +131,28 @@ export const ARTWORKS = {
       { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
     ],
   },
+  "star-of-bethlehem": {
+    app: "gallery",
+    slug: "star-of-bethlehem",
+    dataBase: "starOfBethlehem",
+    exportPrefix: "STAR_OF_BETHLEHEM",
+    copyTypeName: "StarOfBethlehemCopy",
+    sections: [
+      { headingKey: "aboutWorkHeading", paragraphsKey: "aboutWorkParagraphs" },
+      { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
+    ],
+  },
+  "golden-boys": {
+    app: "museum",
+    slug: "golden-boys",
+    dataBase: "goldenBoys",
+    exportPrefix: "GOLDEN_BOYS",
+    copyTypeName: "GoldenBoysCopy",
+    sections: [
+      { headingKey: "aboutWorkHeading", paragraphsKey: "aboutWorkParagraphs" },
+      { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
+    ],
+  },
 }
 
 export const APP_ROOTS = {
