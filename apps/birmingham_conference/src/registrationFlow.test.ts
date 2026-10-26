@@ -22,6 +22,7 @@ describe("resolveRegistrationBaseUrl", () => {
 
   it("normalizes absolute http and https URLs", () => {
     expect(resolveRegistrationBaseUrl("http://127.0.0.1:5051/", true)).toBe("http://127.0.0.1:5051")
+    expect(resolveRegistrationBaseUrl("http://52.18.254.191:5051/", false)).toBe("/registration-api")
     expect(resolveRegistrationBaseUrl("https://register.example/", false)).toBe(
       "https://register.example"
     )

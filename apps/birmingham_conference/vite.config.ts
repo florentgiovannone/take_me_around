@@ -17,6 +17,13 @@ export default defineConfig(({ mode }) => {
     .trim()
     .replace(/\/$/, "")
   const apiTarget = proxyBase || "http://127.0.0.1:5050"
+  const registrationBase = (
+    process.env.VITE_BIRMINGHAM_REGISTRATION_URL ||
+    fileEnv.VITE_BIRMINGHAM_REGISTRATION_URL ||
+    ""
+  )
+    .trim()
+    .replace(/\/$/, "")
   const packagesDir = path.resolve(__dirname, "../../packages")
   const dashboardPassword = (
     process.env.DASHBOARD_PASSWORD ||
@@ -68,6 +75,10 @@ export default defineConfig(({ mode }) => {
           const lines: string[] = []
           if (proxyBase) {
             lines.push(`/api/*  ${proxyBase}/api/:splat  200`)
+          }
+          if (registrationBase) {
+            lines.push(`/registration-api/*  ${registrationBase}/:splat  200`)
+            lines.push(`/confirm  ${registrationBase}/confirm  200`)
           }
           lines.push("/*    /index.html   200")
           const out = path.resolve(process.cwd(), "dist", "_redirects")

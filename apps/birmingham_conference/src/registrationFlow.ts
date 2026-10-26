@@ -29,6 +29,9 @@ export function resolveRegistrationBaseUrl(
   if (url.protocol !== "http:" && url.protocol !== "https:") {
     return null
   }
+  if (!dev && url.protocol === "http:") {
+    return "/registration-api"
+  }
   const path = url.pathname.replace(/\/$/, "")
   return path && path !== "/" ? `${url.origin}${path}` : url.origin
 }
