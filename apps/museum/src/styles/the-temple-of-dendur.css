@@ -175,7 +175,7 @@
   font-weight: 560;
 }
 
-.the-temple-of-dendur audio.tma-section-audio {
+.the-temple-of-dendur .tma-audio-pill-anchor.tma-section-audio {
   display: block;
   width: 100%;
   margin: 28px 0 12px;
