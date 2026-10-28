@@ -22,7 +22,6 @@ export default function CyrusCylinderPage() {
       <ArtworkFrame
         title={copy.title}
         subtitle={copy.subtitle}
-        bannerTop={copy.bannerTop}
         bannerBottom={copy.bannerBottom}
         imageSrc={ARTWORK_IMAGES[ARTWORK_SLUG]!}
         imageAlt={copy.imageAlt}

@@ -23,7 +23,6 @@ export default function GoldenBoysPage() {
         title={copy.title}
         detail={copy.detail}
         subtitle={copy.subtitle}
-        bannerTop={copy.bannerTop}
         bannerBottom={copy.bannerBottom}
         imageSrc={copy.imageSrc}
         imageAlt={copy.imageAlt}

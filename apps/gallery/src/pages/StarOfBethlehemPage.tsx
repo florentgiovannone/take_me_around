@@ -22,7 +22,6 @@ export default function StarOfBethlehemPage() {
       <ArtworkFrame
         title={copy.title}
         subtitle={copy.subtitle}
-        bannerTop={copy.bannerTop}
         bannerBottom={copy.bannerBottom}
         imageSrc={copy.imageSrc}
         imageAlt={copy.imageAlt}

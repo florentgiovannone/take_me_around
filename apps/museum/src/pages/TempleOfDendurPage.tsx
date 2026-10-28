@@ -38,10 +38,6 @@ export default function TempleOfDendurPage() {
 
           <ArtworkTextSize scale={scale} onChange={choose} />
 
-          <a className="tma-brand-banner" href="/underlying-technology">
-            {copy.banner}
-          </a>
-
           <figure className="plate">
             <div className="frame">
               <img src={templeImage} alt={copy.imageAlt} />
