@@ -13,7 +13,7 @@ export default function NotFoundPage() {
         </header>
         <div className="tma-content">
           <p>
-            <Link to="/">Back to Birmingham Conference</Link>
+            <Link to="/">Back to Museum Association Conference</Link>
           </p>
         </div>
       </main>

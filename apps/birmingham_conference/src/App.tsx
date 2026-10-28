@@ -6,6 +6,7 @@ import DashboardPage from "./pages/DashboardPage"
 import IndexPage from "./pages/IndexPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import RegisterInterestPage from "./pages/RegisterInterestPage"
+import { REGISTRATION_PATH } from "./registrationFlow"
 import "./styles/home.css"
 
 function PageTitle() {
@@ -16,10 +17,12 @@ function PageTitle() {
       "/": "Take Me Around",
       "/allpages": "All Pages",
       "/dashboard": "Dashboard",
-      "/register-interest": "Register interest",
+      [REGISTRATION_PATH]: "Register interest",
     }
     const page = artwork?.title ?? titles[pathname]
-    document.title = page ? `${page} | Birmingham Conference` : "Page not found | Birmingham Conference"
+    document.title = page
+      ? `${page} | Museum Association Conference`
+      : "Page not found | Museum Association Conference"
   }, [pathname])
   return null
 }
@@ -37,7 +40,7 @@ function AllPages() {
       <BrandHeader />
       <main>
         <h1>Take Me Around</h1>
-        <p>Open a Birmingham Conference page from the links below.</p>
+        <p>Open a Museum Association Conference page from the links below.</p>
         {BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => (
           <p key={artwork.slug}>
             <a href={artwork.url}>Go to {artwork.title} page</a>
@@ -47,7 +50,7 @@ function AllPages() {
           <Link to="/dashboard">Go to Dashboard page</Link>
         </p>
         <p>
-          <Link to="/register-interest">Go to Register interest page</Link>
+          <Link to={REGISTRATION_PATH}>Go to Register interest page</Link>
         </p>
       </main>
     </div>
@@ -62,7 +65,7 @@ export default function App() {
         <Route path="/" element={<IndexPage />} />
         <Route path="/allpages" element={<AllPages />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/register-interest" element={<RegisterInterestPage />} />
+        <Route path={REGISTRATION_PATH} element={<RegisterInterestPage />} />
         {BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => (
           <Route
             key={artwork.path}

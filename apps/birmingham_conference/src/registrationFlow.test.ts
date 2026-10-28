@@ -2,12 +2,26 @@ import { describe, expect, it } from "vitest"
 import {
   CHECK_INBOX,
   NO_ARTWORKS_AVAILABLE,
+  REGISTRATION_PATH,
   REGISTRATION_UNAVAILABLE,
+  artworkMediumLabel,
   artworkSlugAfterReload,
   artworksToShow,
   outcomeFromResponse,
   resolveRegistrationBaseUrl,
 } from "./registrationFlow"
+
+describe("REGISTRATION_PATH and artworkMediumLabel", () => {
+  it("exposes the Museum Association Conference registration path", () => {
+    expect(REGISTRATION_PATH).toBe("/museumassociationconferenceregistration")
+  })
+
+  it("identifies which artwork is the painting and which is the sculpture", () => {
+    expect(artworkMediumLabel("the-star-of-bethlehem")).toBe("Painting")
+    expect(artworkMediumLabel("the-golden-boys")).toBe("Sculpture")
+    expect(artworkMediumLabel("unknown")).toBe("")
+  })
+})
 
 describe("resolveRegistrationBaseUrl", () => {
   it("uses localhost when blank in dev", () => {

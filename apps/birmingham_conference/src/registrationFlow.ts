@@ -1,6 +1,17 @@
 export const CHECK_INBOX =
   "Thank you. Your interest is registered. Please check your inbox and confirm your email address."
 
+export const REGISTRATION_PATH = "/museumassociationconferenceregistration"
+
+const ARTWORK_MEDIUMS: Record<string, "Painting" | "Sculpture"> = {
+  "the-star-of-bethlehem": "Painting",
+  "the-golden-boys": "Sculpture",
+}
+
+export function artworkMediumLabel(slug: string): "Painting" | "Sculpture" | "" {
+  return ARTWORK_MEDIUMS[slug] ?? ""
+}
+
 export const REGISTRATION_UNAVAILABLE = "Registration is unavailable."
 
 export const NO_ARTWORKS_AVAILABLE = "No artworks are available right now."

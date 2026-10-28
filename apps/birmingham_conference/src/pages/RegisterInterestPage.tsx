@@ -10,6 +10,7 @@ import { COUNTRIES, flagEmoji } from "../countries"
 import {
   NO_ARTWORKS_AVAILABLE,
   REGISTRATION_UNAVAILABLE,
+  artworkMediumLabel,
   artworkSlugAfterReload,
   artworksToShow,
   outcomeFromResponse,
@@ -52,7 +53,9 @@ export default function RegisterInterestPage() {
       return null
     }
     try {
-      const response = await fetch(`${baseUrl}/api/artworks`)
+      const response = await fetch(`${baseUrl}/api/artworks`, {
+        headers: { "ngrok-skip-browser-warning": "true" },
+      })
       if (!response.ok) throw new Error("artwork list failed")
       const body = (await response.json()) as {
         artworks: StockedArtwork[]
@@ -71,14 +74,6 @@ export default function RegisterInterestPage() {
   useEffect(() => {
     void loadArtworks()
   }, [])
-
-  function startNextRegistration() {
-    setForm(EMPTY_FORM)
-    setFieldErrors({})
-    setNotice("")
-    setSent(false)
-    void loadArtworks()
-  }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -101,7 +96,10 @@ export default function RegisterInterestPage() {
     try {
       const response = await fetch(`${baseUrl}/api/registrations`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
         body: JSON.stringify(registrationPayload(form)),
       })
       const body = (await response.json()) as {
@@ -145,125 +143,140 @@ export default function RegisterInterestPage() {
     <div className="birmingham-interest">
       <BrandHeader homeHref="https://takemearound.com/" />
       <main>
-        <h1>Register interest</h1>
         {sent ? (
-          <div className="birmingham-interest-thanks-panel">
+          <div className="birmingham-interest-thanks-card">
+            <p className="birmingham-interest-eyebrow">Museum Association Conference</p>
+            <h1 className="birmingham-interest-thanks-title">
+              Thank you for registering your interest
+            </h1>
             <p className="birmingham-interest-thanks">{notice}</p>
-            <button type="button" className="birmingham-interest-next" onClick={startNextRegistration}>
-              Next registration
-            </button>
           </div>
-        ) : loadFailed ? (
-          <p className="birmingham-interest-thanks">{REGISTRATION_UNAVAILABLE}</p>
-        ) : loaded && visible.length === 0 ? (
-          <p className="birmingham-interest-thanks">{NO_ARTWORKS_AVAILABLE}</p>
-        ) : loaded ? (
-          <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
-            <label>
-              <span className="req">Name</span>
-              <input type="text" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
-              {fieldErrors.name && <span className="birmingham-interest-error">{fieldErrors.name}</span>}
-            </label>
-            <label>
-              <span className="req">Surname</span>
-              <input type="text" value={form.surname} onChange={(event) => setForm({ ...form, surname: event.target.value })} />
-              {fieldErrors.surname && <span className="birmingham-interest-error">{fieldErrors.surname}</span>}
-            </label>
-            <label>
-              <span className="req">Email address</span>
-              <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
-              {fieldErrors.email && <span className="birmingham-interest-error">{fieldErrors.email}</span>}
-            </label>
-            <label>
-              <span className="req">Company</span>
-              <input type="text" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
-              {fieldErrors.company && <span className="birmingham-interest-error">{fieldErrors.company}</span>}
-            </label>
-            <label>
-              <span className="req">Position</span>
-              <input type="text" value={form.position} onChange={(event) => setForm({ ...form, position: event.target.value })} />
-              {fieldErrors.position && <span className="birmingham-interest-error">{fieldErrors.position}</span>}
-            </label>
-            <label>
-              <span className="req">Town</span>
-              <input type="text" value={form.town} onChange={(event) => setForm({ ...form, town: event.target.value })} />
-              {fieldErrors.town && <span className="birmingham-interest-error">{fieldErrors.town}</span>}
-            </label>
-            <label>
-              <span className="req">Country</span>
-              <select value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })}>
-                <option value="">Choose a country</option>
-                {COUNTRIES.map((country) => (
-                  <option key={country.code} value={country.name}>
-                    {flagEmoji(country.code)} {country.name}
-                  </option>
-                ))}
-              </select>
-              {fieldErrors.country && <span className="birmingham-interest-error">{fieldErrors.country}</span>}
-            </label>
-            <fieldset className="birmingham-interest-phone">
-              <legend>Phone number (optional)</legend>
-              <label>
-                Country code
-                <select
-                  value={form.phoneCountry}
-                  onChange={(event) => setForm({ ...form, phoneCountry: event.target.value })}
-                >
-                  {COUNTRIES.map((country) => (
-                    <option key={country.code} value={country.code}>
-                      {flagEmoji(country.code)} {country.dial}
-                    </option>
-                  ))}
-                </select>
-                {fieldErrors.phoneCountry && <span className="birmingham-interest-error">{fieldErrors.phoneCountry}</span>}
-              </label>
-              <label>
-                Number
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel-national"
-                  value={form.phoneNumber}
-                  onChange={(event) => setForm({ ...form, phoneNumber: event.target.value })}
-                />
-                {fieldErrors.phoneNumber && <span className="birmingham-interest-error">{fieldErrors.phoneNumber}</span>}
-              </label>
-            </fieldset>
-            <fieldset>
-              <legend className="req">Artwork desired</legend>
-              <div className="birmingham-interest-options">
-                {visible.map((artwork) => (
-                  <label key={artwork.slug}>
-                    <input
-                      type="radio"
-                      name="artworkSlug"
-                      value={artwork.slug}
-                      checked={form.artworkSlug === artwork.slug}
-                      onChange={() => setForm({ ...form, artworkSlug: artwork.slug })}
-                    />
-                    {artwork.title}
+        ) : (
+          <>
+            <h1>Register interest</h1>
+            {loadFailed ? (
+              <p className="birmingham-interest-thanks">{REGISTRATION_UNAVAILABLE}</p>
+            ) : loaded && visible.length === 0 ? (
+              <p className="birmingham-interest-thanks">{NO_ARTWORKS_AVAILABLE}</p>
+            ) : loaded ? (
+              <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
+                <label>
+                  <span className="req">Name</span>
+                  <input type="text" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
+                  {fieldErrors.name && <span className="birmingham-interest-error">{fieldErrors.name}</span>}
+                </label>
+                <label>
+                  <span className="req">Surname</span>
+                  <input type="text" value={form.surname} onChange={(event) => setForm({ ...form, surname: event.target.value })} />
+                  {fieldErrors.surname && <span className="birmingham-interest-error">{fieldErrors.surname}</span>}
+                </label>
+                <label>
+                  <span className="req">Email address</span>
+                  <input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+                  {fieldErrors.email && <span className="birmingham-interest-error">{fieldErrors.email}</span>}
+                </label>
+                <label>
+                  <span className="req">Company</span>
+                  <input type="text" value={form.company} onChange={(event) => setForm({ ...form, company: event.target.value })} />
+                  {fieldErrors.company && <span className="birmingham-interest-error">{fieldErrors.company}</span>}
+                </label>
+                <label>
+                  <span className="req">Role within the company</span>
+                  <input type="text" value={form.position} onChange={(event) => setForm({ ...form, position: event.target.value })} />
+                  {fieldErrors.position && <span className="birmingham-interest-error">{fieldErrors.position}</span>}
+                </label>
+                <label>
+                  <span className="req">Town</span>
+                  <input type="text" value={form.town} onChange={(event) => setForm({ ...form, town: event.target.value })} />
+                  {fieldErrors.town && <span className="birmingham-interest-error">{fieldErrors.town}</span>}
+                </label>
+                <label>
+                  <span className="req">Country</span>
+                  <select value={form.country} onChange={(event) => setForm({ ...form, country: event.target.value })}>
+                    <option value="">Choose a country</option>
+                    {COUNTRIES.map((country) => (
+                      <option key={country.code} value={country.name}>
+                        {flagEmoji(country.code)} {country.name}
+                      </option>
+                    ))}
+                  </select>
+                  {fieldErrors.country && <span className="birmingham-interest-error">{fieldErrors.country}</span>}
+                </label>
+                <fieldset className="birmingham-interest-phone">
+                  <legend>Phone number (optional)</legend>
+                  <label>
+                    Country code
+                    <select
+                      value={form.phoneCountry}
+                      onChange={(event) => setForm({ ...form, phoneCountry: event.target.value })}
+                    >
+                      {COUNTRIES.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {flagEmoji(country.code)} {country.dial}
+                        </option>
+                      ))}
+                    </select>
+                    {fieldErrors.phoneCountry && <span className="birmingham-interest-error">{fieldErrors.phoneCountry}</span>}
                   </label>
-                ))}
-              </div>
-              {fieldErrors.artworkSlug && (
-                <span className="birmingham-interest-error">{fieldErrors.artworkSlug}</span>
-              )}
-            </fieldset>
-            <label className="birmingham-interest-consent">
-              <input
-                type="checkbox"
-                checked={form.consent}
-                onChange={(event) => setForm({ ...form, consent: event.target.checked })}
-              />
-              <span className="req">{CONSENT_LABEL}</span>
-            </label>
-            {fieldErrors.consent && <span className="birmingham-interest-error">{fieldErrors.consent}</span>}
-            {notice && <p className="birmingham-interest-error">{notice}</p>}
-            <button type="submit" disabled={submitting}>
-              Register interest
-            </button>
-          </form>
-        ) : null}
+                  <label>
+                    Number
+                    <input
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel-national"
+                      value={form.phoneNumber}
+                      onChange={(event) => setForm({ ...form, phoneNumber: event.target.value })}
+                    />
+                    {fieldErrors.phoneNumber && <span className="birmingham-interest-error">{fieldErrors.phoneNumber}</span>}
+                  </label>
+                </fieldset>
+                <fieldset>
+                  <legend className="req">Artwork desired</legend>
+                  <div className="birmingham-interest-options">
+                    {visible.map((artwork) => {
+                      const medium = artworkMediumLabel(artwork.slug)
+                      const selected = form.artworkSlug === artwork.slug
+                      return (
+                        <label
+                          key={artwork.slug}
+                          className={`birmingham-interest-option-card${selected ? " is-selected" : ""}`}
+                        >
+                          <input
+                            type="radio"
+                            name="artworkSlug"
+                            value={artwork.slug}
+                            checked={selected}
+                            onChange={() => setForm({ ...form, artworkSlug: artwork.slug })}
+                          />
+                          <span className="birmingham-interest-option-title">{artwork.title}</span>
+                          {medium && (
+                            <span className="birmingham-interest-option-medium">{medium}</span>
+                          )}
+                        </label>
+                      )
+                    })}
+                  </div>
+                  {fieldErrors.artworkSlug && (
+                    <span className="birmingham-interest-error">{fieldErrors.artworkSlug}</span>
+                  )}
+                </fieldset>
+                <label className="birmingham-interest-consent">
+                  <input
+                    type="checkbox"
+                    checked={form.consent}
+                    onChange={(event) => setForm({ ...form, consent: event.target.checked })}
+                  />
+                  <span className="req">{CONSENT_LABEL}</span>
+                </label>
+                {fieldErrors.consent && <span className="birmingham-interest-error">{fieldErrors.consent}</span>}
+                {notice && <p className="birmingham-interest-error">{notice}</p>}
+                <button type="submit" disabled={submitting}>
+                  Register interest
+                </button>
+              </form>
+            ) : null}
+          </>
+        )}
       </main>
     </div>
   )

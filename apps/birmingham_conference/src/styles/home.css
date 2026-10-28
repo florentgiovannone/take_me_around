@@ -169,16 +169,71 @@
   background: #16315f;
 }
 
-.birmingham-interest-thanks-panel {
+.birmingham-interest-options {
   display: grid;
-  gap: 1.25rem;
-  justify-items: start;
+  gap: 0.65rem;
+}
+
+.birmingham-interest-form label.birmingham-interest-option-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 0.9rem;
+  background: #fff;
+  border: 1px solid #d0d7e2;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.birmingham-interest-form label.birmingham-interest-option-card.is-selected {
+  background: #fbf9f6;
+  border-color: #0e2347;
+}
+
+.birmingham-interest-option-card input[type="radio"] {
+  margin: 0;
+  accent-color: #0e2347;
+}
+
+.birmingham-interest-option-title {
+  font-weight: 500;
+  color: #0e2347;
+}
+
+.birmingham-interest-option-medium {
+  margin-left: auto;
+  color: #b08958;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.birmingham-interest-thanks-card {
+  background: #fbf9f6;
+  border-top: 3px solid #b08958;
+  padding: 1.75rem 1.75rem 1.65rem;
+}
+
+.birmingham-interest-eyebrow {
+  margin: 0 0 0.5rem;
+  color: #b08958;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.birmingham-interest h1.birmingham-interest-thanks-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+  line-height: 1.2;
 }
 
 .birmingham-interest-thanks {
   margin: 0;
-  color: #0e2347;
-  font-size: 1.05rem;
+  color: #243044;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .birmingham-interest-form .birmingham-interest-consent {

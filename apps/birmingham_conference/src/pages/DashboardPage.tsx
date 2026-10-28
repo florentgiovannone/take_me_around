@@ -170,9 +170,9 @@ export default function DashboardPage() {
       <header className="tma-header tma-main-dashboard-header">
         <div className="tma-header-inner tma-main-dashboard-header-inner">
           <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
-          <h1 className="tma-page-title tma-main-dashboard-title">Birmingham Conference</h1>
+          <h1 className="tma-page-title tma-main-dashboard-title">Museum Association Conference</h1>
           <p className="tma-page-subtitle tma-main-dashboard-subtitle">
-            Live Birmingham Conference activity
+            Live Museum Association Conference activity
           </p>
         </div>
       </header>
