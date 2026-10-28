@@ -35,7 +35,7 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
     () => buildTrackedArtworkScanGroups(logs, siteScope),
     [logs, siteScope]
   )
-  const linkCount = trackedArtworkCount(siteScope)
+  const linkCount = trackedArtworkCount(siteScope, logs)
 
   const totalScans = artworkScanGroups.reduce((sum, group) => sum + group.scans.length, 0)
   const activeLinks = artworkScanGroups.filter((group) => group.scans.length > 0).length
