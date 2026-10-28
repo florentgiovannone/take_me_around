@@ -198,6 +198,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 className="birmingham-contact-close"
+                disabled={submitting}
                 onClick={closeContact}
               >
                 Close
