@@ -27,6 +27,7 @@ import {
   buildBirminghamTrackedArtworkScanGroups,
   buildBirminghamWeeklySeries,
   getBirminghamConferenceLogs,
+  countBirminghamTrackedItems,
   listBirminghamDistinctSars,
   matchBirminghamConferenceArtwork,
 } from "./birminghamConference"
@@ -204,7 +205,7 @@ export function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
 }
 
 export function trackedArtworkCount(scope: SiteScope, logs: PoiseLog[] = []): number {
-  if (scope === "birmingham_conference") return 2
+  if (scope === "birmingham_conference") return countBirminghamTrackedItems(logs)
   if (scope === "gallery") return gallery.TRACKED_GALLERY_ARTWORKS.length
   if (scope === "arkin") return arkin.TRACKED_ARKIN_ARTWORKS.length
   if (scope === "museum") return museum.TRACKED_MUSEUM_ARTWORKS.length
@@ -242,7 +243,7 @@ export function trackedScansMeta(scope: SiteScope): string {
 
 export function trackedLinksMeta(scope: SiteScope): string {
   const count = trackedArtworkCount(scope)
-  if (scope === "birmingham_conference") return "of 2 tracked conference links"
+  if (scope === "birmingham_conference") return "of 2 tracked conference links and BD tags"
   if (scope === "gallery") return `of ${count} tracked .gallery links`
   if (scope === "arkin") return `of ${count} tracked Arkın links`
   if (scope === "museum") return `of ${count} tracked .museum links`
@@ -263,7 +264,7 @@ export function trackedLinksMeta(scope: SiteScope): string {
 }
 
 export function trackedScansAcrossMeta(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "across the two conference links"
+  if (scope === "birmingham_conference") return "across the two conference links and BD tags"
   if (scope === "gallery") return "across tracked .gallery links"
   if (scope === "arkin") return "across tracked Arkın links"
   if (scope === "museum") return "across tracked .museum links"

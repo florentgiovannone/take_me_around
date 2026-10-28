@@ -1,3 +1,4 @@
+import { canonicalBirminghamTagName } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
 import type { PoiseLog } from "@tma/analytics-gallery"
@@ -46,8 +47,42 @@ export function matchBirminghamConferenceArtwork(
   ) ?? null
 }
 
+function birminghamCodeFromLog(log: PoiseLog): string | null {
+  return canonicalBirminghamTagName(log.text_name) ?? canonicalBirminghamTagName(log.txt_message)
+}
+
+function birminghamLink(log: PoiseLog, fallback: string): string {
+  const message = log.txt_message?.trim() ?? ""
+  if (message.startsWith("/") || message.includes("://")) return message
+  return fallback
+}
+
+export function birminghamGroup(log: PoiseLog): { title: string; path: string; url: string } | null {
+  const code = birminghamCodeFromLog(log)
+  if (code) {
+    return { title: code, path: `/${code.toLowerCase()}`, url: birminghamLink(log, code) }
+  }
+  const artwork = matchBirminghamConferenceArtwork(log.txt_message)
+  if (!artwork) return null
+  return { title: artwork.dashboardTitle, path: artwork.path, url: artwork.url }
+}
+
 export function getBirminghamConferenceLogs(logs: PoiseLog[]): PoiseLog[] {
-  return logs.filter((log) => matchBirminghamConferenceArtwork(log.txt_message) !== null)
+  return logs.filter((log) => birminghamGroup(log) !== null)
+}
+
+export function distinctBirminghamBdCodes(logs: PoiseLog[]): string[] {
+  return [
+    ...new Set(
+      getBirminghamConferenceLogs(logs)
+        .map((log) => birminghamCodeFromLog(log))
+        .filter((code): code is string => code !== null)
+    ),
+  ].sort((a, b) => a.localeCompare(b))
+}
+
+export function countBirminghamTrackedItems(logs: PoiseLog[] = []): number {
+  return 2 + distinctBirminghamBdCodes(logs).length
 }
 
 function redirects(logs: PoiseLog[]): PoiseLog[] {
@@ -62,43 +97,55 @@ function timestampMs(value: string | null | undefined): number {
 
 export function birminghamSarFromLog(log: PoiseLog): string | null {
   const artwork = matchBirminghamConferenceArtwork(log.txt_message)
-  if (!artwork) return null
   const sar =
-    artwork.domainLabel === ".museum" ? museum.getSarFromLog(log) : gallery.getSarFromLog(log)
+    artwork?.domainLabel === ".museum" ? museum.getSarFromLog(log) : gallery.getSarFromLog(log)
   return sar?.trim() || null
 }
 
 function seriesKey(log: PoiseLog): string | null {
-  const artwork = matchBirminghamConferenceArtwork(log.txt_message)
-  if (!artwork) return null
-  return birminghamSarFromLog(log) ?? artwork.dashboardTitle
+  const group = birminghamGroup(log)
+  if (!group) return null
+  return birminghamSarFromLog(log) ?? group.title
 }
 
 export function buildBirminghamActivityEntries(logs: PoiseLog[]) {
   return redirects(logs)
     .map((log) => {
-      const artwork = matchBirminghamConferenceArtwork(log.txt_message)!
+      const group = birminghamGroup(log)!
       return {
         key: `redirect-${log.int_id}`,
         redirect: log,
         seen: [] as PoiseLog[],
         timestamp: log.dtm_timestamp,
-        artworkTitle: artwork.dashboardTitle,
-        link: artwork.url,
+        artworkTitle: group.title,
+        link: group.url,
       }
     })
     .sort((a, b) => timestampMs(b.timestamp) - timestampMs(a.timestamp))
 }
 
 export function buildBirminghamTrackedArtworkScanGroups(logs: PoiseLog[]) {
-  return BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => ({
+  const redirected = redirects(logs)
+  const artworkGroups = BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => ({
     title: artwork.dashboardTitle,
     path: artwork.path,
     url: artwork.url,
-    scans: redirects(logs)
-      .filter((log) => matchBirminghamConferenceArtwork(log.txt_message)?.slug === artwork.slug)
+    scans: redirected
+      .filter((log) => birminghamGroup(log)?.title === artwork.dashboardTitle)
       .sort((a, b) => timestampMs(b.dtm_timestamp) - timestampMs(a.dtm_timestamp)),
-  })).sort((a, b) => b.scans.length - a.scans.length)
+  }))
+  const bdGroups = distinctBirminghamBdCodes(redirected).map((code) => {
+    const scans = redirected
+      .filter((log) => birminghamCodeFromLog(log) === code)
+      .sort((a, b) => timestampMs(b.dtm_timestamp) - timestampMs(a.dtm_timestamp))
+    return {
+      title: code,
+      path: `/${code.toLowerCase()}`,
+      url: birminghamGroup(scans[0])?.url ?? code,
+      scans,
+    }
+  })
+  return [...artworkGroups, ...bdGroups].sort((a, b) => b.scans.length - a.scans.length)
 }
 
 function percentChange(current: number, previous: number) {
@@ -114,7 +161,7 @@ export function buildBirminghamOverviewAnalytics(logs: PoiseLog[]) {
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const counts = new Map<string, number>()
   for (const scan of scans) {
-    const title = matchBirminghamConferenceArtwork(scan.txt_message)?.dashboardTitle ?? "Unknown"
+    const title = birminghamGroup(scan)?.title ?? "Unknown"
     counts.set(title, (counts.get(title) ?? 0) + 1)
   }
   const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
@@ -127,7 +174,7 @@ export function buildBirminghamOverviewAnalytics(logs: PoiseLog[]) {
     }).length
   const topTagThisMonth = scans.filter((scan) => {
     const date = gallery.parseLogTimestampGmt(scan.dtm_timestamp)
-    const title = matchBirminghamConferenceArtwork(scan.txt_message)?.dashboardTitle
+    const title = birminghamGroup(scan)?.title
     return date !== null && date >= monthStart && title === top[0]
   }).length
   const activeTags = ranked.length
@@ -207,18 +254,18 @@ export function buildBirminghamSarTimelinePlot(logs: PoiseLog[]): gallery.SarTim
   const now = new Date()
   const points: gallery.SarTimelinePlotPoint[] = []
   for (const log of redirects(logs)) {
-    const artwork = matchBirminghamConferenceArtwork(log.txt_message)
+    const group = birminghamGroup(log)
     const sar = seriesKey(log)
     const timestamp = gallery.parseLogTimestampGmt(log.dtm_timestamp)
-    if (!artwork || !sar || !timestamp) continue
+    if (!group || !sar || !timestamp) continue
     points.push({
       logId: log.int_id,
       sar,
       timestamp,
       offsetMs: timestamp.getTime() - now.getTime(),
       messageType: (log.txt_message_type ?? "-").trim(),
-      artworkTitle: artwork.dashboardTitle,
-      link: artwork.url,
+      artworkTitle: group.title,
+      link: group.url,
       isRedirect: true,
     })
   }

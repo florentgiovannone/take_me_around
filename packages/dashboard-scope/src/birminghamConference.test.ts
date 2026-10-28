@@ -106,3 +106,33 @@ describe("birmingham conference urls", () => {
     expect(plot?.points.every((point) => point.link === star.url)).toBe(true)
   })
 })
+
+describe("birmingham BD tags", () => {
+  it("includes BD tags alongside conference urls and does not double-count", () => {
+    const logs = [
+      log(1, star.url, "The Star of Bethlehem"),
+      log(2, "https://example.com/bd", "BD001"),
+      log(3, "BD002", "bd-2"),
+      log(4, "https://takemearound.gallery/mona-lisa", "W001"),
+      log(5, "BD", "BD"),
+    ]
+    expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 3])
+    expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
+      "The Star of Bethlehem · .gallery",
+      "BD001",
+      "BD002",
+    ])
+    expect(
+      buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)
+    ).toEqual([
+      "The Star of Bethlehem · .gallery",
+      "BD001",
+      "BD002",
+      "The Golden Boys · .museum",
+    ])
+    expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(3)
+    expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(3)
+    expect(getGalleryLogs([logs[1]])).toEqual([])
+    expect(getMuseumLogs([logs[1]])).toEqual([])
+  })
+})

@@ -50,17 +50,33 @@ describe("birmingham_conference scope", () => {
 
   it("counts two links and hides other artworks", () => {
     expect(trackedArtworkCount("birmingham_conference")).toBe(2)
+    expect(trackedArtworkCount("birmingham_conference", [
+      {
+        ...star,
+        int_id: 3,
+        text_name: "BD001",
+        txt_message: "https://example.com/bd",
+      },
+    ])).toBe(3)
     expect(trackedScansMeta("birmingham_conference")).toBe("tracked Museum Association Conference scans")
-    expect(trackedLinksMeta("birmingham_conference")).toBe("of 2 tracked conference links")
-    expect(trackedScansAcrossMeta("birmingham_conference")).toBe("across the two conference links")
+    expect(trackedLinksMeta("birmingham_conference")).toBe("of 2 tracked conference links and BD tags")
+    expect(trackedScansAcrossMeta("birmingham_conference")).toBe(
+      "across the two conference links and BD tags"
+    )
     expect(sarTimelineDomainLabel("birmingham_conference")).toBe("Museum Association Conference")
     expect(sarTimelineDomainSuffix("birmingham_conference")).toBe("Museum Association Conference")
     expect(emptyActivityMessage("birmingham_conference")).toBe(
       "No Museum Association Conference scans yet."
     )
-    expect(getScopedLogs([monaLisa, star], "birmingham_conference").map((row) => row.int_id)).toEqual([
-      2,
-    ])
+    const bd = {
+      ...star,
+      int_id: 3,
+      text_name: "BD001",
+      txt_message: "https://example.com/bd",
+    }
+    expect(
+      getScopedLogs([monaLisa, star, bd], "birmingham_conference").map((row) => row.int_id)
+    ).toEqual([2, 3])
     expect(buildActivityEntries([star], "birmingham_conference")[0]?.artworkTitle).toBe(
       "The Star of Bethlehem · .gallery"
     )
