@@ -1,0 +1,9 @@
+# The dashboard is public (no password field). An edge function attaches
+# X-Dashboard-Password for /api/secure/* so the browser never sees it.
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
+
+[[edge_functions]]
+  function = "inject-dashboard-password"
+  path = "/api/secure/*"
