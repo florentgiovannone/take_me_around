@@ -12,7 +12,14 @@ import {
 } from "@tma/dashboard-ui"
 import type { PoiseLog } from "@tma/dashboard-scope"
 import { mergeArtworkScans, readArtworkScans } from "../artworkScans"
-import { validateContactForm, type ContactFormErrors } from "../contactForm"
+import {
+  CONTACT_UNAVAILABLE,
+  contactOutcomeFromResponse,
+  contactPayload,
+  validateContactForm,
+  type ContactFormErrors,
+} from "../contactForm"
+import { registrationBaseUrl } from "../registrationFlow"
 import "../../../dashboard/src/styles/style.css"
 import "@tma/brand/dashboard.css"
 import "../styles/dashboard.css"
@@ -55,7 +62,9 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<DashboardTabId>("activity")
   const [form, setForm] = useState(EMPTY_FORM)
   const [fieldErrors, setFieldErrors] = useState<ContactFormErrors>({})
+  const [notice, setNotice] = useState("")
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
   const contactRef = useRef<HTMLElement>(null)
 
@@ -92,16 +101,65 @@ export default function DashboardPage() {
     contactRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [contactOpen])
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  function closeContact() {
+    setContactOpen(false)
+    setSent(false)
+    setNotice("")
+    setFieldErrors({})
+  }
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (submitting) return
     const result = validateContactForm(form)
     if (!result.ok) {
+      setNotice("")
       setFieldErrors(result.errors)
       setSent(false)
       return
     }
+    const baseUrl = registrationBaseUrl()
+    if (!baseUrl) {
+      setNotice(CONTACT_UNAVAILABLE)
+      return
+    }
     setFieldErrors({})
-    setSent(true)
+    setSubmitting(true)
+    setNotice("")
+    try {
+      const response = await fetch(`${baseUrl}/api/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
+        body: JSON.stringify(contactPayload(form)),
+      })
+      const body = (await response.json()) as {
+        ok: boolean
+        error?: string
+        message?: string
+        errors?: ContactFormErrors
+      }
+      const outcome = contactOutcomeFromResponse(response.status, body)
+      if (outcome.type === "sent") {
+        setForm(EMPTY_FORM)
+        setSent(true)
+        setNotice(outcome.message)
+        return
+      }
+      if (outcome.type === "fields") {
+        setNotice("")
+        setFieldErrors(outcome.errors)
+        return
+      }
+      setNotice(outcome.message)
+    } catch {
+      setSent(false)
+      setNotice(CONTACT_UNAVAILABLE)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -140,16 +198,14 @@ export default function DashboardPage() {
               <button
                 type="button"
                 className="birmingham-contact-close"
-                onClick={() => setContactOpen(false)}
+                onClick={closeContact}
               >
                 Close
               </button>
             </div>
             <p>Tell us about your venue.</p>
             {sent ? (
-              <p className="birmingham-contact-thanks">
-                Thank you. This page confirms your message only. It is not sent or saved.
-              </p>
+              <p className="birmingham-contact-thanks">{notice}</p>
             ) : (
               <form className="birmingham-contact-form" onSubmit={onSubmit} noValidate>
                 <label>
@@ -177,6 +233,9 @@ export default function DashboardPage() {
                     value={form.organisation}
                     onChange={(event) => setForm({ ...form, organisation: event.target.value })}
                   />
+                  {fieldErrors.organisation && (
+                    <span className="birmingham-contact-error">{fieldErrors.organisation}</span>
+                  )}
                 </label>
                 <label>
                   Message
@@ -189,7 +248,10 @@ export default function DashboardPage() {
                     <span className="birmingham-contact-error">{fieldErrors.message}</span>
                   )}
                 </label>
-                <button type="submit">Send message</button>
+                {notice && <p className="birmingham-contact-error">{notice}</p>}
+                <button type="submit" disabled={submitting}>
+                  Send message
+                </button>
               </form>
             )}
           </section>
