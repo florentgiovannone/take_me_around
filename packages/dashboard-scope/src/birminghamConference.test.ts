@@ -29,15 +29,17 @@ function log(id: number, message: string, name = "tag") {
 }
 
 describe("canonicalBirminghamTagName", () => {
-  it("canonicalizes BD serials and rejects other codes", () => {
-    expect(canonicalBirminghamTagName("BD001")).toBe("BD001")
-    expect(canonicalBirminghamTagName("bd-1")).toBe("BD001")
-    expect(canonicalBirminghamTagName("BD1")).toBe("BD001")
-    expect(canonicalBirminghamTagName("BD")).toBeNull()
-    expect(canonicalBirminghamTagName("BDABC")).toBeNull()
+  it("canonicalizes MACD serials and rejects other codes", () => {
+    expect(canonicalBirminghamTagName("MACD001")).toBe("MACD001")
+    expect(canonicalBirminghamTagName("macd-1")).toBe("MACD001")
+    expect(canonicalBirminghamTagName("MACD1")).toBe("MACD001")
+    expect(canonicalBirminghamTagName("MACD")).toBeNull()
+    expect(canonicalBirminghamTagName("MACDABC")).toBeNull()
+    expect(canonicalBirminghamTagName("BD001")).toBeNull()
     expect(canonicalBirminghamTagName("W001")).toBeNull()
-    expect(canonicalBirminghamTagName("{BD001}")).toBeNull()
-    expect(isReservedSiteTagName("BD001")).toBe(true)
+    expect(canonicalBirminghamTagName("{MACD001}")).toBeNull()
+    expect(isReservedSiteTagName("MACD001")).toBe(true)
+    expect(isReservedSiteTagName("BD001")).toBe(false)
     expect(isReservedSiteTagName("W001")).toBe(false)
   })
 })
@@ -107,27 +109,27 @@ describe("birmingham conference urls", () => {
   })
 })
 
-describe("birmingham BD tags", () => {
-  it("includes BD tags alongside conference urls and does not double-count", () => {
+describe("birmingham MACD tags", () => {
+  it("includes MACD tags alongside conference urls and does not double-count", () => {
     const logs = [
       log(1, star.url, "The Star of Bethlehem"),
-      log(2, "https://example.com/bd", "BD001"),
-      log(3, "BD002", "bd-2"),
+      log(2, "https://example.com/macd", "MACD001"),
+      log(3, "MACD002", "macd-2"),
       log(4, "https://takemearound.gallery/mona-lisa", "W001"),
-      log(5, "BD", "BD"),
+      log(5, "MACD", "MACD"),
     ]
     expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 3])
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
       "The Star of Bethlehem · .gallery",
-      "BD001",
-      "BD002",
+      "MACD001",
+      "MACD002",
     ])
     expect(
       buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)
     ).toEqual([
       "The Star of Bethlehem · .gallery",
-      "BD001",
-      "BD002",
+      "MACD001",
+      "MACD002",
       "The Golden Boys · .museum",
     ])
     expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(3)
