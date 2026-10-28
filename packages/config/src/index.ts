@@ -303,9 +303,27 @@ export function isSouthwellMinsterTagName(name: string | null | undefined): bool
   return canonicalSouthwellMinsterTagName(name) !== null
 }
 
-/** Tags owned by demo (TSN/TK/TTOD) or church (Southwell SM) dashboards. */
+export function canonicalBirminghamTagName(
+  name: string | null | undefined
+): string | null {
+  if (!name?.trim()) return null
+  const trimmed = name.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+  const compact = compactTagToken(trimmed)
+  const match = compact.match(/^BD(\d{1,6})$/)
+  if (!match) return null
+  const serial = serialNumber(match[1])
+  if (serial == null) return null
+  return `BD${padTagNumber(serial)}`
+}
+
+/** Tags owned by demo, church, or Birmingham (BD) dashboards. */
 export function isReservedSiteTagName(name: string | null | undefined): boolean {
-  return isTmaDemoCodeName(name) || isSouthwellMinsterTagName(name)
+  return (
+    isTmaDemoCodeName(name) ||
+    isSouthwellMinsterTagName(name) ||
+    canonicalBirminghamTagName(name) !== null
+  )
 }
 
 export function southwellMinsterDisplayTitle(name: string | null | undefined): string {

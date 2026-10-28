@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { canonicalBirminghamTagName, isReservedSiteTagName } from "@tma/config"
 import { getGalleryLogs } from "@tma/analytics-gallery"
 import { getMuseumLogs } from "@tma/analytics-museum"
 import {
@@ -26,6 +27,20 @@ function log(id: number, message: string, name = "tag") {
     txt_message: message,
   }
 }
+
+describe("canonicalBirminghamTagName", () => {
+  it("canonicalizes BD serials and rejects other codes", () => {
+    expect(canonicalBirminghamTagName("BD001")).toBe("BD001")
+    expect(canonicalBirminghamTagName("bd-1")).toBe("BD001")
+    expect(canonicalBirminghamTagName("BD1")).toBe("BD001")
+    expect(canonicalBirminghamTagName("BD")).toBeNull()
+    expect(canonicalBirminghamTagName("BDABC")).toBeNull()
+    expect(canonicalBirminghamTagName("W001")).toBeNull()
+    expect(canonicalBirminghamTagName("{BD001}")).toBeNull()
+    expect(isReservedSiteTagName("BD001")).toBe(true)
+    expect(isReservedSiteTagName("W001")).toBe(false)
+  })
+})
 
 describe("birmingham conference urls", () => {
   it("keeps the two domain urls and labels them", () => {
