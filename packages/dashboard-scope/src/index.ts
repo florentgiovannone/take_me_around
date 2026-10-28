@@ -222,7 +222,7 @@ export function trackedArtworkCount(scope: SiteScope, logs: PoiseLog[] = []): nu
 }
 
 export function trackedScansMeta(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "tracked Birmingham Conference scans"
+  if (scope === "birmingham_conference") return "tracked Museum Association Conference scans"
   if (scope === "gallery") return "tracked .gallery scans"
   if (scope === "arkin") return "tracked Arkın scans"
   if (scope === "museum") return "tracked .museum scans"
@@ -284,7 +284,7 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
 }
 
 export function sarTimelineDomainLabel(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "Birmingham Conference"
+  if (scope === "birmingham_conference") return "Museum Association Conference"
   if (scope === "gallery") return "takemearound.gallery"
   if (scope === "arkin") return "arkin.takemearound.gallery"
   if (scope === "museum") return "takemearound.museum"
@@ -303,7 +303,7 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
 }
 
 export function sarTimelineDomainSuffix(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "Birmingham Conference"
+  if (scope === "birmingham_conference") return "Museum Association Conference"
   if (scope === "gallery") return ".gallery"
   if (scope === "arkin") return "Arkın"
   if (scope === "museum") return ".museum"
@@ -339,7 +339,7 @@ function keepTodayScanGroups<T extends { scans: PoiseLog[] }>(groups: T[]): T[] 
 }
 
 export function emptyActivityMessage(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "No Birmingham Conference scans yet."
+  if (scope === "birmingham_conference") return "No Museum Association Conference scans yet."
   if (scope === "gallery") return "No tracked .gallery activity found."
   if (scope === "arkin") return "No tracked Arkın activity found."
   if (scope === "museum") return "No tracked .museum activity found."

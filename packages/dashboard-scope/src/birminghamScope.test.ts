@@ -38,25 +38,25 @@ const star = {
 
 describe("birmingham_conference scope", () => {
   it("is labelled and stays out of the combined dashboards", () => {
-    expect(scopeLabel("birmingham_conference")).toBe("Birmingham Conference")
-    expect(scopeSubtitle("birmingham_conference")).toBe("Live Birmingham Conference activity")
+    expect(scopeLabel("birmingham_conference")).toBe("Museum Association Conference")
+    expect(scopeSubtitle("birmingham_conference")).toBe("Live Museum Association Conference activity")
     expect(scopeDomainHint("birmingham_conference")).toBe(
       "takemearound.gallery + takemearound.museum"
     )
-    expect(scopeBadgeLabel("birmingham_conference")).toBe("Birmingham Conference")
-    expect(scopeOptionLabel("birmingham_conference")).toBe("Birmingham Conference")
+    expect(scopeBadgeLabel("birmingham_conference")).toBe("Museum Association Conference")
+    expect(scopeOptionLabel("birmingham_conference")).toBe("Museum Association Conference")
     expect(PICKABLE_SITE_IDS).not.toContain("birmingham_conference")
   })
 
   it("counts two links and hides other artworks", () => {
     expect(trackedArtworkCount("birmingham_conference")).toBe(2)
-    expect(trackedScansMeta("birmingham_conference")).toBe("tracked Birmingham Conference scans")
+    expect(trackedScansMeta("birmingham_conference")).toBe("tracked Museum Association Conference scans")
     expect(trackedLinksMeta("birmingham_conference")).toBe("of 2 tracked conference links")
     expect(trackedScansAcrossMeta("birmingham_conference")).toBe("across the two conference links")
-    expect(sarTimelineDomainLabel("birmingham_conference")).toBe("Birmingham Conference")
-    expect(sarTimelineDomainSuffix("birmingham_conference")).toBe("Birmingham Conference")
+    expect(sarTimelineDomainLabel("birmingham_conference")).toBe("Museum Association Conference")
+    expect(sarTimelineDomainSuffix("birmingham_conference")).toBe("Museum Association Conference")
     expect(emptyActivityMessage("birmingham_conference")).toBe(
-      "No Birmingham Conference scans yet."
+      "No Museum Association Conference scans yet."
     )
     expect(getScopedLogs([monaLisa, star], "birmingham_conference").map((row) => row.int_id)).toEqual([
       2,

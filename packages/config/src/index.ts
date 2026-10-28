@@ -327,7 +327,7 @@ export function scopeLabel(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
-  if (scope === "birmingham_conference") return "Birmingham Conference"
+  if (scope === "birmingham_conference") return "Museum Association Conference"
   return SITE_META[scope].label
 }
 
@@ -345,7 +345,7 @@ export function scopeSubtitle(scope: SiteScope): string {
   if (scope === "arkin") {
     return `Live ${SITE_META.arkin.label} activity`
   }
-  if (scope === "birmingham_conference") return "Live Birmingham Conference activity"
+  if (scope === "birmingham_conference") return "Live Museum Association Conference activity"
   return `Live ${SITE_META[scope].domainLabel} activity`
 }
 
@@ -373,7 +373,7 @@ export function scopeBadgeLabel(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
-  if (scope === "birmingham_conference") return "Birmingham Conference"
+  if (scope === "birmingham_conference") return "Museum Association Conference"
   return SITE_META[scope].domainLabel
 }
 
@@ -389,6 +389,6 @@ export function scopeOptionLabel(scope: SiteScope, _combinedSiteIds: SiteId[] = 
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
-  if (scope === "birmingham_conference") return "Birmingham Conference"
+  if (scope === "birmingham_conference") return "Museum Association Conference"
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }
