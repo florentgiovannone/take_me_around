@@ -29,6 +29,7 @@ const EMPTY_FORM: InterestRegistration = {
   phoneCountry: "GB",
   phoneNumber: "",
   artworkSlug: "",
+  packNumber: "",
   consent: false,
 }
 
@@ -260,6 +261,20 @@ export default function RegisterInterestPage() {
                     <span className="birmingham-interest-error">{fieldErrors.artworkSlug}</span>
                   )}
                 </fieldset>
+                <label>
+                  <span className="req">Pack number</span>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={3}
+                    autoComplete="off"
+                    value={form.packNumber}
+                    onChange={(event) => setForm({ ...form, packNumber: event.target.value })}
+                  />
+                  {fieldErrors.packNumber && (
+                    <span className="birmingham-interest-error">{fieldErrors.packNumber}</span>
+                  )}
+                </label>
                 <label className="birmingham-interest-consent">
                   <input
                     type="checkbox"
