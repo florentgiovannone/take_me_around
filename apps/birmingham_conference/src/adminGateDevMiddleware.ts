@@ -26,9 +26,12 @@ export function createAdminGateMiddleware(password: string) {
       return
     }
     let submittedPassword: string | null = null
+    let submittedLogout = false
     if ((req.method || "GET").toUpperCase() === "POST") {
       const body = await readRequestBody(req)
-      submittedPassword = new URLSearchParams(body).get("password")
+      const params = new URLSearchParams(body)
+      submittedPassword = params.get("password")
+      submittedLogout = params.get("logout") === "1"
     }
     const result = await handleAdminGate({
       method: req.method || "GET",
@@ -36,6 +39,7 @@ export function createAdminGateMiddleware(password: string) {
       cookieHeader: typeof req.headers.cookie === "string" ? req.headers.cookie : null,
       password,
       submittedPassword,
+      submittedLogout,
       secure: String(req.headers["x-forwarded-proto"] || "").split(",")[0]?.trim() === "https",
     })
     if (result.kind === "next") {

@@ -120,6 +120,37 @@
   min-height: 0;
   background: #0e2347;
   color: #f7f3ea;
+  position: relative;
+}
+
+.tma-brand.tma-dashboard .tma-header:has(.birmingham-admin-logout) {
+  padding-right: 6.5rem;
+}
+
+.birmingham-admin-logout {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.25rem;
+  z-index: 2;
+  margin: 0;
+}
+
+.birmingham-admin-logout button {
+  border: 1px solid #d7c4a4;
+  background: transparent;
+  color: #f7f3ea;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-family: "Outfit", "Avenir Next", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.birmingham-admin-logout button:hover {
+  background: rgba(247, 243, 234, 0.08);
 }
 
 .tma-brand .tma-page-title.tma-main-dashboard-title {

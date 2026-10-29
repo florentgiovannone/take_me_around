@@ -9,6 +9,7 @@ export type AdminGateInput = {
   cookieHeader: string | null
   password: string
   submittedPassword: string | null
+  submittedLogout?: boolean
   secure: boolean
 }
 
@@ -56,6 +57,18 @@ export function sessionCookie(token: string, secure: boolean): string {
     "HttpOnly",
     "SameSite=Lax",
     `Max-Age=${COOKIE_MAX_AGE_SEC}`,
+  ]
+  if (secure) parts.push("Secure")
+  return parts.join("; ")
+}
+
+export function expiredSessionCookie(secure: boolean): string {
+  const parts = [
+    `${COOKIE_NAME}=`,
+    "Path=/",
+    "HttpOnly",
+    "SameSite=Lax",
+    "Max-Age=0",
   ]
   if (secure) parts.push("Secure")
   return parts.join("; ")
@@ -209,6 +222,14 @@ export async function handleAdminGate(input: AdminGateInput): Promise<AdminGateR
   }
 
   if (method === "POST") {
+    if (input.submittedLogout) {
+      return {
+        kind: "redirect",
+        status: 302,
+        location: "/admindashboard",
+        setCookie: expiredSessionCookie(input.secure),
+      }
+    }
     const submitted = input.submittedPassword ?? ""
     if (!timingSafeEqual(submitted, password)) {
       return html(401, loginPageHtml("That password is not correct."))

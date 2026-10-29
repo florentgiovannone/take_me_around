@@ -280,6 +280,12 @@ export default function DashboardPage({
           <h1 className="tma-page-title tma-main-dashboard-title">{title}</h1>
           <p className="tma-page-subtitle tma-main-dashboard-subtitle">{subtitle}</p>
         </div>
+        {isAdmin ? (
+          <form className="birmingham-admin-logout" method="post" action="/admindashboard">
+            <input type="hidden" name="logout" value="1" />
+            <button type="submit">Logout</button>
+          </form>
+        ) : null}
       </header>
       <div className="tma-content">
         <DashboardTabsNav activeTab={activeTab} onChange={setActiveTab} />

@@ -17,9 +17,11 @@ function applyGateResult(
     res.end()
     return
   }
-  res.statusCode = result.status
-  res.setHeader("Content-Type", result.contentType)
-  res.end(result.body)
+  if (result.kind === "unconfigured" || result.kind === "html") {
+    res.statusCode = result.status
+    res.setHeader("Content-Type", result.contentType)
+    res.end(result.body)
+  }
 }
 
 export function createRegistrationsReadMiddleware(options: {
