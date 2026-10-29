@@ -6,6 +6,7 @@ import react from "@vitejs/plugin-react"
 import { defineConfig, loadEnv } from "vite"
 import { createAdminGateMiddleware } from "./src/adminGateDevMiddleware"
 import { createRegistrationsReadMiddleware } from "./src/registrationsReadDevMiddleware"
+import { resolveRegistrationBase, stripWrappingQuotes } from "./src/registrationsReadEnv"
 
 export default defineConfig(({ mode }) => {
   const fileEnv = loadEnv(mode, process.cwd(), "")
@@ -19,13 +20,9 @@ export default defineConfig(({ mode }) => {
     .trim()
     .replace(/\/$/, "")
   const apiTarget = proxyBase || "http://127.0.0.1:5050"
-  const registrationBase = (
-    process.env.VITE_BIRMINGHAM_REGISTRATION_URL ||
-    fileEnv.VITE_BIRMINGHAM_REGISTRATION_URL ||
-    ""
+  const registrationBase = resolveRegistrationBase(
+    process.env.VITE_BIRMINGHAM_REGISTRATION_URL || fileEnv.VITE_BIRMINGHAM_REGISTRATION_URL
   )
-    .trim()
-    .replace(/\/$/, "")
   const packagesDir = path.resolve(__dirname, "../../packages")
   const dashboardPassword = (
     process.env.DASHBOARD_PASSWORD ||
@@ -39,11 +36,9 @@ export default defineConfig(({ mode }) => {
     fileEnv.ADMIN_DASHBOARD_PASSWORD ||
     ""
   ).trim()
-  const registrationsReadKey = (
-    process.env.REGISTRATIONS_READ_KEY ||
-    fileEnv.REGISTRATIONS_READ_KEY ||
-    ""
-  ).trim()
+  const registrationsReadKey = stripWrappingQuotes(
+    process.env.REGISTRATIONS_READ_KEY || fileEnv.REGISTRATIONS_READ_KEY || ""
+  )
 
   const apiProxy = {
     "/api": {

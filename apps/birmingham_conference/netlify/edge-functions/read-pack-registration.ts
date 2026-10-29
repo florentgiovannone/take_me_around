@@ -1,8 +1,12 @@
+import {
+  registrationReadHeaders,
+  resolveRegistrationBase,
+  stripWrappingQuotes,
+} from "../../src/registrationsReadEnv.ts"
+
 export default async (request: Request) => {
-  const readKey = (Deno.env.get("REGISTRATIONS_READ_KEY") || "").trim()
-  const registrationBase = (Deno.env.get("VITE_BIRMINGHAM_REGISTRATION_URL") || "")
-    .trim()
-    .replace(/\/$/, "")
+  const readKey = stripWrappingQuotes(Deno.env.get("REGISTRATIONS_READ_KEY") || "")
+  const registrationBase = resolveRegistrationBase(Deno.env.get("VITE_BIRMINGHAM_REGISTRATION_URL"))
   const url = new URL(request.url)
   const packNumber = (url.searchParams.get("packNumber") || "").trim()
   if (request.method.toUpperCase() !== "GET") {
@@ -14,18 +18,9 @@ export default async (request: Request) => {
       headers: { "content-type": "application/json; charset=utf-8" },
     })
   }
-  if (!readKey || !registrationBase) {
-    return new Response(JSON.stringify({ error: "Registrations read is not configured." }), {
-      status: 503,
-      headers: { "content-type": "application/json; charset=utf-8" },
-    })
-  }
   return fetch(`${registrationBase}/api/registrations?packNumber=${encodeURIComponent(packNumber)}`, {
     method: "GET",
-    headers: {
-      "X-Registrations-Key": readKey,
-      "ngrok-skip-browser-warning": "true",
-    },
+    headers: registrationReadHeaders(readKey),
   })
 }
 
