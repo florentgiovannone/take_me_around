@@ -22,8 +22,8 @@ import {
 import { registrationBaseUrl } from "../registrationFlow"
 import {
   adminScanLabel,
-  applyContactPrefill,
   latestConfirmedMacdRegistration,
+  nextContactPrefillState,
   packNumberFromMacdTag,
   parseConfirmedRegistrations,
   registrationDetailFields,
@@ -110,6 +110,7 @@ export default function DashboardPage({
   const [submitting, setSubmitting] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
   const contactRef = useRef<HTMLElement>(null)
+  const contactPrefillAppliedRef = useRef(false)
 
   const loadLogs = async (showLoading: boolean) => {
     if (showLoading) setLoading(true)
@@ -149,10 +150,22 @@ export default function DashboardPage({
   }, [contactOpen])
 
   useEffect(() => {
-    if (!showContact || !contactOpen) return
+    if (!contactOpen) {
+      contactPrefillAppliedRef.current = false
+      return
+    }
+    if (!showContact) return
     const match = latestConfirmedMacdRegistration(logs, registrations)
-    if (!match) return
-    setForm((current) => applyContactPrefill(current, match))
+    setForm((current) => {
+      const result = nextContactPrefillState({
+        contactOpen,
+        alreadyApplied: contactPrefillAppliedRef.current,
+        form: current,
+        match,
+      })
+      contactPrefillAppliedRef.current = result.applied
+      return result.form
+    })
   }, [showContact, contactOpen, logs, registrations])
 
   function closeContact() {
@@ -198,6 +211,7 @@ export default function DashboardPage({
       const outcome = contactOutcomeFromResponse(response.status, body)
       if (outcome.type === "sent") {
         setForm(EMPTY_FORM)
+        contactPrefillAppliedRef.current = true
         setSent(true)
         setNotice(outcome.message)
         return

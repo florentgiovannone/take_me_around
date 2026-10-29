@@ -103,6 +103,28 @@ export function applyContactPrefill<
   }
 }
 
+export function nextContactPrefillState(args: {
+  contactOpen: boolean
+  alreadyApplied: boolean
+  form: { name: string; email: string; organisation: string; message: string }
+  match: ConfirmedRegistration | null
+}): { applied: boolean; form: typeof args.form } {
+  const { contactOpen, alreadyApplied, form, match } = args
+  if (!contactOpen) {
+    return { applied: false, form }
+  }
+  if (alreadyApplied) {
+    return { applied: true, form }
+  }
+  if (!match) {
+    return { applied: false, form }
+  }
+  return {
+    applied: true,
+    form: applyContactPrefill(form, match),
+  }
+}
+
 function timestampMs(value: string | null | undefined): number {
   const ms = Date.parse(value ?? "")
   return Number.isNaN(ms) ? 0 : ms

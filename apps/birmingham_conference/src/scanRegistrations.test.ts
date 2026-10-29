@@ -5,6 +5,7 @@ import {
   applyContactPrefill,
   contactPrefillFromRegistration,
   latestConfirmedMacdRegistration,
+  nextContactPrefillState,
   packNumberFromMacdTag,
   parseConfirmedRegistrations,
   registrationDetailFields,
@@ -114,6 +115,53 @@ describe("contact prefill", () => {
       organisation: "Typed Co",
       message: "Hello",
     })
+  })
+
+  it("applies prefill once per panel open", () => {
+    const empty = { name: "", email: "", organisation: "", message: "" }
+    const prefilled = {
+      name: "John Doe",
+      email: "john@example.com",
+      organisation: "Analytical Engines",
+      message: "",
+    }
+
+    expect(
+      nextContactPrefillState({
+        contactOpen: false,
+        alreadyApplied: true,
+        form: prefilled,
+        match: john,
+      })
+    ).toEqual({ applied: false, form: prefilled })
+
+    expect(
+      nextContactPrefillState({
+        contactOpen: true,
+        alreadyApplied: false,
+        form: empty,
+        match: john,
+      })
+    ).toEqual({ applied: true, form: prefilled })
+
+    const clearedEmail = { ...prefilled, email: "" }
+    expect(
+      nextContactPrefillState({
+        contactOpen: true,
+        alreadyApplied: true,
+        form: clearedEmail,
+        match: john,
+      })
+    ).toEqual({ applied: true, form: clearedEmail })
+
+    expect(
+      nextContactPrefillState({
+        contactOpen: true,
+        alreadyApplied: false,
+        form: empty,
+        match: john,
+      })
+    ).toEqual({ applied: true, form: prefilled })
   })
 })
 
