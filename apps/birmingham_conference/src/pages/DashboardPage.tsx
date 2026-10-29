@@ -31,6 +31,9 @@ import {
   parseConfirmedRegistrations,
   registrationDetailFields,
   registrationForPack,
+  rememberPackLookup,
+  registrationsFromCache,
+  uncachedPacks,
   type ConfirmedRegistration,
 } from "../scanRegistrations"
 import "../../../dashboard/src/styles/style.css"
@@ -38,6 +41,7 @@ import "@tma/brand/dashboard.css"
 import "../styles/dashboard.css"
 
 const POLL_INTERVAL_MS = 5000
+const PACK_LOOKUP_CONCURRENCY = 2
 
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
@@ -56,22 +60,41 @@ async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegis
   }
 }
 
-async function fetchRegistrationsForLogs(logs: PoiseLog[]): Promise<ConfirmedRegistration[] | null> {
-  const packs = macdPackNumbersNewestFirst(logs)
-  if (packs.length === 0) return []
-  const results = await Promise.all(packs.map((pack) => fetchPackRegistration(pack)))
-  if (results.every((rows) => rows === null)) return null
-  const rows: ConfirmedRegistration[] = []
-  const seen = new Set<string>()
-  for (const part of results) {
-    if (!part) continue
-    for (const row of part) {
-      if (seen.has(row.packNumber)) continue
-      seen.add(row.packNumber)
-      rows.push(row)
+async function lookupPack(packNumber: string) {
+  const rows = await fetchPackRegistration(packNumber)
+  if (rows === null) return
+  rememberPackLookup(packNumber, rows[0] ?? null)
+}
+
+async function mapPool(items: string[], worker: (item: string) => Promise<void>) {
+  if (items.length === 0) return
+  const queue = [...items]
+  async function run() {
+    while (queue.length > 0) {
+      const item = queue.shift()
+      if (item === undefined) return
+      await worker(item)
     }
   }
-  return rows
+  const workers = Math.min(PACK_LOOKUP_CONCURRENCY, items.length)
+  await Promise.all(Array.from({ length: workers }, () => run()))
+}
+
+async function fetchPrefillRegistrations(logs: PoiseLog[]): Promise<ConfirmedRegistration[]> {
+  for (const pack of macdPackNumbersNewestFirst(logs)) {
+    if (uncachedPacks([pack]).length > 0) {
+      await lookupPack(pack)
+    }
+    const cached = registrationsFromCache([pack])
+    if (cached[0]) return cached
+  }
+  return []
+}
+
+async function fetchRegistrationsForLogs(logs: PoiseLog[]): Promise<ConfirmedRegistration[]> {
+  const packs = macdPackNumbersNewestFirst(logs)
+  await mapPool(uncachedPacks(packs), lookupPack)
+  return registrationsFromCache(packs)
 }
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
@@ -146,10 +169,10 @@ export default function DashboardPage({
       setError(null)
     }
     if (showLoading) setLoading(false)
-    const confirmed = await fetchRegistrationsForLogs(nextLogs)
-    if (confirmed !== null) {
-      setRegistrations(confirmed)
-    }
+    const confirmed = isAdmin
+      ? await fetchRegistrationsForLogs(nextLogs)
+      : await fetchPrefillRegistrations(nextLogs)
+    setRegistrations(confirmed)
   }
 
   useEffect(() => {

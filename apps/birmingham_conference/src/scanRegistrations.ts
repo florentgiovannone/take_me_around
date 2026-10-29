@@ -159,3 +159,26 @@ export function latestConfirmedMacdRegistration(
   }
   return null
 }
+
+const packLookupCache = new Map<string, ConfirmedRegistration | null>()
+
+export function resetPackLookupCache() {
+  packLookupCache.clear()
+}
+
+export function rememberPackLookup(packNumber: string, row: ConfirmedRegistration | null) {
+  packLookupCache.set(packNumber, row)
+}
+
+export function uncachedPacks(packNumbers: string[]): string[] {
+  return packNumbers.filter((packNumber) => !packLookupCache.has(packNumber))
+}
+
+export function registrationsFromCache(packNumbers: string[]): ConfirmedRegistration[] {
+  const rows: ConfirmedRegistration[] = []
+  for (const packNumber of packNumbers) {
+    const row = packLookupCache.get(packNumber)
+    if (row) rows.push(row)
+  }
+  return rows
+}
