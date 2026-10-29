@@ -10,11 +10,15 @@ import {
   latestConfirmedMacdRegistration,
   nextContactPrefillState,
   packNumberFromMacdTag,
+  packsNeedingLookup,
   parseConfirmedRegistrations,
   registrationDetailFields,
   registrationForPack,
+  registrationFromCache,
   registrationPhoneLabel,
+  rowsFromPackCache,
   type ConfirmedRegistration,
+  type PackLookupCache,
 } from "./scanRegistrations"
 
 const john: ConfirmedRegistration = {
@@ -211,5 +215,52 @@ describe("latestConfirmedMacdRegistration", () => {
     })
     expect(latestConfirmedMacdRegistration([older, newerUnknown, macf], [john])).toEqual(john)
     expect(latestConfirmedMacdRegistration([macf], [john])).toBeNull()
+  })
+})
+
+describe("packsNeedingLookup", () => {
+  const empty: PackLookupCache = {}
+  const johnCache: PackLookupCache = { "001": john }
+  const empty199: PackLookupCache = { "199": null }
+
+  it("looks up MACD001 once when the cache is empty", () => {
+    expect(packsNeedingLookup(["001"], empty, "untilConfirmed")).toEqual(["001"])
+    expect(packsNeedingLookup(["001"], empty, "all")).toEqual(["001"])
+  })
+
+  it("requests nothing on a later poll once that pack is cached", () => {
+    expect(packsNeedingLookup(["001"], johnCache, "untilConfirmed")).toEqual([])
+    expect(packsNeedingLookup(["001"], johnCache, "all")).toEqual([])
+    expect(packsNeedingLookup(["001"], { "001": null }, "untilConfirmed")).toEqual([])
+    expect(packsNeedingLookup(["001"], { "001": null }, "all")).toEqual([])
+  })
+
+  it("requests only a newly scanned pack", () => {
+    expect(packsNeedingLookup(["002", "001"], johnCache, "all")).toEqual(["002"])
+  })
+
+  it("public mode fetches the newest uncached pack and waits before older ones", () => {
+    expect(packsNeedingLookup(["199", "001"], empty, "untilConfirmed")).toEqual(["199"])
+    expect(packsNeedingLookup(["199", "001"], empty199, "untilConfirmed")).toEqual(["001"])
+    expect(packsNeedingLookup(["199", "001"], { ...empty199, "001": john }, "untilConfirmed")).toEqual([])
+  })
+
+  it("public mode still looks up a newer uncached pack after a confirmed match", () => {
+    expect(packsNeedingLookup(["002", "001"], johnCache, "untilConfirmed")).toEqual(["002"])
+  })
+
+  it("admin mode looks up every uncached scanned pack", () => {
+    expect(packsNeedingLookup(["199", "001"], empty, "all")).toEqual(["199", "001"])
+    expect(packsNeedingLookup(["199", "001"], empty199, "all")).toEqual(["001"])
+  })
+})
+
+describe("pack cache rows", () => {
+  it("reads confirmed rows and ignores empty lookups", () => {
+    const cache: PackLookupCache = { "001": john, "199": null }
+    expect(rowsFromPackCache(cache)).toEqual([john])
+    expect(registrationFromCache(cache, "001")).toEqual(john)
+    expect(registrationFromCache(cache, "199")).toBeUndefined()
+    expect(registrationFromCache(cache, "002")).toBeUndefined()
   })
 })

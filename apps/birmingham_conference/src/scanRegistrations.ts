@@ -159,3 +159,38 @@ export function latestConfirmedMacdRegistration(
   }
   return null
 }
+
+export type PackLookupCache = Record<string, ConfirmedRegistration | null>
+
+export type PackLookupMode = "untilConfirmed" | "all"
+
+export function packsNeedingLookup(
+  packsNewestFirst: string[],
+  cache: PackLookupCache,
+  mode: PackLookupMode
+): string[] {
+  if (mode === "all") {
+    return packsNewestFirst.filter((pack) => !(pack in cache))
+  }
+  const needed: string[] = []
+  for (const pack of packsNewestFirst) {
+    if (pack in cache) {
+      if (cache[pack]) return needed
+      continue
+    }
+    needed.push(pack)
+    return needed
+  }
+  return needed
+}
+
+export function rowsFromPackCache(cache: PackLookupCache): ConfirmedRegistration[] {
+  return Object.values(cache).filter((row): row is ConfirmedRegistration => row !== null)
+}
+
+export function registrationFromCache(
+  cache: PackLookupCache,
+  packNumber: string
+): ConfirmedRegistration | undefined {
+  return cache[packNumber] ?? undefined
+}

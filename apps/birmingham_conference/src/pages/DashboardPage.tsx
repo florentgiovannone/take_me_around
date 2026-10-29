@@ -21,6 +21,22 @@ import {
   type ContactFormErrors,
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
+import {
+  PACK_REGISTRATION_PATH,
+  adminScanLabel,
+  applyContactPrefill,
+  latestConfirmedMacdRegistration,
+  macdPackNumbersNewestFirst,
+  packNumberFromMacdTag,
+  packsNeedingLookup,
+  parseConfirmedRegistrations,
+  registrationDetailFields,
+  registrationForPack,
+  registrationFromCache,
+  rowsFromPackCache,
+  type ConfirmedRegistration,
+  type PackLookupCache,
+} from "../scanRegistrations"
 import "../../../dashboard/src/styles/style.css"
 import "@tma/brand/dashboard.css"
 import "../styles/dashboard.css"
@@ -30,6 +46,19 @@ const POLL_INTERVAL_MS = 5000
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
   | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status" | "network"; status?: number }
+
+async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegistration[] | null> {
+  try {
+    const response = await fetch(
+      `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(packNumber)}`,
+      { headers: { "ngrok-skip-browser-warning": "true" } }
+    )
+    if (!response.ok) return null
+    return parseConfirmedRegistrations(await response.json())
+  } catch {
+    return null
+  }
+}
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
   try {
@@ -75,6 +104,7 @@ export default function DashboardPage({
       ? "Live Museum Association Conference tag activity"
       : "Live Museum Association Conference activity"
   const [logs, setLogs] = useState<PoiseLog[]>(() => readArtworkScans())
+  const [packCache, setPackCache] = useState<PackLookupCache>({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [ready, setReady] = useState(false)
@@ -87,6 +117,8 @@ export default function DashboardPage({
   const [contactOpen, setContactOpen] = useState(false)
   const contactRef = useRef<HTMLElement>(null)
   const contactPrefillAppliedRef = useRef(false)
+  const packLookupInFlightRef = useRef(new Set<string>())
+  const macdPackKey = macdPackNumbersNewestFirst(logs).join(",")
 
   const loadLogs = async (showLoading: boolean) => {
     if (showLoading) setLoading(true)
@@ -128,6 +160,48 @@ export default function DashboardPage({
     if (!contactOpen) return
     contactRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [contactOpen])
+
+  useEffect(() => {
+    const packs = macdPackKey ? macdPackKey.split(",") : []
+    const needed = packsNeedingLookup(
+      packs,
+      packCache,
+      isAdmin ? "all" : "untilConfirmed"
+    ).filter((pack) => !packLookupInFlightRef.current.has(pack))
+    if (needed.length === 0) return
+
+    needed.forEach((pack) => packLookupInFlightRef.current.add(pack))
+    void (async () => {
+      const updates: PackLookupCache = {}
+      await Promise.all(
+        needed.map(async (pack) => {
+          const rows = await fetchPackRegistration(pack)
+          if (rows === null) return
+          updates[pack] = registrationForPack(rows, pack) ?? null
+        })
+      )
+      needed.forEach((pack) => packLookupInFlightRef.current.delete(pack))
+      if (Object.keys(updates).length === 0) return
+      setPackCache((current) => ({ ...current, ...updates }))
+    })()
+  }, [isAdmin, macdPackKey, packCache])
+
+  useEffect(() => {
+    if (!contactOpen) {
+      contactPrefillAppliedRef.current = false
+      return
+    }
+    if (!showContact || contactPrefillAppliedRef.current) return
+    const match = latestConfirmedMacdRegistration(logs, rowsFromPackCache(packCache))
+    if (!match) return
+    contactPrefillAppliedRef.current = true
+    setForm((current) => applyContactPrefill(current, match))
+  }, [showContact, contactOpen, logs, packCache])
+
+  function registrationForTitle(title: string): ConfirmedRegistration | undefined {
+    const pack = packNumberFromMacdTag(title)
+    return pack ? registrationFromCache(packCache, pack) : undefined
+  }
 
   function closeContact() {
     setContactOpen(false)
@@ -217,7 +291,20 @@ export default function DashboardPage({
           </div>
         )}
         {error && <p className="tma-dashboard-error">{error}</p>}
-        <SiteScopeProvider scope={scope}>
+        <SiteScopeProvider
+          scope={scope}
+          scanTitle={
+            isAdmin ? (title) => adminScanLabel(title, registrationForTitle(title)) : undefined
+          }
+          scanRegistrationFields={
+            isAdmin
+              ? (title) => {
+                  const row = registrationForTitle(title)
+                  return row ? registrationDetailFields(row) : null
+                }
+              : undefined
+          }
+        >
           {!loading && activeTab === "activity" && <DashboardActivityPanel logs={logs} />}
           {!loading && activeTab === "counts" && <DashboardCountsPanel logs={logs} />}
           {!loading && activeTab === "overview" && <DashboardOverviewPanel logs={logs} />}
