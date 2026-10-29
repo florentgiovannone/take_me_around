@@ -21,19 +21,6 @@ import {
   type ContactFormErrors,
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
-import {
-  ADMIN_REGISTRATIONS_PATH,
-  PACK_REGISTRATION_PATH,
-  adminScanLabel,
-  latestConfirmedMacdRegistration,
-  macdPackNumbersNewestFirst,
-  nextContactPrefillState,
-  packNumberFromMacdTag,
-  parseConfirmedRegistrations,
-  registrationDetailFields,
-  registrationForPack,
-  type ConfirmedRegistration,
-} from "../scanRegistrations"
 import "../../../dashboard/src/styles/style.css"
 import "@tma/brand/dashboard.css"
 import "../styles/dashboard.css"
@@ -43,40 +30,6 @@ const POLL_INTERVAL_MS = 5000
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
   | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status" | "network"; status?: number }
-
-async function fetchConfirmedRegistrations(): Promise<ConfirmedRegistration[] | null> {
-  try {
-    const response = await fetch(ADMIN_REGISTRATIONS_PATH, {
-      headers: { "ngrok-skip-browser-warning": "true" },
-    })
-    if (!response.ok) return null
-    return parseConfirmedRegistrations(await response.json())
-  } catch {
-    return null
-  }
-}
-
-async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegistration[] | null> {
-  try {
-    const response = await fetch(
-      `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(packNumber)}`,
-      { headers: { "ngrok-skip-browser-warning": "true" } }
-    )
-    if (!response.ok) return null
-    return parseConfirmedRegistrations(await response.json())
-  } catch {
-    return null
-  }
-}
-
-async function fetchPrefillRegistrations(logs: PoiseLog[]): Promise<ConfirmedRegistration[] | null> {
-  for (const pack of macdPackNumbersNewestFirst(logs)) {
-    const rows = await fetchPackRegistration(pack)
-    if (rows === null) return null
-    if (rows.length > 0) return rows
-  }
-  return []
-}
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
   try {
@@ -122,7 +75,6 @@ export default function DashboardPage({
       ? "Live Museum Association Conference tag activity"
       : "Live Museum Association Conference activity"
   const [logs, setLogs] = useState<PoiseLog[]>(() => readArtworkScans())
-  const [registrations, setRegistrations] = useState<ConfirmedRegistration[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [ready, setReady] = useState(false)
@@ -150,12 +102,6 @@ export default function DashboardPage({
       setError(null)
     }
     if (showLoading) setLoading(false)
-    const confirmed = isAdmin
-      ? await fetchConfirmedRegistrations()
-      : await fetchPrefillRegistrations(nextLogs)
-    if (confirmed !== null) {
-      setRegistrations(confirmed)
-    }
   }
 
   useEffect(() => {
@@ -182,25 +128,6 @@ export default function DashboardPage({
     if (!contactOpen) return
     contactRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [contactOpen])
-
-  useEffect(() => {
-    if (!contactOpen) {
-      contactPrefillAppliedRef.current = false
-      return
-    }
-    if (!showContact) return
-    const match = latestConfirmedMacdRegistration(logs, registrations)
-    setForm((current) => {
-      const result = nextContactPrefillState({
-        contactOpen,
-        alreadyApplied: contactPrefillAppliedRef.current,
-        form: current,
-        match,
-      })
-      contactPrefillAppliedRef.current = result.applied
-      return result.form
-    })
-  }, [showContact, contactOpen, logs, registrations])
 
   function closeContact() {
     setContactOpen(false)
@@ -264,11 +191,6 @@ export default function DashboardPage({
     }
   }
 
-  function registrationForTitle(title: string): ConfirmedRegistration | undefined {
-    const pack = packNumberFromMacdTag(title)
-    return pack ? registrationForPack(registrations, pack) : undefined
-  }
-
   return (
     <div
       className={`tma-dashboard tma-main-dashboard tma-brand${showContact && contactOpen ? " birmingham-contact-is-open" : ""}`}
@@ -295,20 +217,7 @@ export default function DashboardPage({
           </div>
         )}
         {error && <p className="tma-dashboard-error">{error}</p>}
-        <SiteScopeProvider
-          scope={scope}
-          scanTitle={
-            isAdmin ? (title) => adminScanLabel(title, registrationForTitle(title)) : undefined
-          }
-          scanRegistrationFields={
-            isAdmin
-              ? (title) => {
-                  const row = registrationForTitle(title)
-                  return row ? registrationDetailFields(row) : null
-                }
-              : undefined
-          }
-        >
+        <SiteScopeProvider scope={scope}>
           {!loading && activeTab === "activity" && <DashboardActivityPanel logs={logs} />}
           {!loading && activeTab === "counts" && <DashboardCountsPanel logs={logs} />}
           {!loading && activeTab === "overview" && <DashboardOverviewPanel logs={logs} />}
