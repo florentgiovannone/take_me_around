@@ -22,7 +22,6 @@ import {
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
 import {
-  ADMIN_REGISTRATIONS_PATH,
   PACK_REGISTRATION_PATH,
   adminScanLabel,
   latestConfirmedMacdRegistration,
@@ -43,18 +42,6 @@ const POLL_INTERVAL_MS = 5000
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
   | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status" | "network"; status?: number }
-
-async function fetchConfirmedRegistrations(): Promise<ConfirmedRegistration[] | null> {
-  try {
-    const response = await fetch(ADMIN_REGISTRATIONS_PATH, {
-      headers: { "ngrok-skip-browser-warning": "true" },
-    })
-    if (!response.ok) return null
-    return parseConfirmedRegistrations(await response.json())
-  } catch {
-    return null
-  }
-}
 
 async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegistration[] | null> {
   try {
@@ -159,9 +146,7 @@ export default function DashboardPage({
       setError(null)
     }
     if (showLoading) setLoading(false)
-    const confirmed = isAdmin
-      ? (await fetchConfirmedRegistrations()) ?? (await fetchRegistrationsForLogs(nextLogs))
-      : await fetchRegistrationsForLogs(nextLogs)
+    const confirmed = await fetchRegistrationsForLogs(nextLogs)
     if (confirmed !== null) {
       setRegistrations(confirmed)
     }
