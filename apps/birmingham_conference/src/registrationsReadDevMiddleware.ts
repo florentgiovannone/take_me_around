@@ -1,6 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http"
 import { handleAdminGate } from "./adminGate"
-import { registrationReadHeaders } from "./registrationsReadEnv"
 
 function applyGateResult(
   result: Awaited<ReturnType<typeof handleAdminGate>>,
@@ -61,7 +60,7 @@ export function createRegistrationsReadMiddleware(options: {
         return
       }
     }
-    if (!options.registrationBase) {
+    if (!options.registrationBase || !options.readKey) {
       res.statusCode = 503
       res.setHeader("Content-Type", "application/json; charset=utf-8")
       res.end(JSON.stringify({ error: "Registrations read is not configured." }))
@@ -70,7 +69,10 @@ export function createRegistrationsReadMiddleware(options: {
     const query = pathname === "/api/pack-registration" ? `?packNumber=${encodeURIComponent(packNumber)}` : url.search
     try {
       const upstream = await fetch(`${options.registrationBase}/api/registrations${query}`, {
-        headers: registrationReadHeaders(options.readKey),
+        headers: {
+          "X-Registrations-Key": options.readKey,
+          "ngrok-skip-browser-warning": "true",
+        },
       })
       const body = Buffer.from(await upstream.arrayBuffer())
       res.statusCode = upstream.status

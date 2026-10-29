@@ -1,14 +1,11 @@
 import { handleAdminGate } from "../../src/adminGate.ts"
-import {
-  registrationReadHeaders,
-  resolveRegistrationBase,
-  stripWrappingQuotes,
-} from "../../src/registrationsReadEnv.ts"
 
 export default async (request: Request) => {
   const password = (Deno.env.get("ADMIN_DASHBOARD_PASSWORD") || "").trim()
-  const readKey = stripWrappingQuotes(Deno.env.get("REGISTRATIONS_READ_KEY") || "")
-  const registrationBase = resolveRegistrationBase(Deno.env.get("VITE_BIRMINGHAM_REGISTRATION_URL"))
+  const readKey = (Deno.env.get("REGISTRATIONS_READ_KEY") || "").trim()
+  const registrationBase = (Deno.env.get("VITE_BIRMINGHAM_REGISTRATION_URL") || "")
+    .trim()
+    .replace(/\/$/, "")
   const url = new URL(request.url)
   const result = await handleAdminGate({
     method: request.method,
@@ -19,9 +16,18 @@ export default async (request: Request) => {
     secure: url.protocol === "https:",
   })
   if (result.kind === "next") {
+    if (!readKey || !registrationBase) {
+      return new Response(JSON.stringify({ error: "Registrations read is not configured." }), {
+        status: 503,
+        headers: { "content-type": "application/json; charset=utf-8" },
+      })
+    }
     return fetch(`${registrationBase}/api/registrations${url.search}`, {
       method: "GET",
-      headers: registrationReadHeaders(readKey),
+      headers: {
+        "X-Registrations-Key": readKey,
+        "ngrok-skip-browser-warning": "true",
+      },
     })
   }
   if (result.kind === "empty") return new Response(null, { status: result.status })

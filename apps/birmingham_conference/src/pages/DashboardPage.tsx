@@ -69,22 +69,13 @@ async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegis
   }
 }
 
-async function fetchRegistrationsForLogs(logs: PoiseLog[]): Promise<ConfirmedRegistration[] | null> {
-  const packs = macdPackNumbersNewestFirst(logs)
-  if (packs.length === 0) return []
-  const results = await Promise.all(packs.map((pack) => fetchPackRegistration(pack)))
-  if (results.every((rows) => rows === null)) return null
-  const rows: ConfirmedRegistration[] = []
-  const seen = new Set<string>()
-  for (const part of results) {
-    if (!part) continue
-    for (const row of part) {
-      if (seen.has(row.packNumber)) continue
-      seen.add(row.packNumber)
-      rows.push(row)
-    }
+async function fetchPrefillRegistrations(logs: PoiseLog[]): Promise<ConfirmedRegistration[] | null> {
+  for (const pack of macdPackNumbersNewestFirst(logs)) {
+    const rows = await fetchPackRegistration(pack)
+    if (rows === null) return null
+    if (rows.length > 0) return rows
   }
-  return rows
+  return []
 }
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
@@ -160,8 +151,8 @@ export default function DashboardPage({
     }
     if (showLoading) setLoading(false)
     const confirmed = isAdmin
-      ? (await fetchConfirmedRegistrations()) ?? (await fetchRegistrationsForLogs(nextLogs))
-      : await fetchRegistrationsForLogs(nextLogs)
+      ? await fetchConfirmedRegistrations()
+      : await fetchPrefillRegistrations(nextLogs)
     if (confirmed !== null) {
       setRegistrations(confirmed)
     }

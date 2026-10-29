@@ -17,7 +17,6 @@
     "vite.config.ts",
     "src/adminGate.ts",
     "src/adminGateDevMiddleware.ts",
-    "src/registrationsReadDevMiddleware.ts",
-    "src/registrationsReadEnv.ts"
+    "src/registrationsReadDevMiddleware.ts"
   ]
 }
