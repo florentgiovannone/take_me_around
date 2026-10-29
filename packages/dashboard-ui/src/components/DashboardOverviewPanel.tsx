@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import AnalyticsStatCard, { StatIcon } from "./AnalyticsStatCard"
 import ChartCountReadout from "./ChartCountReadout"
-import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useScanTitle, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import type { CalendarDayCell, MonthlyCalendarWindow, PoiseLog, TimeSeriesPoint } from "@tma/dashboard-scope"
 import {
   buildMonthlyCalendarGrid,
@@ -96,6 +96,7 @@ function DayBarColumn({
 export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelProps) {
   const siteScope = useSiteAnalyticsScope()
   const copy = useDashboardCopy()
+  const scanTitle = useScanTitle()
   const [timeRange, setTimeRange] = useState<"daily" | "monthly">("daily")
   const [periodOffset, setPeriodOffset] = useState(0)
   const [selectedPoint, setSelectedPoint] = useState<TimeSeriesPoint | null>(null)
@@ -204,7 +205,7 @@ export default function DashboardOverviewPanel({ logs }: DashboardOverviewPanelP
           </StatIcon>
           <p className="tma-analytics-stat-label">{copy.topTag}</p>
           <p className="tma-analytics-stat-value tma-analytics-stat-value--text">
-            {analytics.topTagName}
+            {scanTitle(analytics.topTagName)}
           </p>
           <p className="tma-analytics-stat-meta is-accent">
             {formatNumber(analytics.topTagMonthCount)} {copy.tapsThisMonth}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react"
-import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useScanTitle, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import {
   buildSarTimelineGridTicks,
   buildSarTimelinePlot,
@@ -130,6 +130,7 @@ export default function SarTimelineChart({
 }: SarTimelineChartProps) {
   const siteScope = useSiteAnalyticsScope()
   const copy = useDashboardCopy()
+  const scanTitle = useScanTitle()
   const plot = useMemo(() => buildSarTimelinePlot(logs, siteScope), [logs, siteScope])
   const rowMeta = useMemo(
     () => buildSarTimelineRowMetaMap(logs, siteScope),
@@ -757,7 +758,7 @@ export default function SarTimelineChart({
                       <button
                         type="button"
                         className={`tma-sar-timeline-marker${point.isRedirect ? " is-redirect" : " is-seen"}${recencyClassForRank(recencyRank)}${isFreshLatest ? " is-latest-fresh" : ""}${focusedLogId === point.logId ? " is-focused" : ""}${hoveredPoint?.logId === point.logId ? " is-active" : ""}`}
-                        aria-label={`${point.artworkTitle}, ${point.messageType}`}
+                        aria-label={`${scanTitle(point.artworkTitle)}, ${point.messageType}`}
                         onMouseEnter={(event) => {
                           if (suppressHoverTooltipRef.current) return
                           setHoveredPoint(point)
@@ -876,7 +877,7 @@ export default function SarTimelineChart({
           style={{ left: tooltipPos.x, top: tooltipPos.y }}
           role="tooltip"
         >
-          <strong>{hoveredPoint.artworkTitle}</strong>
+          <strong>{scanTitle(hoveredPoint.artworkTitle)}</strong>
           <span>{hoveredPoint.messageType}</span>
           <span>
             {formatLogTimestamp(hoveredPoint.timestamp.toISOString())?.date}{" "}

@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import AnalyticsStatCard from "./AnalyticsStatCard"
-import { useDashboardCopy, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
+import { useDashboardCopy, useScanTitle, useSiteAnalyticsScope } from "../hooks/useSiteAnalyticsScope"
 import { formatLogTimestamp } from "../utils/dashboardFormatters"
 import {
   buildTrackedArtworkScanGroups,
@@ -31,6 +31,7 @@ function TimestampCell({ value }: { value: string | null }) {
 export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps) {
   const siteScope = useSiteAnalyticsScope()
   const copy = useDashboardCopy()
+  const scanTitle = useScanTitle()
   const artworkScanGroups = useMemo(
     () => buildTrackedArtworkScanGroups(logs, siteScope),
     [logs, siteScope]
@@ -66,7 +67,7 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
         />
         <AnalyticsStatCard
           label={copy.topLink}
-          value={topLink?.scans.length ? topLink.title : "—"}
+          value={topLink?.scans.length ? scanTitle(topLink.title) : "—"}
           valueClassName="tma-analytics-stat-value--text"
           meta={topLink?.scans.length ? copy.scans(topLink.scans.length) : copy.noDataYet}
           metaClassName="is-accent"
@@ -94,7 +95,7 @@ export default function DashboardCountsPanel({ logs }: DashboardCountsPanelProps
             <details key={group.path} className="tma-dashboard-link-card">
               <summary>
                 <div className="tma-dashboard-link-card-main">
-                  <span className="tma-dashboard-link-card-title">{group.title}</span>
+                  <span className="tma-dashboard-link-card-title">{scanTitle(group.title)}</span>
                   <span className="tma-dashboard-link-card-url">{group.url}</span>
                 </div>
                 <span className="tma-dashboard-scan-count">{copy.scans(group.scans.length)}</span>

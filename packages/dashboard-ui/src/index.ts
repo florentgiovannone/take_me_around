@@ -18,6 +18,8 @@ export {
   useSiteAnalyticsScope,
   useDashboardCopy,
   useDashboardLocale,
+  useScanTitle,
+  useScanRegistrationFields,
 } from "./hooks/useSiteAnalyticsScope"
 export { dashboardCopy } from "./i18n/copy"
 export type { DashboardCopy } from "./i18n/copy"

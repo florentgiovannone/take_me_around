@@ -6,25 +6,35 @@ import {
 } from "@tma/config"
 import { dashboardCopy, type DashboardCopy } from "../i18n/copy"
 
+type ScanRegistrationField = { label: string; value: string }
+
 type SiteAnalyticsContextValue = {
   scope: SiteScope
   locale: DashboardLocale
   copy: DashboardCopy
+  scanTitle: (title: string) => string
+  scanRegistrationFields: (title: string) => ScanRegistrationField[] | null
 }
 
 const SiteScopeContext = createContext<SiteAnalyticsContextValue>({
   scope: "gallery",
   locale: "en",
   copy: dashboardCopy("en"),
+  scanTitle: (title) => title,
+  scanRegistrationFields: () => null,
 })
 
 export function SiteScopeProvider({
   scope,
   locale = "en",
+  scanTitle,
+  scanRegistrationFields,
   children,
 }: {
   scope: SiteScope
   locale?: DashboardLocale
+  scanTitle?: (title: string) => string
+  scanRegistrationFields?: (title: string) => ScanRegistrationField[] | null
   children: ReactNode
 }) {
   setDashboardLocale(locale)
@@ -33,8 +43,10 @@ export function SiteScopeProvider({
       scope,
       locale,
       copy: dashboardCopy(locale),
+      scanTitle: scanTitle ?? ((title: string) => title),
+      scanRegistrationFields: scanRegistrationFields ?? (() => null),
     }),
-    [scope, locale]
+    [scope, locale, scanTitle, scanRegistrationFields]
   )
 
   return <SiteScopeContext.Provider value={value}>{children}</SiteScopeContext.Provider>
@@ -46,6 +58,16 @@ export function useSiteAnalyticsScope(): SiteScope {
 
 export function useDashboardLocale(): DashboardLocale {
   return useContext(SiteScopeContext).locale
+}
+
+export function useScanTitle(): (title: string) => string {
+  return useContext(SiteScopeContext).scanTitle
+}
+
+export function useScanRegistrationFields(): (
+  title: string
+) => ScanRegistrationField[] | null {
+  return useContext(SiteScopeContext).scanRegistrationFields
 }
 
 export function useDashboardCopy(): DashboardCopy {

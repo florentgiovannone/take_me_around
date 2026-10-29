@@ -21,9 +21,13 @@ import {
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
 import {
+  adminScanLabel,
   applyContactPrefill,
   latestConfirmedMacdRegistration,
+  packNumberFromMacdTag,
   parseConfirmedRegistrations,
+  registrationDetailFields,
+  registrationForPack,
   type ConfirmedRegistration,
 } from "../scanRegistrations"
 import "../../../dashboard/src/styles/style.css"
@@ -84,6 +88,7 @@ export default function DashboardPage({
   scope = "birmingham_conference",
 }: DashboardPageProps) {
   const showContact = scope === "birmingham_conference"
+  const isAdmin = scope === "birmingham_conference_admin"
   const title =
     scope === "birmingham_conference_admin"
       ? "Museum Association Conference · Admin"
@@ -211,6 +216,11 @@ export default function DashboardPage({
     }
   }
 
+  function registrationForTitle(title: string): ConfirmedRegistration | undefined {
+    const pack = packNumberFromMacdTag(title)
+    return pack ? registrationForPack(registrations, pack) : undefined
+  }
+
   return (
     <div
       className={`tma-dashboard tma-main-dashboard tma-brand${showContact && contactOpen ? " birmingham-contact-is-open" : ""}`}
@@ -231,7 +241,20 @@ export default function DashboardPage({
           </div>
         )}
         {error && <p className="tma-dashboard-error">{error}</p>}
-        <SiteScopeProvider scope={scope}>
+        <SiteScopeProvider
+          scope={scope}
+          scanTitle={
+            isAdmin ? (title) => adminScanLabel(title, registrationForTitle(title)) : undefined
+          }
+          scanRegistrationFields={
+            isAdmin
+              ? (title) => {
+                  const row = registrationForTitle(title)
+                  return row ? registrationDetailFields(row) : null
+                }
+              : undefined
+          }
+        >
           {!loading && activeTab === "activity" && <DashboardActivityPanel logs={logs} />}
           {!loading && activeTab === "counts" && <DashboardCountsPanel logs={logs} />}
           {!loading && activeTab === "overview" && <DashboardOverviewPanel logs={logs} />}

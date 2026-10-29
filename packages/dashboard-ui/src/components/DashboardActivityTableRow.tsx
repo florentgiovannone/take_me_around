@@ -1,6 +1,10 @@
 import { useState } from "react"
 import type { SiteScope } from "@tma/config"
-import { useDashboardCopy } from "../hooks/useSiteAnalyticsScope"
+import {
+  useDashboardCopy,
+  useScanRegistrationFields,
+  useScanTitle,
+} from "../hooks/useSiteAnalyticsScope"
 import { formatLogTimestamp, messageTypeClass } from "../utils/dashboardFormatters"
 import {
   buildActivityVisitDetails,
@@ -69,6 +73,9 @@ function ActivityDetailsPanel({
   logs: PoiseLog[]
   scope: SiteScope
 }) {
+  const scanRegistrationFields = useScanRegistrationFields()
+  const fields = scanRegistrationFields(entry.artworkTitle)
+
   return (
     <div className="tma-dashboard-activity-details-panel">
       {entry.seen.map((seenRow) => (
@@ -77,6 +84,16 @@ function ActivityDetailsPanel({
           details={buildActivityVisitDetails(seenRow, logs, scope)}
         />
       ))}
+      {fields && (
+        <section className="tma-dashboard-activity-detail-section">
+          <h3 className="tma-dashboard-activity-detail-label">Registration</h3>
+          <div className="tma-dashboard-activity-detail-grid">
+            {fields.map((field) => (
+              <DetailField key={field.label} label={field.label} value={field.value} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
@@ -123,6 +140,7 @@ export default function DashboardActivityTableRow({
   showLogId = true,
 }: DashboardActivityTableRowProps) {
   const copy = useDashboardCopy()
+  const scanTitle = useScanTitle()
   const [expanded, setExpanded] = useState(false)
   const hasVisitDetails = entry.seen.length > 0
   const messageType = entry.redirect?.txt_message_type ?? entry.seen[0]?.txt_message_type ?? "-"
@@ -133,7 +151,7 @@ export default function DashboardActivityTableRow({
     <>
       <tr className={expanded ? "is-expanded" : undefined}>
         {showLogId && <td data-label={copy.logId}>{logId}</td>}
-        <td data-label={copy.artwork}>{entry.artworkTitle}</td>
+        <td data-label={copy.artwork}>{scanTitle(entry.artworkTitle)}</td>
         <td data-label={copy.time}>
           <TimestampCell value={entry.timestamp} />
         </td>
