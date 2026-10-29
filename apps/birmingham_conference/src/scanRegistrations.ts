@@ -170,7 +170,8 @@ export function packsNeedingLookup(
   mode: PackLookupMode
 ): string[] {
   if (mode === "all") {
-    return packsNewestFirst.filter((pack) => !(pack in cache))
+    const next = packsNewestFirst.find((pack) => !(pack in cache))
+    return next ? [next] : []
   }
   const needed: string[] = []
   for (const pack of packsNewestFirst) {

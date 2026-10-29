@@ -249,9 +249,10 @@ describe("packsNeedingLookup", () => {
     expect(packsNeedingLookup(["002", "001"], johnCache, "untilConfirmed")).toEqual(["002"])
   })
 
-  it("admin mode looks up every uncached scanned pack", () => {
-    expect(packsNeedingLookup(["199", "001"], empty, "all")).toEqual(["199", "001"])
+  it("admin mode looks up the next uncached pack one at a time", () => {
+    expect(packsNeedingLookup(["199", "001"], empty, "all")).toEqual(["199"])
     expect(packsNeedingLookup(["199", "001"], empty199, "all")).toEqual(["001"])
+    expect(packsNeedingLookup(["199", "001"], { "199": null, "001": john }, "all")).toEqual([])
   })
 })
 
