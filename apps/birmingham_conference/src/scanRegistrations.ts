@@ -4,10 +4,6 @@ import type { PoiseLog } from "@tma/dashboard-scope"
 export const ADMIN_REGISTRATIONS_PATH = "/api/admin/registrations"
 export const PACK_REGISTRATION_PATH = "/api/pack-registration"
 
-export function packRegistrationUrl(baseUrl: string, packNumber: string): string {
-  return `${baseUrl.replace(/\/$/, "")}/api/registrations?packNumber=${encodeURIComponent(packNumber)}`
-}
-
 export type ConfirmedRegistration = {
   name: string
   surname: string

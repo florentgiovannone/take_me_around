@@ -22,12 +22,12 @@ import {
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
 import {
+  PACK_REGISTRATION_PATH,
   adminScanLabel,
   applyContactPrefill,
   latestConfirmedMacdRegistration,
   macdPackNumbersNewestFirst,
   packNumberFromMacdTag,
-  packRegistrationUrl,
   packsNeedingLookup,
   parseConfirmedRegistrations,
   registrationDetailFields,
@@ -48,12 +48,11 @@ type FetchLogsResult =
   | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status" | "network"; status?: number }
 
 async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegistration[] | null> {
-  const baseUrl = registrationBaseUrl()
-  if (!baseUrl) return null
   try {
-    const response = await fetch(packRegistrationUrl(baseUrl, packNumber), {
-      headers: { "ngrok-skip-browser-warning": "true" },
-    })
+    const response = await fetch(
+      `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(packNumber)}`,
+      { headers: { "ngrok-skip-browser-warning": "true" } }
+    )
     if (!response.ok) return null
     return parseConfirmedRegistrations(await response.json())
   } catch {
