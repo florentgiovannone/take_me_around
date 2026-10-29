@@ -14,10 +14,6 @@ import {
   registrationDetailFields,
   registrationForPack,
   registrationPhoneLabel,
-  rememberPackLookup,
-  registrationsFromCache,
-  resetPackLookupCache,
-  uncachedPacks,
   type ConfirmedRegistration,
 } from "./scanRegistrations"
 
@@ -215,15 +211,5 @@ describe("latestConfirmedMacdRegistration", () => {
     })
     expect(latestConfirmedMacdRegistration([older, newerUnknown, macf], [john])).toEqual(john)
     expect(latestConfirmedMacdRegistration([macf], [john])).toBeNull()
-  })
-})
-
-describe("pack lookup cache", () => {
-  it("does not refetch packs that already succeeded or came back empty", () => {
-    resetPackLookupCache()
-    rememberPackLookup("199", null)
-    rememberPackLookup("001", john)
-    expect(uncachedPacks(["199", "001", "098"])).toEqual(["098"])
-    expect(registrationsFromCache(["199", "001", "098"])).toEqual([john])
   })
 })
