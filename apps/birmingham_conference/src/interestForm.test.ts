@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { submitInterestRegistration, type InterestRegistration } from "./interestForm"
+import {
+  registrationPayload,
+  submitInterestRegistration,
+  type InterestRegistration,
+} from "./interestForm"
 
 const valid: InterestRegistration = {
   name: "Ada",
@@ -12,6 +16,7 @@ const valid: InterestRegistration = {
   phoneCountry: "GB",
   phoneNumber: "7700 900123",
   artworkSlug: "the-star-of-betlehem",
+  packNumber: "101",
   consent: true,
 }
 
@@ -85,6 +90,7 @@ describe("submitInterestRegistration", () => {
         phoneCountry: "",
         phoneNumber: "",
         artworkSlug: "",
+        packNumber: "",
         consent: false,
       })
     ).toEqual({
@@ -98,6 +104,7 @@ describe("submitInterestRegistration", () => {
         town: "Enter the town.",
         country: "Choose a country.",
         artworkSlug: "Choose an artwork.",
+        packNumber: "Enter a 3-digit pack number.",
         consent: "Confirm that we may store these details.",
       },
     })
@@ -106,7 +113,56 @@ describe("submitInterestRegistration", () => {
   it("accepts a complete registration for each conference artwork", () => {
     expect(submitInterestRegistration({ ...valid, phoneNumber: "" })).toEqual({ ok: true })
     expect(
-      submitInterestRegistration({ ...valid, artworkSlug: "the-golden-boys" })
+      submitInterestRegistration({
+        ...valid,
+        artworkSlug: "the-golden-boys",
+        packNumber: "001",
+      })
     ).toEqual({ ok: true })
+  })
+
+  it("rejects a pack number that is not three digits", () => {
+    for (const packNumber of ["", "7", "12", "0077", "MACD007"]) {
+      expect(submitInterestRegistration({ ...valid, packNumber })).toEqual({
+        ok: false,
+        errors: { packNumber: "Enter a 3-digit pack number." },
+      })
+    }
+  })
+
+  it("rejects a pack number outside the chosen artwork range", () => {
+    expect(
+      submitInterestRegistration({
+        ...valid,
+        artworkSlug: "the-golden-boys",
+        packNumber: "000",
+      }).errors
+    ).toEqual({ packNumber: "Enter a pack number from 001 to 100." })
+    expect(
+      submitInterestRegistration({
+        ...valid,
+        artworkSlug: "the-golden-boys",
+        packNumber: "101",
+      }).errors
+    ).toEqual({ packNumber: "Enter a pack number from 001 to 100." })
+    expect(
+      submitInterestRegistration({
+        ...valid,
+        artworkSlug: "the-golden-boys",
+        packNumber: "100",
+      })
+    ).toEqual({ ok: true })
+    expect(submitInterestRegistration({ ...valid, packNumber: "101" })).toEqual({ ok: true })
+    expect(submitInterestRegistration({ ...valid, packNumber: "200" })).toEqual({ ok: true })
+    expect(submitInterestRegistration({ ...valid, packNumber: "100" }).errors).toEqual({
+      packNumber: "Enter a pack number from 101 to 200.",
+    })
+    expect(submitInterestRegistration({ ...valid, packNumber: "201" }).errors).toEqual({
+      packNumber: "Enter a pack number from 101 to 200.",
+    })
+  })
+
+  it("includes the trimmed pack number in the payload", () => {
+    expect(registrationPayload({ ...valid, packNumber: " 101 " }).packNumber).toBe("101")
   })
 })

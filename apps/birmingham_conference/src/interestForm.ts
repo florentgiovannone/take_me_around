@@ -12,6 +12,7 @@ export type InterestRegistration = {
   phoneCountry: string
   phoneNumber: string
   artworkSlug: string
+  packNumber: string
   consent: boolean
 }
 
@@ -26,6 +27,7 @@ export type InterestFormErrors = {
   phoneCountry?: string
   phoneNumber?: string
   artworkSlug?: string
+  packNumber?: string
   consent?: string
 }
 
@@ -57,6 +59,27 @@ const BLANK = {
 const ARTWORK_SLUGS = new Set<string>(
   BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => artwork.slug)
 )
+const PACK_DIGITS = /^[0-9]{3}$/
+const PACK_RANGES: Record<string, { min: string; max: string; message: string }> = {
+  "the-golden-boys": {
+    min: "001",
+    max: "100",
+    message: "Enter a pack number from 001 to 100.",
+  },
+  "the-star-of-betlehem": {
+    min: "101",
+    max: "200",
+    message: "Enter a pack number from 101 to 200.",
+  },
+}
+
+function packNumberError(packNumber: string, artworkSlug: string): string | undefined {
+  const text = packNumber.trim()
+  if (!PACK_DIGITS.test(text)) return "Enter a 3-digit pack number."
+  const range = PACK_RANGES[artworkSlug]
+  if (range && (text < range.min || text > range.max)) return range.message
+  return undefined
+}
 
 export function submitInterestRegistration(values: InterestRegistration): InterestFormResult {
   const errors: InterestFormErrors = {}
@@ -82,6 +105,8 @@ export function submitInterestRegistration(values: InterestRegistration): Intere
   if (digits && !phoneCountry) errors.phoneCountry = "Choose a country code."
   if (digits && !PHONE_DIGITS.test(digits)) errors.phoneNumber = "Enter a valid phone number."
   if (!ARTWORK_SLUGS.has(values.artworkSlug)) errors.artworkSlug = "Choose an artwork."
+  const packError = packNumberError(values.packNumber, values.artworkSlug)
+  if (packError) errors.packNumber = packError
   if (values.consent !== true) errors.consent = "Confirm that we may store these details."
   return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true }
 }
@@ -99,6 +124,7 @@ export function registrationPayload(values: InterestRegistration) {
     phoneDialCode: phoneCountry?.dial ?? "",
     phoneNumber: values.phoneNumber.replace(/[\s-]/g, ""),
     artworkSlug: values.artworkSlug,
+    packNumber: values.packNumber.trim(),
     consent: values.consent,
   }
 }
