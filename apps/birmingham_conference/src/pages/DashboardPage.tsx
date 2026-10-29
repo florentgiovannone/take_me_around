@@ -20,6 +20,12 @@ import {
   type ContactFormErrors,
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
+import {
+  applyContactPrefill,
+  latestConfirmedMacdRegistration,
+  parseConfirmedRegistrations,
+  type ConfirmedRegistration,
+} from "../scanRegistrations"
 import "../../../dashboard/src/styles/style.css"
 import "@tma/brand/dashboard.css"
 import "../styles/dashboard.css"
@@ -29,6 +35,20 @@ const POLL_INTERVAL_MS = 5000
 type FetchLogsResult =
   | { ok: true; data: PoiseLog[] }
   | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status" | "network"; status?: number }
+
+async function fetchConfirmedRegistrations(): Promise<ConfirmedRegistration[] | null> {
+  const baseUrl = registrationBaseUrl()
+  if (!baseUrl) return []
+  try {
+    const response = await fetch(`${baseUrl}/api/registrations`, {
+      headers: { "ngrok-skip-browser-warning": "true" },
+    })
+    if (!response.ok) return null
+    return parseConfirmedRegistrations(await response.json())
+  } catch {
+    return null
+  }
+}
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
   try {
@@ -73,6 +93,7 @@ export default function DashboardPage({
       ? "Live Museum Association Conference tag activity"
       : "Live Museum Association Conference activity"
   const [logs, setLogs] = useState<PoiseLog[]>(() => readArtworkScans())
+  const [registrations, setRegistrations] = useState<ConfirmedRegistration[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [ready, setReady] = useState(false)
@@ -93,12 +114,16 @@ export default function DashboardPage({
       setReady(true)
       if (showLoading) setError(errorMessage(result))
       if (showLoading) setLoading(false)
-      return
+    } else {
+      setLogs(mergeArtworkScans(result.data))
+      setReady(true)
+      setError(null)
+      if (showLoading) setLoading(false)
     }
-    setLogs(mergeArtworkScans(result.data))
-    setReady(true)
-    setError(null)
-    if (showLoading) setLoading(false)
+    const confirmed = await fetchConfirmedRegistrations()
+    if (confirmed !== null) {
+      setRegistrations(confirmed)
+    }
   }
 
   useEffect(() => {
@@ -117,6 +142,13 @@ export default function DashboardPage({
     if (!contactOpen) return
     contactRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
   }, [contactOpen])
+
+  useEffect(() => {
+    if (!showContact || !contactOpen) return
+    const match = latestConfirmedMacdRegistration(logs, registrations)
+    if (!match) return
+    setForm((current) => applyContactPrefill(current, match))
+  }, [showContact, contactOpen, logs, registrations])
 
   function closeContact() {
     setContactOpen(false)
