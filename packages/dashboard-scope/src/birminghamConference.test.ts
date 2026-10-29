@@ -29,16 +29,23 @@ function log(id: number, message: string, name = "tag") {
 }
 
 describe("canonicalBirminghamTagName", () => {
-  it("canonicalizes MACD serials and rejects other codes", () => {
+  it("canonicalizes MACD and MACF serials and rejects other codes", () => {
     expect(canonicalBirminghamTagName("MACD001")).toBe("MACD001")
     expect(canonicalBirminghamTagName("macd-1")).toBe("MACD001")
     expect(canonicalBirminghamTagName("MACD1")).toBe("MACD001")
+    expect(canonicalBirminghamTagName("MACF001")).toBe("MACF001")
+    expect(canonicalBirminghamTagName("macf-1")).toBe("MACF001")
+    expect(canonicalBirminghamTagName("MACF1")).toBe("MACF001")
     expect(canonicalBirminghamTagName("MACD")).toBeNull()
+    expect(canonicalBirminghamTagName("MACF")).toBeNull()
     expect(canonicalBirminghamTagName("MACDABC")).toBeNull()
+    expect(canonicalBirminghamTagName("MACFABC")).toBeNull()
     expect(canonicalBirminghamTagName("BD001")).toBeNull()
     expect(canonicalBirminghamTagName("W001")).toBeNull()
     expect(canonicalBirminghamTagName("{MACD001}")).toBeNull()
+    expect(canonicalBirminghamTagName("{MACF001}")).toBeNull()
     expect(isReservedSiteTagName("MACD001")).toBe(true)
+    expect(isReservedSiteTagName("MACF001")).toBe(true)
     expect(isReservedSiteTagName("BD001")).toBe(false)
     expect(isReservedSiteTagName("W001")).toBe(false)
   })
@@ -59,14 +66,14 @@ describe("birmingham conference urls", () => {
       log(4, "https://takemearound.museum/the-rosetta-stone"),
       log(5, "FD001"),
       log(6, star.path),
-      log(7, "https://takemearound.museum/the-star-of-bethlehem"),
+      log(7, "https://takemearound.museum/the-star-of-betlehem"),
       log(8, "https://takemearound.gallery/the-golden-boys"),
     ]
     expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2])
   })
 
   it("does not treat a conference url as a gallery or museum artwork", () => {
-    const logs = [log(1, star.url, "The Star of Bethlehem"), log(2, golden.url)]
+    const logs = [log(1, star.url, "The Star of Betlehem"), log(2, golden.url)]
     expect(getGalleryLogs(logs)).toEqual([])
     expect(getMuseumLogs(logs)).toEqual([])
   })
@@ -78,7 +85,7 @@ describe("birmingham conference urls", () => {
     ]
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
       "The Golden Boys · .museum",
-      "The Star of Bethlehem · .gallery",
+      "The Star of Betlehem · .gallery",
     ])
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.link)).toEqual([
       golden.url,
@@ -86,7 +93,7 @@ describe("birmingham conference urls", () => {
     ])
     expect(buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title).sort()).toEqual([
       "The Golden Boys · .museum",
-      "The Star of Bethlehem · .gallery",
+      "The Star of Betlehem · .gallery",
     ])
   })
 
@@ -94,7 +101,7 @@ describe("birmingham conference urls", () => {
     const logs = [log(1, star.url), log(2, star.url), log(3, "https://takemearound.gallery/mona-lisa")]
     const overview = buildBirminghamOverviewAnalytics(logs)
     expect(overview.totalTaps).toBe(2)
-    expect(overview.topTagName).toBe("The Star of Bethlehem · .gallery")
+    expect(overview.topTagName).toBe("The Star of Betlehem · .gallery")
     const week = buildBirminghamWeeklySeries(
       [{ ...log(4, golden.url), dtm_timestamp: new Date().toISOString() }],
       0
@@ -104,37 +111,43 @@ describe("birmingham conference urls", () => {
     expect(audience.hourly.reduce((sum, point) => sum + point.count, 0)).toBe(2)
     expect(audience.hasDeviceData).toBe(false)
     const plot = buildBirminghamSarTimelinePlot(logs)
-    expect(plot?.sars).toEqual(["The Star of Bethlehem · .gallery"])
+    expect(plot?.sars).toEqual(["The Star of Betlehem · .gallery"])
     expect(plot?.points.every((point) => point.link === star.url)).toBe(true)
   })
 })
 
-describe("birmingham MACD tags", () => {
-  it("includes MACD tags alongside conference urls and does not double-count", () => {
+describe("birmingham MACD and MACF tags", () => {
+  it("includes MACD and MACF tags alongside conference urls and does not double-count", () => {
     const logs = [
-      log(1, star.url, "The Star of Bethlehem"),
+      log(1, star.url, "The Star of Betlehem"),
       log(2, "https://example.com/macd", "MACD001"),
       log(3, "MACD002", "macd-2"),
       log(4, "https://takemearound.gallery/mona-lisa", "W001"),
       log(5, "MACD", "MACD"),
+      log(6, "https://example.com/macf", "MACF001"),
+      log(7, "MACF", "MACF"),
     ]
-    expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 3])
+    expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 3, 6])
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
-      "The Star of Bethlehem · .gallery",
+      "The Star of Betlehem · .gallery",
       "MACD001",
       "MACD002",
+      "MACF001",
     ])
     expect(
       buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)
     ).toEqual([
-      "The Star of Bethlehem · .gallery",
+      "The Star of Betlehem · .gallery",
       "MACD001",
       "MACD002",
+      "MACF001",
       "The Golden Boys · .museum",
     ])
-    expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(3)
-    expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(3)
+    expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(4)
+    expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(4)
     expect(getGalleryLogs([logs[1]])).toEqual([])
     expect(getMuseumLogs([logs[1]])).toEqual([])
+    expect(getGalleryLogs([logs[5]])).toEqual([])
+    expect(getMuseumLogs([logs[5]])).toEqual([])
   })
 })

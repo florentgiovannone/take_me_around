@@ -5,11 +5,11 @@ import type { PoiseLog } from "@tma/analytics-gallery"
 
 const ARTWORKS = [
   {
-    slug: "the-star-of-bethlehem",
+    slug: "the-star-of-betlehem",
     host: "takemearound.gallery",
-    path: "/the-star-of-bethlehem",
-    title: "The Star of Bethlehem",
-    dashboardTitle: "The Star of Bethlehem · .gallery",
+    path: "/the-star-of-betlehem",
+    title: "The Star of Betlehem",
+    dashboardTitle: "The Star of Betlehem · .gallery",
     domainLabel: ".gallery",
   },
   {

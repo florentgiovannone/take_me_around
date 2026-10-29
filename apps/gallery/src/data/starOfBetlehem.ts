@@ -1,9 +1,9 @@
-import en from "./starOfBethlehem.en.json"
+import en from "./starOfBetlehem.en.json"
 import type { ArtworkPageLocale } from "../utils/artworkPageLocale"
 
-export type StarOfBethlehemLocale = ArtworkPageLocale
+export type StarOfBetlehemLocale = ArtworkPageLocale
 
-export type StarOfBethlehemCopy = {
+export type StarOfBetlehemCopy = {
   title: string
   subtitle: string
   bannerTop: string
@@ -16,5 +16,5 @@ export type StarOfBethlehemCopy = {
   aboutArtistParagraphs: string[]
 }
 
-export const STAR_OF_BETHLEHEM: StarOfBethlehemCopy = en
-export const STAR_OF_BETHLEHEM_EN: StarOfBethlehemCopy = en
+export const STAR_OF_BETLEHEM: StarOfBetlehemCopy = en
+export const STAR_OF_BETLEHEM_EN: StarOfBetlehemCopy = en

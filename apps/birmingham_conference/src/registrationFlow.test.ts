@@ -17,7 +17,7 @@ describe("REGISTRATION_PATH and artworkMediumLabel", () => {
   })
 
   it("identifies which artwork is the painting and which is the sculpture", () => {
-    expect(artworkMediumLabel("the-star-of-bethlehem")).toBe("Painting")
+    expect(artworkMediumLabel("the-star-of-betlehem")).toBe("Painting")
     expect(artworkMediumLabel("the-golden-boys")).toBe("Sculpture")
     expect(artworkMediumLabel("unknown")).toBe("")
   })
@@ -59,7 +59,7 @@ describe("artworksToShow", () => {
   it("hides an artwork whose stock is zero", () => {
     expect(
       artworksToShow([
-        { slug: "the-star-of-bethlehem", title: "The Star of Bethlehem", stock: 0, available: false },
+        { slug: "the-star-of-betlehem", title: "The Star of Betlehem", stock: 0, available: false },
         { slug: "the-golden-boys", title: "The Golden Boys", stock: 2, available: true },
       ]).map((artwork) => artwork.slug)
     ).toEqual(["the-golden-boys"])
@@ -68,12 +68,12 @@ describe("artworksToShow", () => {
 
 describe("artworkSlugAfterReload", () => {
   const list = [
-    { slug: "the-star-of-bethlehem", title: "The Star of Bethlehem", stock: 0, available: false },
+    { slug: "the-star-of-betlehem", title: "The Star of Betlehem", stock: 0, available: false },
     { slug: "the-golden-boys", title: "The Golden Boys", stock: 2, available: true },
   ]
 
   it("clears a slug whose artwork is unavailable or out of stock", () => {
-    expect(artworkSlugAfterReload("the-star-of-bethlehem", list)).toBe("")
+    expect(artworkSlugAfterReload("the-star-of-betlehem", list)).toBe("")
     expect(
       artworkSlugAfterReload("the-golden-boys", [
         { slug: "the-golden-boys", title: "The Golden Boys", stock: 0, available: true },

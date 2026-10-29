@@ -4,7 +4,7 @@ export const CHECK_INBOX =
 export const REGISTRATION_PATH = "/museumassociationconferenceregistration"
 
 const ARTWORK_MEDIUMS: Record<string, "Painting" | "Sculpture"> = {
-  "the-star-of-bethlehem": "Painting",
+  "the-star-of-betlehem": "Painting",
   "the-golden-boys": "Sculpture",
 }
 

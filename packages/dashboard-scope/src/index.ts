@@ -243,7 +243,7 @@ export function trackedScansMeta(scope: SiteScope): string {
 
 export function trackedLinksMeta(scope: SiteScope): string {
   const count = trackedArtworkCount(scope)
-  if (scope === "birmingham_conference") return "of 2 tracked conference links and MACD tags"
+  if (scope === "birmingham_conference") return "of 2 tracked conference links and MACD and MACF tags"
   if (scope === "gallery") return `of ${count} tracked .gallery links`
   if (scope === "arkin") return `of ${count} tracked Arkın links`
   if (scope === "museum") return `of ${count} tracked .museum links`
@@ -264,7 +264,7 @@ export function trackedLinksMeta(scope: SiteScope): string {
 }
 
 export function trackedScansAcrossMeta(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "across the two conference links and MACD tags"
+  if (scope === "birmingham_conference") return "across the two conference links and MACD and MACF tags"
   if (scope === "gallery") return "across tracked .gallery links"
   if (scope === "arkin") return "across tracked Arkın links"
   if (scope === "museum") return "across tracked .museum links"

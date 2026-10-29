@@ -310,14 +310,14 @@ export function canonicalBirminghamTagName(
   const trimmed = name.trim()
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
   const compact = compactTagToken(trimmed)
-  const match = compact.match(/^MACD(\d{1,6})$/)
+  const match = compact.match(/^(MACD|MACF)(\d{1,6})$/)
   if (!match) return null
-  const serial = serialNumber(match[1])
+  const serial = serialNumber(match[2])
   if (serial == null) return null
-  return `MACD${padTagNumber(serial)}`
+  return `${match[1]}${padTagNumber(serial)}`
 }
 
-/** Tags owned by demo, church, or Birmingham (MACD) dashboards. */
+/** Tags owned by demo, church, or Birmingham (MACD / MACF) dashboards. */
 export function isReservedSiteTagName(name: string | null | undefined): boolean {
   return (
     isTmaDemoCodeName(name) ||

@@ -131,12 +131,12 @@ export const ARTWORKS = {
       { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },
     ],
   },
-  "star-of-bethlehem": {
+  "star-of-betlehem": {
     app: "gallery",
-    slug: "star-of-bethlehem",
-    dataBase: "starOfBethlehem",
-    exportPrefix: "STAR_OF_BETHLEHEM",
-    copyTypeName: "StarOfBethlehemCopy",
+    slug: "star-of-betlehem",
+    dataBase: "starOfBetlehem",
+    exportPrefix: "STAR_OF_BETLEHEM",
+    copyTypeName: "StarOfBetlehemCopy",
     sections: [
       { headingKey: "aboutWorkHeading", paragraphsKey: "aboutWorkParagraphs" },
       { headingKey: "aboutArtistHeading", paragraphsKey: "aboutArtistParagraphs" },

@@ -17,7 +17,7 @@ Give Birmingham Conference a public page where someone can register interest in 
 | Title | Register interest \| Birmingham Conference |
 | Discovery | Link on `/allpages`: “Go to Register interest page” |
 | Home and dashboard contact form | Unchanged |
-| Artwork | One choice: The Star of Bethlehem or The Golden Boys, from `BIRMINGHAM_CONFERENCE_ARTWORKS` |
+| Artwork | One choice: The Star of Betlehem or The Golden Boys, from `BIRMINGHAM_CONFERENCE_ARTWORKS` |
 | Submit | `submitInterestRegistration` validates, then returns success |
 | Email confirmation | Later. Not called from this version |
 | Artwork stock | Later. Not called from this version |
@@ -40,7 +40,7 @@ Shown in this order. Every field is required.
 
 Blank checks use the trimmed value. Email must match a simple `local@domain.tld` pattern, the same kind of check as `validateContactForm`. Several fields can fail together. Each error is shown under its field.
 
-Artwork values are the existing slugs `the-star-of-bethlehem` and `the-golden-boys`. Labels are the artwork titles.
+Artwork values are the existing slugs `the-star-of-betlehem` and `the-golden-boys`. Labels are the artwork titles.
 
 ## Page
 
@@ -55,7 +55,7 @@ After a successful submit, the form is replaced by: “Thank you. Your interest 
 Input:
 
 - `name`, `surname`, `email`, `company`, `position`, `town`, `country` as strings
-- `artworkSlug`: `the-star-of-bethlehem` or `the-golden-boys`, or empty when nothing is chosen
+- `artworkSlug`: `the-star-of-betlehem` or `the-golden-boys`, or empty when nothing is chosen
 
 Result:
 

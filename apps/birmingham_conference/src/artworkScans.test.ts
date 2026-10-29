@@ -29,10 +29,10 @@ Object.assign(globalThis, {
 
 describe("artwork scans", () => {
   it("writes one full gallery url", () => {
-    logArtworkScan("the-star-of-bethlehem")
+    logArtworkScan("the-star-of-betlehem")
     const [scan] = readArtworkScans()
-    expect(scan.txt_message).toBe("https://takemearound.gallery/the-star-of-bethlehem")
-    expect(scan.text_name).toBe("The Star of Bethlehem")
+    expect(scan.txt_message).toBe("https://takemearound.gallery/the-star-of-betlehem")
+    expect(scan.text_name).toBe("The Star of Betlehem")
     expect(scan.txt_message_type).toBe("REDIRECTED")
   })
 
@@ -50,9 +50,9 @@ describe("artwork scans", () => {
     store.set("birmingham-conference-artwork-scans", "{")
     expect(readArtworkScans()).toEqual([])
     store.clear()
-    logArtworkScan("the-star-of-bethlehem")
+    logArtworkScan("the-star-of-betlehem")
     const merged = mergeArtworkScans([])
     expect(merged).toHaveLength(1)
-    expect(merged[0]?.txt_message).toBe("https://takemearound.gallery/the-star-of-bethlehem")
+    expect(merged[0]?.txt_message).toBe("https://takemearound.gallery/the-star-of-betlehem")
   })
 })

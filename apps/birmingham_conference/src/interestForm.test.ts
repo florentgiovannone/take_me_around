@@ -11,7 +11,7 @@ const valid: InterestRegistration = {
   country: "United Kingdom",
   phoneCountry: "GB",
   phoneNumber: "7700 900123",
-  artworkSlug: "the-star-of-bethlehem",
+  artworkSlug: "the-star-of-betlehem",
   consent: true,
 }
 

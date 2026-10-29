@@ -4,17 +4,17 @@ import Footer from "../components/Footer"
 import AudioPlayer from "../components/AudioPlayer"
 import { getArtworkAudio } from "../assets/gallery"
 import {
-  detectStarOfBethlehemLocale,
-  resolveStarOfBethlehemCopy,
-} from "../utils/starOfBethlehemLocale"
+  detectStarOfBetlehemLocale,
+  resolveStarOfBetlehemCopy,
+} from "../utils/starOfBetlehemLocale"
 import "../styles/style.css"
 
-const ARTWORK_SLUG = "star-of-bethlehem"
+const ARTWORK_SLUG = "star-of-betlehem"
 
-export default function StarOfBethlehemPage() {
+export default function StarOfBetlehemPage() {
   const [searchParams] = useSearchParams()
-  const locale = detectStarOfBethlehemLocale(searchParams)
-  const copy = resolveStarOfBethlehemCopy(locale)
+  const locale = detectStarOfBetlehemLocale(searchParams)
+  const copy = resolveStarOfBetlehemCopy(locale)
   const audioSrc = getArtworkAudio(ARTWORK_SLUG, locale)
 
   return (

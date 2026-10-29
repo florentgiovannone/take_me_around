@@ -32,8 +32,8 @@ const monaLisa = {
 const star = {
   ...monaLisa,
   int_id: 2,
-  text_name: "The Star of Bethlehem",
-  txt_message: "https://takemearound.gallery/the-star-of-bethlehem",
+  text_name: "The Star of Betlehem",
+  txt_message: "https://takemearound.gallery/the-star-of-betlehem",
 }
 
 describe("birmingham_conference scope", () => {
@@ -58,10 +58,26 @@ describe("birmingham_conference scope", () => {
         txt_message: "https://example.com/macd",
       },
     ])).toBe(3)
+    expect(trackedArtworkCount("birmingham_conference", [
+      {
+        ...star,
+        int_id: 3,
+        text_name: "MACD001",
+        txt_message: "https://example.com/macd",
+      },
+      {
+        ...star,
+        int_id: 4,
+        text_name: "MACF001",
+        txt_message: "https://example.com/macf",
+      },
+    ])).toBe(4)
     expect(trackedScansMeta("birmingham_conference")).toBe("tracked Museum Association Conference scans")
-    expect(trackedLinksMeta("birmingham_conference")).toBe("of 2 tracked conference links and MACD tags")
+    expect(trackedLinksMeta("birmingham_conference")).toBe(
+      "of 2 tracked conference links and MACD and MACF tags"
+    )
     expect(trackedScansAcrossMeta("birmingham_conference")).toBe(
-      "across the two conference links and MACD tags"
+      "across the two conference links and MACD and MACF tags"
     )
     expect(sarTimelineDomainLabel("birmingham_conference")).toBe("Museum Association Conference")
     expect(sarTimelineDomainSuffix("birmingham_conference")).toBe("Museum Association Conference")
@@ -74,11 +90,17 @@ describe("birmingham_conference scope", () => {
       text_name: "MACD001",
       txt_message: "https://example.com/macd",
     }
+    const macf = {
+      ...star,
+      int_id: 4,
+      text_name: "MACF001",
+      txt_message: "https://example.com/macf",
+    }
     expect(
-      getScopedLogs([monaLisa, star, macd], "birmingham_conference").map((row) => row.int_id)
-    ).toEqual([2, 3])
+      getScopedLogs([monaLisa, star, macd, macf], "birmingham_conference").map((row) => row.int_id)
+    ).toEqual([2, 3, 4])
     expect(buildActivityEntries([star], "birmingham_conference")[0]?.artworkTitle).toBe(
-      "The Star of Bethlehem · .gallery"
+      "The Star of Betlehem · .gallery"
     )
     expect(getGalleryLogs([star])).toEqual([])
     expect(getMuseumLogs([star])).toEqual([])

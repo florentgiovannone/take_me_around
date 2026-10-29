@@ -17,7 +17,7 @@
 - Thank-you copy: `Thank you. Your interest is registered.`
 - Header: `BrandHeader` with `homeHref="https://takemearound.com/"`
 - Page colors: cream background `#f4f0e8`, navy type `#0e2347`, Fraunces headings, Outfit body
-- Artwork slugs: `the-star-of-bethlehem`, `the-golden-boys`, labels from `BIRMINGHAM_CONFERENCE_ARTWORKS`
+- Artwork slugs: `the-star-of-betlehem`, `the-golden-boys`, labels from `BIRMINGHAM_CONFERENCE_ARTWORKS`
 - Field order: Name, Surname, Email address, Company, Position, Town, Country, Artwork desired
 - Error copy: `Enter your name.` `Enter your surname.` `Enter a valid email.` `Enter your company.` `Enter your position.` `Enter the town.` `Enter the country.` `Choose an artwork.`
 - Email check: `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` on the trimmed value. Other text fields fail when trim is empty.
@@ -47,7 +47,7 @@
 - Test: `apps/birmingham_conference/src/interestForm.test.ts`
 
 **Interfaces:**
-- Consumes: `BIRMINGHAM_CONFERENCE_ARTWORKS` from `@tma/dashboard-scope`. Each item has `slug` and `title`. The two slugs are `the-star-of-bethlehem` and `the-golden-boys`.
+- Consumes: `BIRMINGHAM_CONFERENCE_ARTWORKS` from `@tma/dashboard-scope`. Each item has `slug` and `title`. The two slugs are `the-star-of-betlehem` and `the-golden-boys`.
 - Produces:
   - `InterestRegistration`: `{ name: string; surname: string; email: string; company: string; position: string; country: string; artworkSlug: string }`
   - `InterestFormErrors`: optional string for each of those keys
@@ -69,7 +69,7 @@ const valid: InterestRegistration = {
   company: "Analytical Engines",
   position: "Curator",
   country: "United Kingdom",
-  artworkSlug: "the-star-of-bethlehem",
+  artworkSlug: "the-star-of-betlehem",
 }
 
 describe("submitInterestRegistration", () => {
@@ -526,7 +526,7 @@ npm run dev -w @tma/app-birmingham-conference
 
 Open the URL Vite prints, then:
 
-1. Open `/register-interest`. Confirm the heading “Register interest”, the seven fields in order, and the two artwork choices “The Star of Bethlehem” and “The Golden Boys”.
+1. Open `/register-interest`. Confirm the heading “Register interest”, the seven fields in order, and the two artwork choices “The Star of Betlehem” and “The Golden Boys”.
 2. Submit the empty form. Confirm all seven error messages appear and the thank-you message does not.
 3. Fill Name `Ada`, Surname `Lovelace`, Email address `ada@example.com`, Company `Analytical Engines`, Position `Curator`, Country `United Kingdom`, and choose The Golden Boys. Submit. Confirm the form is replaced by “Thank you. Your interest is registered.”
 4. Open `/`, `/allpages`, and `/dashboard`. Confirm each opens. On `/allpages`, confirm the link “Go to Register interest page” is present and opens the form.
