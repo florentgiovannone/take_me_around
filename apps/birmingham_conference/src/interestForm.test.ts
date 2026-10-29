@@ -136,15 +136,21 @@ describe("submitInterestRegistration", () => {
         ...valid,
         artworkSlug: "the-golden-boys",
         packNumber: "000",
-      }).errors
-    ).toEqual({ packNumber: "Enter a pack number from 001 to 100." })
+      })
+    ).toEqual({
+      ok: false,
+      errors: { packNumber: "Enter a pack number from 001 to 100." },
+    })
     expect(
       submitInterestRegistration({
         ...valid,
         artworkSlug: "the-golden-boys",
         packNumber: "101",
-      }).errors
-    ).toEqual({ packNumber: "Enter a pack number from 001 to 100." })
+      })
+    ).toEqual({
+      ok: false,
+      errors: { packNumber: "Enter a pack number from 001 to 100." },
+    })
     expect(
       submitInterestRegistration({
         ...valid,
@@ -154,11 +160,13 @@ describe("submitInterestRegistration", () => {
     ).toEqual({ ok: true })
     expect(submitInterestRegistration({ ...valid, packNumber: "101" })).toEqual({ ok: true })
     expect(submitInterestRegistration({ ...valid, packNumber: "200" })).toEqual({ ok: true })
-    expect(submitInterestRegistration({ ...valid, packNumber: "100" }).errors).toEqual({
-      packNumber: "Enter a pack number from 101 to 200.",
+    expect(submitInterestRegistration({ ...valid, packNumber: "100" })).toEqual({
+      ok: false,
+      errors: { packNumber: "Enter a pack number from 101 to 200." },
     })
-    expect(submitInterestRegistration({ ...valid, packNumber: "201" }).errors).toEqual({
-      packNumber: "Enter a pack number from 101 to 200.",
+    expect(submitInterestRegistration({ ...valid, packNumber: "201" })).toEqual({
+      ok: false,
+      errors: { packNumber: "Enter a pack number from 101 to 200." },
     })
   })
 
