@@ -1,4 +1,4 @@
-import { canonicalBirminghamTagName } from "@tma/config"
+import { canonicalBirminghamTagName, type SiteScope } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
 import type { PoiseLog } from "@tma/analytics-gallery"
@@ -21,6 +21,14 @@ const ARTWORKS = [
     domainLabel: ".museum",
   },
 ] as const
+
+export type BirminghamDashboardView = "public" | "admin"
+
+export function birminghamViewForScope(scope: SiteScope): BirminghamDashboardView | null {
+  if (scope === "birmingham_conference_admin") return "admin"
+  if (scope === "birmingham_conference") return "public"
+  return null
+}
 
 export type BirminghamConferenceArtwork = (typeof ARTWORKS)[number] & { url: string }
 
@@ -58,30 +66,49 @@ function birminghamLink(log: PoiseLog, fallback: string): string {
   return fallback
 }
 
-export function birminghamGroup(log: PoiseLog): { title: string; path: string; url: string } | null {
-  const code = birminghamCodeFromLog(log)
-  if (code) {
-    return { title: code, path: `/${code.toLowerCase()}`, url: birminghamLink(log, code) }
-  }
-  const artwork = matchBirminghamConferenceArtwork(log.txt_message)
-  if (!artwork) return null
+function artworkGroup(artwork: BirminghamConferenceArtwork) {
   return { title: artwork.dashboardTitle, path: artwork.path, url: artwork.url }
 }
 
-function matchingLogs(logs: PoiseLog[]): PoiseLog[] {
-  return logs.filter((log) => birminghamGroup(log) !== null)
+function artworkForTag(code: string): BirminghamConferenceArtwork | null {
+  if (code.startsWith("MACTSOB")) return BIRMINGHAM_CONFERENCE_ARTWORKS[0] ?? null
+  if (code.startsWith("MACTGB")) return BIRMINGHAM_CONFERENCE_ARTWORKS[1] ?? null
+  return null
 }
 
-export function getBirminghamConferenceLogs(logs: PoiseLog[]): PoiseLog[] {
-  const matched = matchingLogs(logs)
+export function birminghamGroup(
+  log: PoiseLog,
+  view: BirminghamDashboardView = "public"
+): { title: string; path: string; url: string } | null {
+  const code = birminghamCodeFromLog(log)
+  if (view === "admin") {
+    if (!code) return null
+    return { title: code, path: `/${code.toLowerCase()}`, url: birminghamLink(log, code) }
+  }
+  const taggedArtwork = code ? artworkForTag(code) : null
+  if (taggedArtwork) return artworkGroup(taggedArtwork)
+  const artwork = matchBirminghamConferenceArtwork(log.txt_message)
+  if (!artwork) return null
+  return artworkGroup(artwork)
+}
+
+function matchingLogs(logs: PoiseLog[], view: BirminghamDashboardView): PoiseLog[] {
+  return logs.filter((log) => birminghamGroup(log, view) !== null)
+}
+
+export function getBirminghamConferenceLogs(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+): PoiseLog[] {
+  const matched = matchingLogs(logs, view)
   const included = new Set(matched.map((log) => log.int_id))
   const extras: PoiseLog[] = []
-  const pairs = pairSeenWithRedirects(logs)
-  for (const redirect of redirects(logs)) {
+  const pairs = pairSeenWithRedirects(logs, view)
+  for (const redirect of redirects(logs, view)) {
     const seen = pairs.get(redirect.int_id)
     if (!seen || included.has(seen.int_id)) continue
     included.add(seen.int_id)
-    const group = birminghamGroup(redirect)
+    const group = birminghamGroup(redirect, view)
     extras.push(seen.text_name?.trim() ? seen : { ...seen, text_name: group?.title ?? seen.text_name })
   }
   return extras.length ? [...matched, ...extras] : matched
@@ -90,15 +117,19 @@ export function getBirminghamConferenceLogs(logs: PoiseLog[]): PoiseLog[] {
 export function distinctBirminghamBdCodes(logs: PoiseLog[]): string[] {
   return [
     ...new Set(
-      getBirminghamConferenceLogs(logs)
+      logs
         .map((log) => birminghamCodeFromLog(log))
         .filter((code): code is string => code !== null)
     ),
   ].sort((a, b) => a.localeCompare(b))
 }
 
-export function countBirminghamTrackedItems(logs: PoiseLog[] = []): number {
-  return 2 + distinctBirminghamBdCodes(logs).length
+export function countBirminghamTrackedItems(
+  logs: PoiseLog[] = [],
+  view: BirminghamDashboardView = "public"
+): number {
+  if (view === "public") return 2
+  return distinctBirminghamBdCodes(getBirminghamConferenceLogs(logs, view)).length
 }
 
 const SEEN_PAIR_MS = 5000
@@ -107,8 +138,8 @@ function messageType(log: PoiseLog): string {
   return (log.txt_message_type ?? "").trim().toUpperCase()
 }
 
-function redirects(logs: PoiseLog[]): PoiseLog[] {
-  return matchingLogs(logs).filter((log) => messageType(log) === "REDIRECTED")
+function redirects(logs: PoiseLog[], view: BirminghamDashboardView): PoiseLog[] {
+  return matchingLogs(logs, view).filter((log) => messageType(log) === "REDIRECTED")
 }
 
 function timestampMs(value: string | null | undefined): number {
@@ -165,10 +196,13 @@ function seenNeighborForRedirect(
   return best
 }
 
-function pairSeenWithRedirects(logs: PoiseLog[]): Map<number, PoiseLog> {
+function pairSeenWithRedirects(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView
+): Map<number, PoiseLog> {
   const used = new Set<number>()
   const byRedirect = new Map<number, PoiseLog>()
-  for (const redirect of redirects(logs)) {
+  for (const redirect of redirects(logs, view)) {
     const seen = seenNeighborForRedirect(redirect, logs, used)
     if (!seen) continue
     used.add(seen.int_id)
@@ -178,7 +212,9 @@ function pairSeenWithRedirects(logs: PoiseLog[]): Map<number, PoiseLog> {
 }
 
 export function birminghamSarFromLog(log: PoiseLog): string | null {
-  const artwork = matchBirminghamConferenceArtwork(log.txt_message)
+  const artwork =
+    matchBirminghamConferenceArtwork(log.txt_message) ??
+    artworkForTag(birminghamCodeFromLog(log) ?? "")
   const sar =
     artwork?.domainLabel === ".museum" ? museum.getSarFromLog(log) : gallery.getSarFromLog(log)
   return sar?.trim() || null
@@ -191,11 +227,14 @@ function sessionSar(log: PoiseLog, pairs: Map<number, PoiseLog>): string | null 
   return seen ? birminghamSarFromLog(seen) : null
 }
 
-export function buildBirminghamActivityEntries(logs: PoiseLog[]) {
-  const pairs = pairSeenWithRedirects(logs)
-  return redirects(logs)
+export function buildBirminghamActivityEntries(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+) {
+  const pairs = pairSeenWithRedirects(logs, view)
+  return redirects(logs, view)
     .map((log) => {
-      const group = birminghamGroup(log)!
+      const group = birminghamGroup(log, view)!
       const seen = pairs.get(log.int_id)
       return {
         key: `redirect-${log.int_id}`,
@@ -209,28 +248,32 @@ export function buildBirminghamActivityEntries(logs: PoiseLog[]) {
     .sort((a, b) => timestampMs(b.timestamp) - timestampMs(a.timestamp))
 }
 
-export function buildBirminghamTrackedArtworkScanGroups(logs: PoiseLog[]) {
-  const redirected = redirects(logs)
-  const artworkGroups = BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => ({
+export function buildBirminghamTrackedArtworkScanGroups(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+) {
+  const redirected = redirects(logs, view)
+  if (view === "admin") {
+    return distinctBirminghamBdCodes(redirected).map((code) => {
+      const scans = redirected
+        .filter((log) => birminghamCodeFromLog(log) === code)
+        .sort((a, b) => timestampMs(b.dtm_timestamp) - timestampMs(a.dtm_timestamp))
+      return {
+        title: code,
+        path: `/${code.toLowerCase()}`,
+        url: birminghamGroup(scans[0], view)?.url ?? code,
+        scans,
+      }
+    })
+  }
+  return BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => ({
     title: artwork.dashboardTitle,
     path: artwork.path,
     url: artwork.url,
     scans: redirected
-      .filter((log) => birminghamGroup(log)?.title === artwork.dashboardTitle)
+      .filter((log) => birminghamGroup(log, view)?.title === artwork.dashboardTitle)
       .sort((a, b) => timestampMs(b.dtm_timestamp) - timestampMs(a.dtm_timestamp)),
-  }))
-  const bdGroups = distinctBirminghamBdCodes(redirected).map((code) => {
-    const scans = redirected
-      .filter((log) => birminghamCodeFromLog(log) === code)
-      .sort((a, b) => timestampMs(b.dtm_timestamp) - timestampMs(a.dtm_timestamp))
-    return {
-      title: code,
-      path: `/${code.toLowerCase()}`,
-      url: birminghamGroup(scans[0])?.url ?? code,
-      scans,
-    }
-  })
-  return [...artworkGroups, ...bdGroups].sort((a, b) => b.scans.length - a.scans.length)
+  })).sort((a, b) => b.scans.length - a.scans.length)
 }
 
 function percentChange(current: number, previous: number) {
@@ -238,15 +281,18 @@ function percentChange(current: number, previous: number) {
   return ((current - previous) / previous) * 100
 }
 
-export function buildBirminghamOverviewAnalytics(logs: PoiseLog[]) {
-  const scans = redirects(logs)
+export function buildBirminghamOverviewAnalytics(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+) {
+  const scans = redirects(logs, view)
   const now = new Date()
   const weekStart = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
   const previousWeekStart = new Date(now.getTime() - 13 * 24 * 60 * 60 * 1000)
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
   const counts = new Map<string, number>()
   for (const scan of scans) {
-    const title = birminghamGroup(scan)?.title ?? "Unknown"
+    const title = birminghamGroup(scan, view)?.title ?? "Unknown"
     counts.set(title, (counts.get(title) ?? 0) + 1)
   }
   const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
@@ -259,7 +305,7 @@ export function buildBirminghamOverviewAnalytics(logs: PoiseLog[]) {
     }).length
   const topTagThisMonth = scans.filter((scan) => {
     const date = gallery.parseLogTimestampGmt(scan.dtm_timestamp)
-    const title = birminghamGroup(scan)?.title
+    const title = birminghamGroup(scan, view)?.title
     return date !== null && date >= monthStart && title === top[0]
   }).length
   const activeTags = ranked.length
@@ -273,11 +319,14 @@ export function buildBirminghamOverviewAnalytics(logs: PoiseLog[]) {
   }
 }
 
-export function buildBirminghamAudienceAnalytics(logs: PoiseLog[]) {
+export function buildBirminghamAudienceAnalytics(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+) {
   const base = gallery.buildAudienceAnalytics([])
   const hourlyCounts = Array.from({ length: 24 }, () => 0)
   const weekdayCounts = Array.from({ length: 7 }, () => 0)
-  for (const scan of redirects(logs)) {
+  for (const scan of redirects(logs, view)) {
     const date = gallery.parseLogTimestampGmt(scan.dtm_timestamp)
     if (!date) continue
     hourlyCounts[date.getHours()] += 1
@@ -303,34 +352,52 @@ export function buildBirminghamAudienceAnalytics(logs: PoiseLog[]) {
   }
 }
 
-export function buildBirminghamWeeklySeries(logs: PoiseLog[], weekOffset: number) {
-  return gallery.buildWeeklySeries(redirects(logs), weekOffset)
+export function buildBirminghamWeeklySeries(
+  logs: PoiseLog[],
+  weekOffset: number,
+  view: BirminghamDashboardView = "public"
+) {
+  return gallery.buildWeeklySeries(redirects(logs, view), weekOffset)
 }
 
-export function buildBirminghamMonthlyCalendarGrid(logs: PoiseLog[], monthOffset: number) {
-  return gallery.buildMonthlyCalendarGrid(redirects(logs), monthOffset)
+export function buildBirminghamMonthlyCalendarGrid(
+  logs: PoiseLog[],
+  monthOffset: number,
+  view: BirminghamDashboardView = "public"
+) {
+  return gallery.buildMonthlyCalendarGrid(redirects(logs, view), monthOffset)
 }
 
-export function listBirminghamDistinctSars(logs: PoiseLog[]): string[] {
-  const pairs = pairSeenWithRedirects(logs)
-  return [...new Set(redirects(logs).map((log) => sessionSar(log, pairs)).filter((key) => key !== null))]
+export function listBirminghamDistinctSars(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+): string[] {
+  const pairs = pairSeenWithRedirects(logs, view)
+  return [...new Set(redirects(logs, view).map((log) => sessionSar(log, pairs)).filter((key) => key !== null))]
     .sort((a, b) => a.localeCompare(b))
 }
 
-export function buildBirminghamSarTimelineEvents(logs: PoiseLog[], sarQuery: string) {
+export function buildBirminghamSarTimelineEvents(
+  logs: PoiseLog[],
+  sarQuery: string,
+  view: BirminghamDashboardView = "public"
+) {
   const target = sarQuery.trim().toLowerCase()
   if (!target) return []
-  const pairs = pairSeenWithRedirects(logs)
-  return buildBirminghamActivityEntries(logs).filter((entry) => {
+  const pairs = pairSeenWithRedirects(logs, view)
+  return buildBirminghamActivityEntries(logs, view).filter((entry) => {
     const key = entry.redirect ? sessionSar(entry.redirect, pairs) : null
     return key?.toLowerCase() === target
   })
 }
 
-export function buildBirminghamSarTimelineRowMetaMap(logs: PoiseLog[]) {
+export function buildBirminghamSarTimelineRowMetaMap(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+) {
   const meta = new Map<string, gallery.SarTimelineRowMeta>()
-  const pairs = pairSeenWithRedirects(logs)
-  for (const log of redirects(logs)) {
+  const pairs = pairSeenWithRedirects(logs, view)
+  for (const log of redirects(logs, view)) {
     const sar = sessionSar(log, pairs)
     if (!sar || meta.has(sar)) continue
     const seen = pairs.get(log.int_id)
@@ -345,12 +412,15 @@ export function buildBirminghamSarTimelineRowMetaMap(logs: PoiseLog[]) {
   return meta
 }
 
-export function buildBirminghamSarTimelinePlot(logs: PoiseLog[]): gallery.SarTimelinePlot | null {
+export function buildBirminghamSarTimelinePlot(
+  logs: PoiseLog[],
+  view: BirminghamDashboardView = "public"
+): gallery.SarTimelinePlot | null {
   const now = new Date()
   const points: gallery.SarTimelinePlotPoint[] = []
-  const pairs = pairSeenWithRedirects(logs)
-  for (const log of redirects(logs)) {
-    const group = birminghamGroup(log)
+  const pairs = pairSeenWithRedirects(logs, view)
+  for (const log of redirects(logs, view)) {
+    const group = birminghamGroup(log, view)
     const sar = sessionSar(log, pairs)
     const timestamp = gallery.parseLogTimestampGmt(log.dtm_timestamp)
     if (!group || !sar || !timestamp) continue

@@ -1,4 +1,4 @@
-import { SITE_META, dashboardIntlLocale, getDashboardLocale, type SiteScope } from "@tma/config"
+import { SITE_META, dashboardIntlLocale, getDashboardLocale, scopeLabel, type SiteScope } from "@tma/config"
 import * as gallery from "@tma/analytics-gallery"
 import * as museum from "@tma/analytics-museum"
 import * as arkin from "@tma/analytics-arkin"
@@ -26,10 +26,11 @@ import {
   buildBirminghamSarTimelineRowMetaMap,
   buildBirminghamTrackedArtworkScanGroups,
   buildBirminghamWeeklySeries,
+  birminghamGroup,
+  birminghamViewForScope,
   getBirminghamConferenceLogs,
   countBirminghamTrackedItems,
   listBirminghamDistinctSars,
-  matchBirminghamConferenceArtwork,
 } from "./birminghamConference"
 
 function storeFor(scope: SiteScope) {
@@ -170,10 +171,10 @@ export function buildActivityVisitDetails(
     details = tmaDemo.buildActivityVisitDetails(log)
   } else if (isStoreScope(scope)) {
     details = storeFor(scope)!.buildActivityVisitDetails(log)
-  } else if (scope === "birmingham_conference") {
-    const artwork = matchBirminghamConferenceArtwork(log.txt_message)
+  } else if (birminghamViewForScope(scope)) {
+    const group = birminghamGroup(log, "public")
     details =
-      artwork?.domainLabel === ".museum"
+      group?.title === "The Golden Boys · .museum"
         ? museum.buildActivityVisitDetails(log)
         : gallery.buildActivityVisitDetails(log)
   } else {
@@ -194,7 +195,8 @@ export type ActivityEntry =
   | tmaDemo.TmaDemoActivityEntry
 
 export function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
-  if (scope === "birmingham_conference") return getBirminghamConferenceLogs(logs)
+  const birminghamView = birminghamViewForScope(scope)
+  if (birminghamView) return getBirminghamConferenceLogs(logs, birminghamView)
   if (scope === "gallery") return gallery.getGalleryLogs(logs)
   if (scope === "arkin") return arkin.getArkinLogs(logs)
   if (scope === "museum") return museum.getMuseumLogs(logs)
@@ -205,7 +207,8 @@ export function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
 }
 
 export function trackedArtworkCount(scope: SiteScope, logs: PoiseLog[] = []): number {
-  if (scope === "birmingham_conference") return countBirminghamTrackedItems(logs)
+  const birminghamView = birminghamViewForScope(scope)
+  if (birminghamView) return countBirminghamTrackedItems(logs, birminghamView)
   if (scope === "gallery") return gallery.TRACKED_GALLERY_ARTWORKS.length
   if (scope === "arkin") return arkin.TRACKED_ARKIN_ARTWORKS.length
   if (scope === "museum") return museum.TRACKED_MUSEUM_ARTWORKS.length
@@ -224,6 +227,7 @@ export function trackedArtworkCount(scope: SiteScope, logs: PoiseLog[] = []): nu
 
 export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "birmingham_conference") return "tracked Museum Association Conference scans"
+  if (scope === "birmingham_conference_admin") return "tracked Museum Association Conference tags"
   if (scope === "gallery") return "tracked .gallery scans"
   if (scope === "arkin") return "tracked Arkın scans"
   if (scope === "museum") return "tracked .museum scans"
@@ -243,7 +247,10 @@ export function trackedScansMeta(scope: SiteScope): string {
 
 export function trackedLinksMeta(scope: SiteScope): string {
   const count = trackedArtworkCount(scope)
-  if (scope === "birmingham_conference") return "of 2 tracked conference links and MACD and MACF tags"
+  if (scope === "birmingham_conference") return "of 2 tracked conference artworks"
+  if (scope === "birmingham_conference_admin") {
+    return "of tracked MACD, MACF, MACTSOB, and MACTGB tags"
+  }
   if (scope === "gallery") return `of ${count} tracked .gallery links`
   if (scope === "arkin") return `of ${count} tracked Arkın links`
   if (scope === "museum") return `of ${count} tracked .museum links`
@@ -264,7 +271,10 @@ export function trackedLinksMeta(scope: SiteScope): string {
 }
 
 export function trackedScansAcrossMeta(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "across the two conference links and MACD and MACF tags"
+  if (scope === "birmingham_conference") return "across the two conference artworks"
+  if (scope === "birmingham_conference_admin") {
+    return "across MACD, MACF, MACTSOB, and MACTGB tags"
+  }
   if (scope === "gallery") return "across tracked .gallery links"
   if (scope === "arkin") return "across tracked Arkın links"
   if (scope === "museum") return "across tracked .museum links"
@@ -285,7 +295,7 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
 }
 
 export function sarTimelineDomainLabel(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "Museum Association Conference"
+  if (birminghamViewForScope(scope)) return scopeLabel(scope)
   if (scope === "gallery") return "takemearound.gallery"
   if (scope === "arkin") return "arkin.takemearound.gallery"
   if (scope === "museum") return "takemearound.museum"
@@ -304,7 +314,7 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
 }
 
 export function sarTimelineDomainSuffix(scope: SiteScope): string {
-  if (scope === "birmingham_conference") return "Museum Association Conference"
+  if (birminghamViewForScope(scope)) return scopeLabel(scope)
   if (scope === "gallery") return ".gallery"
   if (scope === "arkin") return "Arkın"
   if (scope === "museum") return ".museum"
@@ -341,6 +351,9 @@ function keepTodayScanGroups<T extends { scans: PoiseLog[] }>(groups: T[]): T[] 
 
 export function emptyActivityMessage(scope: SiteScope): string {
   if (scope === "birmingham_conference") return "No Museum Association Conference scans yet."
+  if (scope === "birmingham_conference_admin") {
+    return "No Museum Association Conference tag scans yet."
+  }
   if (scope === "gallery") return "No tracked .gallery activity found."
   if (scope === "arkin") return "No tracked Arkın activity found."
   if (scope === "museum") return "No tracked .museum activity found."
@@ -363,7 +376,8 @@ export function emptyActivityMessage(scope: SiteScope): string {
 }
 
 export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): ActivityEntry[] {
-  if (scope === "birmingham_conference") return buildBirminghamActivityEntries(logs)
+  const birminghamActivityView = birminghamViewForScope(scope)
+  if (birminghamActivityView) return buildBirminghamActivityEntries(logs, birminghamActivityView)
   if (scope === "gallery") return gallery.buildGalleryActivityEntries(logs)
   if (scope === "arkin") return arkin.buildArkinActivityEntries(logs)
   if (scope === "museum") return museum.buildMuseumActivityEntries(logs)
@@ -390,7 +404,10 @@ export function buildActivityEntries(logs: PoiseLog[], scope: SiteScope): Activi
 }
 
 export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope) {
-  if (scope === "birmingham_conference") return buildBirminghamTrackedArtworkScanGroups(logs)
+  const birminghamGroupsView = birminghamViewForScope(scope)
+  if (birminghamGroupsView) {
+    return buildBirminghamTrackedArtworkScanGroups(logs, birminghamGroupsView)
+  }
   if (scope === "gallery") return gallery.buildTrackedArtworkScanGroups(logs)
   if (scope === "arkin") return arkin.buildTrackedArtworkScanGroups(logs)
   if (scope === "museum") return museum.buildTrackedArtworkScanGroups(logs)
@@ -419,7 +436,8 @@ export function buildTrackedArtworkScanGroups(logs: PoiseLog[], scope: SiteScope
 }
 
 export function buildOverviewAnalytics(logs: PoiseLog[], scope: SiteScope) {
-  if (scope === "birmingham_conference") return buildBirminghamOverviewAnalytics(logs)
+  const birminghamOverviewView = birminghamViewForScope(scope)
+  if (birminghamOverviewView) return buildBirminghamOverviewAnalytics(logs, birminghamOverviewView)
   if (scope === "gallery") return gallery.buildOverviewAnalytics(logs)
   if (scope === "arkin") return arkin.buildOverviewAnalytics(logs)
   if (scope === "museum") return museum.buildOverviewAnalytics(logs)
@@ -517,7 +535,8 @@ function mergeAudienceAnalytics(g: AudienceAnalytics, m: AudienceAnalytics): Aud
 }
 
 export function buildAudienceAnalytics(logs: PoiseLog[], scope: SiteScope): AudienceAnalytics {
-  if (scope === "birmingham_conference") return buildBirminghamAudienceAnalytics(logs)
+  const birminghamAudienceView = birminghamViewForScope(scope)
+  if (birminghamAudienceView) return buildBirminghamAudienceAnalytics(logs, birminghamAudienceView)
   if (scope === "gallery") return gallery.buildAudienceAnalytics(logs)
   if (scope === "arkin") return arkin.buildAudienceAnalytics(logs)
   if (scope === "museum") return museum.buildAudienceAnalytics(logs)
@@ -550,7 +569,8 @@ export function buildWeeklySeries(
   weekOffset: number,
   scope: SiteScope
 ): gallery.TimeSeriesWindow {
-  if (scope === "birmingham_conference") return buildBirminghamWeeklySeries(logs, weekOffset)
+  const birminghamWeekView = birminghamViewForScope(scope)
+  if (birminghamWeekView) return buildBirminghamWeeklySeries(logs, weekOffset, birminghamWeekView)
   if (scope === "gallery") return gallery.buildWeeklySeries(logs, weekOffset)
   if (scope === "arkin") return arkin.buildWeeklySeries(logs, weekOffset)
   if (scope === "museum") return museum.buildWeeklySeries(logs, weekOffset)
@@ -589,8 +609,9 @@ export function buildMonthlyCalendarGrid(
   monthOffset: number,
   scope: SiteScope
 ): gallery.MonthlyCalendarWindow {
-  if (scope === "birmingham_conference") {
-    return buildBirminghamMonthlyCalendarGrid(logs, monthOffset)
+  const birminghamMonthView = birminghamViewForScope(scope)
+  if (birminghamMonthView) {
+    return buildBirminghamMonthlyCalendarGrid(logs, monthOffset, birminghamMonthView)
   }
   if (scope === "gallery") return gallery.buildMonthlyCalendarGrid(logs, monthOffset)
   if (scope === "arkin") return arkin.buildMonthlyCalendarGrid(logs, monthOffset)
@@ -640,7 +661,8 @@ export function buildMonthlyCalendarGrid(
 export const buildWeekTotalsFromSeries = gallery.buildWeekTotalsFromSeries
 
 export function listDistinctSars(logs: PoiseLog[], scope: SiteScope): string[] {
-  if (scope === "birmingham_conference") return listBirminghamDistinctSars(logs)
+  const birminghamSarListView = birminghamViewForScope(scope)
+  if (birminghamSarListView) return listBirminghamDistinctSars(logs, birminghamSarListView)
   if (scope === "gallery") return gallery.listDistinctGallerySars(logs)
   if (scope === "arkin") return arkin.listDistinctArkinSars(logs)
   if (scope === "museum") return museum.listDistinctMuseumSars(logs)
@@ -666,7 +688,10 @@ export function buildSarTimelineEvents(
   sarQuery: string,
   scope: SiteScope
 ): ActivityEntry[] {
-  if (scope === "birmingham_conference") return buildBirminghamSarTimelineEvents(logs, sarQuery)
+  const birminghamSarEventsView = birminghamViewForScope(scope)
+  if (birminghamSarEventsView) {
+    return buildBirminghamSarTimelineEvents(logs, sarQuery, birminghamSarEventsView)
+  }
   if (scope === "gallery") return gallery.buildSarGalleryTimelineEvents(logs, sarQuery)
   if (scope === "arkin") return arkin.buildSarArkinTimelineEvents(logs, sarQuery)
   if (scope === "museum") return museum.buildSarMuseumTimelineEvents(logs, sarQuery)
@@ -710,8 +735,9 @@ export function buildSarTimelineRowMetaMap(
   }
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
   let meta: Map<string, gallery.SarTimelineRowMeta>
-  if (scope === "birmingham_conference") {
-    meta = buildBirminghamSarTimelineRowMetaMap(logs)
+  const birminghamMetaView = birminghamViewForScope(scope)
+  if (birminghamMetaView) {
+    meta = buildBirminghamSarTimelineRowMetaMap(logs, birminghamMetaView)
   } else if (scope === "arkin") {
     meta = arkin.buildSarTimelineRowMetaMap(logs)
   } else if (scope === "museum") {
@@ -821,8 +847,9 @@ export function buildSarTimelinePlot(
   }
   const visitorBySar = buildVisitorNumberBySar(logs, scope)
   let plot: gallery.SarTimelinePlot | null = null
-  if (scope === "birmingham_conference") {
-    const next = buildBirminghamSarTimelinePlot(logs)
+  const birminghamPlotView = birminghamViewForScope(scope)
+  if (birminghamPlotView) {
+    const next = buildBirminghamSarTimelinePlot(logs, birminghamPlotView)
     plot = next ? sortPlotSarsByVisitor(next, visitorBySar) : null
   } else if (scope === "gallery") {
     const next = gallery.buildSarTimelinePlot(logs)

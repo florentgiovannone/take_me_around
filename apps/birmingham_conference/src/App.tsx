@@ -17,6 +17,7 @@ function PageTitle() {
       "/": "Take Me Around",
       "/allpages": "All Pages",
       "/dashboard": "Dashboard",
+      "/admindashboard": "Admin dashboard",
       [REGISTRATION_PATH]: "Register interest",
     }
     const page = artwork?.title ?? titles[pathname]
@@ -65,6 +66,10 @@ export default function App() {
         <Route path="/" element={<IndexPage />} />
         <Route path="/allpages" element={<AllPages />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/admindashboard"
+          element={<DashboardPage scope="birmingham_conference_admin" />}
+        />
         <Route path={REGISTRATION_PATH} element={<RegisterInterestPage />} />
         {BIRMINGHAM_CONFERENCE_ARTWORKS.map((artwork) => (
           <Route

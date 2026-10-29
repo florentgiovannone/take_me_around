@@ -46,23 +46,34 @@ function seen(
 }
 
 describe("canonicalBirminghamTagName", () => {
-  it("canonicalizes MACD and MACF serials and rejects other codes", () => {
+  it("canonicalizes MACD, MACF, MACTSOB, and MACTGB serials and rejects other codes", () => {
     expect(canonicalBirminghamTagName("MACD001")).toBe("MACD001")
     expect(canonicalBirminghamTagName("macd-1")).toBe("MACD001")
     expect(canonicalBirminghamTagName("MACD1")).toBe("MACD001")
     expect(canonicalBirminghamTagName("MACF001")).toBe("MACF001")
     expect(canonicalBirminghamTagName("macf-1")).toBe("MACF001")
     expect(canonicalBirminghamTagName("MACF1")).toBe("MACF001")
+    expect(canonicalBirminghamTagName("MACTSOB001")).toBe("MACTSOB001")
+    expect(canonicalBirminghamTagName("MACTSOB1")).toBe("MACTSOB001")
+    expect(canonicalBirminghamTagName("mactsob-1")).toBe("MACTSOB001")
+    expect(canonicalBirminghamTagName("MACTGB001")).toBe("MACTGB001")
+    expect(canonicalBirminghamTagName("MACTGB2")).toBe("MACTGB002")
+    expect(canonicalBirminghamTagName("mactgb-2")).toBe("MACTGB002")
     expect(canonicalBirminghamTagName("MACD")).toBeNull()
     expect(canonicalBirminghamTagName("MACF")).toBeNull()
+    expect(canonicalBirminghamTagName("MACTSOB")).toBeNull()
+    expect(canonicalBirminghamTagName("MACTGB")).toBeNull()
     expect(canonicalBirminghamTagName("MACDABC")).toBeNull()
     expect(canonicalBirminghamTagName("MACFABC")).toBeNull()
     expect(canonicalBirminghamTagName("BD001")).toBeNull()
     expect(canonicalBirminghamTagName("W001")).toBeNull()
     expect(canonicalBirminghamTagName("{MACD001}")).toBeNull()
     expect(canonicalBirminghamTagName("{MACF001}")).toBeNull()
+    expect(canonicalBirminghamTagName("{MACTSOB001}")).toBeNull()
     expect(isReservedSiteTagName("MACD001")).toBe(true)
     expect(isReservedSiteTagName("MACF001")).toBe(true)
+    expect(isReservedSiteTagName("MACTSOB001")).toBe(true)
+    expect(isReservedSiteTagName("MACTGB002")).toBe(true)
     expect(isReservedSiteTagName("BD001")).toBe(false)
     expect(isReservedSiteTagName("W001")).toBe(false)
   })
@@ -134,58 +145,130 @@ describe("birmingham conference urls", () => {
   })
 })
 
-describe("birmingham MACD and MACF tags", () => {
-  it("includes MACD and MACF tags alongside conference urls and does not double-count", () => {
+describe("birmingham public vs admin grouping", () => {
+  it("rolls every MACTSOB serial into one public Star of Betlehem slate", () => {
+    const logs = Array.from({ length: 100 }, (_, index) =>
+      log(index + 1, "https://example.com/star", `MACTSOB${index + 1}`)
+    )
+    expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toHaveLength(100)
+    expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual(
+      Array(100).fill("The Star of Betlehem · .gallery")
+    )
+    expect(buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)).toEqual([
+      "The Star of Betlehem · .gallery",
+      "The Golden Boys · .museum",
+    ])
+    expect(buildBirminghamTrackedArtworkScanGroups(logs)[0]?.scans).toHaveLength(100)
+    expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(100)
+    expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(1)
+    expect(buildBirminghamOverviewAnalytics(logs).topTagName).toBe("The Star of Betlehem · .gallery")
+  })
+
+  it("lists each MACTSOB serial on the admin dashboard", () => {
+    const logs = Array.from({ length: 100 }, (_, index) =>
+      log(index + 1, "https://example.com/star", `MACTSOB${index + 1}`)
+    )
+    expect(getBirminghamConferenceLogs(logs, "admin").map((row) => row.int_id)).toHaveLength(100)
+    expect(
+      buildBirminghamTrackedArtworkScanGroups(logs, "admin").map((group) => group.title)
+    ).toHaveLength(100)
+    expect(buildBirminghamTrackedArtworkScanGroups(logs, "admin")[0]?.title).toBe("MACTSOB001")
+    expect(buildBirminghamActivityEntries(logs, "admin").map((entry) => entry.artworkTitle)[99]).toBe(
+      "MACTSOB100"
+    )
+    expect(buildBirminghamOverviewAnalytics(logs, "admin").activeTags).toBe(100)
+  })
+
+  it("rolls MACD and MACF into public artworks only when the redirect is an artwork url", () => {
     const logs = [
       log(1, star.url, "The Star of Betlehem"),
-      log(2, "https://example.com/macd", "MACD001"),
-      log(3, "MACD002", "macd-2"),
+      log(2, star.url, "MACD001"),
+      log(3, "https://example.com/macd", "MACD002"),
       log(4, "https://takemearound.gallery/mona-lisa", "W001"),
       log(5, "MACD", "MACD"),
       log(6, "https://example.com/macf", "MACF001"),
-      log(7, "MACF", "MACF"),
+      log(7, golden.url, "MACF002"),
+      log(8, "https://example.com/golden", "MACTGB001"),
     ]
-    expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 3, 6])
+    expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 7, 8])
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
       "The Star of Betlehem · .gallery",
-      "MACD001",
-      "MACD002",
-      "MACF001",
-    ])
-    expect(
-      buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)
-    ).toEqual([
       "The Star of Betlehem · .gallery",
-      "MACD001",
-      "MACD002",
-      "MACF001",
+      "The Golden Boys · .museum",
+      "The Golden Boys · .museum",
+    ])
+    expect(buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)).toEqual([
+      "The Star of Betlehem · .gallery",
       "The Golden Boys · .museum",
     ])
     expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(4)
-    expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(4)
+    expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(2)
     expect(getGalleryLogs([logs[1]])).toEqual([])
     expect(getMuseumLogs([logs[1]])).toEqual([])
-    expect(getGalleryLogs([logs[5]])).toEqual([])
-    expect(getMuseumLogs([logs[5]])).toEqual([])
+    expect(getGalleryLogs([logs[7]])).toEqual([])
+    expect(getMuseumLogs([logs[7]])).toEqual([])
+  })
+
+  it("keeps MAC serials as their own admin rows including non-artwork urls", () => {
+    const logs = [
+      log(1, star.url, "The Star of Betlehem"),
+      log(2, star.url, "MACD001"),
+      log(3, "https://example.com/macd", "MACD002"),
+      log(4, "https://example.com/macf", "MACF001"),
+      log(5, golden.url, "MACF002"),
+      log(6, "https://example.com/golden", "MACTGB001"),
+    ]
+    expect(getBirminghamConferenceLogs(logs, "admin").map((row) => row.int_id)).toEqual([
+      2, 3, 4, 5, 6,
+    ])
+    expect(buildBirminghamActivityEntries(logs, "admin").map((entry) => entry.artworkTitle)).toEqual([
+      "MACD001",
+      "MACD002",
+      "MACF001",
+      "MACF002",
+      "MACTGB001",
+    ])
+    expect(buildBirminghamTrackedArtworkScanGroups(logs, "admin").map((group) => group.title)).toEqual([
+      "MACD001",
+      "MACD002",
+      "MACF001",
+      "MACF002",
+      "MACTGB001",
+    ])
+    expect(buildBirminghamOverviewAnalytics(logs, "admin").totalTaps).toBe(5)
+    expect(buildBirminghamOverviewAnalytics(logs, "admin").activeTags).toBe(5)
   })
 })
 
 describe("birmingham live sessions", () => {
-  it("keys a session by the visitor SAR from a nearby SEEN, not the tag text_name", () => {
+  it("keys a public session by the visitor SAR from a nearby SEEN, not the tag text_name", () => {
     const logs = [
-      log(10, "https://example.com/macd", "MACD001"),
+      log(10, star.url, "MACD001"),
       seen(11, "sar-user-1", { visitor_number: "SAR00000001" }),
     ]
     const plot = buildBirminghamSarTimelinePlot(logs)
     expect(plot?.sars).toEqual(["sar-user-1"])
-    expect(plot?.points[0]?.artworkTitle).toBe("MACD001")
+    expect(plot?.points[0]?.artworkTitle).toBe("The Star of Betlehem · .gallery")
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
-      "MACD001",
+      "The Star of Betlehem · .gallery",
     ])
     expect(buildBirminghamSarTimelineRowMetaMap(logs).get("sar-user-1")?.visitorNumber).toBe(
       "SAR00000001"
     )
     expect(buildBirminghamActivityEntries(logs)[0]?.seen.map((row) => row.int_id)).toEqual([11])
+  })
+
+  it("keeps admin activity titled by the MAC serial", () => {
+    const logs = [
+      log(10, "https://example.com/macd", "MACD001"),
+      seen(11, "sar-user-1", { visitor_number: "SAR00000001" }),
+    ]
+    const plot = buildBirminghamSarTimelinePlot(logs, "admin")
+    expect(plot?.sars).toEqual(["sar-user-1"])
+    expect(plot?.points[0]?.artworkTitle).toBe("MACD001")
+    expect(buildBirminghamActivityEntries(logs, "admin").map((entry) => entry.artworkTitle)).toEqual([
+      "MACD001",
+    ])
   })
 
   it("uses the same SAR for an artwork redirect paired with a nearby SEEN", () => {
@@ -198,7 +281,7 @@ describe("birmingham live sessions", () => {
       ...seen(31, "sar-user-3"),
       text_name: "MACD001",
     }
-    const logs = [log(30, "https://example.com/macd", "MACD001"), namedSeen]
+    const logs = [log(30, star.url, "MACD001"), namedSeen]
     expect(buildBirminghamSarTimelinePlot(logs)?.sars).toEqual(["sar-user-3"])
   })
 

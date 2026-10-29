@@ -20,7 +20,12 @@ export type StoreDashboardScope =
   | "yesterday_forever"
   | "frieze_gallery"
 
-export type SiteScope = OperatorSiteId | "combined" | StoreDashboardScope | "birmingham_conference"
+export type SiteScope =
+  | OperatorSiteId
+  | "combined"
+  | StoreDashboardScope
+  | "birmingham_conference"
+  | "birmingham_conference_admin"
 
 export const ALL_SITE_IDS: SiteId[] = ["gallery", "museum", "arkin", "church_of_england"]
 
@@ -310,14 +315,14 @@ export function canonicalBirminghamTagName(
   const trimmed = name.trim()
   if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
   const compact = compactTagToken(trimmed)
-  const match = compact.match(/^(MACD|MACF)(\d{1,6})$/)
+  const match = compact.match(/^(MACTSOB|MACTGB|MACD|MACF)(\d{1,6})$/)
   if (!match) return null
   const serial = serialNumber(match[2])
   if (serial == null) return null
   return `${match[1]}${padTagNumber(serial)}`
 }
 
-/** Tags owned by demo, church, or Birmingham (MACD / MACF) dashboards. */
+/** Tags owned by demo, church, or Birmingham (MACD / MACF / MACTSOB / MACTGB) dashboards. */
 export function isReservedSiteTagName(name: string | null | undefined): boolean {
   return (
     isTmaDemoCodeName(name) ||
@@ -346,6 +351,7 @@ export function scopeLabel(scope: SiteScope): string {
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
   if (scope === "birmingham_conference") return "Museum Association Conference"
+  if (scope === "birmingham_conference_admin") return "Museum Association Conference · Admin"
   return SITE_META[scope].label
 }
 
@@ -364,6 +370,9 @@ export function scopeSubtitle(scope: SiteScope): string {
     return `Live ${SITE_META.arkin.label} activity`
   }
   if (scope === "birmingham_conference") return "Live Museum Association Conference activity"
+  if (scope === "birmingham_conference_admin") {
+    return "Live Museum Association Conference tag activity"
+  }
   return `Live ${SITE_META[scope].domainLabel} activity`
 }
 
@@ -378,7 +387,9 @@ export function scopeDomainHint(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
-  if (scope === "birmingham_conference") return "takemearound.gallery + takemearound.museum"
+  if (scope === "birmingham_conference" || scope === "birmingham_conference_admin") {
+    return "takemearound.gallery + takemearound.museum"
+  }
   return SITE_META[scope].host
 }
 
@@ -392,6 +403,7 @@ export function scopeBadgeLabel(scope: SiteScope): string {
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
   if (scope === "birmingham_conference") return "Museum Association Conference"
+  if (scope === "birmingham_conference_admin") return "Museum Association Conference · Admin"
   return SITE_META[scope].domainLabel
 }
 
@@ -408,5 +420,6 @@ export function scopeOptionLabel(scope: SiteScope, _combinedSiteIds: SiteId[] = 
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
   if (scope === "birmingham_conference") return "Museum Association Conference"
+  if (scope === "birmingham_conference_admin") return "Museum Association Conference · Admin"
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
 }

@@ -54,7 +54,24 @@ function errorMessage(result: Extract<FetchLogsResult, { ok: false }>): string {
 
 const EMPTY_FORM = { name: "", email: "", organisation: "", message: "" }
 
-export default function DashboardPage() {
+type ConferenceDashboardScope = "birmingham_conference" | "birmingham_conference_admin"
+
+type DashboardPageProps = {
+  scope?: ConferenceDashboardScope
+}
+
+export default function DashboardPage({
+  scope = "birmingham_conference",
+}: DashboardPageProps) {
+  const showContact = scope === "birmingham_conference"
+  const title =
+    scope === "birmingham_conference_admin"
+      ? "Museum Association Conference · Admin"
+      : "Museum Association Conference"
+  const subtitle =
+    scope === "birmingham_conference_admin"
+      ? "Live Museum Association Conference tag activity"
+      : "Live Museum Association Conference activity"
   const [logs, setLogs] = useState<PoiseLog[]>(() => readArtworkScans())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -164,16 +181,14 @@ export default function DashboardPage() {
 
   return (
     <div
-      className={`tma-dashboard tma-main-dashboard tma-brand${contactOpen ? " birmingham-contact-is-open" : ""}`}
+      className={`tma-dashboard tma-main-dashboard tma-brand${showContact && contactOpen ? " birmingham-contact-is-open" : ""}`}
     >
       <DashboardAboutLinks />
       <header className="tma-header tma-main-dashboard-header">
         <div className="tma-header-inner tma-main-dashboard-header-inner">
           <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
-          <h1 className="tma-page-title tma-main-dashboard-title">Museum Association Conference</h1>
-          <p className="tma-page-subtitle tma-main-dashboard-subtitle">
-            Live Museum Association Conference activity
-          </p>
+          <h1 className="tma-page-title tma-main-dashboard-title">{title}</h1>
+          <p className="tma-page-subtitle tma-main-dashboard-subtitle">{subtitle}</p>
         </div>
       </header>
       <div className="tma-content">
@@ -184,14 +199,14 @@ export default function DashboardPage() {
           </div>
         )}
         {error && <p className="tma-dashboard-error">{error}</p>}
-        <SiteScopeProvider scope="birmingham_conference">
+        <SiteScopeProvider scope={scope}>
           {!loading && activeTab === "activity" && <DashboardActivityPanel logs={logs} />}
           {!loading && activeTab === "counts" && <DashboardCountsPanel logs={logs} />}
           {!loading && activeTab === "overview" && <DashboardOverviewPanel logs={logs} />}
           {!loading && activeTab === "audience" && <DashboardAudiencePanel logs={logs} />}
           {!loading && activeTab === "sar" && <DashboardSarTimelinePanel logs={logs} />}
         </SiteScopeProvider>
-        {contactOpen && (
+        {showContact && contactOpen && (
           <section className="tma-analytics-card birmingham-contact" ref={contactRef}>
             <div className="birmingham-contact-heading">
               <h2>Talk to Take Me Around</h2>
@@ -258,7 +273,7 @@ export default function DashboardPage() {
           </section>
         )}
       </div>
-      {!contactOpen && (
+      {showContact && !contactOpen && (
         <button type="button" className="birmingham-contact-open" onClick={() => setContactOpen(true)}>
           Talk to us
         </button>
