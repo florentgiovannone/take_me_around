@@ -4,6 +4,7 @@ import {
   ADMIN_REGISTRATIONS_PATH,
   PACK_REGISTRATION_PATH,
   adminScanLabel,
+  packRegistrationUrl,
   macdPackNumbersNewestFirst,
   applyContactPrefill,
   contactPrefillFromRegistration,
@@ -67,6 +68,12 @@ describe("parseConfirmedRegistrations and lookup", () => {
   it("reads confirmed rows from the admin-gated registrations path", () => {
     expect(ADMIN_REGISTRATIONS_PATH).toBe("/api/admin/registrations")
     expect(PACK_REGISTRATION_PATH).toBe("/api/pack-registration")
+    expect(packRegistrationUrl("https://interest.example.com", "050")).toBe(
+      "https://interest.example.com/api/registrations?packNumber=050"
+    )
+    expect(packRegistrationUrl("/registration-api/", "037")).toBe(
+      "/registration-api/api/registrations?packNumber=037"
+    )
   })
 
   it("reads the GET /api/registrations body and ignores junk", () => {
