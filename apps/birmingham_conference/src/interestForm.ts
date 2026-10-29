@@ -61,12 +61,12 @@ const ARTWORK_SLUGS = new Set<string>(
 )
 const PACK_DIGITS = /^[0-9]{3}$/
 const PACK_RANGES: Record<string, { min: string; max: string; message: string }> = {
-  "the-golden-boys": {
+  "the-star-of-betlehem": {
     min: "001",
     max: "100",
     message: "Enter a pack number from 001 to 100.",
   },
-  "the-star-of-betlehem": {
+  "the-golden-boys": {
     min: "101",
     max: "200",
     message: "Enter a pack number from 101 to 200.",
