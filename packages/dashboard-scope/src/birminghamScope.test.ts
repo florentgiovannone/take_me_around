@@ -33,7 +33,7 @@ const star = {
   ...monaLisa,
   int_id: 2,
   text_name: "The Star of Betlehem",
-  txt_message: "https://takemearound.gallery/the-star-of-betlehem",
+  txt_message: "https://takemearound.gallery/the-star-of-bethlehem",
 }
 
 describe("birmingham_conference scope", () => {

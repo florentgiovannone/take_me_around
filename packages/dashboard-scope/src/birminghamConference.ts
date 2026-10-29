@@ -7,7 +7,7 @@ const ARTWORKS = [
   {
     slug: "the-star-of-betlehem",
     host: "takemearound.gallery",
-    path: "/the-star-of-betlehem",
+    path: "/the-star-of-bethlehem",
     title: "The Star of Betlehem",
     dashboardTitle: "The Star of Betlehem · .gallery",
     domainLabel: ".gallery",
@@ -42,8 +42,9 @@ export function matchBirminghamConferenceArtwork(
     return null
   }
   const path = url.pathname.replace(/\/$/, "") || "/"
+  const canonicalPath = path === "/the-star-of-betlehem" ? "/the-star-of-bethlehem" : path
   return BIRMINGHAM_CONFERENCE_ARTWORKS.find(
-    (artwork) => artwork.host === url.host && artwork.path === path
+    (artwork) => artwork.host === url.host && artwork.path === canonicalPath
   ) ?? null
 }
 
@@ -67,8 +68,23 @@ export function birminghamGroup(log: PoiseLog): { title: string; path: string; u
   return { title: artwork.dashboardTitle, path: artwork.path, url: artwork.url }
 }
 
-export function getBirminghamConferenceLogs(logs: PoiseLog[]): PoiseLog[] {
+function matchingLogs(logs: PoiseLog[]): PoiseLog[] {
   return logs.filter((log) => birminghamGroup(log) !== null)
+}
+
+export function getBirminghamConferenceLogs(logs: PoiseLog[]): PoiseLog[] {
+  const matched = matchingLogs(logs)
+  const included = new Set(matched.map((log) => log.int_id))
+  const extras: PoiseLog[] = []
+  const pairs = pairSeenWithRedirects(logs)
+  for (const redirect of redirects(logs)) {
+    const seen = pairs.get(redirect.int_id)
+    if (!seen || included.has(seen.int_id)) continue
+    included.add(seen.int_id)
+    const group = birminghamGroup(redirect)
+    extras.push(seen.text_name?.trim() ? seen : { ...seen, text_name: group?.title ?? seen.text_name })
+  }
+  return extras.length ? [...matched, ...extras] : matched
 }
 
 export function distinctBirminghamBdCodes(logs: PoiseLog[]): string[] {
@@ -85,14 +101,80 @@ export function countBirminghamTrackedItems(logs: PoiseLog[] = []): number {
   return 2 + distinctBirminghamBdCodes(logs).length
 }
 
+const SEEN_PAIR_MS = 5000
+
+function messageType(log: PoiseLog): string {
+  return (log.txt_message_type ?? "").trim().toUpperCase()
+}
+
 function redirects(logs: PoiseLog[]): PoiseLog[] {
-  return getBirminghamConferenceLogs(logs).filter(
-    (log) => (log.txt_message_type ?? "").trim().toUpperCase() === "REDIRECTED"
-  )
+  return matchingLogs(logs).filter((log) => messageType(log) === "REDIRECTED")
 }
 
 function timestampMs(value: string | null | undefined): number {
   return gallery.parseLogTimestampGmt(value)?.getTime() ?? 0
+}
+
+function isSeenCookieLog(log: PoiseLog): boolean {
+  return messageType(log) === "SEEN" && (log.txt_message ?? "").trim().startsWith("{")
+}
+
+function timestampsClose(left: PoiseLog, right: PoiseLog): boolean {
+  const leftTime = timestampMs(left.dtm_timestamp)
+  const rightTime = timestampMs(right.dtm_timestamp)
+  if (!leftTime || !rightTime) return false
+  return Math.abs(leftTime - rightTime) <= SEEN_PAIR_MS
+}
+
+function isPairableSeen(redirect: PoiseLog, seen: PoiseLog): boolean {
+  if (!isSeenCookieLog(seen) || !timestampsClose(redirect, seen)) {
+    return false
+  }
+  const redirectUid = redirect.txt_uid?.trim()
+  const seenUid = seen.txt_uid?.trim()
+  if (redirectUid && seenUid && redirectUid === seenUid) return true
+  const redirectName = redirect.text_name?.trim().toLowerCase()
+  const seenName = seen.text_name?.trim().toLowerCase()
+  if (redirectName && seenName && redirectName === seenName) return true
+  return !seenName && !seenUid
+}
+
+function seenNeighborForRedirect(
+  redirect: PoiseLog,
+  logs: PoiseLog[],
+  used: Set<number>
+): PoiseLog | null {
+  const byId = new Map(logs.map((log) => [log.int_id, log]))
+  for (const neighborId of [redirect.int_id - 1, redirect.int_id + 1]) {
+    const neighbor = byId.get(neighborId)
+    if (!neighbor || used.has(neighbor.int_id)) continue
+    if (isPairableSeen(redirect, neighbor)) return neighbor
+  }
+  let best: PoiseLog | null = null
+  let bestDelta = Infinity
+  const redirectTime = timestampMs(redirect.dtm_timestamp)
+  for (const neighbor of logs) {
+    if (used.has(neighbor.int_id) || neighbor.int_id === redirect.int_id) continue
+    if (!isPairableSeen(redirect, neighbor)) continue
+    const delta = Math.abs(timestampMs(neighbor.dtm_timestamp) - redirectTime)
+    if (delta < bestDelta) {
+      best = neighbor
+      bestDelta = delta
+    }
+  }
+  return best
+}
+
+function pairSeenWithRedirects(logs: PoiseLog[]): Map<number, PoiseLog> {
+  const used = new Set<number>()
+  const byRedirect = new Map<number, PoiseLog>()
+  for (const redirect of redirects(logs)) {
+    const seen = seenNeighborForRedirect(redirect, logs, used)
+    if (!seen) continue
+    used.add(seen.int_id)
+    byRedirect.set(redirect.int_id, seen)
+  }
+  return byRedirect
 }
 
 export function birminghamSarFromLog(log: PoiseLog): string | null {
@@ -102,20 +184,23 @@ export function birminghamSarFromLog(log: PoiseLog): string | null {
   return sar?.trim() || null
 }
 
-function seriesKey(log: PoiseLog): string | null {
-  const group = birminghamGroup(log)
-  if (!group) return null
-  return birminghamSarFromLog(log) ?? group.title
+function sessionSar(log: PoiseLog, pairs: Map<number, PoiseLog>): string | null {
+  const direct = birminghamSarFromLog(log)
+  if (direct) return direct
+  const seen = pairs.get(log.int_id)
+  return seen ? birminghamSarFromLog(seen) : null
 }
 
 export function buildBirminghamActivityEntries(logs: PoiseLog[]) {
+  const pairs = pairSeenWithRedirects(logs)
   return redirects(logs)
     .map((log) => {
       const group = birminghamGroup(log)!
+      const seen = pairs.get(log.int_id)
       return {
         key: `redirect-${log.int_id}`,
         redirect: log,
-        seen: [] as PoiseLog[],
+        seen: seen ? [seen] : [],
         timestamp: log.dtm_timestamp,
         artworkTitle: group.title,
         link: group.url,
@@ -227,25 +312,35 @@ export function buildBirminghamMonthlyCalendarGrid(logs: PoiseLog[], monthOffset
 }
 
 export function listBirminghamDistinctSars(logs: PoiseLog[]): string[] {
-  return [...new Set(getBirminghamConferenceLogs(logs).map(seriesKey).filter((key) => key !== null))]
+  const pairs = pairSeenWithRedirects(logs)
+  return [...new Set(redirects(logs).map((log) => sessionSar(log, pairs)).filter((key) => key !== null))]
     .sort((a, b) => a.localeCompare(b))
 }
 
 export function buildBirminghamSarTimelineEvents(logs: PoiseLog[], sarQuery: string) {
   const target = sarQuery.trim().toLowerCase()
   if (!target) return []
+  const pairs = pairSeenWithRedirects(logs)
   return buildBirminghamActivityEntries(logs).filter((entry) => {
-    const key = entry.redirect ? seriesKey(entry.redirect) : null
+    const key = entry.redirect ? sessionSar(entry.redirect, pairs) : null
     return key?.toLowerCase() === target
   })
 }
 
 export function buildBirminghamSarTimelineRowMetaMap(logs: PoiseLog[]) {
   const meta = new Map<string, gallery.SarTimelineRowMeta>()
-  for (const log of getBirminghamConferenceLogs(logs)) {
-    const sar = seriesKey(log)
+  const pairs = pairSeenWithRedirects(logs)
+  for (const log of redirects(logs)) {
+    const sar = sessionSar(log, pairs)
     if (!sar || meta.has(sar)) continue
-    meta.set(sar, { sar, visitorNumber: null, country: null, language: null })
+    const seen = pairs.get(log.int_id)
+    const details = gallery.buildActivityVisitDetails(seen ?? log)
+    meta.set(sar, {
+      sar,
+      visitorNumber: seen?.visitor_number?.trim() || log.visitor_number?.trim() || null,
+      country: null,
+      language: details.language,
+    })
   }
   return meta
 }
@@ -253,9 +348,10 @@ export function buildBirminghamSarTimelineRowMetaMap(logs: PoiseLog[]) {
 export function buildBirminghamSarTimelinePlot(logs: PoiseLog[]): gallery.SarTimelinePlot | null {
   const now = new Date()
   const points: gallery.SarTimelinePlotPoint[] = []
+  const pairs = pairSeenWithRedirects(logs)
   for (const log of redirects(logs)) {
     const group = birminghamGroup(log)
-    const sar = seriesKey(log)
+    const sar = sessionSar(log, pairs)
     const timestamp = gallery.parseLogTimestampGmt(log.dtm_timestamp)
     if (!group || !sar || !timestamp) continue
     points.push({

@@ -8,6 +8,7 @@ import {
   buildBirminghamAudienceAnalytics,
   buildBirminghamOverviewAnalytics,
   buildBirminghamSarTimelinePlot,
+  buildBirminghamSarTimelineRowMetaMap,
   buildBirminghamTrackedArtworkScanGroups,
   buildBirminghamWeeklySeries,
   getBirminghamConferenceLogs,
@@ -25,6 +26,22 @@ function log(id: number, message: string, name = "tag") {
     text_name: name,
     txt_message_type: "REDIRECTED",
     txt_message: message,
+  }
+}
+
+function seen(
+  id: number,
+  sar: string,
+  extras: { visitor_number?: string | null; dtm_timestamp?: string } = {}
+) {
+  return {
+    int_id: id,
+    dtm_timestamp: extras.dtm_timestamp ?? "2026-10-19T15:04:00.200Z",
+    txt_uid: null,
+    text_name: "",
+    txt_message_type: "SEEN",
+    txt_message: JSON.stringify({ HTTP_COOKIE: `sar=${sar}` }),
+    visitor_number: extras.visitor_number ?? null,
   }
 }
 
@@ -56,6 +73,9 @@ describe("birmingham conference urls", () => {
     expect(matchBirminghamConferenceArtwork(star.url)?.domainLabel).toBe(".gallery")
     expect(matchBirminghamConferenceArtwork(`${golden.url}/`)?.domainLabel).toBe(".museum")
     expect(matchBirminghamConferenceArtwork(`${star.url}?src=tag#top`)?.slug).toBe(star.slug)
+    expect(
+      matchBirminghamConferenceArtwork("https://takemearound.gallery/the-star-of-betlehem")?.slug
+    ).toBe("the-star-of-betlehem")
   })
 
   it("drops other sites, bare paths, and the wrong host", () => {
@@ -66,7 +86,7 @@ describe("birmingham conference urls", () => {
       log(4, "https://takemearound.museum/the-rosetta-stone"),
       log(5, "FD001"),
       log(6, star.path),
-      log(7, "https://takemearound.museum/the-star-of-betlehem"),
+      log(7, "https://takemearound.museum/the-star-of-bethlehem"),
       log(8, "https://takemearound.gallery/the-golden-boys"),
     ]
     expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2])
@@ -110,9 +130,7 @@ describe("birmingham conference urls", () => {
     const audience = buildBirminghamAudienceAnalytics(logs)
     expect(audience.hourly.reduce((sum, point) => sum + point.count, 0)).toBe(2)
     expect(audience.hasDeviceData).toBe(false)
-    const plot = buildBirminghamSarTimelinePlot(logs)
-    expect(plot?.sars).toEqual(["The Star of Betlehem · .gallery"])
-    expect(plot?.points.every((point) => point.link === star.url)).toBe(true)
+    expect(buildBirminghamSarTimelinePlot(logs)).toBeNull()
   })
 })
 
@@ -149,5 +167,42 @@ describe("birmingham MACD and MACF tags", () => {
     expect(getMuseumLogs([logs[1]])).toEqual([])
     expect(getGalleryLogs([logs[5]])).toEqual([])
     expect(getMuseumLogs([logs[5]])).toEqual([])
+  })
+})
+
+describe("birmingham live sessions", () => {
+  it("keys a session by the visitor SAR from a nearby SEEN, not the tag text_name", () => {
+    const logs = [
+      log(10, "https://example.com/macd", "MACD001"),
+      seen(11, "sar-user-1", { visitor_number: "SAR00000001" }),
+    ]
+    const plot = buildBirminghamSarTimelinePlot(logs)
+    expect(plot?.sars).toEqual(["sar-user-1"])
+    expect(plot?.points[0]?.artworkTitle).toBe("MACD001")
+    expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
+      "MACD001",
+    ])
+    expect(buildBirminghamSarTimelineRowMetaMap(logs).get("sar-user-1")?.visitorNumber).toBe(
+      "SAR00000001"
+    )
+    expect(buildBirminghamActivityEntries(logs)[0]?.seen.map((row) => row.int_id)).toEqual([11])
+  })
+
+  it("uses the same SAR for an artwork redirect paired with a nearby SEEN", () => {
+    const logs = [log(20, star.url, "The Star of Betlehem"), seen(21, "sar-user-2")]
+    expect(buildBirminghamSarTimelinePlot(logs)?.sars).toEqual(["sar-user-2"])
+  })
+
+  it("pairs a SEEN that already carries the same tag text_name", () => {
+    const namedSeen = {
+      ...seen(31, "sar-user-3"),
+      text_name: "MACD001",
+    }
+    const logs = [log(30, "https://example.com/macd", "MACD001"), namedSeen]
+    expect(buildBirminghamSarTimelinePlot(logs)?.sars).toEqual(["sar-user-3"])
+  })
+
+  it("leaves unpaired redirects without a seen visit", () => {
+    expect(buildBirminghamActivityEntries([log(1, star.url)])[0]?.seen).toEqual([])
   })
 })

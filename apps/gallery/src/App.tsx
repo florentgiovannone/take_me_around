@@ -1,5 +1,5 @@
 import { BrandHeader } from "@tma/brand"
-import { Link, Route, Routes, useLocation } from "react-router-dom"
+import { Link, Navigate, Route, Routes, useLocation } from "react-router-dom"
 import EdmondDeBelamyPage from "./pages/EdmondDeBelamyPage"
 import GalleryNouvionPage from "./pages/GalleryNouvionPage"
 import MonaLisaPage from "./pages/MonaLisaPage"
@@ -29,6 +29,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/the-starry-night": "The Starry Night",
   "/the-two-fridas": "The Two Fridas",
   "/the-kiss": "The Kiss",
+  "/the-star-of-bethlehem": "The Star of Betlehem",
   "/the-star-of-betlehem": "The Star of Betlehem",
   "/underlying-technology": "Underlying Technology",
   "/contact": "Contact",
@@ -82,7 +83,7 @@ function AllPage() {
         <Link to="/the-kiss">Go to The Kiss page</Link>
       </p>
       <p>
-        <Link to="/the-star-of-betlehem">Go to The Star of Betlehem page</Link>
+        <Link to="/the-star-of-bethlehem">Go to The Star of Betlehem page</Link>
       </p>
       <p>
         <Link to="/privacy-policy">Go to Privacy Policy page</Link>
@@ -136,7 +137,8 @@ function App() {
         <Route path="/the-starry-night" element={<StarryNightPage />} />
         <Route path="/the-two-fridas" element={<TwoFridasPage />} />
         <Route path="/the-kiss" element={<TheKissPage />} />
-        <Route path="/the-star-of-betlehem" element={<StarOfBetlehemPage />} />
+        <Route path="/the-star-of-bethlehem" element={<StarOfBetlehemPage />} />
+        <Route path="/the-star-of-betlehem" element={<Navigate to="/the-star-of-bethlehem" replace />} />
         <Route path="/underlying-technology" element={<UnderlyingTechnologyPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/dashboard" element={<Dashboard />} />

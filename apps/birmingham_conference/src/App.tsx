@@ -73,6 +73,10 @@ export default function App() {
             element={<ExternalRedirect href={artwork.url} />}
           />
         ))}
+        <Route
+          path="/the-star-of-betlehem"
+          element={<ExternalRedirect href="https://takemearound.gallery/the-star-of-bethlehem" />}
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
