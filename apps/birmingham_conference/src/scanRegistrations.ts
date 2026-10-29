@@ -1,6 +1,9 @@
 import { canonicalBirminghamTagName } from "@tma/config"
 import type { PoiseLog } from "@tma/dashboard-scope"
 
+export const ADMIN_REGISTRATIONS_PATH = "/api/admin/registrations"
+export const PACK_REGISTRATION_PATH = "/api/pack-registration"
+
 export type ConfirmedRegistration = {
   name: string
   surname: string
@@ -130,17 +133,27 @@ function timestampMs(value: string | null | undefined): number {
   return Number.isNaN(ms) ? 0 : ms
 }
 
+export function macdPackNumbersNewestFirst(logs: PoiseLog[]): string[] {
+  const redirects = logs
+    .filter((log) => (log.txt_message_type ?? "").trim().toUpperCase() === "REDIRECTED")
+    .sort((left, right) => timestampMs(right.dtm_timestamp) - timestampMs(left.dtm_timestamp))
+  const packs: string[] = []
+  const seen = new Set<string>()
+  for (const log of redirects) {
+    const pack =
+      packNumberFromMacdTag(log.text_name) ?? packNumberFromMacdTag(log.txt_message)
+    if (!pack || seen.has(pack)) continue
+    seen.add(pack)
+    packs.push(pack)
+  }
+  return packs
+}
+
 export function latestConfirmedMacdRegistration(
   logs: PoiseLog[],
   rows: ConfirmedRegistration[]
 ): ConfirmedRegistration | null {
-  const redirects = logs
-    .filter((log) => (log.txt_message_type ?? "").trim().toUpperCase() === "REDIRECTED")
-    .sort((left, right) => timestampMs(right.dtm_timestamp) - timestampMs(left.dtm_timestamp))
-  for (const log of redirects) {
-    const pack =
-      packNumberFromMacdTag(log.text_name) ?? packNumberFromMacdTag(log.txt_message)
-    if (!pack) continue
+  for (const pack of macdPackNumbersNewestFirst(logs)) {
     const row = registrationForPack(rows, pack)
     if (row) return row
   }

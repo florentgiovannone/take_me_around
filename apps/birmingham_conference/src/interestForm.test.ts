@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
+  CONSENT_LABEL,
+  privacyAccessHint,
   registrationPayload,
   submitInterestRegistration,
   type InterestRegistration,
@@ -178,5 +180,22 @@ describe("submitInterestRegistration", () => {
 
   it("includes the trimmed pack number in the payload", () => {
     expect(registrationPayload({ ...valid, packNumber: " 001 " }).packNumber).toBe("001")
+  })
+})
+
+describe("consent and privacy copy", () => {
+  it("describes pack matching, contact, and keeping details until deletion is asked", () => {
+    expect(CONSENT_LABEL).toContain("pack number")
+    expect(CONSENT_LABEL).toContain("phone number")
+    expect(CONSENT_LABEL).toContain("scan dashboard")
+    expect(CONSENT_LABEL).toContain("until I ask them to delete them")
+    expect(CONSENT_LABEL).toContain("20 minutes")
+    expect(CONSENT_LABEL).not.toContain("5 minutes")
+  })
+
+  it("tells people which email to use for access or deletion", () => {
+    expect(privacyAccessHint("privacy@example.com")).toBe(
+      "Email privacy@example.com to ask for access or deletion."
+    )
   })
 })

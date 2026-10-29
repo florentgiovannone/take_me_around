@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react"
 import { BrandHeader } from "@tma/brand"
 import {
+  CONSENT_LABEL,
   registrationPayload,
   submitInterestRegistration,
   type InterestFormErrors,
@@ -33,13 +34,11 @@ const EMPTY_FORM: InterestRegistration = {
   consent: false,
 }
 
-const CONSENT_LABEL =
-  "I agree that Take Me Around will hold these details for up to 5 minutes to email me a confirmation link, and will keep them after I confirm so they can register my interest in this artwork and contact me about it."
-
 export default function RegisterInterestPage() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [fieldErrors, setFieldErrors] = useState<InterestFormErrors>({})
   const [artworks, setArtworks] = useState<StockedArtwork[]>([])
+  const [privacyContact, setPrivacyContact] = useState("")
   const [loadFailed, setLoadFailed] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [notice, setNotice] = useState("")
@@ -59,9 +58,11 @@ export default function RegisterInterestPage() {
       })
       if (!response.ok) throw new Error("artwork list failed")
       const body = (await response.json()) as {
+        privacyContact?: string
         artworks: StockedArtwork[]
       }
       setArtworks(body.artworks)
+      setPrivacyContact(typeof body.privacyContact === "string" ? body.privacyContact : "")
       setLoadFailed(false)
       return body.artworks
     } catch {
@@ -284,6 +285,11 @@ export default function RegisterInterestPage() {
                   <span className="req">{CONSENT_LABEL}</span>
                 </label>
                 {fieldErrors.consent && <span className="birmingham-interest-error">{fieldErrors.consent}</span>}
+                {privacyContact ? (
+                  <p className="birmingham-interest-privacy">
+                    Email <a href={`mailto:${privacyContact}`}>{privacyContact}</a> to ask for access or deletion.
+                  </p>
+                ) : null}
                 {notice && <p className="birmingham-interest-error">{notice}</p>}
                 <button type="submit" disabled={submitting}>
                   Register interest

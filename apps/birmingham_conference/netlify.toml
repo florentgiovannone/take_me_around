@@ -1,9 +1,27 @@
-# The dashboard is public (no password field). An edge function attaches
+# The public dashboard has no password field. An edge function attaches
 # X-Dashboard-Password for /api/secure/* so the browser never sees it.
+# /admindashboard is gated by ADMIN_DASHBOARD_PASSWORD.
+# The full confirmed list is admin-only. One pack can be read for Talk to us prefill.
 
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD"
+  SECRETS_SCAN_OMIT_KEYS = "VITE_DASHBOARD_PASSWORD,DASHBOARD_PASSWORD,ADMIN_DASHBOARD_PASSWORD,REGISTRATIONS_READ_KEY"
 
 [[edge_functions]]
   function = "inject-dashboard-password"
   path = "/api/secure/*"
+
+[[edge_functions]]
+  function = "protect-admin-dashboard"
+  path = "/admindashboard"
+
+[[edge_functions]]
+  function = "protect-admin-dashboard"
+  path = "/api/admin-session"
+
+[[edge_functions]]
+  function = "read-registrations"
+  path = "/api/admin/registrations"
+
+[[edge_functions]]
+  function = "read-pack-registration"
+  path = "/api/pack-registration"

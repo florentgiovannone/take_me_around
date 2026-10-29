@@ -251,3 +251,10 @@
 .birmingham-interest-consent .req {
   flex: 1;
 }
+
+.birmingham-interest-privacy {
+  margin: 0;
+  color: #5c6573;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}

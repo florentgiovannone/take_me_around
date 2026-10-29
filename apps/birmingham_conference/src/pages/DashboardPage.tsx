@@ -11,6 +11,7 @@ import {
   type DashboardTabId,
 } from "@tma/dashboard-ui"
 import type { PoiseLog } from "@tma/dashboard-scope"
+import { readAdminSession } from "../adminSession"
 import { mergeArtworkScans, readArtworkScans } from "../artworkScans"
 import {
   CONTACT_UNAVAILABLE,
@@ -21,8 +22,11 @@ import {
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
 import {
+  ADMIN_REGISTRATIONS_PATH,
+  PACK_REGISTRATION_PATH,
   adminScanLabel,
   latestConfirmedMacdRegistration,
+  macdPackNumbersNewestFirst,
   nextContactPrefillState,
   packNumberFromMacdTag,
   parseConfirmedRegistrations,
@@ -41,10 +45,8 @@ type FetchLogsResult =
   | { ok: false; code: "denied" | "unconfigured" | "unexpected" | "status" | "network"; status?: number }
 
 async function fetchConfirmedRegistrations(): Promise<ConfirmedRegistration[] | null> {
-  const baseUrl = registrationBaseUrl()
-  if (!baseUrl) return []
   try {
-    const response = await fetch(`${baseUrl}/api/registrations`, {
+    const response = await fetch(ADMIN_REGISTRATIONS_PATH, {
       headers: { "ngrok-skip-browser-warning": "true" },
     })
     if (!response.ok) return null
@@ -52,6 +54,28 @@ async function fetchConfirmedRegistrations(): Promise<ConfirmedRegistration[] | 
   } catch {
     return null
   }
+}
+
+async function fetchPackRegistration(packNumber: string): Promise<ConfirmedRegistration[] | null> {
+  try {
+    const response = await fetch(
+      `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(packNumber)}`,
+      { headers: { "ngrok-skip-browser-warning": "true" } }
+    )
+    if (!response.ok) return null
+    return parseConfirmedRegistrations(await response.json())
+  } catch {
+    return null
+  }
+}
+
+async function fetchPrefillRegistrations(logs: PoiseLog[]): Promise<ConfirmedRegistration[] | null> {
+  for (const pack of macdPackNumbersNewestFirst(logs)) {
+    const rows = await fetchPackRegistration(pack)
+    if (rows === null) return null
+    if (rows.length > 0) return rows
+  }
+  return []
 }
 
 async function fetchDashboardLogs(): Promise<FetchLogsResult> {
@@ -115,22 +139,32 @@ export default function DashboardPage({
   const loadLogs = async (showLoading: boolean) => {
     if (showLoading) setLoading(true)
     const result = await fetchDashboardLogs()
+    const nextLogs = result.ok
+      ? mergeArtworkScans(result.data)
+      : mergeArtworkScans(showLoading ? [] : logs)
+    setLogs(nextLogs)
+    setReady(true)
     if (!result.ok) {
-      setLogs((current) => mergeArtworkScans(showLoading ? [] : current))
-      setReady(true)
       if (showLoading) setError(errorMessage(result))
-      if (showLoading) setLoading(false)
     } else {
-      setLogs(mergeArtworkScans(result.data))
-      setReady(true)
       setError(null)
-      if (showLoading) setLoading(false)
     }
-    const confirmed = await fetchConfirmedRegistrations()
+    if (showLoading) setLoading(false)
+    const confirmed = isAdmin
+      ? await fetchConfirmedRegistrations()
+      : await fetchPrefillRegistrations(nextLogs)
     if (confirmed !== null) {
       setRegistrations(confirmed)
     }
   }
+
+  useEffect(() => {
+    if (!isAdmin) return
+    void (async () => {
+      const session = await readAdminSession()
+      if (session !== "open") window.location.replace("/admindashboard")
+    })()
+  }, [isAdmin])
 
   useEffect(() => {
     void loadLogs(true)

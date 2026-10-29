@@ -35,6 +35,13 @@ export type InterestFormResult =
   | { ok: true }
   | { ok: false; errors: InterestFormErrors }
 
+export const CONSENT_LABEL =
+  "I agree that Take Me Around will hold these details, including my pack number and phone number if I give one, for up to 20 minutes to email me a confirmation link, and will keep them after I confirm so they can register my interest in this artwork, show my details on their conference scan dashboard if my pack is scanned, and contact me about it. They will keep these details until I ask them to delete them."
+
+export function privacyAccessHint(email: string): string {
+  return `Email ${email} to ask for access or deletion.`
+}
+
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_DIGITS = /^[0-9]{4,15}$/
 const COUNTRY_NAMES = new Set<string>(COUNTRIES.map((country) => country.name))

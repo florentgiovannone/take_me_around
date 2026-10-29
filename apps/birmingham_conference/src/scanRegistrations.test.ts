@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest"
 import type { PoiseLog } from "@tma/dashboard-scope"
 import {
+  ADMIN_REGISTRATIONS_PATH,
+  PACK_REGISTRATION_PATH,
   adminScanLabel,
+  macdPackNumbersNewestFirst,
   applyContactPrefill,
   contactPrefillFromRegistration,
   latestConfirmedMacdRegistration,
@@ -57,6 +60,11 @@ describe("packNumberFromMacdTag", () => {
 })
 
 describe("parseConfirmedRegistrations and lookup", () => {
+  it("reads confirmed rows from the admin-gated registrations path", () => {
+    expect(ADMIN_REGISTRATIONS_PATH).toBe("/api/admin/registrations")
+    expect(PACK_REGISTRATION_PATH).toBe("/api/pack-registration")
+  })
+
   it("reads the GET /api/registrations body and ignores junk", () => {
     expect(parseConfirmedRegistrations({ registrations: [john] })).toEqual([john])
     expect(parseConfirmedRegistrations({ registrations: [{ name: "Ada" }] })).toEqual([])
@@ -166,6 +174,25 @@ describe("contact prefill", () => {
 })
 
 describe("latestConfirmedMacdRegistration", () => {
+  it("lists unique MACD packs newest first so the public dashboard can look up one person", () => {
+    const older = redirect({
+      int_id: 1,
+      text_name: "MACD001",
+      dtm_timestamp: "2026-10-29T12:00:00Z",
+    })
+    const newerUnknown = redirect({
+      int_id: 2,
+      text_name: "MACD199",
+      dtm_timestamp: "2026-10-29T12:01:00Z",
+    })
+    const macf = redirect({
+      int_id: 3,
+      text_name: "MACF001",
+      dtm_timestamp: "2026-10-29T12:02:00Z",
+    })
+    expect(macdPackNumbersNewestFirst([older, newerUnknown, macf])).toEqual(["199", "001"])
+  })
+
   it("uses the most recent MACD redirect that has a confirmed pack", () => {
     const older = redirect({
       int_id: 1,

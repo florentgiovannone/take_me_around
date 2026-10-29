@@ -4,6 +4,8 @@ import path from "node:path"
 import type { ClientRequest } from "node:http"
 import react from "@vitejs/plugin-react"
 import { defineConfig, loadEnv } from "vite"
+import { createAdminGateMiddleware } from "./src/adminGateDevMiddleware"
+import { createRegistrationsReadMiddleware } from "./src/registrationsReadDevMiddleware"
 
 export default defineConfig(({ mode }) => {
   const fileEnv = loadEnv(mode, process.cwd(), "")
@@ -32,11 +34,32 @@ export default defineConfig(({ mode }) => {
     fileEnv.VITE_DASHBOARD_PASSWORD ||
     ""
   ).trim()
+  const adminDashboardPassword = (
+    process.env.ADMIN_DASHBOARD_PASSWORD ||
+    fileEnv.ADMIN_DASHBOARD_PASSWORD ||
+    ""
+  ).trim()
+  const registrationsReadKey = (
+    process.env.REGISTRATIONS_READ_KEY ||
+    fileEnv.REGISTRATIONS_READ_KEY ||
+    ""
+  ).trim()
 
   const apiProxy = {
     "/api": {
       target: apiTarget,
       changeOrigin: true,
+      bypass(req: { url?: string }) {
+        const path = req.url?.split("?")[0]
+        if (
+          path === "/api/admin-session" ||
+          path === "/api/admin/registrations" ||
+          path === "/api/pack-registration"
+        ) {
+          return req.url
+        }
+        return null
+      },
       configure: (proxy: { on: (event: string, fn: (proxyReq: ClientRequest) => void) => void }) => {
         proxy.on("proxyReq", (proxyReq) => {
           if (dashboardPassword) {
@@ -69,6 +92,29 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
+      {
+        name: "admin-dashboard-gate",
+        configureServer(server) {
+          server.middlewares.use(createAdminGateMiddleware(adminDashboardPassword))
+          server.middlewares.use(
+            createRegistrationsReadMiddleware({
+              adminPassword: adminDashboardPassword,
+              registrationBase,
+              readKey: registrationsReadKey,
+            })
+          )
+        },
+        configurePreviewServer(server) {
+          server.middlewares.use(createAdminGateMiddleware(adminDashboardPassword))
+          server.middlewares.use(
+            createRegistrationsReadMiddleware({
+              adminPassword: adminDashboardPassword,
+              registrationBase,
+              readKey: registrationsReadKey,
+            })
+          )
+        },
+      },
       {
         name: "netlify-redirects",
         closeBundle() {
