@@ -4,6 +4,7 @@ import { BrandHeader } from "@tma/brand"
 import { BIRMINGHAM_CONFERENCE_ARTWORKS } from "@tma/dashboard-scope"
 import DashboardPage from "./pages/DashboardPage"
 import IndexPage from "./pages/IndexPage"
+import LatestScanPage from "./pages/LatestScanPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import RegisterInterestPage from "./pages/RegisterInterestPage"
 import { REGISTRATION_PATH } from "./registrationFlow"
@@ -16,6 +17,7 @@ function PageTitle() {
     const titles: Record<string, string> = {
       "/": "Take Me Around",
       "/allpages": "All Pages",
+      "/latest": "Latest scan",
       "/dashboard": "Dashboard",
       "/admindashboard": "Admin dashboard",
       [REGISTRATION_PATH]: "Register interest",
@@ -51,6 +53,9 @@ function AllPages() {
           <Link to="/dashboard">Go to Dashboard page</Link>
         </p>
         <p>
+          <Link to="/latest">Go to Latest scan page</Link>
+        </p>
+        <p>
           <Link to={REGISTRATION_PATH}>Go to Register interest page</Link>
         </p>
       </main>
@@ -65,6 +70,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<IndexPage />} />
         <Route path="/allpages" element={<AllPages />} />
+        <Route path="/latest" element={<LatestScanPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route
           path="/admindashboard"
