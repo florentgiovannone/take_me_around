@@ -8,6 +8,7 @@ import {
   macdPackNumbersNewestFirst,
   applyContactPrefill,
   contactPrefillFromRegistration,
+  latestBoothArtwork,
   latestConfirmedMacdRegistration,
   nextContactPrefillState,
   packNumberFromMacdTag,
@@ -343,5 +344,73 @@ describe("filterLogsByUtcDay", () => {
 
   it("returns every log when no range is selected", () => {
     expect(filterLogsByUtcDay([first, second], { from: null, to: null })).toEqual([first, second])
+  })
+})
+
+describe("latestBoothArtwork", () => {
+  it("returns the newest redirected booth tag and canonicalizes MACTGB99", () => {
+    const olderStar = redirect({
+      int_id: 1,
+      text_name: "MACTSOB100",
+      dtm_timestamp: "2026-11-01T12:00:00Z",
+    })
+    const newerGolden = redirect({
+      int_id: 2,
+      text_name: "MACTGB99",
+      dtm_timestamp: "2026-11-01T12:01:00Z",
+      txt_message: "https://takemearound.museum/the-golden-boys",
+    })
+    expect(latestBoothArtwork([olderStar, newerGolden])).toEqual({
+      code: "MACTGB099",
+      title: "The Golden Boys",
+      url: "https://takemearound.museum/the-golden-boys",
+    })
+    expect(latestBoothArtwork([olderStar])).toEqual({
+      code: "MACTSOB100",
+      title: "The Star of Betlehem",
+      url: "https://takemearound.gallery/the-star-of-bethlehem",
+    })
+  })
+
+  it("reads the code from txt_message when text_name is not a booth tag", () => {
+    const fromMessage = redirect({
+      int_id: 1,
+      text_name: "The Star of Betlehem",
+      txt_message: "mactsob-100",
+    })
+    expect(latestBoothArtwork([fromMessage])?.code).toBe("MACTSOB100")
+  })
+
+  it("ignores other tags, non-redirects, and missing timestamps", () => {
+    const otherStar = redirect({ int_id: 1, text_name: "MACTSOB001" })
+    const macd = redirect({ int_id: 2, text_name: "MACD001" })
+    const seen = redirect({
+      int_id: 3,
+      text_name: "MACTSOB100",
+      txt_message_type: "SEEN",
+    })
+    const untimed = redirect({
+      int_id: 4,
+      text_name: "MACTGB099",
+      dtm_timestamp: "",
+    })
+    expect(latestBoothArtwork([otherStar, macd, seen, untimed])).toBeNull()
+  })
+
+  it("returns the same artwork URL when the newest booth tag has not changed", () => {
+    const first = redirect({
+      int_id: 1,
+      text_name: "MACTSOB100",
+      dtm_timestamp: "2026-11-01T12:00:00Z",
+    })
+    const sameAgain = redirect({
+      int_id: 2,
+      text_name: "MACTSOB100",
+      dtm_timestamp: "2026-11-01T12:02:00Z",
+    })
+    const firstMatch = latestBoothArtwork([first])
+    const secondMatch = latestBoothArtwork([first, sameAgain])
+    expect(firstMatch?.url).toBe(secondMatch?.url)
+    expect(firstMatch?.url).toBe("https://takemearound.gallery/the-star-of-bethlehem")
   })
 })

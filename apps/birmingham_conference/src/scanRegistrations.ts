@@ -1,5 +1,5 @@
 import { canonicalBirminghamTagName } from "@tma/config"
-import { parseLogTimestampGmt, type PoiseLog } from "@tma/dashboard-scope"
+import { BIRMINGHAM_CONFERENCE_ARTWORKS, parseLogTimestampGmt, type PoiseLog } from "@tma/dashboard-scope"
 
 export const ADMIN_REGISTRATIONS_PATH = "/api/admin/registrations"
 export const PACK_REGISTRATION_PATH = "/api/pack-registration"
@@ -187,6 +187,36 @@ export function nextContactPrefillState(args: {
 function timestampMs(value: string | null | undefined): number {
   const ms = Date.parse(value ?? "")
   return Number.isNaN(ms) ? 0 : ms
+}
+
+export type BoothArtwork = {
+  code: string
+  title: string
+  url: string
+}
+
+function boothArtworkForCode(code: string): BoothArtwork | null {
+  const artwork =
+    code === "MACTSOB100"
+      ? BIRMINGHAM_CONFERENCE_ARTWORKS.find((item) => item.slug === "the-star-of-betlehem")
+      : code === "MACTGB099"
+        ? BIRMINGHAM_CONFERENCE_ARTWORKS.find((item) => item.slug === "the-golden-boys")
+        : undefined
+  return artwork ? { code, title: artwork.title, url: artwork.url } : null
+}
+
+export function latestBoothArtwork(logs: PoiseLog[]): BoothArtwork | null {
+  const redirects = logs
+    .filter((log) => (log.txt_message_type ?? "").trim().toUpperCase() === "REDIRECTED")
+    .filter((log) => timestampMs(log.dtm_timestamp) > 0)
+    .sort((left, right) => timestampMs(right.dtm_timestamp) - timestampMs(left.dtm_timestamp))
+  for (const log of redirects) {
+    const code =
+      canonicalBirminghamTagName(log.text_name) ?? canonicalBirminghamTagName(log.txt_message)
+    const artwork = code ? boothArtworkForCode(code) : null
+    if (artwork) return artwork
+  }
+  return null
 }
 
 export function macdPackNumbersNewestFirst(logs: PoiseLog[]): string[] {
