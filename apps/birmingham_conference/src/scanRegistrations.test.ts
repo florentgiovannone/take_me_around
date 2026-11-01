@@ -54,9 +54,23 @@ describe("packNumberFromMacdTag", () => {
     expect(packNumberFromMacdTag("MACD100")).toBe("100")
   })
 
+  it("maps paired Star of Betlehem slates to the matching MACD pack", () => {
+    expect(packNumberFromMacdTag("MACTSOB001")).toBe("001")
+    expect(packNumberFromMacdTag("mactsob-1")).toBe("001")
+    expect(packNumberFromMacdTag("MACTSOB050")).toBe("050")
+    expect(packNumberFromMacdTag("MACTSOB100")).toBe("100")
+  })
+
+  it("maps paired Golden Boys slates to MACD packs 101-200", () => {
+    expect(packNumberFromMacdTag("MACTGB001")).toBe("101")
+    expect(packNumberFromMacdTag("mactgb-1")).toBe("101")
+    expect(packNumberFromMacdTag("MACTGB050")).toBe("150")
+    expect(packNumberFromMacdTag("MACTGB100")).toBe("200")
+  })
+
   it("does not map other conference prefixes or unknown serials", () => {
     expect(packNumberFromMacdTag("MACF001")).toBeNull()
-    expect(packNumberFromMacdTag("MACTSOB001")).toBeNull()
+    expect(packNumberFromMacdTag("MACTSOB101")).toBeNull()
     expect(packNumberFromMacdTag("MACTGB101")).toBeNull()
     expect(packNumberFromMacdTag("MACD1000")).toBeNull()
     expect(packNumberFromMacdTag("The Star of Betlehem")).toBeNull()
@@ -82,7 +96,15 @@ describe("admin labels and detail fields", () => {
   it("keeps the serial when there is no match and adds the name when there is", () => {
     expect(adminScanLabel("MACD001", undefined)).toBe("MACD001")
     expect(adminScanLabel("MACD001", john)).toBe("MACD001 · John Doe")
+    expect(adminScanLabel("MACTSOB001", john)).toBe("MACTSOB001 · John Doe")
+    expect(adminScanLabel("MACTGB001", john)).toBe("MACTGB001")
     expect(adminScanLabel("MACF001", john)).toBe("MACF001")
+  })
+
+  it("names a Golden Boys slate scan from the paired MACD pack", () => {
+    const ada: ConfirmedRegistration = { ...john, name: "Ada", surname: "Lovelace", packNumber: "101" }
+    expect(adminScanLabel("MACTGB001", ada)).toBe("MACTGB001 · Ada Lovelace")
+    expect(adminScanLabel("MACD101", ada)).toBe("MACD101 · Ada Lovelace")
   })
 
   it("formats phone like the registration admin list", () => {
@@ -195,6 +217,21 @@ describe("latestConfirmedMacdRegistration", () => {
       dtm_timestamp: "2026-10-29T12:02:00Z",
     })
     expect(macdPackNumbersNewestFirst([older, newerUnknown, macf])).toEqual(["199", "001"])
+  })
+
+  it("treats paired artwork slates as the same packs as their dashboard cards", () => {
+    const starSlate = redirect({
+      int_id: 1,
+      text_name: "MACTSOB001",
+      dtm_timestamp: "2026-10-29T12:00:00Z",
+    })
+    const goldenSlate = redirect({
+      int_id: 2,
+      text_name: "MACTGB001",
+      dtm_timestamp: "2026-10-29T12:01:00Z",
+    })
+    expect(macdPackNumbersNewestFirst([starSlate, goldenSlate])).toEqual(["101", "001"])
+    expect(latestConfirmedMacdRegistration([goldenSlate, starSlate], [john])).toEqual(john)
   })
 
   it("uses the most recent MACD redirect that has a confirmed pack", () => {

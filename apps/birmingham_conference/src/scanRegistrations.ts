@@ -32,11 +32,28 @@ function isConfirmedRegistration(value: unknown): value is ConfirmedRegistration
   return PACK_DIGITS.test(asText(row.packNumber)) && asText(row.name) !== "" && asText(row.email) !== ""
 }
 
+function threeDigitPack(serial: number): string | null {
+  if (!Number.isInteger(serial) || serial < 1 || serial > 200) return null
+  return String(serial).padStart(3, "0")
+}
+
+function serialFromCanonical(code: string, prefix: string): number | null {
+  if (!code.startsWith(prefix)) return null
+  const digits = code.slice(prefix.length)
+  if (!PACK_DIGITS.test(digits)) return null
+  return Number(digits)
+}
+
 export function packNumberFromMacdTag(value: string | null | undefined): string | null {
   const code = canonicalBirminghamTagName(value)
-  if (!code?.startsWith("MACD")) return null
-  const digits = code.slice("MACD".length)
-  return PACK_DIGITS.test(digits) ? digits : null
+  if (!code) return null
+  const macd = serialFromCanonical(code, "MACD")
+  if (macd != null) return threeDigitPack(macd)
+  const starSlate = serialFromCanonical(code, "MACTSOB")
+  if (starSlate != null && starSlate <= 100) return threeDigitPack(starSlate)
+  const goldenSlate = serialFromCanonical(code, "MACTGB")
+  if (goldenSlate != null && goldenSlate <= 100) return threeDigitPack(goldenSlate + 100)
+  return null
 }
 
 export function parseConfirmedRegistrations(body: unknown): ConfirmedRegistration[] {
