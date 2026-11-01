@@ -7,13 +7,14 @@ import "../styles/home.css"
 const POLL_INTERVAL_MS = 5000
 const TITLE_SUFFIX = " | Museum Association Conference"
 
-async function fetchScanLogs(): Promise<PoiseLog[] | null> {
+async function fetchScanLogs(signal?: AbortSignal): Promise<PoiseLog[] | null | undefined> {
   try {
-    const response = await fetch("/api/secure/items")
+    const response = await fetch("/api/secure/items", { signal })
     if (!response.ok) return null
     const data = (await response.json()) as PoiseLog[]
     return Array.isArray(data) ? data : null
   } catch {
+    if (signal?.aborted) return undefined
     return null
   }
 }
@@ -33,10 +34,16 @@ export default function LatestScanPage() {
 
   useEffect(() => {
     let cancelled = false
+    let requestSeq = 0
+    let controller: AbortController | null = null
 
     const load = async () => {
-      const logs = await fetchScanLogs()
-      if (cancelled) return
+      controller?.abort()
+      const active = new AbortController()
+      controller = active
+      const seq = ++requestSeq
+      const logs = await fetchScanLogs(active.signal)
+      if (cancelled || seq !== requestSeq || logs === undefined) return
       if (!logs) {
         setRefreshError(true)
         return
@@ -51,6 +58,7 @@ export default function LatestScanPage() {
     }, POLL_INTERVAL_MS)
     return () => {
       cancelled = true
+      controller?.abort()
       clearInterval(interval)
     }
   }, [])
