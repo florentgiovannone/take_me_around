@@ -174,7 +174,7 @@ export function buildActivityVisitDetails(
   } else if (birminghamViewForScope(scope)) {
     const group = birminghamGroup(log, "public")
     details =
-      group?.title === "The Golden Boys · .museum"
+      group?.title === "The Golden Boys"
         ? museum.buildActivityVisitDetails(log)
         : gallery.buildActivityVisitDetails(log)
   } else {

@@ -1,5 +1,5 @@
 import { canonicalBirminghamTagName } from "@tma/config"
-import type { PoiseLog } from "@tma/dashboard-scope"
+import { parseLogTimestampGmt, type PoiseLog } from "@tma/dashboard-scope"
 
 export const ADMIN_REGISTRATIONS_PATH = "/api/admin/registrations"
 export const PACK_REGISTRATION_PATH = "/api/pack-registration"
@@ -42,6 +42,45 @@ function serialFromCanonical(code: string, prefix: string): number | null {
   const digits = code.slice(prefix.length)
   if (!PACK_DIGITS.test(digits)) return null
   return Number(digits)
+}
+
+export function utcDayKey(date: Date): string {
+  const year = date.getUTCFullYear()
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0")
+  const day = String(date.getUTCDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+export function todayUtcDayKey(now = new Date()): string {
+  return utcDayKey(now)
+}
+
+export type UtcDayRange = {
+  from: string | null
+  to: string | null
+}
+
+export function normalizeUtcDayRange(range: UtcDayRange): UtcDayRange {
+  const from = range.from || null
+  const to = range.to || null
+  if (from && to && from > to) return { from: to, to: from }
+  return { from, to }
+}
+
+export function filterLogsByUtcDay<T extends { dtm_timestamp?: string | null }>(
+  logs: T[],
+  range: UtcDayRange
+): T[] {
+  const { from, to } = normalizeUtcDayRange(range)
+  if (!from && !to) return logs
+  return logs.filter((log) => {
+    const date = parseLogTimestampGmt(log.dtm_timestamp)
+    if (!date) return false
+    const day = utcDayKey(date)
+    if (from && day < from) return false
+    if (to && day > to) return false
+    return true
+  })
 }
 
 export function packNumberFromMacdTag(value: string | null | undefined): string | null {

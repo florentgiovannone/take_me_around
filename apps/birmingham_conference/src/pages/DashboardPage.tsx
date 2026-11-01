@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react"
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react"
 import {
   DashboardAboutLinks,
   DashboardActivityPanel,
@@ -25,6 +25,7 @@ import {
   PACK_REGISTRATION_PATH,
   adminScanLabel,
   applyContactPrefill,
+  filterLogsByUtcDay,
   latestConfirmedMacdRegistration,
   macdPackNumbersNewestFirst,
   packNumberFromMacdTag,
@@ -34,6 +35,7 @@ import {
   registrationForPack,
   registrationFromCache,
   rowsFromPackCache,
+  todayUtcDayKey,
   type ConfirmedRegistration,
   type PackLookupCache,
 } from "../scanRegistrations"
@@ -115,10 +117,16 @@ export default function DashboardPage({
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [contactOpen, setContactOpen] = useState(false)
+  const [fromDay, setFromDay] = useState<string | null>(() => todayUtcDayKey())
+  const [toDay, setToDay] = useState<string | null>(() => todayUtcDayKey())
   const contactRef = useRef<HTMLElement>(null)
   const contactPrefillAppliedRef = useRef(false)
   const packLookupInFlightRef = useRef(new Set<string>())
-  const macdPackKey = macdPackNumbersNewestFirst(logs).join(",")
+  const visibleLogs = useMemo(
+    () => filterLogsByUtcDay(logs, { from: fromDay, to: toDay }),
+    [logs, fromDay, toDay]
+  )
+  const macdPackKey = macdPackNumbersNewestFirst(visibleLogs).join(",")
 
   const loadLogs = async (showLoading: boolean) => {
     if (showLoading) setLoading(true)
@@ -192,11 +200,11 @@ export default function DashboardPage({
       return
     }
     if (!showContact || contactPrefillAppliedRef.current) return
-    const match = latestConfirmedMacdRegistration(logs, rowsFromPackCache(packCache))
+    const match = latestConfirmedMacdRegistration(visibleLogs, rowsFromPackCache(packCache))
     if (!match) return
     contactPrefillAppliedRef.current = true
     setForm((current) => applyContactPrefill(current, match))
-  }, [showContact, contactOpen, logs, packCache])
+  }, [showContact, contactOpen, visibleLogs, packCache])
 
   function registrationForTitle(title: string): ConfirmedRegistration | undefined {
     const pack = packNumberFromMacdTag(title)
@@ -275,6 +283,40 @@ export default function DashboardPage({
           <h5 className="tma-main-dashboard-eyebrow">Take Me Around · Analytics</h5>
           <h1 className="tma-page-title tma-main-dashboard-title">{title}</h1>
           <p className="tma-page-subtitle tma-main-dashboard-subtitle">{subtitle}</p>
+          <div className="birmingham-day-filter">
+            <label htmlFor="birmingham-day-filter-from">
+              From
+              <input
+                id="birmingham-day-filter-from"
+                type="date"
+                value={fromDay ?? ""}
+                max={toDay ?? todayUtcDayKey()}
+                onChange={(event) => setFromDay(event.target.value || null)}
+              />
+            </label>
+            <label htmlFor="birmingham-day-filter-to">
+              To
+              <input
+                id="birmingham-day-filter-to"
+                type="date"
+                value={toDay ?? ""}
+                min={fromDay ?? undefined}
+                max={todayUtcDayKey()}
+                onChange={(event) => setToDay(event.target.value || null)}
+              />
+            </label>
+            {fromDay || toDay ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setFromDay(null)
+                  setToDay(null)
+                }}
+              >
+                All days
+              </button>
+            ) : null}
+          </div>
         </div>
         {isAdmin ? (
           <form className="birmingham-admin-logout" method="post" action="/admindashboard">
@@ -305,11 +347,11 @@ export default function DashboardPage({
               : undefined
           }
         >
-          {!loading && activeTab === "activity" && <DashboardActivityPanel logs={logs} />}
-          {!loading && activeTab === "counts" && <DashboardCountsPanel logs={logs} />}
-          {!loading && activeTab === "overview" && <DashboardOverviewPanel logs={logs} />}
-          {!loading && activeTab === "audience" && <DashboardAudiencePanel logs={logs} />}
-          {!loading && activeTab === "sar" && <DashboardSarTimelinePanel logs={logs} />}
+          {!loading && activeTab === "activity" && <DashboardActivityPanel logs={visibleLogs} />}
+          {!loading && activeTab === "counts" && <DashboardCountsPanel logs={visibleLogs} />}
+          {!loading && activeTab === "overview" && <DashboardOverviewPanel logs={visibleLogs} />}
+          {!loading && activeTab === "audience" && <DashboardAudiencePanel logs={visibleLogs} />}
+          {!loading && activeTab === "sar" && <DashboardSarTimelinePanel logs={visibleLogs} />}
         </SiteScopeProvider>
         {showContact && contactOpen && (
           <section className="tma-analytics-card birmingham-contact" ref={contactRef}>

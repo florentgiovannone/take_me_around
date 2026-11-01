@@ -9,7 +9,7 @@ const ARTWORKS = [
     host: "takemearound.gallery",
     path: "/the-star-of-bethlehem",
     title: "The Star of Betlehem",
-    dashboardTitle: "The Star of Betlehem · .gallery",
+    dashboardTitle: "The Star of Betlehem",
     domainLabel: ".gallery",
   },
   {
@@ -17,7 +17,7 @@ const ARTWORKS = [
     host: "takemearound.museum",
     path: "/the-golden-boys",
     title: "The Golden Boys",
-    dashboardTitle: "The Golden Boys · .museum",
+    dashboardTitle: "The Golden Boys",
     domainLabel: ".museum",
   },
 ] as const

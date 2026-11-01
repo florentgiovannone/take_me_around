@@ -108,7 +108,7 @@ describe("birmingham_conference scope", () => {
       )
     ).toEqual([2, 5])
     expect(buildActivityEntries([star], "birmingham_conference")[0]?.artworkTitle).toBe(
-      "The Star of Betlehem · .gallery"
+      "The Star of Betlehem"
     )
     expect(getGalleryLogs([star])).toEqual([])
     expect(getMuseumLogs([star])).toEqual([])

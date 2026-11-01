@@ -4,6 +4,7 @@ import {
   ADMIN_REGISTRATIONS_PATH,
   PACK_REGISTRATION_PATH,
   adminScanLabel,
+  filterLogsByUtcDay,
   macdPackNumbersNewestFirst,
   applyContactPrefill,
   contactPrefillFromRegistration,
@@ -300,5 +301,47 @@ describe("pack cache rows", () => {
     expect(registrationFromCache(cache, "001")).toEqual(john)
     expect(registrationFromCache(cache, "199")).toBeUndefined()
     expect(registrationFromCache(cache, "002")).toBeUndefined()
+  })
+})
+
+describe("filterLogsByUtcDay", () => {
+  const first = redirect({
+    int_id: 1,
+    text_name: "MACD001",
+    dtm_timestamp: "2026-11-01T20:09:00.000Z",
+  })
+  const second = redirect({
+    int_id: 2,
+    text_name: "MACD002",
+    dtm_timestamp: "2026-10-31T23:00:00.000Z",
+  })
+  const third = redirect({
+    int_id: 3,
+    text_name: "MACD003",
+    dtm_timestamp: "2026-10-30T12:00:00.000Z",
+  })
+
+  it("keeps only logs on the selected GMT calendar day", () => {
+    expect(filterLogsByUtcDay([first, second], { from: "2026-11-01", to: "2026-11-01" }).map((log) => log.int_id)).toEqual([1])
+    expect(filterLogsByUtcDay([first, second], { from: "2026-10-31", to: "2026-10-31" }).map((log) => log.int_id)).toEqual([2])
+  })
+
+  it("keeps logs from and to inclusive GMT calendar days", () => {
+    expect(
+      filterLogsByUtcDay([first, second, third], { from: "2026-10-31", to: "2026-11-01" }).map((log) => log.int_id)
+    ).toEqual([1, 2])
+    expect(
+      filterLogsByUtcDay([first, second, third], { from: "2026-10-30", to: "2026-10-31" }).map((log) => log.int_id)
+    ).toEqual([2, 3])
+  })
+
+  it("swaps an inverted range so from and to still include the days in between", () => {
+    expect(
+      filterLogsByUtcDay([first, second, third], { from: "2026-11-01", to: "2026-10-31" }).map((log) => log.int_id)
+    ).toEqual([1, 2])
+  })
+
+  it("returns every log when no range is selected", () => {
+    expect(filterLogsByUtcDay([first, second], { from: null, to: null })).toEqual([first, second])
   })
 })

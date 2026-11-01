@@ -109,22 +109,22 @@ describe("birmingham conference urls", () => {
     expect(getMuseumLogs(logs)).toEqual([])
   })
 
-  it("names activity rows and count groups with the domain title", () => {
+  it("names activity rows and count groups with the artwork title", () => {
     const logs = [
       log(1, star.url),
       { ...log(2, golden.url), dtm_timestamp: "2026-10-19T15:05:00.000Z" },
     ]
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
-      "The Golden Boys · .museum",
-      "The Star of Betlehem · .gallery",
+      "The Golden Boys",
+      "The Star of Betlehem",
     ])
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.link)).toEqual([
       golden.url,
       star.url,
     ])
     expect(buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title).sort()).toEqual([
-      "The Golden Boys · .museum",
-      "The Star of Betlehem · .gallery",
+      "The Golden Boys",
+      "The Star of Betlehem",
     ])
   })
 
@@ -132,7 +132,7 @@ describe("birmingham conference urls", () => {
     const logs = [log(1, star.url), log(2, star.url), log(3, "https://takemearound.gallery/mona-lisa")]
     const overview = buildBirminghamOverviewAnalytics(logs)
     expect(overview.totalTaps).toBe(2)
-    expect(overview.topTagName).toBe("The Star of Betlehem · .gallery")
+    expect(overview.topTagName).toBe("The Star of Betlehem")
     const week = buildBirminghamWeeklySeries(
       [{ ...log(4, golden.url), dtm_timestamp: new Date().toISOString() }],
       0
@@ -152,16 +152,16 @@ describe("birmingham public vs admin grouping", () => {
     )
     expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toHaveLength(100)
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual(
-      Array(100).fill("The Star of Betlehem · .gallery")
+      Array(100).fill("The Star of Betlehem")
     )
     expect(buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)).toEqual([
-      "The Star of Betlehem · .gallery",
-      "The Golden Boys · .museum",
+      "The Star of Betlehem",
+      "The Golden Boys",
     ])
     expect(buildBirminghamTrackedArtworkScanGroups(logs)[0]?.scans).toHaveLength(100)
     expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(100)
     expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(1)
-    expect(buildBirminghamOverviewAnalytics(logs).topTagName).toBe("The Star of Betlehem · .gallery")
+    expect(buildBirminghamOverviewAnalytics(logs).topTagName).toBe("The Star of Betlehem")
   })
 
   it("lists each MACTSOB serial on the admin dashboard", () => {
@@ -192,14 +192,14 @@ describe("birmingham public vs admin grouping", () => {
     ]
     expect(getBirminghamConferenceLogs(logs).map((row) => row.int_id)).toEqual([1, 2, 7, 8])
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
-      "The Star of Betlehem · .gallery",
-      "The Star of Betlehem · .gallery",
-      "The Golden Boys · .museum",
-      "The Golden Boys · .museum",
+      "The Star of Betlehem",
+      "The Star of Betlehem",
+      "The Golden Boys",
+      "The Golden Boys",
     ])
     expect(buildBirminghamTrackedArtworkScanGroups(logs).map((group) => group.title)).toEqual([
-      "The Star of Betlehem · .gallery",
-      "The Golden Boys · .museum",
+      "The Star of Betlehem",
+      "The Golden Boys",
     ])
     expect(buildBirminghamOverviewAnalytics(logs).totalTaps).toBe(4)
     expect(buildBirminghamOverviewAnalytics(logs).activeTags).toBe(2)
@@ -248,9 +248,9 @@ describe("birmingham live sessions", () => {
     ]
     const plot = buildBirminghamSarTimelinePlot(logs)
     expect(plot?.sars).toEqual(["sar-user-1"])
-    expect(plot?.points[0]?.artworkTitle).toBe("The Star of Betlehem · .gallery")
+    expect(plot?.points[0]?.artworkTitle).toBe("The Star of Betlehem")
     expect(buildBirminghamActivityEntries(logs).map((entry) => entry.artworkTitle)).toEqual([
-      "The Star of Betlehem · .gallery",
+      "The Star of Betlehem",
     ])
     expect(buildBirminghamSarTimelineRowMetaMap(logs).get("sar-user-1")?.visitorNumber).toBe(
       "SAR00000001"
