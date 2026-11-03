@@ -6,6 +6,7 @@ import DashboardPage from "./pages/DashboardPage"
 import IndexPage from "./pages/IndexPage"
 import LatestScanPage from "./pages/LatestScanPage"
 import NotFoundPage from "./pages/NotFoundPage"
+import PackClaimPage from "./pages/PackClaimPage"
 import RegisterInterestPage from "./pages/RegisterInterestPage"
 import { REGISTRATION_PATH } from "./registrationFlow"
 import "./styles/home.css"
@@ -13,6 +14,10 @@ import "./styles/home.css"
 function PageTitle() {
   const { pathname } = useLocation()
   useEffect(() => {
+    if (pathname.startsWith("/pack/")) {
+      document.title = "Claim pack | Museum Association Conference"
+      return
+    }
     const artwork = BIRMINGHAM_CONFERENCE_ARTWORKS.find((item) => item.path === pathname)
     const titles: Record<string, string> = {
       "/": "Take Me Around",
@@ -88,6 +93,7 @@ export default function App() {
           path="/the-star-of-betlehem"
           element={<ExternalRedirect href="https://takemearound.gallery/the-star-of-bethlehem" />}
         />
+        <Route path="/pack/:code" element={<PackClaimPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

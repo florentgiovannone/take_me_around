@@ -6,6 +6,7 @@ import {
   submitPackClaim,
   type PackClaimForm,
 } from "./packClaim"
+import { CHECK_INBOX, outcomeFromResponse } from "./registrationFlow"
 
 const valid: PackClaimForm = {
   name: "Ada",
@@ -60,5 +61,12 @@ describe("packClaimPayload", () => {
     })
     expect(PACK_CLAIM_SUBMIT).toBe("View the full experience")
     expect(PACK_CLAIM_INTRO).toContain("confirm your email address")
+  })
+})
+
+it("keeps the check-inbox outcome after a successful claim", () => {
+  expect(outcomeFromResponse(201, { ok: true })).toEqual({
+    type: "sent",
+    message: CHECK_INBOX,
   })
 })
