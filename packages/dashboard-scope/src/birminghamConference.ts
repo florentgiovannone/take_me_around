@@ -319,6 +319,24 @@ export function buildBirminghamOverviewAnalytics(
   }
 }
 
+function acceptLanguageFromSeen(log: PoiseLog): string | null {
+  try {
+    const payload = JSON.parse(log.txt_message ?? "") as {
+      HTTP_ACCEPT_LANGUAGE?: string
+      ACCEPT_LANGUAGE?: string
+      accept_language?: string
+    }
+    return (
+      payload.HTTP_ACCEPT_LANGUAGE?.trim() ||
+      payload.ACCEPT_LANGUAGE?.trim() ||
+      payload.accept_language?.trim() ||
+      null
+    )
+  } catch {
+    return null
+  }
+}
+
 export function buildBirminghamAudienceAnalytics(
   logs: PoiseLog[],
   view: BirminghamDashboardView = "public"
@@ -333,10 +351,65 @@ export function buildBirminghamAudienceAnalytics(
     const weekday = date.getDay()
     weekdayCounts[weekday === 0 ? 6 : weekday - 1] += 1
   }
+
+  const deviceCounts: Record<gallery.DeviceKind, number> = {
+    mobile: 0,
+    desktop: 0,
+    tablet: 0,
+  }
+  const browserCounts: Record<gallery.BrowserKind, number> = {
+    Chrome: 0,
+    Safari: 0,
+    Firefox: 0,
+    Edge: 0,
+    Other: 0,
+  }
+  const osCounts: Record<gallery.OperatingSystemKind, number> = {
+    iOS: 0,
+    Android: 0,
+    Windows: 0,
+    macOS: 0,
+    "Chrome OS": 0,
+    Linux: 0,
+    "Windows Phone": 0,
+    Other: 0,
+  }
+  const languageCounts = new Map<string, number>()
+
+  for (const seen of pairSeenWithRedirects(logs, view).values()) {
+    const userAgent = gallery.getUserAgentFromLog(seen)
+    if (!userAgent) continue
+    deviceCounts[gallery.parseDevice(userAgent)] += 1
+    browserCounts[gallery.parseBrowser(userAgent)] += 1
+    osCounts[gallery.parseOperatingSystem(userAgent)] += 1
+    for (const language of gallery.parseAcceptLanguages(acceptLanguageFromSeen(seen))) {
+      languageCounts.set(language, (languageCounts.get(language) ?? 0) + 1)
+    }
+  }
+
+  const deviceTotal = Object.values(deviceCounts).reduce((sum, count) => sum + count, 0)
+  const browserTotal = Object.values(browserCounts).reduce((sum, count) => sum + count, 0)
+  const osTotal = Object.values(osCounts).reduce((sum, count) => sum + count, 0)
+  const languageVisitTotal = deviceTotal
   const hourlyMax = Math.max(...hourlyCounts, 1)
   const weekdayMax = Math.max(...weekdayCounts, 1)
+  const toPercent = (count: number, total: number) =>
+    total > 0 ? Math.round((count / total) * 100) : 0
+
   return {
     ...base,
+    devices: (["mobile", "desktop", "tablet"] as const).map((kind) => ({
+      kind,
+      count: deviceCounts[kind],
+      percent: toPercent(deviceCounts[kind], deviceTotal),
+    })),
+    browsers: (["Chrome", "Safari", "Firefox", "Edge", "Other"] as const)
+      .filter((kind) => kind !== "Other" || browserCounts.Other > 0)
+      .map((kind) => ({
+        kind,
+        count: browserCounts[kind],
+        percent: toPercent(browserCounts[kind], browserTotal),
+      })),
     hourly: hourlyCounts.map((count, hour) => ({
       hour,
       count,
@@ -348,7 +421,42 @@ export function buildBirminghamAudienceAnalytics(
       count,
       intensity: count / weekdayMax,
     })),
-    hasDeviceData: false,
+    hasDeviceData: deviceTotal > 0,
+    deviceInfo: (
+      [
+        "iOS",
+        "Android",
+        "Windows",
+        "macOS",
+        "Chrome OS",
+        "Linux",
+        "Windows Phone",
+        "Other",
+      ] as const
+    )
+      .filter((kind) => osCounts[kind] > 0)
+      .map((kind) => ({
+        label: kind,
+        count: osCounts[kind],
+        percent: toPercent(osCounts[kind], osTotal),
+      })),
+    languages: [
+      ...gallery.FEATURED_LANGUAGES.map((label) => ({
+        label,
+        count: languageCounts.get(label) ?? 0,
+        percent: toPercent(languageCounts.get(label) ?? 0, languageVisitTotal),
+      })),
+      ...Array.from(languageCounts.entries())
+        .filter(([label]) => !(gallery.FEATURED_LANGUAGES as readonly string[]).includes(label))
+        .sort((a, b) => b[1] - a[1])
+        .map(([label, count]) => ({
+          label,
+          count,
+          percent: toPercent(count, languageVisitTotal),
+        })),
+    ],
+    hasDeviceInfoData: osTotal > 0,
+    hasLanguageData: languageVisitTotal > 0 && languageCounts.size > 0,
   }
 }
 

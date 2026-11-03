@@ -32,15 +32,23 @@ function log(id: number, message: string, name = "tag") {
 function seen(
   id: number,
   sar: string,
-  extras: { visitor_number?: string | null; dtm_timestamp?: string } = {}
+  extras: {
+    visitor_number?: string | null
+    dtm_timestamp?: string
+    userAgent?: string
+    acceptLanguage?: string
+  } = {}
 ) {
+  const payload: Record<string, string> = { HTTP_COOKIE: `sar=${sar}` }
+  if (extras.userAgent) payload.HTTP_USER_AGENT = extras.userAgent
+  if (extras.acceptLanguage) payload.HTTP_ACCEPT_LANGUAGE = extras.acceptLanguage
   return {
     int_id: id,
     dtm_timestamp: extras.dtm_timestamp ?? "2026-10-19T15:04:00.200Z",
     txt_uid: null,
     text_name: "",
     txt_message_type: "SEEN",
-    txt_message: JSON.stringify({ HTTP_COOKIE: `sar=${sar}` }),
+    txt_message: JSON.stringify(payload),
     visitor_number: extras.visitor_number ?? null,
   }
 }
@@ -142,6 +150,36 @@ describe("birmingham conference urls", () => {
     expect(audience.hourly.reduce((sum, point) => sum + point.count, 0)).toBe(2)
     expect(audience.hasDeviceData).toBe(false)
     expect(buildBirminghamSarTimelinePlot(logs)).toBeNull()
+  })
+
+  it("reads device, browser, and language from the SEEN paired with a conference redirect", () => {
+    const logs = [
+      log(10, star.url, "MACTSOB100"),
+      seen(11, "sar-user-1", {
+        userAgent:
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+        acceptLanguage: "en-GB,en;q=0.9",
+      }),
+      log(20, golden.url, "MACTGB099"),
+      seen(21, "sar-user-2", {
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        acceptLanguage: "fr-FR,fr;q=0.9",
+        dtm_timestamp: "2026-10-19T15:04:01.200Z",
+      }),
+    ]
+    const audience = buildBirminghamAudienceAnalytics(logs)
+    expect(audience.hasDeviceData).toBe(true)
+    expect(audience.hasLanguageData).toBe(true)
+    expect(audience.hasDeviceInfoData).toBe(true)
+    expect(audience.devices.find((row) => row.kind === "mobile")?.count).toBe(1)
+    expect(audience.devices.find((row) => row.kind === "desktop")?.count).toBe(1)
+    expect(audience.browsers.find((row) => row.kind === "Safari")?.count).toBe(1)
+    expect(audience.browsers.find((row) => row.kind === "Chrome")?.count).toBe(1)
+    expect(audience.deviceInfo.find((row) => row.label === "iOS")?.count).toBe(1)
+    expect(audience.deviceInfo.find((row) => row.label === "Windows")?.count).toBe(1)
+    expect(audience.languages.find((row) => row.label === "English")?.count).toBe(1)
+    expect(audience.languages.find((row) => row.label === "French")?.count).toBe(1)
   })
 })
 
