@@ -11,6 +11,7 @@ import {
   latestBoothArtwork,
   latestConfirmedMacdRegistration,
   nextContactPrefillState,
+  packClaimFromTag,
   packNumberFromMacdTag,
   packsNeedingLookup,
   parseConfirmedRegistrations,
@@ -439,5 +440,41 @@ describe("latestBoothArtwork", () => {
     const secondMatch = latestBoothArtwork([first, sameAgain])
     expect(firstMatch?.url).toBe(secondMatch?.url)
     expect(firstMatch?.url).toBe("https://takemearound.gallery/the-star-of-bethlehem")
+  })
+})
+
+describe("packClaimFromTag", () => {
+  it("maps MACTSOB, MACTGB, and MACD serials to pack, artwork, and destination", () => {
+    expect(packClaimFromTag("mactsob-14")).toEqual({
+      tagCode: "MACTSOB014",
+      packNumber: "014",
+      artworkSlug: "the-star-of-betlehem",
+      destinationUrl: "https://takemearound.gallery/the-star-of-bethlehem",
+      kind: "artwork",
+    })
+    expect(packClaimFromTag("MACTGB3")).toEqual({
+      tagCode: "MACTGB003",
+      packNumber: "103",
+      artworkSlug: "the-golden-boys",
+      destinationUrl: "https://takemearound.museum/the-golden-boys",
+      kind: "artwork",
+    })
+    expect(packClaimFromTag("MACD150")).toEqual({
+      tagCode: "MACD150",
+      packNumber: "150",
+      artworkSlug: "the-golden-boys",
+      destinationUrl: "/dashboard",
+      kind: "dashboard",
+    })
+    expect(packClaimFromTag("MACD001")?.kind).toBe("dashboard")
+    expect(packClaimFromTag("MACD001")?.artworkSlug).toBe("the-star-of-betlehem")
+  })
+
+  it("rejects MACF, out-of-range serials, and unknown codes", () => {
+    expect(packClaimFromTag("MACF001")).toBeNull()
+    expect(packClaimFromTag("MACTSOB101")).toBeNull()
+    expect(packClaimFromTag("MACTGB101")).toBeNull()
+    expect(packClaimFromTag("MACD201")).toBeNull()
+    expect(packClaimFromTag("hello")).toBeNull()
   })
 })
