@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from "react"
+import { createPortal } from "react-dom"
 import { useMediaQuery } from "../hooks/useMediaQuery"
 import "../styles/dashboard-tabs-nav.css"
 
@@ -110,36 +111,40 @@ export default function DashboardTabsNav({
             <p className="tma-dashboard-menu-current">{labelForTab(activeTab, copy)}</p>
           </div>
 
-          {open ? (
-            <button
-              type="button"
-              className="tma-dashboard-menu-backdrop"
-              aria-label={copy.closeMenu}
-              onClick={() => setOpen(false)}
-            />
-          ) : null}
-
-          <div
-            id={panelId}
-            className={`tma-dashboard-menu-panel${open ? " is-open" : ""}`}
-            inert={!open ? true : undefined}
-          >
-            <p className="tma-dashboard-menu-heading">{copy.dashboardViews}</p>
-            <div role="tablist" aria-label={copy.dashboardViews}>
-              {tabs.map((tab) => (
+          {createPortal(
+            <>
+              {open ? (
                 <button
-                  key={tab.id}
                   type="button"
-                  role="tab"
-                  aria-selected={activeTab === tab.id}
-                  className={`tma-dashboard-menu-item${activeTab === tab.id ? " is-active" : ""}`}
-                  onClick={() => selectTab(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
+                  className="tma-dashboard-menu-backdrop"
+                  aria-label={copy.closeMenu}
+                  onClick={() => setOpen(false)}
+                />
+              ) : null}
+              <div
+                id={panelId}
+                className={`tma-dashboard-menu-panel${open ? " is-open" : ""}`}
+                inert={!open ? true : undefined}
+              >
+                <p className="tma-dashboard-menu-heading">{copy.dashboardViews}</p>
+                <div role="tablist" aria-label={copy.dashboardViews}>
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeTab === tab.id}
+                      className={`tma-dashboard-menu-item${activeTab === tab.id ? " is-active" : ""}`}
+                      onClick={() => selectTab(tab.id)}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>,
+            document.body
+          )}
         </>
       ) : (
         <div className="tma-dashboard-tabs tma-dashboard-tabs--wrap" role="tablist">

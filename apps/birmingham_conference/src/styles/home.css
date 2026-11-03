@@ -309,55 +309,27 @@
 .birmingham-pack {
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   background: #f4f0e8;
 }
 
 .birmingham-pack-preview {
-  position: fixed;
-  inset: 0;
+  position: relative;
   z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
   user-select: none;
   background: #f4f0e8;
 }
 
-.birmingham-pack-frame,
-.birmingham-pack-fallback,
 .birmingham-pack-artwork {
-  filter: blur(18px);
-  transform: scale(1.04);
-  transform-origin: center top;
+  pointer-events: none;
 }
 
-.birmingham-pack-frame,
-.birmingham-pack-fallback {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: #f4f0e8;
-}
-
-.birmingham-pack-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.birmingham-pack-fallback-title {
-  margin: 0;
-  max-width: 16ch;
-  color: #0e2347;
-  font-family: "Fraunces", Georgia, serif;
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 560;
-  line-height: 1.1;
-  text-align: center;
+.birmingham-pack-artwork .tma-text-size,
+.birmingham-pack-locked-audio {
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+  user-select: auto;
 }
 
 .birmingham-pack-artwork .tma-brand-hero {
@@ -385,26 +357,142 @@
   text-align: inherit;
 }
 
-.birmingham-pack-audio-hint {
-  margin: 0.65rem 0 0;
+.birmingham-pack-artwork .tma-brand-column p.birmingham-pack-audio-hint {
+  margin: 0.5rem 0 0;
   color: #0e2347;
   font-family: "Outfit", "Avenir Next", sans-serif;
-  font-size: 0.95rem;
+  font-size: 22px;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.35;
   text-align: center;
 }
 
+.birmingham-pack-fade {
+  position: relative;
+  z-index: 1;
+}
+
+.birmingham-pack--artwork .birmingham-pack-fade {
+  margin-top: calc(-8rem - 20px);
+  padding-top: calc(8rem + 20px);
+}
+
+.birmingham-pack--dashboard .birmingham-pack-fade {
+  position: absolute;
+  top: calc(30rem + 200px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.birmingham-pack--dashboard .birmingham-pack-fade::before,
+.birmingham-pack--dashboard .birmingham-pack-fade::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.birmingham-pack--dashboard .birmingham-pack-fade::after {
+  top: calc(-6rem + 20px);
+  height: 14rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 35%,
+    #000 60%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 35%,
+    #000 60%,
+    transparent 100%
+  );
+}
+
+.birmingham-pack--dashboard .birmingham-pack-fade::before {
+  top: 20px;
+  bottom: 0;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(
+    to bottom,
+    rgba(244, 240, 232, 0) 0,
+    rgba(244, 240, 232, 0.12) 10rem,
+    rgba(244, 240, 232, 0.18) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    rgba(0, 0, 0, 0.35) 5rem,
+    rgba(0, 0, 0, 0.75) 9rem,
+    #000 13rem
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    rgba(0, 0, 0, 0.35) 5rem,
+    rgba(0, 0, 0, 0.75) 9rem,
+    #000 13rem
+  );
+}
+
+.birmingham-pack-artwork-copy {
+  filter: blur(16px);
+  user-select: none;
+  pointer-events: none;
+  padding-bottom: 8rem;
+}
+
 .birmingham-pack-scrim {
-  position: fixed;
-  inset: 0;
+  position: relative;
   z-index: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 3rem 1.5rem 2.5rem;
-  overflow: auto;
-  background: rgba(14, 35, 71, 0.28);
+  padding: 1.5rem 1.5rem 2.5rem;
+}
+
+.birmingham-pack--artwork .birmingham-pack-scrim {
+  position: absolute;
+  top: calc(8rem + 20px);
+  right: 0;
+  left: 0;
+  margin-top: 0;
+  padding-top: 0.5rem;
+}
+
+.birmingham-pack--dashboard .birmingham-pack-scrim {
+  position: relative;
+  z-index: 1;
+  padding-top: calc(0.5rem + 50px);
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .birmingham-pack--dashboard .birmingham-pack-scrim {
+    padding-top: calc(0.5rem + 100px);
+  }
+}
+
+.birmingham-pack-dashboard-teaser {
+  pointer-events: auto;
+}
+
+.birmingham-pack-dashboard-teaser .birmingham-contact-open,
+.birmingham-pack-dashboard-teaser .birmingham-contact {
+  display: none;
+}
+
+.birmingham-pack-dashboard-teaser .tma-content {
+  user-select: auto;
 }
 
 .birmingham-pack-modal {

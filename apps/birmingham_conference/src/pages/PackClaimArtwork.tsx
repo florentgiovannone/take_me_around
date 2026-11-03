@@ -28,7 +28,11 @@ function PackClaimLockedAudio() {
           </div>
         </div>
       </button>
-      {hint ? <p className="birmingham-pack-audio-hint">{PACK_CLAIM_AUDIO_HINT}</p> : null}
+      {hint ? (
+        <p className="birmingham-pack-audio-hint" role="alert">
+          {PACK_CLAIM_AUDIO_HINT}
+        </p>
+      ) : null}
     </div>
   )
 }
@@ -77,7 +81,6 @@ export default function PackClaimArtwork({
         <PackClaimLockedAudio />
         <img className="tma-brand-image" src={teaser.imageSrc} alt={teaser.imageAlt} />
       </div>
-      <PackClaimArtworkCopy sections={teaser.sections} />
     </div>
   )
 }

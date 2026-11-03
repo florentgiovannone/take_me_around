@@ -19,7 +19,8 @@ import {
   packClaimFromTag,
   parseConfirmedRegistrations,
 } from "../scanRegistrations"
-import PackClaimArtwork from "./PackClaimArtwork"
+import DashboardPage from "./DashboardPage"
+import PackClaimArtwork, { PackClaimArtworkCopy } from "./PackClaimArtwork"
 import NotFoundPage from "./NotFoundPage"
 import "@tma/brand/brand.css"
 import "../styles/home.css"
@@ -45,7 +46,6 @@ export default function PackClaimPage() {
   const [notice, setNotice] = useState("")
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [frameFailed, setFrameFailed] = useState(false)
   const { scale, choose } = useArtworkTextScale()
 
   useEffect(() => {
@@ -178,29 +178,22 @@ export default function PackClaimPage() {
   }
 
   const teaser = packClaimTeaser(target)
-  const frameSrc = target.kind === "dashboard" ? "/dashboard" : target.destinationUrl
 
   return (
     <div className={`birmingham-pack birmingham-pack--${teaser.kind}`}>
       <div className="birmingham-pack-preview">
         {teaser.kind === "artwork" ? (
           <PackClaimArtwork teaser={teaser} scale={scale} onChooseScale={choose} />
-        ) : frameFailed ? (
-          <div className="birmingham-pack-fallback">
-            <p className="birmingham-pack-fallback-title">{target.artworkTitle}</p>
-          </div>
         ) : (
-          <iframe
-            className="birmingham-pack-frame"
-            title={target.tagCode}
-            src={frameSrc}
-            scrolling="no"
-            onError={() => setFrameFailed(true)}
-          />
+          <div className="birmingham-pack-dashboard-teaser">
+            <DashboardPage />
+          </div>
         )}
       </div>
-      <div className="birmingham-pack-scrim">
-        <section className="birmingham-pack-modal">
+      <div className="birmingham-pack-fade">
+        {teaser.kind === "artwork" ? <PackClaimArtworkCopy sections={teaser.sections} /> : null}
+        <div className="birmingham-pack-scrim">
+          <section className="birmingham-pack-modal">
           <BrandHeader homeHref="#" />
           <p className="birmingham-interest-eyebrow">Museum Association Conference</p>
           <h1>Unlock the full experience</h1>
@@ -267,7 +260,8 @@ export default function PackClaimPage() {
               </button>
             </form>
           )}
-        </section>
+          </section>
+        </div>
       </div>
     </div>
   )
