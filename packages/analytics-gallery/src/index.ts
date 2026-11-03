@@ -1704,9 +1704,8 @@ export function buildAudienceAnalytics(logs: PoiseLog[]) {
     deviceCounts[device] += 1
     browserCounts[browser] += 1
     osCounts[os] += 1
-    for (const language of parseAcceptLanguages(entry.acceptLanguage)) {
-      languageCounts.set(language, (languageCounts.get(language) ?? 0) + 1)
-    }
+    const language = parsePrimaryLanguage(entry.acceptLanguage)
+    languageCounts.set(language, (languageCounts.get(language) ?? 0) + 1)
   }
 
   for (const row of scans) {
@@ -1777,7 +1776,7 @@ export function buildAudienceAnalytics(logs: PoiseLog[]) {
         label,
         count: languageCounts.get(label) ?? 0,
         percent: toPercent(languageCounts.get(label) ?? 0, languageVisitTotal),
-      })),
+      })).filter((row) => row.count > 0),
       ...Array.from(languageCounts.entries())
         .filter(([label]) => !(FEATURED_LANGUAGES as readonly string[]).includes(label))
         .sort((a, b) => b[1] - a[1])

@@ -181,6 +181,31 @@ describe("birmingham conference urls", () => {
     expect(audience.languages.find((row) => row.label === "English")?.count).toBe(1)
     expect(audience.languages.find((row) => row.label === "French")?.count).toBe(1)
   })
+
+  it("counts only the preferred language so percents add to 100%", () => {
+    const logs = [
+      log(10, star.url, "MACTSOB100"),
+      seen(11, "sar-user-1", {
+        userAgent:
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+        acceptLanguage: "en-GB,en;q=0.9,fr;q=0.8",
+      }),
+      log(20, golden.url, "MACTGB099"),
+      seen(21, "sar-user-2", {
+        userAgent:
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        acceptLanguage: "fr-FR,fr;q=0.9,en;q=0.8",
+        dtm_timestamp: "2026-10-19T15:04:01.200Z",
+      }),
+    ]
+    const audience = buildBirminghamAudienceAnalytics(logs)
+    expect(
+      audience.languages.map((row) => ({ label: row.label, count: row.count, percent: row.percent }))
+    ).toEqual([
+      { label: "English", count: 1, percent: 50 },
+      { label: "French", count: 1, percent: 50 },
+    ])
+  })
 })
 
 describe("birmingham public vs admin grouping", () => {

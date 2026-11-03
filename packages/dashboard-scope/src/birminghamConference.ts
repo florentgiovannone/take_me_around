@@ -382,9 +382,8 @@ export function buildBirminghamAudienceAnalytics(
     deviceCounts[gallery.parseDevice(userAgent)] += 1
     browserCounts[gallery.parseBrowser(userAgent)] += 1
     osCounts[gallery.parseOperatingSystem(userAgent)] += 1
-    for (const language of gallery.parseAcceptLanguages(acceptLanguageFromSeen(seen))) {
-      languageCounts.set(language, (languageCounts.get(language) ?? 0) + 1)
-    }
+    const language = gallery.parsePrimaryLanguage(acceptLanguageFromSeen(seen))
+    languageCounts.set(language, (languageCounts.get(language) ?? 0) + 1)
   }
 
   const deviceTotal = Object.values(deviceCounts).reduce((sum, count) => sum + count, 0)
@@ -445,7 +444,7 @@ export function buildBirminghamAudienceAnalytics(
         label,
         count: languageCounts.get(label) ?? 0,
         percent: toPercent(languageCounts.get(label) ?? 0, languageVisitTotal),
-      })),
+      })).filter((row) => row.count > 0),
       ...Array.from(languageCounts.entries())
         .filter(([label]) => !(gallery.FEATURED_LANGUAGES as readonly string[]).includes(label))
         .sort((a, b) => b[1] - a[1])
