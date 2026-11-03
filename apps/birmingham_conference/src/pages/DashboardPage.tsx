@@ -13,12 +13,14 @@ import {
 import type { PoiseLog } from "@tma/dashboard-scope"
 import { readAdminSession } from "../adminSession"
 import { mergeArtworkScans, readArtworkScans } from "../artworkScans"
+import ConsentNotice from "../ConsentNotice"
 import {
   CONTACT_UNAVAILABLE,
   contactOutcomeFromResponse,
   contactPayload,
   validateContactForm,
   type ContactFormErrors,
+  type ContactFormValues,
 } from "../contactForm"
 import { registrationBaseUrl } from "../registrationFlow"
 import {
@@ -84,7 +86,13 @@ function errorMessage(result: Extract<FetchLogsResult, { ok: false }>): string {
   return "Dashboard request failed."
 }
 
-const EMPTY_FORM = { name: "", email: "", organisation: "", message: "" }
+const EMPTY_FORM: ContactFormValues = {
+  name: "",
+  email: "",
+  organisation: "",
+  message: "",
+  consent: false,
+}
 
 type ConferenceDashboardScope = "birmingham_conference" | "birmingham_conference_admin"
 
@@ -411,6 +419,12 @@ export default function DashboardPage({
                     <span className="birmingham-contact-error">{fieldErrors.message}</span>
                   )}
                 </label>
+                <ConsentNotice
+                  checked={form.consent}
+                  error={fieldErrors.consent}
+                  errorClassName="birmingham-contact-error"
+                  onChange={(consent) => setForm({ ...form, consent })}
+                />
                 {notice && <p className="birmingham-contact-error">{notice}</p>}
                 <button type="submit" disabled={submitting}>
                   Send message

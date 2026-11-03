@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest"
 import {
+  PACK_CLAIM_AUDIO_HINT,
+  PACK_CLAIM_CONSENT,
   PACK_CLAIM_INTRO,
   PACK_CLAIM_SUBMIT,
   packClaimPayload,
+  packClaimTeaser,
   submitPackClaim,
   viewAfterPackTaken,
   viewFromPackLookup,
@@ -64,6 +67,10 @@ describe("packClaimPayload", () => {
     })
     expect(PACK_CLAIM_SUBMIT).toBe("View the full experience")
     expect(PACK_CLAIM_INTRO).toContain("confirm your email address")
+    expect(PACK_CLAIM_AUDIO_HINT).toBe("To listen to the audio please fill the form below")
+    expect(PACK_CLAIM_CONSENT).toBe(
+      "If confirmed you agree to your details being stored in accordance with our terms & conditions / privacy policy. Please see the links below."
+    )
   })
 })
 
@@ -89,6 +96,57 @@ const confirmedPack: ConfirmedRegistration = {
   artworkTitle: "The Star of Betlehem",
   packNumber: "014",
 }
+
+describe("packClaimTeaser", () => {
+  it("uses the Star of Betlehem name, photo, and stacked about sections", () => {
+    const teaser = packClaimTeaser({
+      kind: "artwork",
+      artworkSlug: "the-star-of-betlehem",
+      artworkTitle: "The Star of Betlehem",
+    })
+    expect(teaser).toMatchObject({
+      kind: "artwork",
+      title: "The Star of Betlehem",
+      subtitle: "1887–1891 by Edward Burne-Jones",
+      imageSrc: "/the-star-of-betlehem.jpg",
+    })
+    expect(teaser.kind === "artwork" && teaser.sections.map((section) => section.heading)).toEqual([
+      "About the work",
+      "About the artist",
+    ])
+    expect(teaser.kind === "artwork" && teaser.sections).toHaveLength(2)
+  })
+
+  it("uses the Golden Boys name, photo, and stacked about sections", () => {
+    const teaser = packClaimTeaser({
+      kind: "artwork",
+      artworkSlug: "the-golden-boys",
+      artworkTitle: "The Golden Boys",
+    })
+    expect(teaser).toMatchObject({
+      kind: "artwork",
+      title: "The Golden Boys",
+      detail: "Boulton, Watt and Murdoch",
+      subtitle: "1956 by William Bloye",
+      imageSrc: "/the-golden-boys.jpg",
+    })
+    expect(teaser.kind === "artwork" && teaser.sections.map((section) => section.heading)).toEqual([
+      "About the work",
+      "About the artist",
+    ])
+    expect(teaser.kind === "artwork" && teaser.sections).toHaveLength(2)
+  })
+
+  it("has no artwork photo for a dashboard pack", () => {
+    expect(
+      packClaimTeaser({
+        kind: "dashboard",
+        artworkSlug: "the-star-of-betlehem",
+        artworkTitle: "The Star of Betlehem",
+      })
+    ).toEqual({ kind: "dashboard" })
+  })
+})
 
 describe("viewFromPackLookup", () => {
   it("ignores a cancelled lookup", () => {

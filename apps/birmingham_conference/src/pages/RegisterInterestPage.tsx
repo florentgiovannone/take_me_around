@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react"
 import { BrandHeader } from "@tma/brand"
+import ConsentNotice from "../ConsentNotice"
 import {
-  CONSENT_LABEL,
   registrationPayload,
   submitInterestRegistration,
   type InterestFormErrors,
@@ -276,15 +276,11 @@ export default function RegisterInterestPage() {
                     <span className="birmingham-interest-error">{fieldErrors.packNumber}</span>
                   )}
                 </label>
-                <label className="birmingham-interest-consent">
-                  <input
-                    type="checkbox"
-                    checked={form.consent}
-                    onChange={(event) => setForm({ ...form, consent: event.target.checked })}
-                  />
-                  <span className="req">{CONSENT_LABEL}</span>
-                </label>
-                {fieldErrors.consent && <span className="birmingham-interest-error">{fieldErrors.consent}</span>}
+                <ConsentNotice
+                  checked={form.consent}
+                  error={fieldErrors.consent}
+                  onChange={(consent) => setForm({ ...form, consent })}
+                />
                 {privacyContact ? (
                   <p className="birmingham-interest-privacy">
                     Email <a href={`mailto:${privacyContact}`}>{privacyContact}</a> to ask for access or deletion.

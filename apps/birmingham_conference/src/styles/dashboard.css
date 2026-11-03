@@ -224,6 +224,35 @@
   background: rgba(247, 243, 234, 0.08);
 }
 
+@media (max-width: 42rem) {
+  .birmingham-day-filter {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    align-items: stretch;
+    gap: 0.85rem;
+    width: min(22rem, 100%);
+    margin-inline: auto;
+  }
+
+  .birmingham-day-filter label {
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .birmingham-day-filter input[type="date"] {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .birmingham-day-filter button {
+    width: 100%;
+    box-sizing: border-box;
+    padding-block: 0.7rem;
+  }
+}
+
 .tma-brand .tma-analytics-card h2 {
   margin: 0;
   color: #0e2347;

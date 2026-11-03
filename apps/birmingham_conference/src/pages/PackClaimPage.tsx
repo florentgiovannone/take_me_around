@@ -1,10 +1,13 @@
 import { useEffect, useState, type FormEvent } from "react"
 import { useParams } from "react-router-dom"
-import { CONSENT_LABEL, privacyAccessHint } from "../interestForm"
+import { BrandHeader, useArtworkTextScale } from "@tma/brand"
+import ConsentNotice from "../ConsentNotice"
+import { privacyAccessHint } from "../interestForm"
 import {
   PACK_CLAIM_INTRO,
   PACK_CLAIM_SUBMIT,
   packClaimPayload,
+  packClaimTeaser,
   submitPackClaim,
   viewAfterPackTaken,
   viewFromPackLookup,
@@ -16,7 +19,9 @@ import {
   packClaimFromTag,
   parseConfirmedRegistrations,
 } from "../scanRegistrations"
+import PackClaimArtwork, { PackClaimArtworkCopy } from "./PackClaimArtwork"
 import NotFoundPage from "./NotFoundPage"
+import "@tma/brand/brand.css"
 import "../styles/home.css"
 
 const EMPTY: PackClaimForm = {
@@ -41,9 +46,13 @@ export default function PackClaimPage() {
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [frameFailed, setFrameFailed] = useState(false)
+  const { scale, choose } = useArtworkTextScale()
 
   useEffect(() => {
     if (!code || !packNumber || !tagCode) return
+    setClaimed(null)
+    setSent(false)
+    setNotice("")
     let cancelled = false
     void (async () => {
       try {
@@ -168,12 +177,15 @@ export default function PackClaimPage() {
     }
   }
 
+  const teaser = packClaimTeaser(target)
   const frameSrc = target.kind === "dashboard" ? "/dashboard" : target.destinationUrl
 
   return (
-    <div className="birmingham-pack">
-      <div className="birmingham-pack-stage" aria-hidden="true">
-        {frameFailed ? (
+    <div className={`birmingham-pack birmingham-pack--${teaser.kind}`}>
+      <div className="birmingham-pack-preview">
+        {teaser.kind === "artwork" ? (
+          <PackClaimArtwork teaser={teaser} scale={scale} onChooseScale={choose} />
+        ) : frameFailed ? (
           <div className="birmingham-pack-fallback">
             <p className="birmingham-pack-fallback-title">{target.artworkTitle}</p>
           </div>
@@ -182,12 +194,24 @@ export default function PackClaimPage() {
             className="birmingham-pack-frame"
             title={target.tagCode}
             src={frameSrc}
+            scrolling="no"
             onError={() => setFrameFailed(true)}
           />
         )}
       </div>
-      <div className="birmingham-pack-scrim">
-        <section className="birmingham-pack-modal" role="dialog" aria-modal="true">
+      <div className="birmingham-pack-fade">
+        <div className="birmingham-pack-veil" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+        {teaser.kind === "artwork" ? <PackClaimArtworkCopy sections={teaser.sections} /> : null}
+        <div className="birmingham-pack-locked">
+          <div className="birmingham-pack-scrim">
+            <section className="birmingham-pack-modal">
+              <BrandHeader homeHref="#" />
           <p className="birmingham-interest-eyebrow">Museum Association Conference</p>
           <h1>Unlock the full experience</h1>
           <p>{PACK_CLAIM_INTRO}</p>
@@ -239,17 +263,11 @@ export default function PackClaimPage() {
                   <span className="birmingham-interest-error">{fieldErrors.company}</span>
                 ) : null}
               </label>
-              <label className="birmingham-interest-consent">
-                <input
-                  type="checkbox"
-                  checked={form.consent}
-                  onChange={(event) => setForm({ ...form, consent: event.target.checked })}
-                />
-                <span className="req">{CONSENT_LABEL}</span>
-              </label>
-              {fieldErrors.consent ? (
-                <span className="birmingham-interest-error">{fieldErrors.consent}</span>
-              ) : null}
+              <ConsentNotice
+                checked={form.consent}
+                error={fieldErrors.consent}
+                onChange={(consent) => setForm({ ...form, consent })}
+              />
               {privacyContact ? (
                 <p className="birmingham-interest-privacy">{privacyAccessHint(privacyContact)}</p>
               ) : null}
@@ -259,7 +277,9 @@ export default function PackClaimPage() {
               </button>
             </form>
           )}
-        </section>
+            </section>
+          </div>
+        </div>
       </div>
     </div>
   )

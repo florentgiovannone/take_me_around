@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest"
 import {
   CONSENT_LABEL,
+  PRIVACY_POLICY_HREF,
+  PRIVACY_POLICY_LINK_TEXT,
   privacyAccessHint,
   registrationPayload,
   submitInterestRegistration,
@@ -184,13 +186,15 @@ describe("submitInterestRegistration", () => {
 })
 
 describe("consent and privacy copy", () => {
-  it("describes pack matching, contact, and keeping details until deletion is asked", () => {
-    expect(CONSENT_LABEL).toContain("pack number")
-    expect(CONSENT_LABEL).toContain("phone number")
-    expect(CONSENT_LABEL).toContain("scan dashboard")
-    expect(CONSENT_LABEL).toContain("until I ask them to delete them")
-    expect(CONSENT_LABEL).toContain("20 minutes")
-    expect(CONSENT_LABEL).not.toContain("5 minutes")
+  it("says confirming stores details under the terms and privacy policy", () => {
+    expect(CONSENT_LABEL).toBe(
+      "If confirmed you agree to your details being stored in accordance with our terms & conditions / privacy policy. Please see the links below."
+    )
+  })
+
+  it("links the consent copy to the Take Me Around privacy policy", () => {
+    expect(PRIVACY_POLICY_HREF).toBe("https://takemearound.gallery/privacy-policy")
+    expect(PRIVACY_POLICY_LINK_TEXT).toBe("terms & conditions / privacy policy")
   })
 
   it("tells people which email to use for access or deletion", () => {
