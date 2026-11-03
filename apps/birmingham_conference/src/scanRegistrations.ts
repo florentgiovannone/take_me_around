@@ -1,4 +1,4 @@
-import { canonicalBirminghamTagName } from "@tma/config"
+import { canonicalBirminghamTagName, canonicalTmaDemoTagName } from "@tma/config"
 import { BIRMINGHAM_CONFERENCE_ARTWORKS, parseLogTimestampGmt, type PoiseLog } from "@tma/dashboard-scope"
 
 export const ADMIN_REGISTRATIONS_PATH = "/api/admin/registrations"
@@ -195,7 +195,21 @@ export type BoothArtwork = {
   url: string
 }
 
+function boothCodeFromValue(value: string | null | undefined): string | null {
+  const birmingham = canonicalBirminghamTagName(value)
+  if (birmingham === "MACTSOB100" || birmingham === "MACTGB099") return birmingham
+  const demo = canonicalTmaDemoTagName(value, { allowTitleAliases: false })
+  if (demo === "TSN002" || demo === "TK002") return demo
+  return null
+}
+
 function boothArtworkForCode(code: string): BoothArtwork | null {
+  if (code === "TSN002") {
+    return { code, title: "The Starry Night", url: "https://takemearound.gallery/the-starry-night" }
+  }
+  if (code === "TK002") {
+    return { code, title: "The Kiss", url: "https://takemearound.gallery/the-kiss" }
+  }
   const artwork =
     code === "MACTSOB100"
       ? BIRMINGHAM_CONFERENCE_ARTWORKS.find((item) => item.slug === "the-star-of-betlehem")
@@ -211,8 +225,7 @@ export function latestBoothArtwork(logs: PoiseLog[]): BoothArtwork | null {
     .filter((log) => timestampMs(log.dtm_timestamp) > 0)
     .sort((left, right) => timestampMs(right.dtm_timestamp) - timestampMs(left.dtm_timestamp))
   for (const log of redirects) {
-    const code =
-      canonicalBirminghamTagName(log.text_name) ?? canonicalBirminghamTagName(log.txt_message)
+    const code = boothCodeFromValue(log.text_name) ?? boothCodeFromValue(log.txt_message)
     const artwork = code ? boothArtworkForCode(code) : null
     if (artwork) return artwork
   }

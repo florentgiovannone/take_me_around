@@ -397,6 +397,30 @@ describe("latestBoothArtwork", () => {
     expect(latestBoothArtwork([otherStar, macd, seen, untimed])).toBeNull()
   })
 
+  it("treats TSN002 as The Starry Night and TK002 as The Kiss", () => {
+    const starryNight = redirect({
+      int_id: 1,
+      text_name: "TSN002",
+      dtm_timestamp: "2026-11-01T12:00:00Z",
+    })
+    const kiss = redirect({
+      int_id: 2,
+      text_name: "tk-2",
+      dtm_timestamp: "2026-11-01T12:01:00Z",
+      txt_message: "https://takemearound.gallery/the-kiss",
+    })
+    expect(latestBoothArtwork([starryNight])).toEqual({
+      code: "TSN002",
+      title: "The Starry Night",
+      url: "https://takemearound.gallery/the-starry-night",
+    })
+    expect(latestBoothArtwork([starryNight, kiss])).toEqual({
+      code: "TK002",
+      title: "The Kiss",
+      url: "https://takemearound.gallery/the-kiss",
+    })
+  })
+
   it("returns the same artwork URL when the newest booth tag has not changed", () => {
     const first = redirect({
       int_id: 1,
