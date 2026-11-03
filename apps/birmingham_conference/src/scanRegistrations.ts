@@ -29,7 +29,7 @@ function asText(value: unknown): string {
 function isConfirmedRegistration(value: unknown): value is ConfirmedRegistration {
   if (!value || typeof value !== "object") return false
   const row = value as ConfirmedRegistration
-  return PACK_DIGITS.test(asText(row.packNumber)) && asText(row.name) !== "" && asText(row.email) !== ""
+  return PACK_DIGITS.test(asText(row.packNumber)) && asText(row.name) !== ""
 }
 
 function threeDigitPack(serial: number): string | null {

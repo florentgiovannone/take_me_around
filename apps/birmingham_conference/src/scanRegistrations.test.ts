@@ -87,6 +87,9 @@ describe("parseConfirmedRegistrations and lookup", () => {
 
   it("reads the GET /api/registrations body and ignores junk", () => {
     expect(parseConfirmedRegistrations({ registrations: [john] })).toEqual([john])
+    expect(parseConfirmedRegistrations({ registrations: [{ ...john, email: "" }] })).toEqual([
+      { ...john, email: "" },
+    ])
     expect(parseConfirmedRegistrations({ registrations: [{ name: "Ada" }] })).toEqual([])
     expect(parseConfirmedRegistrations(null)).toEqual([])
     expect(registrationForPack([john], "001")).toEqual(john)
