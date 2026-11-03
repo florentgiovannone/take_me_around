@@ -77,6 +77,7 @@ export default function PackClaimArtwork({
         <PackClaimLockedAudio />
         <img className="tma-brand-image" src={teaser.imageSrc} alt={teaser.imageAlt} />
       </div>
+      <PackClaimArtworkCopy sections={teaser.sections} />
     </div>
   )
 }

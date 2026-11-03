@@ -19,7 +19,7 @@ import {
   packClaimFromTag,
   parseConfirmedRegistrations,
 } from "../scanRegistrations"
-import PackClaimArtwork, { PackClaimArtworkCopy } from "./PackClaimArtwork"
+import PackClaimArtwork from "./PackClaimArtwork"
 import NotFoundPage from "./NotFoundPage"
 import "@tma/brand/brand.css"
 import "../styles/home.css"
@@ -199,19 +199,9 @@ export default function PackClaimPage() {
           />
         )}
       </div>
-      <div className="birmingham-pack-fade">
-        <div className="birmingham-pack-veil" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
-        {teaser.kind === "artwork" ? <PackClaimArtworkCopy sections={teaser.sections} /> : null}
-        <div className="birmingham-pack-locked">
-          <div className="birmingham-pack-scrim">
-            <section className="birmingham-pack-modal">
-              <BrandHeader homeHref="#" />
+      <div className="birmingham-pack-scrim">
+        <section className="birmingham-pack-modal">
+          <BrandHeader homeHref="#" />
           <p className="birmingham-interest-eyebrow">Museum Association Conference</p>
           <h1>Unlock the full experience</h1>
           <p>{PACK_CLAIM_INTRO}</p>
@@ -277,9 +267,7 @@ export default function PackClaimPage() {
               </button>
             </form>
           )}
-            </section>
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   )
