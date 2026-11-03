@@ -379,7 +379,7 @@
 
 .birmingham-pack--dashboard .birmingham-pack-fade {
   position: absolute;
-  top: calc(30rem + 200px);
+  top: calc(30rem + 270px);
   right: 0;
   bottom: 0;
   left: 0;
@@ -387,10 +387,19 @@
   pointer-events: none;
 }
 
-.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content > :not(.tma-dashboard-tabs-nav) {
+.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-analytics-panel > :not(.tma-analytics-stats) {
   filter: blur(8px);
 }
 
+.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-analytics-stats > :nth-child(n + 3) {
+  filter: blur(8px);
+}
+
+.birmingham-pack-artwork-copy > :not(:first-child) {
+  filter: blur(8px);
+}
+
+.birmingham-pack--artwork .birmingham-pack-fade::before,
 .birmingham-pack--dashboard .birmingham-pack-fade::before {
   content: "";
   position: absolute;
@@ -408,8 +417,11 @@
   );
 }
 
+.birmingham-pack--artwork .birmingham-pack-fade::before {
+  top: calc(8rem + 280px);
+}
+
 .birmingham-pack-artwork-copy {
-  filter: blur(16px);
   user-select: none;
   pointer-events: none;
   padding-bottom: 8rem;
@@ -425,7 +437,7 @@
 
 .birmingham-pack--artwork .birmingham-pack-scrim {
   position: absolute;
-  top: calc(8rem + 20px);
+  top: calc(8rem + 280px);
   right: 0;
   left: 0;
   margin-top: 0;
