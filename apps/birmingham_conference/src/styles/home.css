@@ -377,13 +377,22 @@
   padding-top: calc(8rem + 20px);
 }
 
+.birmingham-pack--dashboard {
+  overflow: hidden;
+}
+
+.birmingham-pack--dashboard .birmingham-pack-preview {
+  max-height: calc(30rem + 270px + 6rem);
+  overflow: hidden;
+}
+
 .birmingham-pack--dashboard .birmingham-pack-fade {
-  position: absolute;
-  top: calc(30rem + 270px);
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: 0;
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  margin-top: -6rem;
   pointer-events: none;
 }
 
@@ -392,10 +401,6 @@
 }
 
 .birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-analytics-stats > :nth-child(n + 3) {
-  filter: blur(8px);
-}
-
-.birmingham-pack-artwork-copy > :not(:first-child) {
   filter: blur(8px);
 }
 
@@ -418,10 +423,11 @@
 }
 
 .birmingham-pack--artwork .birmingham-pack-fade::before {
-  top: calc(8rem + 280px);
+  top: calc(8rem + 160px);
 }
 
 .birmingham-pack-artwork-copy {
+  filter: blur(8px);
   user-select: none;
   pointer-events: none;
   padding-bottom: 8rem;
@@ -437,7 +443,7 @@
 
 .birmingham-pack--artwork .birmingham-pack-scrim {
   position: absolute;
-  top: calc(8rem + 280px);
+  top: calc(8rem + 160px);
   right: 0;
   left: 0;
   margin-top: 0;
