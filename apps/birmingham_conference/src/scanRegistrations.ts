@@ -95,6 +95,37 @@ export function packNumberFromMacdTag(value: string | null | undefined): string 
   return null
 }
 
+export type PackClaimKind = "artwork" | "dashboard"
+
+export type PackClaimTarget = {
+  tagCode: string
+  packNumber: string
+  artworkSlug: string
+  artworkTitle: string
+  destinationUrl: string
+  kind: PackClaimKind
+}
+
+export function packClaimFromTag(value: string | null | undefined): PackClaimTarget | null {
+  const tagCode = canonicalBirminghamTagName(value)
+  if (!tagCode || tagCode.startsWith("MACF")) return null
+  const packNumber = packNumberFromMacdTag(tagCode)
+  if (!packNumber) return null
+  const artwork = BIRMINGHAM_CONFERENCE_ARTWORKS.find((item) =>
+    packNumber <= "100" ? item.slug === "the-star-of-betlehem" : item.slug === "the-golden-boys"
+  )
+  if (!artwork) return null
+  const kind: PackClaimKind = tagCode.startsWith("MACD") ? "dashboard" : "artwork"
+  return {
+    tagCode,
+    packNumber,
+    artworkSlug: artwork.slug,
+    artworkTitle: artwork.title,
+    destinationUrl: kind === "dashboard" ? "/dashboard" : artwork.url,
+    kind,
+  }
+}
+
 export function parseConfirmedRegistrations(body: unknown): ConfirmedRegistration[] {
   if (!body || typeof body !== "object" || !Array.isArray((body as { registrations?: unknown }).registrations)) {
     return []
