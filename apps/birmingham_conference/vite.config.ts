@@ -136,6 +136,9 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: "node",
     },
+    build: {
+      cssMinify: "esbuild",
+    },
     server: {
       host: true,
       allowedHosts: true,

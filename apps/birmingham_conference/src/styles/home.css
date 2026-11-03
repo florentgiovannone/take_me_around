@@ -387,32 +387,8 @@
   pointer-events: none;
 }
 
-.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content {
-  position: relative;
-}
-
-.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content::before,
-.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  left: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content::before {
-  top: calc(4rem + 50px);
-  height: 9rem;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-
-.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content::after {
-  top: calc(4rem + 50px + 9rem);
-  bottom: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.birmingham-pack--dashboard .birmingham-pack-dashboard-teaser .tma-content > :not(.tma-dashboard-tabs-nav) {
+  filter: blur(8px);
 }
 
 .birmingham-pack--dashboard .birmingham-pack-fade::before {
