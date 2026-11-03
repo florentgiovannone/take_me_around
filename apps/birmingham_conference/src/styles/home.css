@@ -259,6 +259,12 @@
   line-height: 1.45;
 }
 
+.birmingham-interest-privacy a {
+  color: #0e2347;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
 .birmingham-latest-wait {
   min-height: 100vh;
   background: #f4f0e8;

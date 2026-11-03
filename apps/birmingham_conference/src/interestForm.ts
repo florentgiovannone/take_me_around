@@ -36,7 +36,11 @@ export type InterestFormResult =
   | { ok: false; errors: InterestFormErrors }
 
 export const CONSENT_LABEL =
-  "I agree that Take Me Around will hold these details, including my pack number and phone number if I give one, for up to 20 minutes to email me a confirmation link, and will keep them after I confirm so they can register my interest in this artwork, show my details on their conference scan dashboard if my pack is scanned, and contact me about it. They will keep these details until I ask them to delete them."
+  "If confirmed you agree to your details being stored in accordance with our terms & conditions / privacy policy. Please see the links below."
+
+export const PRIVACY_POLICY_HREF = "https://takemearound.gallery/privacy-policy"
+
+export const PRIVACY_POLICY_LINK_TEXT = "terms & conditions / privacy policy"
 
 export function privacyAccessHint(email: string): string {
   return `Email ${email} to ask for access or deletion.`

@@ -9,6 +9,7 @@ export type ContactFormValues = {
   email: string
   organisation: string
   message: string
+  consent: boolean
 }
 
 export type ContactFormErrors = {
@@ -16,6 +17,7 @@ export type ContactFormErrors = {
   email?: string
   organisation?: string
   message?: string
+  consent?: string
 }
 
 export type ContactFormResult =
@@ -64,10 +66,12 @@ export function validateContactForm(values: ContactFormValues): ContactFormResul
     errors.message = "Enter a message."
   }
 
+  if (values.consent !== true) errors.consent = "Confirm that we may store these details."
+
   return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true }
 }
 
-export function contactPayload(values: ContactFormValues): ContactFormValues {
+export function contactPayload(values: ContactFormValues) {
   return {
     name: values.name.trim(),
     email: values.email.trim(),

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { CONSENT_LABEL, PRIVACY_POLICY_HREF, PRIVACY_POLICY_LINK_TEXT } from "./interestForm"
 import {
   CONTACT_THANKS,
   CONTACT_UNAVAILABLE,
@@ -12,6 +13,7 @@ const valid = {
   email: "ada@example.com",
   organisation: "",
   message: "We host a sculpture trail.",
+  consent: true,
 }
 
 describe("validateContactForm", () => {
@@ -36,6 +38,21 @@ describe("validateContactForm", () => {
 
   it("accepts a blank organisation", () => {
     expect(validateContactForm(valid)).toEqual({ ok: true })
+  })
+
+  it("rejects a missing consent checkbox", () => {
+    expect(validateContactForm({ ...valid, consent: false })).toEqual({
+      ok: false,
+      errors: { consent: "Confirm that we may store these details." },
+    })
+  })
+
+  it("uses the same consent copy and privacy policy link as the registration form", () => {
+    expect(CONSENT_LABEL).toBe(
+      "If confirmed you agree to your details being stored in accordance with our terms & conditions / privacy policy. Please see the links below."
+    )
+    expect(PRIVACY_POLICY_HREF).toBe("https://takemearound.gallery/privacy-policy")
+    expect(PRIVACY_POLICY_LINK_TEXT).toBe("terms & conditions / privacy policy")
   })
 
   it("rejects fields over their character limits", () => {
@@ -66,6 +83,7 @@ describe("contactPayload and contactOutcomeFromResponse", () => {
         email: " Ada@Example.com ",
         organisation: " Analytical Engines ",
         message: "  Hello there. ",
+        consent: true,
       })
     ).toEqual({
       name: "Ada Lovelace",
