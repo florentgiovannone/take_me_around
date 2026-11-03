@@ -1,5 +1,10 @@
+import { REGISTRATION_UNAVAILABLE } from "./registrationFlow"
+import { registrationForPack, type ConfirmedRegistration } from "./scanRegistrations"
+
 export const PACK_CLAIM_INTRO =
   "To view the whole experience, please enter your email address, name, and organisation name. We will send you an email to confirm your email address. You will enjoy permanent access to the full content. Thank you for your interest."
+
+export const PACK_ALREADY_REGISTERED = "This pack number is already registered."
 
 export const PACK_CLAIM_SUBMIT = "View the full experience"
 
@@ -39,6 +44,29 @@ export function submitPackClaim(
   }
   if (values.consent !== true) errors.consent = "Confirm that we may store these details."
   return Object.keys(errors).length > 0 ? { ok: false, errors } : { ok: true }
+}
+
+export function viewFromPackLookup(args: {
+  cancelled: boolean
+  ok: boolean
+  rows: ConfirmedRegistration[]
+  packNumber: string
+}): { claimed: boolean; notice: string } | null {
+  if (args.cancelled) return null
+  if (!args.ok) return { claimed: false, notice: REGISTRATION_UNAVAILABLE }
+  return {
+    claimed: Boolean(registrationForPack(args.rows, args.packNumber)),
+    notice: "",
+  }
+}
+
+export function viewAfterPackTaken(args: {
+  ok: boolean
+  rows: ConfirmedRegistration[]
+  packNumber: string
+}): { redirect: true } | { redirect: false; notice: string } {
+  if (args.ok && registrationForPack(args.rows, args.packNumber)) return { redirect: true }
+  return { redirect: false, notice: PACK_ALREADY_REGISTERED }
 }
 
 export function packClaimPayload(values: PackClaimForm, tagCode: string) {

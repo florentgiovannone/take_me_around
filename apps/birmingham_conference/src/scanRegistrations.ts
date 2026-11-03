@@ -101,6 +101,7 @@ export type PackClaimTarget = {
   tagCode: string
   packNumber: string
   artworkSlug: string
+  artworkTitle: string
   destinationUrl: string
   kind: PackClaimKind
 }
@@ -119,6 +120,7 @@ export function packClaimFromTag(value: string | null | undefined): PackClaimTar
     tagCode,
     packNumber,
     artworkSlug: artwork.slug,
+    artworkTitle: artwork.title,
     destinationUrl: kind === "dashboard" ? "/dashboard" : artwork.url,
     kind,
   }

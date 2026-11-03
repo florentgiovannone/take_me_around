@@ -449,6 +449,7 @@ describe("packClaimFromTag", () => {
       tagCode: "MACTSOB014",
       packNumber: "014",
       artworkSlug: "the-star-of-betlehem",
+      artworkTitle: "The Star of Betlehem",
       destinationUrl: "https://takemearound.gallery/the-star-of-bethlehem",
       kind: "artwork",
     })
@@ -456,6 +457,7 @@ describe("packClaimFromTag", () => {
       tagCode: "MACTGB003",
       packNumber: "103",
       artworkSlug: "the-golden-boys",
+      artworkTitle: "The Golden Boys",
       destinationUrl: "https://takemearound.museum/the-golden-boys",
       kind: "artwork",
     })
@@ -463,6 +465,7 @@ describe("packClaimFromTag", () => {
       tagCode: "MACD150",
       packNumber: "150",
       artworkSlug: "the-golden-boys",
+      artworkTitle: "The Golden Boys",
       destinationUrl: "/dashboard",
       kind: "dashboard",
     })

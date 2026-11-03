@@ -324,6 +324,24 @@
   background: #f4f0e8;
 }
 
+.birmingham-pack-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.birmingham-pack-fallback-title {
+  margin: 0;
+  max-width: 16ch;
+  color: #0e2347;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 560;
+  line-height: 1.1;
+  text-align: center;
+}
+
 .birmingham-pack-scrim {
   position: fixed;
   inset: 0;

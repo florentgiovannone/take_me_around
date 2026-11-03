@@ -6,14 +6,15 @@ import {
   PACK_CLAIM_SUBMIT,
   packClaimPayload,
   submitPackClaim,
+  viewAfterPackTaken,
+  viewFromPackLookup,
   type PackClaimForm,
 } from "../packClaim"
-import { outcomeFromResponse, registrationBaseUrl } from "../registrationFlow"
+import { REGISTRATION_UNAVAILABLE, outcomeFromResponse, registrationBaseUrl } from "../registrationFlow"
 import {
   PACK_REGISTRATION_PATH,
   packClaimFromTag,
   parseConfirmedRegistrations,
-  registrationForPack,
 } from "../scanRegistrations"
 import NotFoundPage from "./NotFoundPage"
 import "../styles/home.css"
@@ -29,6 +30,9 @@ const EMPTY: PackClaimForm = {
 export default function PackClaimPage() {
   const { code = "" } = useParams()
   const target = packClaimFromTag(code)
+  const packNumber = target?.packNumber ?? ""
+  const tagCode = target?.tagCode ?? ""
+  const destinationUrl = target?.destinationUrl ?? ""
   const [claimed, setClaimed] = useState<boolean | null>(null)
   const [form, setForm] = useState(EMPTY)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -39,26 +43,35 @@ export default function PackClaimPage() {
   const [frameFailed, setFrameFailed] = useState(false)
 
   useEffect(() => {
-    if (!target) return
+    if (!code || !packNumber || !tagCode) return
     let cancelled = false
     void (async () => {
       try {
         const response = await fetch(
-          `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(target.packNumber)}`,
+          `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(packNumber)}`,
           { headers: { "ngrok-skip-browser-warning": "true" } }
         )
-        if (!response.ok || cancelled) return
-        const rows = parseConfirmedRegistrations(await response.json())
-        if (cancelled) return
-        setClaimed(Boolean(registrationForPack(rows, target.packNumber)))
+        const rows = response.ok ? parseConfirmedRegistrations(await response.json()) : []
+        const view = viewFromPackLookup({ cancelled, ok: response.ok, rows, packNumber })
+        if (!view) return
+        setClaimed(view.claimed)
+        setNotice(view.notice)
       } catch {
-        if (!cancelled) setClaimed(false)
+        const view = viewFromPackLookup({ cancelled, ok: false, rows: [], packNumber })
+        if (!view) return
+        setClaimed(view.claimed)
+        setNotice(view.notice)
       }
     })()
     return () => {
       cancelled = true
     }
-  }, [target])
+  }, [code, packNumber, tagCode])
+
+  useEffect(() => {
+    if (claimed !== true || !destinationUrl) return
+    window.location.replace(destinationUrl)
+  }, [claimed, destinationUrl])
 
   useEffect(() => {
     const baseUrl = registrationBaseUrl()
@@ -78,11 +91,7 @@ export default function PackClaimPage() {
   }, [])
 
   if (!target) return <NotFoundPage />
-  if (claimed === true) {
-    window.location.replace(target.destinationUrl)
-    return null
-  }
-  if (claimed === null) return null
+  if (claimed === true || claimed === null) return null
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -96,7 +105,7 @@ export default function PackClaimPage() {
     }
     const baseUrl = registrationBaseUrl()
     if (!baseUrl) {
-      setNotice("Registration is unavailable.")
+      setNotice(REGISTRATION_UNAVAILABLE)
       return
     }
     setFieldErrors({})
@@ -117,17 +126,29 @@ export default function PackClaimPage() {
         errors?: Record<string, string>
       }
       if (response.status === 409 && body.error === "pack_taken") {
-        const lookup = await fetch(
-          `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(target.packNumber)}`,
-          { headers: { "ngrok-skip-browser-warning": "true" } }
-        )
-        if (lookup.ok) {
-          const rows = parseConfirmedRegistrations(await lookup.json())
-          if (registrationForPack(rows, target.packNumber)) {
-            window.location.replace(target.destinationUrl)
-            return
-          }
+        let lookupOk = false
+        let rows: ReturnType<typeof parseConfirmedRegistrations> = []
+        try {
+          const lookup = await fetch(
+            `${PACK_REGISTRATION_PATH}?packNumber=${encodeURIComponent(target.packNumber)}`,
+            { headers: { "ngrok-skip-browser-warning": "true" } }
+          )
+          lookupOk = lookup.ok
+          if (lookup.ok) rows = parseConfirmedRegistrations(await lookup.json())
+        } catch {
+          lookupOk = false
         }
+        const followUp = viewAfterPackTaken({
+          ok: lookupOk,
+          rows,
+          packNumber: target.packNumber,
+        })
+        if (followUp.redirect) {
+          window.location.replace(target.destinationUrl)
+          return
+        }
+        setNotice(followUp.notice)
+        return
       }
       const outcome = outcomeFromResponse(response.status, body)
       if (outcome.type === "sent") {
@@ -141,7 +162,7 @@ export default function PackClaimPage() {
       }
       setNotice(outcome.message)
     } catch {
-      setNotice("Registration is unavailable.")
+      setNotice(REGISTRATION_UNAVAILABLE)
     } finally {
       setSubmitting(false)
     }
@@ -153,7 +174,9 @@ export default function PackClaimPage() {
     <div className="birmingham-pack">
       <div className="birmingham-pack-stage" aria-hidden="true">
         {frameFailed ? (
-          <div className="birmingham-pack-fallback" />
+          <div className="birmingham-pack-fallback">
+            <p className="birmingham-pack-fallback-title">{target.artworkTitle}</p>
+          </div>
         ) : (
           <iframe
             className="birmingham-pack-frame"
