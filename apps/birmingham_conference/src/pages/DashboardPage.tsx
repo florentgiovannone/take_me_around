@@ -327,10 +327,13 @@ export default function DashboardPage({
           </div>
         </div>
         {isAdmin ? (
-          <form className="birmingham-admin-logout" method="post" action="/admindashboard">
-            <input type="hidden" name="logout" value="1" />
-            <button type="submit">Logout</button>
-          </form>
+          <div className="birmingham-admin-logout">
+            <a href="/admin">Registrations</a>
+            <form method="post" action="/admindashboard">
+              <input type="hidden" name="logout" value="1" />
+              <button type="submit">Logout</button>
+            </form>
+          </div>
         ) : null}
       </header>
       <div className="tma-content">

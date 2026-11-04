@@ -5,6 +5,7 @@ import type { ClientRequest } from "node:http"
 import react from "@vitejs/plugin-react"
 import { defineConfig, loadEnv } from "vite"
 import { createAdminGateMiddleware } from "./src/adminGateDevMiddleware"
+import { conferenceRedirects } from "./src/conferenceRedirects"
 import { createRegistrationsReadMiddleware } from "./src/registrationsReadDevMiddleware"
 
 export default defineConfig(({ mode }) => {
@@ -23,6 +24,13 @@ export default defineConfig(({ mode }) => {
     process.env.VITE_BIRMINGHAM_REGISTRATION_URL ||
     fileEnv.VITE_BIRMINGHAM_REGISTRATION_URL ||
     ""
+  )
+    .trim()
+    .replace(/\/$/, "")
+  const adminBase = (
+    process.env.VITE_ADMIN_PROXY_TARGET ||
+    fileEnv.VITE_ADMIN_PROXY_TARGET ||
+    "https://tma-mac.netlify.app"
   )
     .trim()
     .replace(/\/$/, "")
@@ -45,10 +53,29 @@ export default defineConfig(({ mode }) => {
     ""
   ).trim()
 
+  const withNgrok = (
+    target: string,
+    extra?: (proxyReq: ClientRequest) => void
+  ) => ({
+    target,
+    changeOrigin: true,
+    configure: (proxy: { on: (event: string, fn: (proxyReq: ClientRequest) => void) => void }) => {
+      proxy.on("proxyReq", (proxyReq) => {
+        extra?.(proxyReq)
+        if (target.includes("ngrok")) {
+          proxyReq.setHeader("ngrok-skip-browser-warning", "true")
+        }
+      })
+    },
+  })
+
   const apiProxy = {
     "/api": {
-      target: apiTarget,
-      changeOrigin: true,
+      ...withNgrok(apiTarget, (proxyReq) => {
+        if (dashboardPassword) {
+          proxyReq.setHeader("X-Dashboard-Password", dashboardPassword)
+        }
+      }),
       bypass(req: { url?: string }) {
         const path = req.url?.split("?")[0]
         if (
@@ -60,17 +87,23 @@ export default defineConfig(({ mode }) => {
         }
         return null
       },
-      configure: (proxy: { on: (event: string, fn: (proxyReq: ClientRequest) => void) => void }) => {
-        proxy.on("proxyReq", (proxyReq) => {
-          if (dashboardPassword) {
-            proxyReq.setHeader("X-Dashboard-Password", dashboardPassword)
-          }
-          if (apiTarget.includes("ngrok")) {
-            proxyReq.setHeader("ngrok-skip-browser-warning", "true")
-          }
-        })
-      },
     },
+    ...(adminBase
+      ? {
+          "/admin": {
+            ...withNgrok(adminBase),
+            rewrite: adminBase.includes("tma-mac.netlify.app")
+              ? (path: string) => `/registration-api${path}`
+              : undefined,
+          },
+          "/static": {
+            ...withNgrok(adminBase),
+            rewrite: adminBase.includes("tma-mac.netlify.app")
+              ? (path: string) => `/registration-api${path}`
+              : undefined,
+          },
+        }
+      : {}),
   }
 
   return {
@@ -118,15 +151,7 @@ export default defineConfig(({ mode }) => {
       {
         name: "netlify-redirects",
         closeBundle() {
-          const lines: string[] = []
-          if (proxyBase) {
-            lines.push(`/api/*  ${proxyBase}/api/:splat  200`)
-          }
-          if (registrationBase) {
-            lines.push(`/registration-api/*  ${registrationBase}/:splat  200`)
-            lines.push(`/confirm  ${registrationBase}/confirm  200`)
-          }
-          lines.push("/*    /index.html   200")
+          const lines = conferenceRedirects({ proxyBase, registrationBase })
           const out = path.resolve(process.cwd(), "dist", "_redirects")
           fs.mkdirSync(path.dirname(out), { recursive: true })
           fs.writeFileSync(out, `${lines.join("\n")}\n`)
