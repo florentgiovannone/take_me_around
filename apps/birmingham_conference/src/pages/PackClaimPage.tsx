@@ -195,13 +195,14 @@ export default function PackClaimPage() {
         <div className="birmingham-pack-scrim">
           <section className="birmingham-pack-modal">
           <BrandHeader homeHref="#" />
-          <p className="birmingham-interest-eyebrow">Museum Association Conference</p>
-          <h1>Unlock the full experience</h1>
-          <p>{PACK_CLAIM_INTRO}</p>
           {sent ? (
             <p className="birmingham-interest-thanks">{notice}</p>
           ) : (
-            <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
+            <>
+              <p className="birmingham-interest-eyebrow">Museum Association Conference</p>
+              <h1>Unlock the full experience</h1>
+              <p>{PACK_CLAIM_INTRO}</p>
+              <form className="birmingham-interest-form" onSubmit={onSubmit} noValidate>
               <label>
                 <span className="req">Name</span>
                 <input
@@ -255,10 +256,11 @@ export default function PackClaimPage() {
                 <p className="birmingham-interest-privacy">{privacyAccessHint(privacyContact)}</p>
               ) : null}
               {notice ? <p className="birmingham-interest-error">{notice}</p> : null}
-              <button type="submit" disabled={submitting}>
-                {PACK_CLAIM_SUBMIT}
-              </button>
-            </form>
+                <button type="submit" disabled={submitting}>
+                  {PACK_CLAIM_SUBMIT}
+                </button>
+              </form>
+            </>
           )}
           </section>
         </div>
