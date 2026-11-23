@@ -12,7 +12,6 @@ import {
 } from "@tma/dashboard-ui"
 import type { PoiseLog } from "@tma/dashboard-scope"
 import SevenDialsRoundel from "../components/SevenDialsRoundel"
-import { mergePlaqueScans } from "../plaqueScans"
 import { plaques } from "../plaques"
 import "../../../dashboard/src/styles/style.css"
 import "../styles/dashboard.css"
@@ -61,21 +60,23 @@ export default function DashboardPage() {
       setError(null)
     }
 
-    const result = await fetchDashboardLogs()
-    if (!result.ok) {
-      setLogs((current) => mergePlaqueScans(showLoading ? [] : current))
-      if (showLoading) {
-        setError(result.message)
+    try {
+      const result = await fetchDashboardLogs()
+      if (!result.ok) {
+        if (showLoading) setError(result.message)
+        return
       }
-      setReady(true)
-      if (showLoading) setLoading(false)
-      return
-    }
 
-    setLogs(mergePlaqueScans(result.data))
-    setReady(true)
-    setError(null)
-    if (showLoading) setLoading(false)
+      setLogs(result.data)
+      setReady(true)
+      setError(null)
+    } catch (err) {
+      if (showLoading) {
+        setError(err instanceof Error ? err.message : "Failed to load items")
+      }
+    } finally {
+      if (showLoading) setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -98,16 +99,6 @@ export default function DashboardPage() {
             <span className="sd-brand-dot" aria-hidden="true" />
             <span>Seven Dials Trust · People&apos;s Plaques</span>
           </Link>
-          <div className="sd-topbar-links">
-            {plaques.map((person) => (
-              <Link key={person.slug} to={`/${person.slug}`}>
-                {person.name} ({person.tagCode})
-              </Link>
-            ))}
-            <Link to="/dashboard" className="sd-topbar-dashboard is-active">
-              Dashboard
-            </Link>
-          </div>
         </div>
       </nav>
 
@@ -154,24 +145,22 @@ export default function DashboardPage() {
             <p>Loading Seven Dials plaque activity...</p>
           </div>
         )}
-        {error && logs.length === 0 && (
-          <p className="tma-dashboard-error">Note: {error}</p>
-        )}
+        {error && <p className="tma-dashboard-error">Error: {error}</p>}
 
         <SiteScopeProvider scope="sevendials">
-          {!loading && (logs.length > 0 || !error) && activeTab === "activity" && (
+          {!loading && !error && activeTab === "activity" && (
             <DashboardActivityPanel logs={logs} />
           )}
-          {!loading && (logs.length > 0 || !error) && activeTab === "counts" && (
+          {!loading && !error && activeTab === "counts" && (
             <DashboardCountsPanel logs={logs} />
           )}
-          {!loading && (logs.length > 0 || !error) && activeTab === "overview" && (
+          {!loading && !error && activeTab === "overview" && (
             <DashboardOverviewPanel logs={logs} />
           )}
-          {!loading && (logs.length > 0 || !error) && activeTab === "audience" && (
+          {!loading && !error && activeTab === "audience" && (
             <DashboardAudiencePanel logs={logs} />
           )}
-          {!loading && (logs.length > 0 || !error) && activeTab === "sar" && (
+          {!loading && !error && activeTab === "sar" && (
             <DashboardSarTimelinePanel logs={logs} />
           )}
         </SiteScopeProvider>

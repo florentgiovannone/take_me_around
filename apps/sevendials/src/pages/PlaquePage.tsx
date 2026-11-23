@@ -2,13 +2,11 @@ import { useEffect } from "react"
 import { Link } from "react-router-dom"
 import SectionAudio from "../components/SectionAudio"
 import SevenDialsRoundel from "../components/SevenDialsRoundel"
-import { logPlaqueScan } from "../plaqueScans"
 import { plaques, type PlaquePerson } from "../plaques"
 
 export default function PlaquePage({ person }: { person: PlaquePerson }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior })
-    logPlaqueScan(person.tagCode, `/${person.slug}`)
   }, [person.slug, person.tagCode])
 
   const otherPlaque = plaques.find((item) => item.slug !== person.slug)

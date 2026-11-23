@@ -1,15 +1,8 @@
 import * as tmaDemo from "@tma/analytics-tma-demo"
+import type { PoiseLog } from "@tma/analytics-tma-demo"
+import type { StoreDashboardScope } from "@tma/config"
 
-export type PoiseLog = tmaDemo.PoiseLog
-export type StoreDashboardScope =
-  | "waitburys"
-  | "charles_peters"
-  | "fair_future"
-  | "i_am_a_safe_pet"
-  | "choose_and_order"
-  | "yesterday_forever"
-  | "frieze_gallery"
-  | "sevendials"
+export type { StoreDashboardScope } from "@tma/config"
 
 type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet" | "frieze_gallery">
 type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF" | "SD"
@@ -28,11 +21,12 @@ const FRIEZE_GALLERY_TAG_PREFIXES = ["FSWIF", "FSFT", "FCI", "FO", "FD"] as cons
 
 const MAX_SERIAL = 999_999
 const SEEN_NEIGHBOR_MS = 5000
+const SLATE_MULTI_TAG_WINDOW_MS = 5000
 
 export type StoreActivityEntry = tmaDemo.TmaDemoActivityEntry
 
-type StoreArtwork = {
-  tagName: string
+export type StoreArtwork = {
+  tagName?: string
   title: string
   path: string
 }
@@ -83,6 +77,8 @@ export function canonicalFriezeGalleryTagName(value: string | null | undefined):
   if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
   return `${prefix}${padSerial(serial)}`
 }
+
+export const SEVEN_DIALS_KNOWN_CODES = ["SD001", "SD002"] as const
 
 const SEVEN_DIALS_TITLES: Record<string, string> = {
   SD001: "SD001 — Charles Boon (1877–1943)",
@@ -210,6 +206,12 @@ function timestampMs(log: PoiseLog) {
   return tmaDemo.parseLogTimestampGmt(log.dtm_timestamp)?.getTime() ?? 0
 }
 
+function normalizeLogTimestampKey(value: string | null | undefined) {
+  const date = tmaDemo.parseLogTimestampGmt(value)
+  if (date) return String(Math.floor(date.getTime() / 1000))
+  return value?.trim() ?? ""
+}
+
 function artworkFor(code: string, prefix?: StorePrefix | null): StoreArtwork {
   if (prefix === "SD") {
     return {
@@ -249,6 +251,26 @@ function linkFor(log: PoiseLog, code: string, prefix?: StorePrefix | null) {
   return code
 }
 
+function getAcceptLanguageHeaderFromLog(log: PoiseLog): string | null {
+  const raw = log.txt_message?.trim()
+  if (!raw?.startsWith("{")) return null
+  try {
+    const payload = JSON.parse(raw) as {
+      HTTP_ACCEPT_LANGUAGE?: string
+      ACCEPT_LANGUAGE?: string
+      accept_language?: string
+    }
+    return (
+      payload.HTTP_ACCEPT_LANGUAGE?.trim() ||
+      payload.ACCEPT_LANGUAGE?.trim() ||
+      payload.accept_language?.trim() ||
+      null
+    )
+  } catch {
+    return null
+  }
+}
+
 function createAnalytics(scope: StoreDashboardScope) {
   const prefix: StorePrefix | null =
     scope === "i_am_a_safe_pet" || scope === "frieze_gallery" ? null : PREFIX[scope]
@@ -266,68 +288,213 @@ function createAnalytics(scope: StoreDashboardScope) {
     return logs.filter((log) => codeFromLog(log) !== null)
   }
 
-  function getLogs(logs: PoiseLog[]) {
-    const matched = matchingLogs(logs)
-    const included = new Set(matched.map((log) => log.int_id))
-    const extras: PoiseLog[] = []
+  function timestampsClose(left: PoiseLog, right: PoiseLog, maxMs = SEEN_NEIGHBOR_MS): boolean {
+    const leftMs = timestampMs(left)
+    const rightMs = timestampMs(right)
+    if (!leftMs || !rightMs) return false
+    return Math.abs(leftMs - rightMs) <= maxMs
+  }
 
-    for (const redirect of matched) {
-      if (messageType(redirect) !== "REDIRECTED") continue
-      const redirectMs = timestampMs(redirect)
-      if (!redirectMs) continue
+  /**
+   * Each physical slate can have 4 NFC tags on it, all programmed with the same
+   * text_name (code) but distinct hardware txt_uids. When a single tap triggers
+   * multiple tags on the same slate within the tap window, collapse them so the
+   * 4 tags on the slate behave as one.
+   */
+  function collapseSlateRedirects(rawRedirects: PoiseLog[]): PoiseLog[] {
+    const chronological = [...rawRedirects].sort((a, b) => {
+      const diff = timestampMs(a) - timestampMs(b)
+      if (diff !== 0) return diff
+      return a.int_id - b.int_id
+    })
+
+    const lastKeptByCode = new Map<string, PoiseLog>()
+    const keptIds = new Set<number>()
+
+    for (const redirect of chronological) {
       const code = codeFromLog(redirect)
       if (!code) continue
-      for (const neighbor of logs) {
-        if (included.has(neighbor.int_id) || messageType(neighbor) !== "SEEN") continue
-        if (neighbor.text_name?.trim() || codeFromLog(neighbor)) continue
-        const neighborMs = timestampMs(neighbor)
-        if (!neighborMs || Math.abs(neighborMs - redirectMs) > SEEN_NEIGHBOR_MS) continue
-        included.add(neighbor.int_id)
-        extras.push({ ...neighbor, text_name: code })
+      const prev = lastKeptByCode.get(code)
+      if (prev) {
+        const prevUid = prev.txt_uid?.trim() || null
+        const currUid = redirect.txt_uid?.trim() || null
+        const sameSecond =
+          Boolean(prev.dtm_timestamp && redirect.dtm_timestamp) &&
+          normalizeLogTimestampKey(prev.dtm_timestamp) ===
+            normalizeLogTimestampKey(redirect.dtm_timestamp)
+        const multiTagTapWithinWindow =
+          prevUid !== null &&
+          currUid !== null &&
+          prevUid !== currUid &&
+          timestampsClose(prev, redirect, SLATE_MULTI_TAG_WINDOW_MS)
+
+        if ((sameSecond && prevUid !== null && currUid !== null) || multiTagTapWithinWindow) {
+          continue
+        }
+      }
+      lastKeptByCode.set(code, redirect)
+      keptIds.add(redirect.int_id)
+    }
+
+    return rawRedirects.filter((row) => keptIds.has(row.int_id))
+  }
+
+  function isPairableSeen(redirect: PoiseLog, seen: PoiseLog): boolean {
+    if (messageType(seen) !== "SEEN") return false
+    if (!timestampsClose(redirect, seen, SEEN_NEIGHBOR_MS)) return false
+
+    const redirectCode = codeFromLog(redirect)
+    const seenCode = codeFromLog(seen)
+    if (redirectCode && seenCode) {
+      return redirectCode === seenCode
+    }
+
+    const redirectUid = redirect.txt_uid?.trim()
+    const seenUid = seen.txt_uid?.trim()
+    if (redirectUid && seenUid && redirectUid === seenUid) return true
+
+    const redirectName = redirect.text_name?.trim().toLowerCase()
+    const seenName = seen.text_name?.trim().toLowerCase()
+    if (redirectName && seenName && redirectName === seenName) return true
+
+    return !seenName && !seenCode
+  }
+
+  function seenNeighborForRedirect(
+    redirect: PoiseLog,
+    allLogs: PoiseLog[],
+    byId: Map<number, PoiseLog>,
+    usedSeenIds: Set<number>
+  ): PoiseLog | null {
+    for (const neighborId of [redirect.int_id - 1, redirect.int_id + 1]) {
+      const neighbor = byId.get(neighborId)
+      if (!neighbor || usedSeenIds.has(neighbor.int_id)) continue
+      if (isPairableSeen(redirect, neighbor)) return neighbor
+    }
+
+    let best: PoiseLog | null = null
+    let bestDelta = Infinity
+    const redirectTime = timestampMs(redirect)
+    for (const candidate of allLogs) {
+      if (usedSeenIds.has(candidate.int_id) || candidate.int_id === redirect.int_id) continue
+      if (!isPairableSeen(redirect, candidate)) continue
+      const delta = Math.abs(timestampMs(candidate) - redirectTime)
+      if (delta < bestDelta) {
+        best = candidate
+        bestDelta = delta
+      }
+    }
+    return best
+  }
+
+  function getRedirectScans(logs: PoiseLog[]): PoiseLog[] {
+    const rawRedirects = matchingLogs(logs).filter((log) => messageType(log) === "REDIRECTED")
+    return collapseSlateRedirects(rawRedirects)
+  }
+
+  function pairSeenWithRedirects(logs: PoiseLog[]): Map<number, PoiseLog> {
+    const redirects = getRedirectScans(logs)
+    const byId = new Map(logs.map((log) => [log.int_id, log]))
+    const usedSeenIds = new Set<number>()
+    const pairs = new Map<number, PoiseLog>()
+
+    for (const redirect of redirects) {
+      const seen = seenNeighborForRedirect(redirect, logs, byId, usedSeenIds)
+      if (!seen) continue
+      usedSeenIds.add(seen.int_id)
+      pairs.set(redirect.int_id, seen)
+    }
+
+    return pairs
+  }
+
+  function getLogs(logs: PoiseLog[]): PoiseLog[] {
+    const redirects = getRedirectScans(logs)
+    const pairs = pairSeenWithRedirects(logs)
+    const included = new Set<number>()
+    const result: PoiseLog[] = []
+
+    for (const redirect of redirects) {
+      if (!included.has(redirect.int_id)) {
+        included.add(redirect.int_id)
+        result.push(redirect)
+      }
+      const seen = pairs.get(redirect.int_id)
+      if (seen && !included.has(seen.int_id)) {
+        included.add(seen.int_id)
+        const code = codeFromLog(redirect)
+        result.push(seen.text_name?.trim() || !code ? seen : { ...seen, text_name: code })
       }
     }
 
-    return extras.length ? [...matched, ...extras] : matched
-  }
+    for (const log of matchingLogs(logs)) {
+      if (messageType(log) !== "SEEN" || included.has(log.int_id)) continue
+      included.add(log.int_id)
+      result.push(log)
+    }
 
-  function getRedirectScans(logs: PoiseLog[]) {
-    return getLogs(logs).filter((log) => messageType(log) === "REDIRECTED")
+    return result
   }
 
   function buildActivityEntries(logs: PoiseLog[]): StoreActivityEntry[] {
-    const rows = getLogs(logs)
-    const groups = new Map<string, { redirects: PoiseLog[]; seen: PoiseLog[] }>()
+    const redirects = getRedirectScans(logs)
+    const pairs = pairSeenWithRedirects(logs)
+    const pairedSeenIds = new Set<number>(
+      [...pairs.values()].map((seen) => seen.int_id)
+    )
 
-    for (const log of rows) {
+    const entries: StoreActivityEntry[] = redirects.map((redirect) => {
+      const seen = pairs.get(redirect.int_id)
+      const code = codeFromLog(redirect) ?? redirect.text_name?.trim() ?? "-"
+      const displayTitle = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
+      return {
+        key: `redirect-${redirect.int_id}`,
+        redirect,
+        seen: seen ? [seen] : [],
+        timestamp: redirect.dtm_timestamp ?? null,
+        artworkTitle: displayTitle,
+        link: linkFor(redirect, code, prefix),
+      }
+    })
+
+    const orphanSeenGroups = new Map<string, PoiseLog[]>()
+    for (const log of matchingLogs(logs)) {
+      if (messageType(log) !== "SEEN" || pairedSeenIds.has(log.int_id)) continue
       const code = codeFromLog(log) ?? "Unknown"
-      const bucket = `${code}|${log.txt_uid?.trim() || "anon"}|${(log.dtm_timestamp ?? "").slice(0, 19)}`
-      const group = groups.get(bucket) ?? { redirects: [], seen: [] }
-      if (messageType(log) === "REDIRECTED") group.redirects.push(log)
-      else group.seen.push(log)
-      groups.set(bucket, group)
+      const key = `${code}|${normalizeLogTimestampKey(log.dtm_timestamp)}`
+      orphanSeenGroups.set(key, [...(orphanSeenGroups.get(key) ?? []), log])
     }
 
-    return [...groups.values()]
-      .map((group) => {
-        const redirect = [...group.redirects].sort((a, b) => timestampMs(b) - timestampMs(a))[0] ?? null
-        const seen = [...group.seen].sort((a, b) => timestampMs(b) - timestampMs(a))
-        const primary = redirect ?? seen[0]
-        const code = primary ? (codeFromLog(primary) ?? primary.text_name?.trim() ?? "-") : "-"
-        const displayTitle = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
-        return {
-          key: redirect ? `redirect-${redirect.int_id}` : `seen-${seen[0]?.int_id ?? "unknown"}`,
-          redirect,
-          seen,
-          timestamp: primary?.dtm_timestamp ?? null,
-          artworkTitle: displayTitle,
-          link: primary ? linkFor(primary, code, prefix) : "-",
-        }
+    for (const seenGroup of orphanSeenGroups.values()) {
+      const seen = [...seenGroup].sort((a, b) => timestampMs(b) - timestampMs(a))
+      const primary = seen[0]
+      if (!primary) continue
+      const code = codeFromLog(primary) ?? primary.text_name?.trim() ?? "-"
+      const displayTitle = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
+      entries.push({
+        key: `seen-${primary.int_id}`,
+        redirect: null,
+        seen,
+        timestamp: primary.dtm_timestamp ?? null,
+        artworkTitle: displayTitle,
+        link: linkFor(primary, code, prefix),
       })
-      .sort((a, b) => timestampMs({ dtm_timestamp: b.timestamp } as PoiseLog) - timestampMs({ dtm_timestamp: a.timestamp } as PoiseLog))
+    }
+
+    return entries.sort(
+      (a, b) =>
+        timestampMs({ dtm_timestamp: b.timestamp } as PoiseLog) -
+        timestampMs({ dtm_timestamp: a.timestamp } as PoiseLog)
+    )
   }
 
   function buildTrackedArtworkScanGroups(logs: PoiseLog[]) {
     const scansByCode = new Map<string, PoiseLog[]>()
+    if (prefix === "SD") {
+      for (const code of SEVEN_DIALS_KNOWN_CODES) {
+        scansByCode.set(code, [])
+      }
+    }
     for (const scan of getRedirectScans(logs)) {
       const code = codeFromLog(scan)
       if (!code) continue
@@ -340,7 +507,7 @@ function createAnalytics(scope: StoreDashboardScope) {
         const artwork = artworkFor(code, prefix)
         return {
           ...artwork,
-          url: linkFor(ordered[0], code, prefix),
+          url: ordered[0] ? linkFor(ordered[0], code, prefix) : artwork.path,
           scans: ordered,
         }
       })
@@ -420,6 +587,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     const deviceTotal = [...deviceCounts.values()].reduce((sum, count) => sum + count, 0)
     const browserTotal = [...browserCounts.values()].reduce((sum, count) => sum + count, 0)
     const osTotal = [...osCounts.values()].reduce((sum, count) => sum + count, 0)
+    const languageTotal = [...languageCounts.values()].reduce((sum, count) => sum + count, 0)
 
     return {
       ...base,
@@ -446,17 +614,84 @@ function createAnalytics(scope: StoreDashboardScope) {
       languages: [...languageCounts.entries()].map(([label, count]) => ({
         label,
         count,
-        percent: percent(count, details.length),
+        percent: percent(count, languageTotal),
       })),
       hasDeviceInfoData: osTotal > 0,
       hasLanguageData: languageCounts.size > 0,
     }
   }
 
+  function resolveSarForLog(
+    log: PoiseLog,
+    pairs: Map<number, PoiseLog>,
+    sarByUid: Map<string, string>,
+    sarByCodeSecond: Map<string, string>
+  ): string | null {
+    const direct = tmaDemo.buildActivityVisitDetails(log).sar?.trim()
+    if (direct) return direct
+
+    const pairedSeen = pairs.get(log.int_id)
+    if (pairedSeen) {
+      const fromPair = tmaDemo.buildActivityVisitDetails(pairedSeen).sar?.trim()
+      if (fromPair) return fromPair
+    }
+
+    const uid = log.txt_uid?.trim()
+    if (uid) {
+      const fromUid = sarByUid.get(uid)
+      if (fromUid) return fromUid
+    }
+
+    const code = codeFromLog(log)
+    if (code) {
+      const key = `${code}|${normalizeLogTimestampKey(log.dtm_timestamp)}`
+      const fromCodeSecond = sarByCodeSecond.get(key)
+      if (fromCodeSecond) return fromCodeSecond
+    }
+
+    return null
+  }
+
+  function buildSarContext(logs: PoiseLog[]) {
+    const pairs = pairSeenWithRedirects(logs)
+    const sarByUid = new Map<string, string>()
+    const sarByCodeSecond = new Map<string, string>()
+
+    for (const log of getLogs(logs)) {
+      if (messageType(log) !== "SEEN") continue
+      const sar = tmaDemo.buildActivityVisitDetails(log).sar?.trim()
+      if (!sar) continue
+      const uid = log.txt_uid?.trim()
+      if (uid) sarByUid.set(uid, sar)
+      const code = codeFromLog(log)
+      if (code) {
+        const key = `${code}|${normalizeLogTimestampKey(log.dtm_timestamp)}`
+        if (!sarByCodeSecond.has(key)) sarByCodeSecond.set(key, sar)
+      }
+    }
+
+    for (const [redirectId, seen] of pairs.entries()) {
+      const sar = tmaDemo.buildActivityVisitDetails(seen).sar?.trim()
+      if (!sar) continue
+      const redirect = logs.find((item) => item.int_id === redirectId)
+      if (!redirect) continue
+      const uid = redirect.txt_uid?.trim()
+      if (uid && !sarByUid.has(uid)) sarByUid.set(uid, sar)
+      const code = codeFromLog(redirect)
+      if (code) {
+        const key = `${code}|${normalizeLogTimestampKey(redirect.dtm_timestamp)}`
+        if (!sarByCodeSecond.has(key)) sarByCodeSecond.set(key, sar)
+      }
+    }
+
+    return { pairs, sarByUid, sarByCodeSecond }
+  }
+
   function listDistinctSars(logs: PoiseLog[]) {
+    const { pairs, sarByUid, sarByCodeSecond } = buildSarContext(logs)
     const values = new Set<string>()
     for (const log of getLogs(logs)) {
-      const sar = tmaDemo.buildActivityVisitDetails(log).sar
+      const sar = resolveSarForLog(log, pairs, sarByUid, sarByCodeSecond)
       if (sar) values.add(sar)
     }
     return [...values].sort((a, b) => a.localeCompare(b))
@@ -465,16 +700,18 @@ function createAnalytics(scope: StoreDashboardScope) {
   function logsForSar(logs: PoiseLog[], sarQuery: string) {
     const target = sarQuery.trim().toLowerCase()
     if (!target) return []
+    const { pairs, sarByUid, sarByCodeSecond } = buildSarContext(logs)
     return getLogs(logs).filter(
-      (log) => tmaDemo.buildActivityVisitDetails(log).sar?.toLowerCase() === target
+      (log) => resolveSarForLog(log, pairs, sarByUid, sarByCodeSecond)?.toLowerCase() === target
     )
   }
 
   function buildSarTimelinePlot(logs: PoiseLog[]): tmaDemo.SarTimelinePlot | null {
+    const { pairs, sarByUid, sarByCodeSecond } = buildSarContext(logs)
     const now = new Date()
     const points: tmaDemo.SarTimelinePlot["points"] = []
     for (const log of getLogs(logs)) {
-      const sar = tmaDemo.buildActivityVisitDetails(log).sar
+      const sar = resolveSarForLog(log, pairs, sarByUid, sarByCodeSecond)
       const timestamp = tmaDemo.parseLogTimestampGmt(log.dtm_timestamp)
       if (!sar || !timestamp) continue
       const code = codeFromLog(log) ?? log.text_name?.trim() ?? "Unknown"
@@ -515,15 +752,22 @@ function createAnalytics(scope: StoreDashboardScope) {
   }
 
   function buildSarTimelineRowMetaMap(logs: PoiseLog[]) {
+    const { pairs, sarByUid, sarByCodeSecond } = buildSarContext(logs)
     const meta = new Map<string, tmaDemo.SarTimelineRowMeta>()
-    for (const log of getLogs(logs)) {
-      const details = tmaDemo.buildActivityVisitDetails(log)
-      if (!details.sar || meta.has(details.sar)) continue
-      meta.set(details.sar, {
-        sar: details.sar,
-        visitorNumber: null,
-        country: null,
-        language: details.language,
+    const scopedLogs = getLogs(logs)
+
+    for (const log of scopedLogs) {
+      const sar = resolveSarForLog(log, pairs, sarByUid, sarByCodeSecond)
+      if (!sar || meta.has(sar)) continue
+      const seenSource =
+        messageType(log) === "SEEN" ? log : (pairs.get(log.int_id) ?? log)
+      const details = tmaDemo.buildActivityVisitDetails(seenSource)
+      const acceptLanguage = getAcceptLanguageHeaderFromLog(seenSource)
+      meta.set(sar, {
+        sar,
+        visitorNumber: seenSource.visitor_number?.trim() || log.visitor_number?.trim() || null,
+        country: tmaDemo.parseCountryFromAcceptLanguage(acceptLanguage),
+        language: tmaDemo.parseLanguageNameFromAcceptLanguage(acceptLanguage) ?? details.language,
       })
     }
     return meta
@@ -554,11 +798,14 @@ function createAnalytics(scope: StoreDashboardScope) {
       return tmaDemo.buildActivityVisitDetails(log).sar
     },
     countCodes(logs: PoiseLog[]) {
-      return new Set(
-        getRedirectScans(logs)
-          .map((log) => codeFromLog(log))
-          .filter((code): code is string => Boolean(code))
-      ).size
+      const codes = new Set<string>(
+        prefix === "SD" ? SEVEN_DIALS_KNOWN_CODES : []
+      )
+      for (const log of getRedirectScans(logs)) {
+        const code = codeFromLog(log)
+        if (code) codes.add(code)
+      }
+      return codes.size
     },
   }
 }
