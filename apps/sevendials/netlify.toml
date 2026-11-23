@@ -1,7 +1,7 @@
 [build]
   command = "cd \"$(git rev-parse --show-toplevel)\" && npm ci && npm run build -w @tma/app-sevendials"
   publish = "apps/sevendials/dist"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/sevendials packages"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- apps/sevendials packages package.json package-lock.json"
 
 # The dashboard is public (no password field). An edge function attaches
 # X-Dashboard-Password for /api/secure/* so the browser never sees it.
