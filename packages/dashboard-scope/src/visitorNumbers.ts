@@ -27,7 +27,8 @@ function getSarForLog(log: PoiseLog, scope: SiteScope): string | null {
     scope === "i_am_a_safe_pet" ||
     scope === "choose_and_order" ||
     scope === "yesterday_forever" ||
-    scope === "frieze_gallery"
+    scope === "frieze_gallery" ||
+    scope === "sevendials"
   ) {
     return storeAnalytics(scope).getSarFromLog(log)
   }
@@ -56,7 +57,8 @@ function getScopedLogs(logs: PoiseLog[], scope: SiteScope): PoiseLog[] {
     scope === "i_am_a_safe_pet" ||
     scope === "choose_and_order" ||
     scope === "yesterday_forever" ||
-    scope === "frieze_gallery"
+    scope === "frieze_gallery" ||
+    scope === "sevendials"
   ) {
     return storeAnalytics(scope).getLogs(logs)
   }

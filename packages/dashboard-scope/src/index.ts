@@ -41,7 +41,8 @@ function storeFor(scope: SiteScope) {
     scope === "i_am_a_safe_pet" ||
     scope === "choose_and_order" ||
     scope === "yesterday_forever" ||
-    scope === "frieze_gallery"
+    scope === "frieze_gallery" ||
+    scope === "sevendials"
   ) {
     return storeAnalytics(scope)
   }
@@ -242,6 +243,7 @@ export function trackedScansMeta(scope: SiteScope): string {
   if (scope === "choose_and_order") return "tracked Choose and Order tags"
   if (scope === "yesterday_forever") return "tracked Yesterday Forever tags"
   if (scope === "frieze_gallery") return "tracked Frieze Gallery tags"
+  if (scope === "sevendials") return "tracked Seven Dials plaques"
   return `tracked ${combinedSitesLabel()} scans`
 }
 
@@ -267,6 +269,7 @@ export function trackedLinksMeta(scope: SiteScope): string {
   if (scope === "choose_and_order") return "CAO tags and mme-betty scans"
   if (scope === "yesterday_forever") return "tags such as YF001 and YF002"
   if (scope === "frieze_gallery") return "tags such as FD001, FCI001, FO001, FSFT001, and FSWIF001"
+  if (scope === "sevendials") return "SD001 (Charles Boon), SD002 (Brian Epstein), and SD plaques"
   return `of ${count} tracked links (all sites)`
 }
 
@@ -291,6 +294,7 @@ export function trackedScansAcrossMeta(scope: SiteScope): string {
   if (scope === "choose_and_order") return "across Choose and Order tags"
   if (scope === "yesterday_forever") return "across Yesterday Forever tags"
   if (scope === "frieze_gallery") return "across Frieze Gallery tags"
+  if (scope === "sevendials") return "across Seven Dials People's Plaques"
   return "across tracked links (all sites)"
 }
 
@@ -308,6 +312,7 @@ export function sarTimelineDomainLabel(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
+  if (scope === "sevendials") return "Seven Dials Trust"
   return getActiveCombinedSiteIds()
     .map((id) => SITE_META[id].host)
     .join(" + ")
@@ -327,6 +332,7 @@ export function sarTimelineDomainSuffix(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
+  if (scope === "sevendials") return "Seven Dials"
   return "selected sites"
 }
 
@@ -372,6 +378,7 @@ export function emptyActivityMessage(scope: SiteScope): string {
   if (scope === "choose_and_order") return "No Choose and Order tags scanned yet."
   if (scope === "yesterday_forever") return "No Yesterday Forever tags scanned yet."
   if (scope === "frieze_gallery") return "No Frieze Gallery tags scanned yet."
+  if (scope === "sevendials") return "No Seven Dials People's Plaques scanned yet."
   return "No tracked activity found for the selected scope."
 }
 

@@ -1,0 +1,210 @@
+/* Seven Dials Trust Dashboard — Styled with the Navy (#272654), Terracotta Red (#C84332), and Warm Cream (#F5F1E8) roundel palette */
+
+.sevendials-dashboard.tma-dashboard {
+  --tma-chart-hue: 7;
+  --tma-brand: #c84332;
+  --tma-brand-dark: #272654;
+  --tma-brand-mid: #a83224;
+  --tma-brand-light: #e28275;
+  --tma-brand-tint: #eae3d2;
+  --tma-brand-tint-alt: #f5f1e8;
+  --tma-dashboard-tabs-bg: #eae3d2;
+  --tma-brand-border: #d2c7b2;
+  --tma-brand-shadow: rgba(39, 38, 84, 0.14);
+  --tma-brand-shadow-soft: rgba(39, 38, 84, 0.07);
+  --tma-brand-shadow-focus: rgba(200, 67, 50, 0.32);
+  --tma-palette-4: #272654;
+  --tma-palette-5: #c84332;
+  min-height: 100vh;
+  background: #f5f1e8;
+  color: #191838;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.sevendials-dashboard-header {
+  height: auto;
+  min-height: 240px;
+  padding: 2.75rem 1.5rem 3rem;
+  background: linear-gradient(145deg, #191838 0%, #272654 65%, #32316b 100%);
+  color: #f5f1e8;
+  border-bottom: 6px solid #c84332;
+}
+
+.sevendials-dashboard-header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.sevendials-dashboard-badge {
+  flex-shrink: 0;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35));
+}
+
+.sevendials-dashboard-heading {
+  flex: 1;
+}
+
+.sevendials-dashboard-eyebrow {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f3b5ab;
+}
+
+.sevendials-dashboard-header h1 {
+  margin: 0 0 0.45rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 2.85rem);
+  font-weight: 700;
+  line-height: 1.12;
+  color: #f5f1e8;
+}
+
+.sevendials-dashboard-subtitle {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  color: rgba(245, 241, 232, 0.88);
+}
+
+.sevendials-dashboard-plaque-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.sevendials-dashboard-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(245, 241, 232, 0.12);
+  border: 1px solid rgba(245, 241, 232, 0.3);
+  color: #f5f1e8;
+  text-decoration: none;
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.sevendials-dashboard-pill:hover {
+  background: rgba(200, 67, 50, 0.38);
+  border-color: #f3b5ab;
+}
+
+.sevendials-dashboard-pill-code {
+  background: #c84332;
+  color: #f5f1e8;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.sevendials-dashboard .tma-content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3.5rem;
+}
+
+.sevendials-dashboard .tma-dashboard-tabs {
+  background: #eae3d2;
+  border: 1px solid #d2c7b2;
+}
+
+.sevendials-dashboard .tma-dashboard-tab {
+  color: #272654;
+  font-weight: 600;
+}
+
+.sevendials-dashboard .tma-dashboard-tab.is-active {
+  background: #c84332;
+  color: #f5f1e8;
+}
+
+.sevendials-dashboard .tma-analytics-stat-card,
+.sevendials-dashboard .tma-analytics-card {
+  background: #fbf9f4;
+  border: 1px solid #d2c7b2;
+  border-top: 4px solid #272654;
+  box-shadow: 0 10px 24px rgba(39, 38, 84, 0.08);
+}
+
+.sevendials-dashboard .tma-analytics-stat-label {
+  color: #c84332;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.sevendials-dashboard .tma-analytics-stat-value,
+.sevendials-dashboard .tma-analytics-card h2,
+.sevendials-dashboard .tma-analytics-card-header h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #272654;
+}
+
+.sevendials-dashboard .tma-analytics-stat-icon {
+  background: #eae3d2;
+  color: #c84332;
+}
+
+.sevendials-dashboard .tma-dashboard-table-wrap,
+.sevendials-dashboard .tma-dashboard-nested-table {
+  border: 1px solid #d2c7b2;
+  background: #fbf9f4;
+}
+
+.sevendials-dashboard .tma-dashboard-table thead th,
+.sevendials-dashboard .tma-dashboard-nested-table th {
+  background: #272654;
+  color: #f5f1e8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+}
+
+.sevendials-dashboard .tma-dashboard-scan-link,
+.sevendials-dashboard .tma-dashboard-table--counts td[data-label="scan_count"],
+.sevendials-dashboard .tma-dashboard-table--counts td[data-label="link"]::before,
+.sevendials-dashboard .tma-dashboard-nested-table td[data-label]::before {
+  color: #c84332;
+}
+
+.sevendials-dashboard .tma-dashboard-scan-count,
+.sevendials-dashboard .tma-sar-timeline-legend-item > .tma-sar-timeline-marker.is-redirect {
+  background: #c84332;
+  color: #f5f1e8;
+}
+
+.sevendials-dashboard .tma-dashboard-scan-group summary::before {
+  border-right-color: #c84332;
+  border-bottom-color: #c84332;
+}
+
+.sevendials-dashboard .tma-sar-timeline-center-btn {
+  background: #272654;
+  border-color: #272654;
+  color: #f5f1e8;
+}
+
+.sevendials-dashboard .tma-sar-timeline-center-btn:hover {
+  background: #c84332;
+  border-color: #c84332;
+}
+
+@media (max-width: 768px) {
+  .sevendials-dashboard-header-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .sevendials-dashboard-plaque-pills {
+    justify-content: center;
+  }
+}

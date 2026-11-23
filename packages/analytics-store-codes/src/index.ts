@@ -9,9 +9,10 @@ export type StoreDashboardScope =
   | "choose_and_order"
   | "yesterday_forever"
   | "frieze_gallery"
+  | "sevendials"
 
 type CodeScope = Exclude<StoreDashboardScope, "i_am_a_safe_pet" | "frieze_gallery">
-type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF"
+type StorePrefix = "W" | "CP" | "PV" | "CO" | "YF" | "SD"
 
 const PREFIX: Record<CodeScope, StorePrefix> = {
   waitburys: "W",
@@ -19,6 +20,7 @@ const PREFIX: Record<CodeScope, StorePrefix> = {
   fair_future: "PV",
   choose_and_order: "CO",
   yesterday_forever: "YF",
+  sevendials: "SD",
 }
 
 /** Longest first so FSFT and FSWIF are not read as a shorter prefix. */
@@ -82,6 +84,60 @@ export function canonicalFriezeGalleryTagName(value: string | null | undefined):
   return `${prefix}${padSerial(serial)}`
 }
 
+const SEVEN_DIALS_TITLES: Record<string, string> = {
+  SD001: "SD001 — Charles Boon (1877–1943)",
+  SD002: "SD002 — Brian Epstein (1934–1967)",
+}
+
+const SEVEN_DIALS_PATHS: Record<string, string> = {
+  SD001: "/charles-boon",
+  SD002: "/brian-epstein",
+}
+
+export function sevenDialsDisplayTitle(code: string): string {
+  return SEVEN_DIALS_TITLES[code] ?? code
+}
+
+/** Seven Dials Trust tags (SD001, SD002, ...) or plaque slugs (/charles-boon, /brian-epstein). */
+export function canonicalSevenDialsTagName(value: string | null | undefined): string | null {
+  if (!value?.trim()) return null
+  const trimmed = value.trim()
+  if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
+
+  const lower = trimmed.toLowerCase()
+  if (
+    lower === "charles-boon" ||
+    lower === "charles boon" ||
+    /(^|\/)(peoples-plaques\/)?charles-boon(\/|$|\?)/i.test(trimmed)
+  ) {
+    return "SD001"
+  }
+  if (
+    lower === "brian-epstein" ||
+    lower === "brian epstein" ||
+    /(^|\/)(peoples-plaques\/)?brian-epstein(\/|$|\?)/i.test(trimmed)
+  ) {
+    return "SD002"
+  }
+
+  const compact = trimmed.toUpperCase().replace(/[^A-Z0-9]/g, "")
+  const match = compact.match(/^SD(\d{1,6})$/)
+  if (!match) return null
+  const serial = Number(match[1])
+  if (!Number.isInteger(serial) || serial < 1 || serial > MAX_SERIAL) return null
+  return `SD${padSerial(serial)}`
+}
+
+export function sevenDialsCode(log: {
+  text_name?: string | null
+  txt_message?: string | null
+}): string | null {
+  return (
+    canonicalSevenDialsTagName(log.text_name) ??
+    canonicalSevenDialsTagName(log.txt_message)
+  )
+}
+
 /** Scans whose redirect lands on the mme-betty page. */
 export function canonicalMmeBettyScan(value: string | null | undefined): string | null {
   const trimmed = value?.trim() ?? ""
@@ -115,6 +171,7 @@ function canonicalCode(prefix: StorePrefix, value: string | null | undefined): s
   const trimmed = value.trim()
   if (prefix === "CO") return canonicalChooseAndOrderTagName(trimmed)
   if (prefix === "YF") return canonicalYesterdayForeverTagName(trimmed)
+  if (prefix === "SD") return canonicalSevenDialsTagName(trimmed)
   if (prefix === "PV") {
     if (trimmed.startsWith("{") || trimmed.startsWith("[")) return null
     if (!trimmed.toUpperCase().startsWith("PV")) return null
@@ -153,7 +210,14 @@ function timestampMs(log: PoiseLog) {
   return tmaDemo.parseLogTimestampGmt(log.dtm_timestamp)?.getTime() ?? 0
 }
 
-function artworkFor(code: string): StoreArtwork {
+function artworkFor(code: string, prefix?: StorePrefix | null): StoreArtwork {
+  if (prefix === "SD") {
+    return {
+      tagName: code,
+      title: sevenDialsDisplayTitle(code),
+      path: SEVEN_DIALS_PATHS[code] ?? `/${code}`,
+    }
+  }
   return { tagName: code, title: code, path: `/${code}` }
 }
 
@@ -181,6 +245,7 @@ function linkFor(log: PoiseLog, code: string, prefix?: StorePrefix | null) {
   const message = log.txt_message?.trim() ?? ""
   if (prefix === "PV") return publicPvLink(message)
   if (message.startsWith("/") || message.includes("://")) return message
+  if (prefix === "SD" && SEVEN_DIALS_PATHS[code]) return SEVEN_DIALS_PATHS[code]
   return code
 }
 
@@ -192,6 +257,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     if (scope === "frieze_gallery") return canonicalFriezeGalleryTagName(log.text_name)
     if (prefix === null) return canonicalPetTagName(log.text_name)
     if (prefix === "CO") return chooseAndOrderCode(log)
+    if (prefix === "SD") return sevenDialsCode(log)
     if (prefix === "PV" || prefix === "YF") return canonicalCode(prefix, log.text_name)
     return canonicalCode(prefix, log.text_name) ?? canonicalCode(prefix, log.txt_message)
   }
@@ -247,12 +313,13 @@ function createAnalytics(scope: StoreDashboardScope) {
         const seen = [...group.seen].sort((a, b) => timestampMs(b) - timestampMs(a))
         const primary = redirect ?? seen[0]
         const code = primary ? (codeFromLog(primary) ?? primary.text_name?.trim() ?? "-") : "-"
+        const displayTitle = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
         return {
           key: redirect ? `redirect-${redirect.int_id}` : `seen-${seen[0]?.int_id ?? "unknown"}`,
           redirect,
           seen,
           timestamp: primary?.dtm_timestamp ?? null,
-          artworkTitle: code,
+          artworkTitle: displayTitle,
           link: primary ? linkFor(primary, code, prefix) : "-",
         }
       })
@@ -270,7 +337,7 @@ function createAnalytics(scope: StoreDashboardScope) {
     return [...scansByCode.entries()]
       .map(([code, scans]) => {
         const ordered = [...scans].sort((a, b) => timestampMs(b) - timestampMs(a))
-        const artwork = artworkFor(code)
+        const artwork = artworkFor(code, prefix)
         return {
           ...artwork,
           url: linkFor(ordered[0], code, prefix),
@@ -287,7 +354,8 @@ function createAnalytics(scope: StoreDashboardScope) {
     const counts = new Map<string, number>()
     for (const scan of scans) {
       const code = codeFromLog(scan) ?? "Unknown"
-      counts.set(code, (counts.get(code) ?? 0) + 1)
+      const label = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
+      counts.set(label, (counts.get(label) ?? 0) + 1)
     }
     const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
     const top = ranked[0] ?? ["-", 0]
@@ -302,7 +370,11 @@ function createAnalytics(scope: StoreDashboardScope) {
     const weeklyChange =
       previousWeek === 0 ? (thisWeek > 0 ? 100 : 0) : ((thisWeek - previousWeek) / previousWeek) * 100
     const topTagMonthCount = scans.filter(
-      (scan) => timestampMs(scan) >= monthStart.getTime() && (codeFromLog(scan) ?? "Unknown") === top[0]
+      (scan) => {
+        const code = codeFromLog(scan) ?? "Unknown"
+        const label = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
+        return timestampMs(scan) >= monthStart.getTime() && label === top[0]
+      }
     ).length
 
     return {
@@ -406,13 +478,14 @@ function createAnalytics(scope: StoreDashboardScope) {
       const timestamp = tmaDemo.parseLogTimestampGmt(log.dtm_timestamp)
       if (!sar || !timestamp) continue
       const code = codeFromLog(log) ?? log.text_name?.trim() ?? "Unknown"
+      const displayTitle = prefix === "SD" ? sevenDialsDisplayTitle(code) : code
       points.push({
         logId: log.int_id,
         sar,
         timestamp,
         offsetMs: timestamp.getTime() - now.getTime(),
         messageType: (log.txt_message_type ?? "-").trim(),
-        artworkTitle: code,
+        artworkTitle: displayTitle,
         link: linkFor(log, code, prefix),
         isRedirect: messageType(log) === "REDIRECTED",
       })
@@ -497,6 +570,7 @@ export const safePet = createAnalytics("i_am_a_safe_pet")
 export const chooseAndOrder = createAnalytics("choose_and_order")
 export const yesterdayForever = createAnalytics("yesterday_forever")
 export const friezeGallery = createAnalytics("frieze_gallery")
+export const sevendials = createAnalytics("sevendials")
 
 const ANALYTICS = {
   waitburys,
@@ -506,6 +580,7 @@ const ANALYTICS = {
   choose_and_order: chooseAndOrder,
   yesterday_forever: yesterdayForever,
   frieze_gallery: friezeGallery,
+  sevendials,
 } as const
 
 export function storeAnalytics(scope: StoreDashboardScope) {

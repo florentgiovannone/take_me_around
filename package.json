@@ -19,6 +19,7 @@
     "build:yesterday-forever": "npm run build -w @tma/app-yesterday-forever",
     "build:frieze-gallery": "npm run build -w @tma/app-frieze-gallery",
     "build:birmingham-conference": "npm run build -w @tma/app-birmingham-conference",
+    "build:sevendials": "npm run build -w @tma/app-sevendials",
     "dev": "node scripts/dev.mjs",
     "test": "node --test scripts/lib/*.test.mjs",
     "dev:gallery": "npm run dev -w @tma/app-gallery",
@@ -32,7 +33,8 @@
     "dev:choose-and-order": "npm run dev -w @tma/app-choose-and-order",
     "dev:yesterday-forever": "npm run dev -w @tma/app-yesterday-forever",
     "dev:frieze-gallery": "npm run dev -w @tma/app-frieze-gallery",
-    "dev:birmingham-conference": "npm run dev -w @tma/app-birmingham-conference"
+    "dev:birmingham-conference": "npm run dev -w @tma/app-birmingham-conference",
+    "dev:sevendials": "npm run dev -w @tma/app-sevendials"
   },
   "devDependencies": {
     "@inquirer/prompts": "^8.5.2",

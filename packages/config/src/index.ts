@@ -19,6 +19,7 @@ export type StoreDashboardScope =
   | "choose_and_order"
   | "yesterday_forever"
   | "frieze_gallery"
+  | "sevendials"
 
 export type SiteScope =
   | OperatorSiteId
@@ -46,6 +47,7 @@ export const PROJECT_DASHBOARD_SCOPES = [
   "fair_future",
   "frieze_gallery",
   "i_am_a_safe_pet",
+  "sevendials",
   "yesterday_forever",
   "waitburys",
   "charles_peters",
@@ -350,6 +352,7 @@ export function scopeLabel(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
+  if (scope === "sevendials") return "Seven Dials"
   if (scope === "birmingham_conference") return "Museum Association Conference"
   if (scope === "birmingham_conference_admin") return "Museum Association Conference · Admin"
   return SITE_META[scope].label
@@ -366,6 +369,7 @@ export function scopeSubtitle(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Live Choose and Order activity"
   if (scope === "yesterday_forever") return "Live Yesterday Forever activity"
   if (scope === "frieze_gallery") return "Live Frieze Gallery activity"
+  if (scope === "sevendials") return "Live Seven Dials activity"
   if (scope === "arkin") {
     return `Live ${SITE_META.arkin.label} activity`
   }
@@ -387,6 +391,7 @@ export function scopeDomainHint(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
+  if (scope === "sevendials") return "Seven Dials Trust"
   if (scope === "birmingham_conference" || scope === "birmingham_conference_admin") {
     return "takemearound.gallery + takemearound.museum"
   }
@@ -402,6 +407,7 @@ export function scopeBadgeLabel(scope: SiteScope): string {
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
+  if (scope === "sevendials") return "Seven Dials"
   if (scope === "birmingham_conference") return "Museum Association Conference"
   if (scope === "birmingham_conference_admin") return "Museum Association Conference · Admin"
   return SITE_META[scope].domainLabel
@@ -419,6 +425,7 @@ export function scopeOptionLabel(scope: SiteScope, _combinedSiteIds: SiteId[] = 
   if (scope === "choose_and_order") return "Choose and Order"
   if (scope === "yesterday_forever") return "Yesterday Forever"
   if (scope === "frieze_gallery") return "Frieze Gallery"
+  if (scope === "sevendials") return "Seven Dials"
   if (scope === "birmingham_conference") return "Museum Association Conference"
   if (scope === "birmingham_conference_admin") return "Museum Association Conference · Admin"
   return `${SITE_META[scope].label} (${SITE_META[scope].domainLabel})`
